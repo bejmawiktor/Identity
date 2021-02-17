@@ -19,4 +19,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Identity.Domain\Identity.Domain.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DDD">
+      <HintPath>..\Libraries\DDD.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>
