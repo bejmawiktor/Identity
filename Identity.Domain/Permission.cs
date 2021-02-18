@@ -3,7 +3,7 @@ using System;
 
 namespace Identity.Domain
 {
-    public class Permission : Entity<PermissionId>
+    public class Permission : AggregateRoot<PermissionId>
     {
         public string Description { get; }
 
