@@ -6,7 +6,7 @@ namespace Identity.Domain
 {
     public class ResourceId : Identifier<string, ResourceId>
     {
-        public string AlphaNumericPattern => "^[a-zA-Z0-9]*$";
+        private string AlphaNumericPattern => "^[a-zA-Z0-9]*$";
 
         public ResourceId(string name) : base(name)
         {
