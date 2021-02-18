@@ -13,8 +13,44 @@ namespace Identity.Tests.Unit.Domain
             Assert.Throws(
               Is.InstanceOf<ArgumentException>()
                   .And.Message
-                  .EqualTo("Permision id can't be empty."),
-              () => new PermissionId(string.Empty));
+                  .EqualTo("Name can't be empty."),
+              () => new PermissionId(new ResourceId("MyResource"), string.Empty));
+        }
+
+        [Test]
+        public void TestConstructing_WhenNullResourceIdGiven_ThenArgumentNullExceptionIsThrown()
+        {
+            Assert.Throws(
+              Is.InstanceOf<ArgumentNullException>()
+                  .And.Property(nameof(ArgumentNullException.ParamName))
+                  .EqualTo("resourceId"),
+              () => new PermissionId(null, "Permission"));
+        }
+
+        [Test]
+        public void TestConstructing_WhenNullNameGiven_ThenArgumentNullExceptionIsThrown()
+        {
+            Assert.Throws(
+              Is.InstanceOf<ArgumentNullException>()
+                  .And.Property(nameof(ArgumentNullException.ParamName))
+                  .EqualTo("name"),
+              () => new PermissionId(new ResourceId("MyResource"), null));
+        }
+
+        [Test]
+        public void TestConstruction_WhenCorrectNameGiven_ThenNameIsSet()
+        {
+            var permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
+
+            Assert.That(permissionId.Name, Is.EqualTo("MyPermission"));
+        }
+
+        [Test]
+        public void TestConstruction_WhenCorrectResourceIdGiven_ThenResourceIdIsSet()
+        {
+            var permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
+
+            Assert.That(permissionId.ResourceId, Is.EqualTo(new ResourceId("MyResource")));
         }
 
         [TestCase("My permission")]
@@ -27,19 +63,21 @@ namespace Identity.Tests.Unit.Domain
             Assert.Throws(
               Is.InstanceOf<ArgumentException>()
                   .And.Message
-                  .EqualTo("Permision id must contain only alphanumeric characters without spaces."),
-              () => new PermissionId(name));
+                  .EqualTo("Name must contain only alphanumeric characters without spaces."),
+              () => new PermissionId(new ResourceId("MyResource"), name));
         }
 
-        [TestCase("MyPermission")]
-        [TestCase("example1permision")]
-        [TestCase("GetProducts")]
-        [TestCase("asdghxcbnm123456890asdggh")]
-        public void TestConstructing_WhenCorrectNameGiven_ThenNameIsSet(string name)
+        [TestCase("MyResource", "MyPermission")]
+        [TestCase("MyResource2", "example1permision")]
+        [TestCase("MyResource3", "GetProducts")]
+        [TestCase("MyResource4", "asdghxcbnm123456890asdggh")]
+        public void TestToString_WhenCorrectNameAndResourceIdGiven_ThenResourceIdAndNameWithDotSeperationStringIsReturned(
+            string resourceName,
+            string name)
         {
-            var permissionId = new PermissionId(name);
+            var permissionId = new PermissionId(new ResourceId(resourceName), name);
 
-            Assert.That(permissionId.ToString(), Is.EqualTo(name));
+            Assert.That(permissionId.ToString(), Is.EqualTo($"{resourceName}.{name}"));
         }
     }
 }

@@ -11,7 +11,9 @@ namespace Identity.Tests.Unit.Domain
         public void TestConstruction_WhenDescriptionGiven_ThenDescriptionIsSet()
         {
             var permission = new Permission(
-                id: new PermissionId("GrantPermission"),
+                id: new PermissionId(
+                    resourceId: new ResourceId("MyResource"),
+                    name: "GrantPermission"),
                 description: "It allows user to grant permission to other users.");
 
             Assert.That(permission.Description, Is.EqualTo("It allows user to grant permission to other users."));
@@ -25,7 +27,9 @@ namespace Identity.Tests.Unit.Domain
                     .And.Message
                     .EqualTo("Description can't be empty."),
                 () => new Permission(
-                    id: new PermissionId("GrantPermission"),
+                    id: new PermissionId(
+                        resourceId: new ResourceId("MyResource"),
+                        name: "GrantPermission"),
                     description: string.Empty));
         }
 
@@ -37,7 +41,9 @@ namespace Identity.Tests.Unit.Domain
                     .And.Property(nameof(ArgumentNullException.ParamName))
                     .EqualTo("description"),
                 () => new Permission(
-                    id: new PermissionId("GrantPermission"),
+                    id: new PermissionId(
+                        resourceId: new ResourceId("MyResource"),
+                        name: "GrantPermission"),
                     description: null));
         }
     }

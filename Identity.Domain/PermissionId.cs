@@ -4,28 +4,40 @@ using System.Text.RegularExpressions;
 
 namespace Identity.Domain
 {
-    public class PermissionId : Identifier<string, PermissionId>
+    public class PermissionId : CompositeIdentifier<(ResourceId ResourceId, string Name), PermissionId>
     {
-        public string AlphaNumericPattern => "^[a-zA-Z0-9]*$";
+        public string Name => this.Value.Name;
+        public ResourceId ResourceId => this.Value.ResourceId;
+        private string AlphaNumericPattern => "^[a-zA-Z0-9]*$";
 
-        public PermissionId(string name) : base(name)
+        public PermissionId(ResourceId resourceId, string name) : base((resourceId, name))
         {
         }
 
-        protected override void ValidateValue(string value)
+        protected override void ValidateValue((ResourceId ResourceId, string Name) value)
         {
-            if(value.Length == 0)
+            if(value.ResourceId == null)
             {
-                throw new ArgumentException("Permision id can't be empty.");
+                throw new ArgumentNullException("resourceId");
             }
 
-            if(!Regex.IsMatch(value, this.AlphaNumericPattern))
+            if(value.Name == null)
             {
-                throw new ArgumentException("Permision id must contain only alphanumeric characters without spaces.");
+                throw new ArgumentNullException("name");
+            }
+
+            if(value.Name.Length == 0)
+            {
+                throw new ArgumentException("Name can't be empty.");
+            }
+
+            if(!Regex.IsMatch(value.Name, this.AlphaNumericPattern))
+            {
+                throw new ArgumentException("Name must contain only alphanumeric characters without spaces.");
             }
         }
 
         public override string ToString()
-            => this.Value;
+            => $"{this.ResourceId}.{this.Name}";
     }
 }
