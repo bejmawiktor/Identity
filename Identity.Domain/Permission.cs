@@ -9,12 +9,12 @@ namespace Identity.Domain
 
         public Permission(PermissionId id, string description) : base(id)
         {
-            this.ValidateMembers(description);
+            this.ValidateDescription(description);
 
             this.Description = description;
         }
 
-        private void ValidateMembers(string description)
+        private void ValidateDescription(string description)
         {
             if(description == null)
             {
