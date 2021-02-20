@@ -5,7 +5,7 @@ using System;
 namespace Identity.Tests.Unit.Domain
 {
     [TestFixture]
-    class ResourceIdTest
+    public class ResourceIdTest
     {
         [Test]
         public void TestConstructing_WhenEmptyNameGiven_ThenArgumentExceptionIsThrown()

@@ -8,6 +8,7 @@ namespace Identity.Domain
     public class EmailAddress : ValueObject
     {
         private string Address { get; }
+
         private string CorrectAddressPattern
             => @"^[\w!#$%&'*+\-/=?\^_`{|}~]+(\.[\w!#$%&'*+\-/=?\^_`{|}~]+)*"
                 + "@"
