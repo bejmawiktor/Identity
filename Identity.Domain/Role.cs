@@ -1,4 +1,5 @@
-﻿using DDD.Model;
+﻿using DDD.Events;
+using DDD.Model;
 using System;
 using System.Collections.Generic;
 
@@ -66,6 +67,18 @@ namespace Identity.Domain
         {
             this.Name = name;
             this.Description = description;
+        }
+
+        public static Role Create(string name, string description)
+        {
+            var role = new Role(RoleId.Generate(), name, description);
+
+            EventManager.Instance.Notify(new RoleCreatedEvent(
+                role.Id,
+                role.name,
+                role.description));
+
+            return role;
         }
     }
 }

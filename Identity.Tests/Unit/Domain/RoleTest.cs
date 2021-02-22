@@ -1,4 +1,6 @@
-﻿using Identity.Domain;
+﻿using DDD.Events;
+using Identity.Domain;
+using Moq;
 using NUnit.Framework;
 using System;
 
@@ -165,6 +167,44 @@ namespace Identity.Tests.Unit.Domain
             role.Description = "My changed description.";
 
             Assert.That(role.Description, Is.EqualTo("My changed description."));
+        }
+
+        [Test]
+        public void TestCreate_WhenCreatingRole_ThenNewRoleIsReturned()
+        {
+            var role = Role.Create(
+                name: "MyRole",
+                description: "My role description.");
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(role.Id, Is.Not.Null);
+                Assert.That(role.Name, Is.EqualTo("MyRole"));
+                Assert.That(role.Description, Is.EqualTo("My role description."));
+                Assert.That(role.Permissions, Is.Empty);
+            });
+        }
+
+        [Test]
+        public void TestCreate_WhenCreatingRole_ThenRoleCreatedEventIsNotified()
+        {
+            RoleCreatedEvent roleCreatedEvent = null;
+            var eventDispatcherMock = new Mock<IEventDispatcher>();
+            eventDispatcherMock
+                .Setup(e => e.Dispatch(It.IsAny<RoleCreatedEvent>()))
+                .Callback((RoleCreatedEvent p) => roleCreatedEvent = p);
+            EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
+
+            var role = Role.Create(
+                name: "MyRole",
+                description: "My role description.");
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(roleCreatedEvent.RoleId, Is.EqualTo(role.Id));
+                Assert.That(roleCreatedEvent.Name, Is.EqualTo(role.Name));
+                Assert.That(roleCreatedEvent.Description, Is.EqualTo(role.Description));
+            });
         }
     }
 }
