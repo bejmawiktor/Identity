@@ -1,4 +1,5 @@
-﻿using DDD.Model;
+﻿using DDD.Events;
+using DDD.Model;
 using System;
 
 namespace Identity.Domain
@@ -30,9 +31,28 @@ namespace Identity.Domain
             }
         }
 
+        public static Resource Create(string name, string description)
+        {
+            var resource = new Resource(new ResourceId(name), description);
+
+            EventManager.Instance.Notify(new ResourceCreatedEvent(
+                resource.Id,
+                description));
+
+            return resource;
+        }
+
         public Permission CreatePermission(string name, string description)
-            => new Permission(
-                new PermissionId(resourceId: this.Id, name: name),
+        {
+            var permission = new Permission(
+                new PermissionId(this.Id, name),
                 description);
+
+            EventManager.Instance.Notify(new PermissionCreatedEvent(
+                permission.Id,
+                permission.Description));
+
+            return permission;
+        }
     }
 }
