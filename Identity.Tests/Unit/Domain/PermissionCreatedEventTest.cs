@@ -17,7 +17,7 @@ namespace Identity.Tests.Unit.Domain
             var permissionId = new PermissionId(new ResourceId("TestResource"), "MyPermission");
             var permissionCreatedEvent = new PermissionCreatedEvent(
                 permissionId: permissionId,
-                description: "Test permission description");
+                permissionDescription: "Test permission description");
 
             Assert.That(permissionCreatedEvent.PermissionId, Is.EqualTo(permissionId));
         }
@@ -27,9 +27,9 @@ namespace Identity.Tests.Unit.Domain
         {
             var permissionCreatedEvent = new PermissionCreatedEvent(
                 permissionId: new PermissionId(new ResourceId("TestResource"), "MyPermission"),
-                description: "Test permission description");
+                permissionDescription: "Test permission description");
 
-            Assert.That(permissionCreatedEvent.Description, Is.EqualTo("Test permission description"));
+            Assert.That(permissionCreatedEvent.PermissionDescription, Is.EqualTo("Test permission description"));
         }
     }
 }

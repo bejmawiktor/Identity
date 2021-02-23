@@ -202,8 +202,8 @@ namespace Identity.Tests.Unit.Domain
             Assert.Multiple(() =>
             {
                 Assert.That(roleCreatedEvent.RoleId, Is.EqualTo(role.Id));
-                Assert.That(roleCreatedEvent.Name, Is.EqualTo(role.Name));
-                Assert.That(roleCreatedEvent.Description, Is.EqualTo(role.Description));
+                Assert.That(roleCreatedEvent.RoleName, Is.EqualTo(role.Name));
+                Assert.That(roleCreatedEvent.RoleDescription, Is.EqualTo(role.Description));
             });
         }
     }

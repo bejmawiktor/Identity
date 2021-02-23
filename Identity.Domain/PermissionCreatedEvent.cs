@@ -6,14 +6,14 @@ namespace Identity.Domain
     public class PermissionCreatedEvent : Event
     {
         public PermissionId PermissionId { get; }
-        public string Description { get; }
+        public string PermissionDescription { get; }
 
         internal PermissionCreatedEvent(
             PermissionId permissionId,
-            string description)
+            string permissionDescription)
         {
             this.PermissionId = permissionId;
-            this.Description = description;
+            this.PermissionDescription = permissionDescription;
         }
     }
 }

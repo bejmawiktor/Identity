@@ -18,36 +18,36 @@ namespace Identity.Tests.Unit.Domain
 
             var roleCreatedEvent = new RoleCreatedEvent(
                 roleId: roleId,
-                name: "RoleName",
-                description: "Test role description");
+                roleName: "RoleName",
+                roleDescription: "Test role description");
 
             Assert.That(roleCreatedEvent.RoleId, Is.EqualTo(roleId));
         }
 
         [Test]
-        public void TestConstruction_WhenNameGiven_ThenNameIsSet()
+        public void TestConstruction_WhenRoleNameGiven_ThenRoleNameIsSet()
         {
             var roleId = RoleId.Generate();
 
             var roleCreatedEvent = new RoleCreatedEvent(
                 roleId: roleId,
-                name: "RoleName",
-                description: "Test role description");
+                roleName: "RoleName",
+                roleDescription: "Test role description");
 
-            Assert.That(roleCreatedEvent.Name, Is.EqualTo("RoleName"));
+            Assert.That(roleCreatedEvent.RoleName, Is.EqualTo("RoleName"));
         }
 
         [Test]
-        public void TestConstruction_WhenDescriptionGiven_ThenDescriptionIsSet()
+        public void TestConstruction_WhenRoleDescriptionGiven_ThenRoleDescriptionIsSet()
         {
             var roleId = RoleId.Generate();
 
             var roleCreatedEvent = new RoleCreatedEvent(
                 roleId: roleId,
-                name: "RoleName",
-                description: "Test role description");
+                roleName: "RoleName",
+                roleDescription: "Test role description");
 
-            Assert.That(roleCreatedEvent.Description, Is.EqualTo("Test role description"));
+            Assert.That(roleCreatedEvent.RoleDescription, Is.EqualTo("Test role description"));
         }
     }
 }

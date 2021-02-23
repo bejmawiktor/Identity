@@ -11,19 +11,19 @@ namespace Identity.Tests.Unit.Domain
         {
             var resourceCreatedEvent = new ResourceCreatedEvent(
                 resourceId: new ResourceId("TestResource"),
-                description: "Test resource description");
+                resourceDescription: "Test resource description");
 
             Assert.That(resourceCreatedEvent.ResourceId, Is.EqualTo(new ResourceId("TestResource")));
         }
 
         [Test]
-        public void TestConstruction_WhenDescriptionGiven_ThenDescriptionIsSet()
+        public void TestConstruction_WhenResourceDescriptionGiven_ThenResourceDescriptionIsSet()
         {
             var resourceCreatedEvent = new ResourceCreatedEvent(
                 resourceId: new ResourceId("TestResource"),
-                description: "Test resource description");
+                resourceDescription: "Test resource description");
 
-            Assert.That(resourceCreatedEvent.Description, Is.EqualTo("Test resource description"));
+            Assert.That(resourceCreatedEvent.ResourceDescription, Is.EqualTo("Test resource description"));
         }
     }
 }
