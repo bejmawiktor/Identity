@@ -80,5 +80,19 @@ namespace Identity.Domain
 
             return role;
         }
+
+        public override void ObtainPermission(PermissionId permissionId)
+        {
+            base.ObtainPermission(permissionId);
+
+            EventManager.Instance.Notify(new RolePermissionObtainedEvent(this.Id, permissionId));
+        }
+
+        public override void RevokePermission(PermissionId permissionId)
+        {
+            base.RevokePermission(permissionId);
+
+            EventManager.Instance.Notify(new RolePermissionRevokedEvent(this.Id, permissionId));
+        }
     }
 }

@@ -206,5 +206,79 @@ namespace Identity.Tests.Unit.Domain
                 Assert.That(roleCreatedEvent.RoleDescription, Is.EqualTo(role.Description));
             });
         }
+
+        [Test]
+        public void TestObtainPermission_WhenObtainingPermission_ThenRolePermissionObtainedEventIsNotified()
+        {
+            RolePermissionObtainedEvent rolePermissionObtainedEvent = null;
+            var permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
+            var eventDispatcherMock = new Mock<IEventDispatcher>();
+            eventDispatcherMock
+                .Setup(e => e.Dispatch(It.IsAny<RolePermissionObtainedEvent>()))
+                .Callback((RolePermissionObtainedEvent p) => rolePermissionObtainedEvent = p);
+            EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
+            var role = Role.Create(
+                name: "MyRole",
+                description: "My role description.");
+
+            role.ObtainPermission(permissionId);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(rolePermissionObtainedEvent.RoleId, Is.EqualTo(role.Id));
+                Assert.That(rolePermissionObtainedEvent.ObtainedPermissionId, Is.EqualTo(permissionId));
+            });
+        }
+
+        [Test]
+        public void TestObtainPermission_WhenPermissionGiven_ThenRoleHasPermission()
+        {
+            var permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
+            var role = Role.Create(
+                name: "MyRole",
+                description: "My role description.");
+
+            role.ObtainPermission(permissionId);
+
+            Assert.That(role.IsPermittedTo(permissionId), Is.True);
+        }
+
+        [Test]
+        public void TestRevokePermission_WhenRovekingPermission_ThenRolePermissionRevokedEventIsNotified()
+        {
+            RolePermissionRevokedEvent rolePermissionRevokedEvent = null;
+            var permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
+            var eventDispatcherMock = new Mock<IEventDispatcher>();
+            eventDispatcherMock
+                .Setup(e => e.Dispatch(It.IsAny<RolePermissionRevokedEvent>()))
+                .Callback((RolePermissionRevokedEvent p) => rolePermissionRevokedEvent = p);
+            EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
+            var role = Role.Create(
+                name: "MyRole",
+                description: "My role description.");
+            role.ObtainPermission(permissionId);
+
+            role.RevokePermission(permissionId);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(rolePermissionRevokedEvent.RoleId, Is.EqualTo(role.Id));
+                Assert.That(rolePermissionRevokedEvent.RevokedPermissionId, Is.EqualTo(permissionId));
+            });
+        }
+
+        [Test]
+        public void TestRevokePermission_WhenPermissionIdGiven_ThenPermissionIsRevoked()
+        {
+            var permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
+            var role = Role.Create(
+                name: "MyRole",
+                description: "My role description.");
+            role.ObtainPermission(permissionId);
+
+            role.RevokePermission(permissionId);
+
+            Assert.That(role.IsPermittedTo(permissionId), Is.False);
+        }
     }
 }
