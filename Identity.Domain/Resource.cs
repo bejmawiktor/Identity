@@ -37,7 +37,7 @@ namespace Identity.Domain
 
             EventManager.Instance.Notify(new ResourceCreatedEvent(
                 resource.Id,
-                description));
+                resource.Description));
 
             return resource;
         }

@@ -75,8 +75,8 @@ namespace Identity.Domain
 
             EventManager.Instance.Notify(new RoleCreatedEvent(
                 role.Id,
-                role.name,
-                role.description));
+                role.Name,
+                role.Description));
 
             return role;
         }
