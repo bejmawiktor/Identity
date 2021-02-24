@@ -10,7 +10,7 @@ namespace Identity.Domain
 
         public ResourceService(IResourceRepository resourceRepository)
         {
-            this.ResourceRepository = resourceRepository 
+            this.ResourceRepository = resourceRepository
                 ?? throw new ArgumentNullException(nameof(resourceRepository));
         }
 

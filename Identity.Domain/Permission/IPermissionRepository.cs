@@ -2,7 +2,7 @@
 
 namespace Identity.Domain
 {
-    public interface IPermissionRepository 
+    public interface IPermissionRepository
     : IRepository<Permission, PermissionId>, IAsyncRepository<Permission, PermissionId>
     {
     }

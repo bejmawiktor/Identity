@@ -1,5 +1,4 @@
 ﻿using DDD.Events;
-using System;
 
 namespace Identity.Domain
 {
