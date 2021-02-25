@@ -11,30 +11,30 @@ namespace Identity.Tests.Unit.Domain
     public class ResourceServiceTest
     {
         [Test]
-        public void TestConstructing_WhenResourceRepositoryGiven_ThenResourceRepositoryIsSet()
+        public void TestConstructing_WhenResourcesRepositoryGiven_ThenResourcesRepositoryIsSet()
         {
-            var repositoryMock = new Mock<IResourceRepository>();
+            var repositoryMock = new Mock<IResourcesRepository>();
             var repository = repositoryMock.Object;
 
             var resourceService = new ResourceService(repository);
 
-            Assert.That(resourceService.ResourceRepository, Is.EqualTo(repository));
+            Assert.That(resourceService.ResourcesRepository, Is.EqualTo(repository));
         }
 
         [Test]
-        public void TestConstructing_WhenNullResourceRepositoryGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructing_WhenNullResourcesRepositoryGiven_ThenArgumentNullExceptionIsThrown()
         {
             Assert.Throws(
                Is.InstanceOf<ArgumentNullException>()
                    .And.Property(nameof(ArgumentNullException.ParamName))
-                   .EqualTo("resourceRepository"),
+                   .EqualTo("resourcesRepository"),
                () => new ResourceService(null));
         }
 
         [Test]
         public void TestCreateResource_WhenNoExceptionsThrown_ThenResourceIsPersisted()
         {
-            var repositoryMock = new Mock<IResourceRepository>();
+            var repositoryMock = new Mock<IResourcesRepository>();
             var resourceService = new ResourceService(repositoryMock.Object);
 
             resourceService.CreateResource("MyResource", "My resource description.");
@@ -51,7 +51,7 @@ namespace Identity.Tests.Unit.Domain
                 .Setup(e => e.Dispatch(It.IsAny<IEvent>()))
                 .Callback((IEvent p) => resourceCreatedEvent = p as ResourceCreatedEvent);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
-            var repositoryMock = new Mock<IResourceRepository>();
+            var repositoryMock = new Mock<IResourcesRepository>();
             var resourceService = new ResourceService(repositoryMock.Object);
 
             resourceService.CreateResource("MyResource", "My resource description.");
@@ -72,7 +72,7 @@ namespace Identity.Tests.Unit.Domain
                 .Setup(e => e.Dispatch(It.IsAny<IEvent>()))
                 .Callback((IEvent p) => resourceCreatedEvent = p as ResourceCreatedEvent);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
-            var repositoryMock = new Mock<IResourceRepository>();
+            var repositoryMock = new Mock<IResourcesRepository>();
             repositoryMock.Setup(r => r.Add(It.IsAny<Resource>())).Throws(new Exception());
             var resourceService = new ResourceService(repositoryMock.Object);
 
@@ -90,7 +90,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public async Task TestCreateResourceAsync_WhenNoExceptionsThrown_ThenResourceIsPersisted()
         {
-            var repositoryMock = new Mock<IResourceRepository>();
+            var repositoryMock = new Mock<IResourcesRepository>();
             var resourceService = new ResourceService(repositoryMock.Object);
 
             await resourceService.CreateResourceAsync("MyResource", "My resource description.");
@@ -107,7 +107,7 @@ namespace Identity.Tests.Unit.Domain
                 .Setup(e => e.Dispatch(It.IsAny<IEvent>()))
                 .Callback((IEvent p) => resourceCreatedEvent = p as ResourceCreatedEvent);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
-            var repositoryMock = new Mock<IResourceRepository>();
+            var repositoryMock = new Mock<IResourcesRepository>();
             var resourceService = new ResourceService(repositoryMock.Object);
 
             await resourceService.CreateResourceAsync("MyResource", "My resource description.");
@@ -128,7 +128,7 @@ namespace Identity.Tests.Unit.Domain
                 .Setup(e => e.Dispatch(It.IsAny<IEvent>()))
                 .Callback((IEvent p) => resourceCreatedEvent = p as ResourceCreatedEvent);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
-            var repositoryMock = new Mock<IResourceRepository>();
+            var repositoryMock = new Mock<IResourcesRepository>();
             repositoryMock.Setup(r => r.AddAsync(It.IsAny<Resource>())).Throws(new Exception());
             var resourceService = new ResourceService(repositoryMock.Object);
 

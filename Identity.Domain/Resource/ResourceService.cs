@@ -6,12 +6,12 @@ namespace Identity.Domain
 {
     public class ResourceService
     {
-        public IResourceRepository ResourceRepository { get; }
+        public IResourcesRepository ResourcesRepository { get; }
 
-        public ResourceService(IResourceRepository resourceRepository)
+        public ResourceService(IResourcesRepository resourcesRepository)
         {
-            this.ResourceRepository = resourceRepository
-                ?? throw new ArgumentNullException(nameof(resourceRepository));
+            this.ResourcesRepository = resourcesRepository
+                ?? throw new ArgumentNullException(nameof(resourcesRepository));
         }
 
         public void CreateResource(string name, string description)
@@ -20,7 +20,7 @@ namespace Identity.Domain
             {
                 var resource = Resource.Create(name, description);
 
-                this.ResourceRepository.Add(resource);
+                this.ResourcesRepository.Add(resource);
 
                 eventsScope.Publish();
             }
@@ -32,7 +32,7 @@ namespace Identity.Domain
             {
                 var resource = Resource.Create(name, description);
 
-                await this.ResourceRepository.AddAsync(resource);
+                await this.ResourcesRepository.AddAsync(resource);
 
                 eventsScope.Publish();
             }

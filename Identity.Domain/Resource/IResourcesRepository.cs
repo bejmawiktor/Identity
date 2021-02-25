@@ -2,7 +2,7 @@
 
 namespace Identity.Domain
 {
-    public interface IResourceRepository
+    public interface IResourcesRepository
     : IRepository<Resource, ResourceId>, IAsyncRepository<Resource, ResourceId>
     {
     }

@@ -6,24 +6,24 @@ namespace Identity.Domain
 {
     public class PermissionService
     {
-        public IPermissionRepository PermissionRepository { get; }
-        public IResourceRepository ResourceRepository { get; }
+        public IPermissionsRepository PermissionsRepository { get; }
+        public IResourcesRepository ResourcesRepository { get; }
 
         public PermissionService(
-            IPermissionRepository permissionRepository,
-            IResourceRepository resourceRepository)
+            IPermissionsRepository permissionsRepository,
+            IResourcesRepository resourcesRepository)
         {
-            this.PermissionRepository = permissionRepository
-                ?? throw new ArgumentNullException(nameof(permissionRepository));
-            this.ResourceRepository = resourceRepository
-                ?? throw new ArgumentNullException(nameof(resourceRepository));
+            this.PermissionsRepository = permissionsRepository
+                ?? throw new ArgumentNullException(nameof(permissionsRepository));
+            this.ResourcesRepository = resourcesRepository
+                ?? throw new ArgumentNullException(nameof(resourcesRepository));
         }
 
         public void CreatePermission(ResourceId resourceId, string name, string description)
         {
             using(EventsScope eventsScope = EventManager.Instance.CreateScope())
             {
-                Resource resource = this.ResourceRepository.Get(resourceId);
+                Resource resource = this.ResourcesRepository.Get(resourceId);
 
                 if(resource == null)
                 {
@@ -32,7 +32,7 @@ namespace Identity.Domain
 
                 Permission permission = resource.CreatePermission(name, description);
 
-                this.PermissionRepository.Add(permission);
+                this.PermissionsRepository.Add(permission);
 
                 eventsScope.Publish();
             }
@@ -42,7 +42,7 @@ namespace Identity.Domain
         {
             using(EventsScope eventsScope = EventManager.Instance.CreateScope())
             {
-                Resource resource = await this.ResourceRepository.GetAsync(resourceId);
+                Resource resource = await this.ResourcesRepository.GetAsync(resourceId);
 
                 if(resource == null)
                 {
@@ -51,7 +51,7 @@ namespace Identity.Domain
 
                 Permission permission = resource.CreatePermission(name, description);
 
-                await this.PermissionRepository.AddAsync(permission);
+                await this.PermissionsRepository.AddAsync(permission);
 
                 eventsScope.Publish();
             }

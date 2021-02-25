@@ -11,79 +11,79 @@ namespace Identity.Tests.Unit.Domain
     public class PermissionServiceTest
     {
         [Test]
-        public void TestConstructing_WhenPermissionRepositoryGiven_ThenResourceRepositoryIsSet()
+        public void TestConstructing_WhenPermissionsRepositoryGiven_ThenResourcesRepositoryIsSet()
         {
-            var resourceRepositoryMock = new Mock<IResourceRepository>();
-            var permissionRepositoryMock = new Mock<IPermissionRepository>();
-            IPermissionRepository permissionRepository = permissionRepositoryMock.Object;
+            var resourcesRepositoryMock = new Mock<IResourcesRepository>();
+            var permissionsRepositoryMock = new Mock<IPermissionsRepository>();
+            IPermissionsRepository permissionsRepository = permissionsRepositoryMock.Object;
 
             var permissionService = new PermissionService(
-                permissionRepository: permissionRepositoryMock.Object,
-                resourceRepository: resourceRepositoryMock.Object);
+                permissionsRepository: permissionsRepositoryMock.Object,
+                resourcesRepository: resourcesRepositoryMock.Object);
 
-            Assert.That(permissionService.PermissionRepository, Is.EqualTo(permissionRepository));
+            Assert.That(permissionService.PermissionsRepository, Is.EqualTo(permissionsRepository));
         }
 
         [Test]
-        public void TestConstructing_WhenNullPermissionRepositoryGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructing_WhenNullPermissionsRepositoryGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var resourceRepositoryMock = new Mock<IResourceRepository>();
-            var permissionRepositoryMock = new Mock<IPermissionRepository>();
+            var resourcesRepositoryMock = new Mock<IResourcesRepository>();
+            var permissionsRepositoryMock = new Mock<IPermissionsRepository>();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
                     .And.Property(nameof(ArgumentNullException.ParamName))
-                    .EqualTo("permissionRepository"),
+                    .EqualTo("permissionsRepository"),
                 () => new PermissionService(
-                    permissionRepository: null,
-                    resourceRepository: resourceRepositoryMock.Object));
+                    permissionsRepository: null,
+                    resourcesRepository: resourcesRepositoryMock.Object));
         }
 
         [Test]
-        public void TestConstructing_WhenResourceRepositoryGiven_ThenResourceRepositoryIsSet()
+        public void TestConstructing_WhenResourcesRepositoryGiven_ThenResourcesRepositoryIsSet()
         {
-            var resourceRepositoryMock = new Mock<IResourceRepository>();
-            var permissionRepositoryMock = new Mock<IPermissionRepository>();
-            IResourceRepository resourceRepository = resourceRepositoryMock.Object;
+            var resourcesRepositoryMock = new Mock<IResourcesRepository>();
+            var permissionsRepositoryMock = new Mock<IPermissionsRepository>();
+            IResourcesRepository resourcesRepository = resourcesRepositoryMock.Object;
 
             var permissionService = new PermissionService(
-                permissionRepository: permissionRepositoryMock.Object,
-                resourceRepository: resourceRepositoryMock.Object);
+                permissionsRepository: permissionsRepositoryMock.Object,
+                resourcesRepository: resourcesRepositoryMock.Object);
 
-            Assert.That(permissionService.ResourceRepository, Is.EqualTo(resourceRepository));
+            Assert.That(permissionService.ResourcesRepository, Is.EqualTo(resourcesRepository));
         }
 
         [Test]
-        public void TestConstructing_WhenNullResourceRepositoryGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructing_WhenNullResourcesRepositoryGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var resourceRepositoryMock = new Mock<IResourceRepository>();
-            var permissionRepositoryMock = new Mock<IPermissionRepository>();
+            var resourcesRepositoryMock = new Mock<IResourcesRepository>();
+            var permissionsRepositoryMock = new Mock<IPermissionsRepository>();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
                     .And.Property(nameof(ArgumentNullException.ParamName))
-                    .EqualTo("resourceRepository"),
+                    .EqualTo("resourcesRepository"),
                 () => new PermissionService(
-                    permissionRepository: permissionRepositoryMock.Object,
-                    resourceRepository: null));
+                    permissionsRepository: permissionsRepositoryMock.Object,
+                    resourcesRepository: null));
         }
 
         [Test]
         public void TestCreatePermission_WhenNoExceptionsThrown_ThenPermissionIsPersisted()
         {
             var resourceId = new ResourceId("MyResource");
-            var resourceRepositoryMock = new Mock<IResourceRepository>();
-            resourceRepositoryMock
+            var resourcesRepositoryMock = new Mock<IResourcesRepository>();
+            resourcesRepositoryMock
                 .Setup(r => r.Get(It.IsAny<ResourceId>()))
                 .Returns(new Resource(resourceId, "Resrouce description."));
-            var permissionRepositoryMock = new Mock<IPermissionRepository>();
+            var permissionsRepositoryMock = new Mock<IPermissionsRepository>();
             var permissionService = new PermissionService(
-                permissionRepository: permissionRepositoryMock.Object,
-                resourceRepository: resourceRepositoryMock.Object);
+                permissionsRepository: permissionsRepositoryMock.Object,
+                resourcesRepository: resourcesRepositoryMock.Object);
 
             permissionService.CreatePermission(resourceId, "AddSomething", "Permission description.");
 
-            permissionRepositoryMock.Verify(r => r.Add(It.IsAny<Permission>()), Times.Once);
+            permissionsRepositoryMock.Verify(r => r.Add(It.IsAny<Permission>()), Times.Once);
         }
 
         [Test]
@@ -96,14 +96,14 @@ namespace Identity.Tests.Unit.Domain
                 .Callback((IEvent p) => permissionCreatedEvent = p as PermissionCreatedEvent);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var resourceId = new ResourceId("MyResource");
-            var resourceRepositoryMock = new Mock<IResourceRepository>();
-            resourceRepositoryMock
+            var resourcesRepositoryMock = new Mock<IResourcesRepository>();
+            resourcesRepositoryMock
                 .Setup(r => r.Get(It.IsAny<ResourceId>()))
                 .Returns(new Resource(resourceId, "Resrouce description."));
-            var permissionRepositoryMock = new Mock<IPermissionRepository>();
+            var permissionsRepositoryMock = new Mock<IPermissionsRepository>();
             var permissionService = new PermissionService(
-                permissionRepository: permissionRepositoryMock.Object,
-                resourceRepository: resourceRepositoryMock.Object);
+                permissionsRepository: permissionsRepositoryMock.Object,
+                resourcesRepository: resourcesRepositoryMock.Object);
 
             permissionService.CreatePermission(resourceId, "AddSomething", "Permission description.");
 
@@ -124,17 +124,17 @@ namespace Identity.Tests.Unit.Domain
                 .Callback((IEvent p) => permissionCreatedEvent = p as PermissionCreatedEvent);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var resourceId = new ResourceId("MyResource");
-            var resourceRepositoryMock = new Mock<IResourceRepository>();
-            resourceRepositoryMock
+            var resourcesRepositoryMock = new Mock<IResourcesRepository>();
+            resourcesRepositoryMock
                 .Setup(r => r.Get(It.IsAny<ResourceId>()))
                 .Returns(new Resource(resourceId, "Resrouce description."));
-            var permissionRepositoryMock = new Mock<IPermissionRepository>();
-            permissionRepositoryMock
+            var permissionsRepositoryMock = new Mock<IPermissionsRepository>();
+            permissionsRepositoryMock
                 .Setup(p => p.Add(It.IsAny<Permission>()))
                 .Throws(new Exception());
             var permissionService = new PermissionService(
-                permissionRepository: permissionRepositoryMock.Object,
-                resourceRepository: resourceRepositoryMock.Object);
+                permissionsRepository: permissionsRepositoryMock.Object,
+                resourcesRepository: resourcesRepositoryMock.Object);
 
             try
             {
@@ -157,14 +157,14 @@ namespace Identity.Tests.Unit.Domain
                 .Callback((IEvent p) => permissionCreatedEvent = p as PermissionCreatedEvent);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var resourceId = new ResourceId("MyResource");
-            var resourceRepositoryMock = new Mock<IResourceRepository>();
-            resourceRepositoryMock
+            var resourcesRepositoryMock = new Mock<IResourcesRepository>();
+            resourcesRepositoryMock
                 .Setup(p => p.Get(It.IsAny<ResourceId>()))
                 .Throws(new Exception());
-            var permissionRepositoryMock = new Mock<IPermissionRepository>();
+            var permissionsRepositoryMock = new Mock<IPermissionsRepository>();
             var permissionService = new PermissionService(
-                permissionRepository: permissionRepositoryMock.Object,
-                resourceRepository: resourceRepositoryMock.Object);
+                permissionsRepository: permissionsRepositoryMock.Object,
+                resourcesRepository: resourcesRepositoryMock.Object);
 
             try
             {
@@ -187,14 +187,14 @@ namespace Identity.Tests.Unit.Domain
                 .Callback((IEvent p) => permissionCreatedEvent = p as PermissionCreatedEvent);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var resourceId = new ResourceId("MyResource");
-            var resourceRepositoryMock = new Mock<IResourceRepository>();
-            resourceRepositoryMock
+            var resourcesRepositoryMock = new Mock<IResourcesRepository>();
+            resourcesRepositoryMock
                 .Setup(p => p.Get(It.IsAny<ResourceId>()))
                 .Returns((Resource)null);
-            var permissionRepositoryMock = new Mock<IPermissionRepository>();
+            var permissionsRepositoryMock = new Mock<IPermissionsRepository>();
             var permissionService = new PermissionService(
-                permissionRepository: permissionRepositoryMock.Object,
-                resourceRepository: resourceRepositoryMock.Object);
+                permissionsRepository: permissionsRepositoryMock.Object,
+                resourcesRepository: resourcesRepositoryMock.Object);
 
             Assert.Throws(
                 Is.InstanceOf<ResourceNotFoundException>()
@@ -207,18 +207,18 @@ namespace Identity.Tests.Unit.Domain
         public async Task TestCreatePermissionAsync_WhenNoExceptionsThrown_ThenPermissionIsPersisted()
         {
             var resourceId = new ResourceId("MyResource");
-            var resourceRepositoryMock = new Mock<IResourceRepository>();
-            resourceRepositoryMock
+            var resourcesRepositoryMock = new Mock<IResourcesRepository>();
+            resourcesRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ResourceId>()))
                 .Returns(Task.FromResult(new Resource(resourceId, "Resource description.")));
-            var permissionRepositoryMock = new Mock<IPermissionRepository>();
+            var permissionsRepositoryMock = new Mock<IPermissionsRepository>();
             var permissionService = new PermissionService(
-                permissionRepository: permissionRepositoryMock.Object,
-                resourceRepository: resourceRepositoryMock.Object);
+                permissionsRepository: permissionsRepositoryMock.Object,
+                resourcesRepository: resourcesRepositoryMock.Object);
 
             await permissionService.CreatePermissionAsync(resourceId, "AddSomething", "Permission description.");
 
-            permissionRepositoryMock.Verify(r => r.AddAsync(It.IsAny<Permission>()), Times.Once);
+            permissionsRepositoryMock.Verify(r => r.AddAsync(It.IsAny<Permission>()), Times.Once);
         }
 
         [Test]
@@ -231,14 +231,14 @@ namespace Identity.Tests.Unit.Domain
                 .Callback((IEvent p) => permissionCreatedEvent = p as PermissionCreatedEvent);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var resourceId = new ResourceId("MyResource");
-            var resourceRepositoryMock = new Mock<IResourceRepository>();
-            resourceRepositoryMock
+            var resourcesRepositoryMock = new Mock<IResourcesRepository>();
+            resourcesRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ResourceId>()))
                 .Returns(Task.FromResult(new Resource(resourceId, "Resource description.")));
-            var permissionRepositoryMock = new Mock<IPermissionRepository>();
+            var permissionsRepositoryMock = new Mock<IPermissionsRepository>();
             var permissionService = new PermissionService(
-                permissionRepository: permissionRepositoryMock.Object,
-                resourceRepository: resourceRepositoryMock.Object);
+                permissionsRepository: permissionsRepositoryMock.Object,
+                resourcesRepository: resourcesRepositoryMock.Object);
 
             await permissionService.CreatePermissionAsync(resourceId, "AddSomething", "Permission description.");
 
@@ -259,17 +259,17 @@ namespace Identity.Tests.Unit.Domain
                 .Callback((IEvent p) => permissionCreatedEvent = p as PermissionCreatedEvent);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var resourceId = new ResourceId("MyResource");
-            var resourceRepositoryMock = new Mock<IResourceRepository>();
-            resourceRepositoryMock
+            var resourcesRepositoryMock = new Mock<IResourcesRepository>();
+            resourcesRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ResourceId>()))
                 .Returns(Task.FromResult(new Resource(resourceId, "Resource description.")));
-            var permissionRepositoryMock = new Mock<IPermissionRepository>();
-            permissionRepositoryMock
+            var permissionsRepositoryMock = new Mock<IPermissionsRepository>();
+            permissionsRepositoryMock
                 .Setup(p => p.AddAsync(It.IsAny<Permission>()))
                 .Throws(new Exception());
             var permissionService = new PermissionService(
-                permissionRepository: permissionRepositoryMock.Object,
-                resourceRepository: resourceRepositoryMock.Object);
+                permissionsRepository: permissionsRepositoryMock.Object,
+                resourcesRepository: resourcesRepositoryMock.Object);
 
             try
             {
@@ -292,14 +292,14 @@ namespace Identity.Tests.Unit.Domain
                 .Callback((IEvent p) => permissionCreatedEvent = p as PermissionCreatedEvent);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var resourceId = new ResourceId("MyResource");
-            var resourceRepositoryMock = new Mock<IResourceRepository>();
-            resourceRepositoryMock
+            var resourcesRepositoryMock = new Mock<IResourcesRepository>();
+            resourcesRepositoryMock
                 .Setup(p => p.GetAsync(It.IsAny<ResourceId>()))
                 .Throws(new Exception());
-            var permissionRepositoryMock = new Mock<IPermissionRepository>();
+            var permissionsRepositoryMock = new Mock<IPermissionsRepository>();
             var permissionService = new PermissionService(
-                permissionRepository: permissionRepositoryMock.Object,
-                resourceRepository: resourceRepositoryMock.Object);
+                permissionsRepository: permissionsRepositoryMock.Object,
+                resourcesRepository: resourcesRepositoryMock.Object);
 
             try
             {
@@ -313,7 +313,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public async Task TestCreatePermissionAsync_WhenGetResourceReturnsNull_ThenResourceNotFoundExceptionIsThrown()
+        public void TestCreatePermissionAsync_WhenGetResourceReturnsNull_ThenResourceNotFoundExceptionIsThrown()
         {
             PermissionCreatedEvent permissionCreatedEvent = null;
             var eventDispatcherMock = new Mock<IEventDispatcher>();
@@ -322,14 +322,14 @@ namespace Identity.Tests.Unit.Domain
                 .Callback((IEvent p) => permissionCreatedEvent = p as PermissionCreatedEvent);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var resourceId = new ResourceId("MyResource");
-            var resourceRepositoryMock = new Mock<IResourceRepository>();
-            resourceRepositoryMock
+            var resourcesRepositoryMock = new Mock<IResourcesRepository>();
+            resourcesRepositoryMock
                 .Setup(p => p.GetAsync(It.IsAny<ResourceId>()))
                 .Returns(Task.FromResult((Resource)null));
-            var permissionRepositoryMock = new Mock<IPermissionRepository>();
+            var permissionsRepositoryMock = new Mock<IPermissionsRepository>();
             var permissionService = new PermissionService(
-                permissionRepository: permissionRepositoryMock.Object,
-                resourceRepository: resourceRepositoryMock.Object);
+                permissionsRepository: permissionsRepositoryMock.Object,
+                resourcesRepository: resourcesRepositoryMock.Object);
 
             Assert.ThrowsAsync(
                 Is.InstanceOf<ResourceNotFoundException>()
