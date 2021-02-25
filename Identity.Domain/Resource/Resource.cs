@@ -44,9 +44,7 @@ namespace Identity.Domain
 
         public Permission CreatePermission(string name, string description)
         {
-            var permission = new Permission(
-                new PermissionId(this.Id, name),
-                description);
+            var permission = new Permission(new PermissionId(this.Id, name), description);
 
             EventManager.Instance.Notify(new PermissionCreatedEvent(
                 permission.Id,
