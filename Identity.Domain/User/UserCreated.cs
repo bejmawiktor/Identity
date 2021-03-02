@@ -2,12 +2,12 @@
 
 namespace Identity.Domain
 {
-    public class UserCreatedEvent : Event
+    public class UserCreated : Event
     {
         public UserId UserId { get; }
         public EmailAddress UserEmail { get; }
 
-        public UserCreatedEvent(UserId userId, EmailAddress userEmail)
+        public UserCreated(UserId userId, EmailAddress userEmail)
         {
             this.UserId = userId;
             this.UserEmail = userEmail;

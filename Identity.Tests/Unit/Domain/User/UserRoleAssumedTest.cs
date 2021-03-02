@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace Identity.Tests.Unit.Domain
 {
     [TestFixture]
-    public class UserRoleAssumedEventTest
+    public class UserRoleAssumedTest
     {
         [Test]
         public void TestConstruction_WhenUserIdGiven_ThenUserIdIsSet()
@@ -12,11 +12,11 @@ namespace Identity.Tests.Unit.Domain
             var userId = UserId.Generate();
             var assumedRoleId = RoleId.Generate();
 
-            var userRoleAssumedEvent = new UserRoleAssumedEvent(
+            var userRoleAssumed = new UserRoleAssumed(
                 userId: userId,
                 assumedRoleId: assumedRoleId);
 
-            Assert.That(userRoleAssumedEvent.UserId, Is.EqualTo(userId));
+            Assert.That(userRoleAssumed.UserId, Is.EqualTo(userId));
         }
 
         [Test]
@@ -25,11 +25,11 @@ namespace Identity.Tests.Unit.Domain
             var userId = UserId.Generate();
             var assumedRoleId = RoleId.Generate();
 
-            var userRoleAssumedEvent = new UserRoleAssumedEvent(
+            var userRoleAssumed = new UserRoleAssumed(
                 userId: userId,
                 assumedRoleId: assumedRoleId);
 
-            Assert.That(userRoleAssumedEvent.AssumedRoleId, Is.EqualTo(assumedRoleId));
+            Assert.That(userRoleAssumed.AssumedRoleId, Is.EqualTo(assumedRoleId));
         }
     }
 }

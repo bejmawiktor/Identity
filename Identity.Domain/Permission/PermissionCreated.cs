@@ -2,12 +2,12 @@
 
 namespace Identity.Domain
 {
-    public class PermissionCreatedEvent : Event
+    public class PermissionCreated : Event
     {
         public PermissionId PermissionId { get; }
         public string PermissionDescription { get; }
 
-        internal PermissionCreatedEvent(
+        internal PermissionCreated(
             PermissionId permissionId,
             string permissionDescription)
         {

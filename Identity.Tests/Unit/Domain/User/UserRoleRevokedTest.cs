@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace Identity.Tests.Unit.Domain
 {
     [TestFixture]
-    public class UserRoleRevokedEventTest
+    public class UserRoleRevokedTest
     {
         [Test]
         public void TestConstruction_WhenUserIdGiven_ThenUserIdIsSet()
@@ -12,11 +12,11 @@ namespace Identity.Tests.Unit.Domain
             var userId = UserId.Generate();
             var revokedRoleId = RoleId.Generate();
 
-            var userRoleRevokedEvent = new UserRoleRevokedEvent(
+            var userRoleRevoked = new UserRoleRevoked(
                 userId: userId,
                 revokedRoleId: revokedRoleId);
 
-            Assert.That(userRoleRevokedEvent.UserId, Is.EqualTo(userId));
+            Assert.That(userRoleRevoked.UserId, Is.EqualTo(userId));
         }
 
         [Test]
@@ -25,11 +25,11 @@ namespace Identity.Tests.Unit.Domain
             var userId = UserId.Generate();
             var revokedRoleId = RoleId.Generate();
 
-            var userRoleRevokedEvent = new UserRoleRevokedEvent(
+            var userRoleRevoked = new UserRoleRevoked(
                 userId: userId,
                 revokedRoleId: revokedRoleId);
 
-            Assert.That(userRoleRevokedEvent.RevokedRoleId, Is.EqualTo(revokedRoleId));
+            Assert.That(userRoleRevoked.RevokedRoleId, Is.EqualTo(revokedRoleId));
         }
     }
 }

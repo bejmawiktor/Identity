@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace Identity.Tests.Unit.Domain
 {
     [TestFixture]
-    public class UserPermissionRevokedEventTest
+    public class UserPermissionRevokedTest
     {
         [Test]
         public void TestConstruction_WhenUserIdGiven_ThenUserIdIsSet()
@@ -12,7 +12,7 @@ namespace Identity.Tests.Unit.Domain
             var userId = UserId.Generate();
             var revokedPermissionId = new PermissionId(new ResourceId("MyResource"), "Permission");
 
-            var userPermissionRevokedEvent = new UserPermissionRevokedEvent(
+            var userPermissionRevokedEvent = new UserPermissionRevoked(
                 userId: userId,
                 revokedPermissionId: revokedPermissionId);
 
@@ -25,7 +25,7 @@ namespace Identity.Tests.Unit.Domain
             var userId = UserId.Generate();
             var revokedPermissionId = new PermissionId(new ResourceId("MyResource"), "Permission");
 
-            var userPermissionRevokedEvent = new UserPermissionRevokedEvent(
+            var userPermissionRevokedEvent = new UserPermissionRevoked(
                 userId: userId,
                 revokedPermissionId: revokedPermissionId);
 

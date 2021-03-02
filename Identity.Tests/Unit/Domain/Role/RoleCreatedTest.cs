@@ -4,19 +4,19 @@ using NUnit.Framework;
 namespace Identity.Tests.Unit.Domain
 {
     [TestFixture]
-    public class RoleCreatedEventTest
+    public class RoleCreatedTest
     {
         [Test]
         public void TestConstruction_WhenRoleIdGiven_ThenRoleIdIsSet()
         {
             var roleId = RoleId.Generate();
 
-            var roleCreatedEvent = new RoleCreatedEvent(
+            var roleCreated = new RoleCreated(
                 roleId: roleId,
                 roleName: "RoleName",
                 roleDescription: "Test role description");
 
-            Assert.That(roleCreatedEvent.RoleId, Is.EqualTo(roleId));
+            Assert.That(roleCreated.RoleId, Is.EqualTo(roleId));
         }
 
         [Test]
@@ -24,12 +24,12 @@ namespace Identity.Tests.Unit.Domain
         {
             var roleId = RoleId.Generate();
 
-            var roleCreatedEvent = new RoleCreatedEvent(
+            var roleCreated = new RoleCreated(
                 roleId: roleId,
                 roleName: "RoleName",
                 roleDescription: "Test role description");
 
-            Assert.That(roleCreatedEvent.RoleName, Is.EqualTo("RoleName"));
+            Assert.That(roleCreated.RoleName, Is.EqualTo("RoleName"));
         }
 
         [Test]
@@ -37,12 +37,12 @@ namespace Identity.Tests.Unit.Domain
         {
             var roleId = RoleId.Generate();
 
-            var roleCreatedEvent = new RoleCreatedEvent(
+            var roleCreated = new RoleCreated(
                 roleId: roleId,
                 roleName: "RoleName",
                 roleDescription: "Test role description");
 
-            Assert.That(roleCreatedEvent.RoleDescription, Is.EqualTo("Test role description"));
+            Assert.That(roleCreated.RoleDescription, Is.EqualTo("Test role description"));
         }
     }
 }

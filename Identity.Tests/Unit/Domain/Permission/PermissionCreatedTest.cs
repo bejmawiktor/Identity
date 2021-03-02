@@ -4,27 +4,27 @@ using NUnit.Framework;
 namespace Identity.Tests.Unit.Domain
 {
     [TestFixture]
-    public class PermissionCreatedEventTest
+    public class PermissionCreatedTest
     {
         [Test]
         public void TestConstruction_WhenPermissionIdGiven_ThenPermissionIdIsSet()
         {
             var permissionId = new PermissionId(new ResourceId("TestResource"), "MyPermission");
-            var permissionCreatedEvent = new PermissionCreatedEvent(
+            var permissionCreated = new PermissionCreated(
                 permissionId: permissionId,
                 permissionDescription: "Test permission description");
 
-            Assert.That(permissionCreatedEvent.PermissionId, Is.EqualTo(permissionId));
+            Assert.That(permissionCreated.PermissionId, Is.EqualTo(permissionId));
         }
 
         [Test]
         public void TestConstruction_WhenDescriptionGiven_ThenDescriptionIsSet()
         {
-            var permissionCreatedEvent = new PermissionCreatedEvent(
+            var permissionCreated = new PermissionCreated(
                 permissionId: new PermissionId(new ResourceId("TestResource"), "MyPermission"),
                 permissionDescription: "Test permission description");
 
-            Assert.That(permissionCreatedEvent.PermissionDescription, Is.EqualTo("Test permission description"));
+            Assert.That(permissionCreated.PermissionDescription, Is.EqualTo("Test permission description"));
         }
     }
 }

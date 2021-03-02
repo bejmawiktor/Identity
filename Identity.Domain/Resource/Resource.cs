@@ -35,7 +35,7 @@ namespace Identity.Domain
         {
             var resource = new Resource(new ResourceId(name), description);
 
-            EventManager.Instance.Notify(new ResourceCreatedEvent(
+            EventManager.Instance.Notify(new ResourceCreated(
                 resource.Id,
                 resource.Description));
 
@@ -46,7 +46,7 @@ namespace Identity.Domain
         {
             var permission = new Permission(new PermissionId(this.Id, name), description);
 
-            EventManager.Instance.Notify(new PermissionCreatedEvent(
+            EventManager.Instance.Notify(new PermissionCreated(
                 permission.Id,
                 permission.Description));
 

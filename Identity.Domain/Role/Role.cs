@@ -73,7 +73,7 @@ namespace Identity.Domain
         {
             var role = new Role(RoleId.Generate(), name, description);
 
-            EventManager.Instance.Notify(new RoleCreatedEvent(
+            EventManager.Instance.Notify(new RoleCreated(
                 role.Id,
                 role.Name,
                 role.Description));
@@ -85,14 +85,14 @@ namespace Identity.Domain
         {
             base.ObtainPermission(permissionId);
 
-            EventManager.Instance.Notify(new RolePermissionObtainedEvent(this.Id, permissionId));
+            EventManager.Instance.Notify(new RolePermissionObtained(this.Id, permissionId));
         }
 
         public override void RevokePermission(PermissionId permissionId)
         {
             base.RevokePermission(permissionId);
 
-            EventManager.Instance.Notify(new RolePermissionRevokedEvent(this.Id, permissionId));
+            EventManager.Instance.Notify(new RolePermissionRevoked(this.Id, permissionId));
         }
     }
 }

@@ -87,13 +87,13 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestCreatePermission_WhenNoExceptionsThrown_ThenPermissionCreatedEventIsPublished()
+        public void TestCreatePermission_WhenNoExceptionsThrown_ThenPermissionCreatedIsPublished()
         {
-            PermissionCreatedEvent permissionCreatedEvent = null;
+            PermissionCreated permissionCreated = null;
             var eventDispatcherMock = new Mock<IEventDispatcher>();
             eventDispatcherMock
                 .Setup(e => e.Dispatch(It.IsAny<IEvent>()))
-                .Callback((IEvent p) => permissionCreatedEvent = p as PermissionCreatedEvent);
+                .Callback((IEvent p) => permissionCreated = p as PermissionCreated);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var resourceId = new ResourceId("MyResource");
             var resourcesRepositoryMock = new Mock<IResourcesRepository>();
@@ -109,19 +109,19 @@ namespace Identity.Tests.Unit.Domain
 
             Assert.Multiple(() =>
             {
-                Assert.That(permissionCreatedEvent.PermissionId, Is.EqualTo(new PermissionId(resourceId, "AddSomething")));
-                Assert.That(permissionCreatedEvent.PermissionDescription, Is.EqualTo("Permission description."));
+                Assert.That(permissionCreated.PermissionId, Is.EqualTo(new PermissionId(resourceId, "AddSomething")));
+                Assert.That(permissionCreated.PermissionDescription, Is.EqualTo("Permission description."));
             });
         }
 
         [Test]
-        public void TestCreatePermission_WhenAddPermissionThrowsException_ThenResourceCreatedEventIsNotPublished()
+        public void TestCreatePermission_WhenAddPermissionThrowsException_ThenResourceCreatedIsNotPublished()
         {
-            PermissionCreatedEvent permissionCreatedEvent = null;
+            PermissionCreated permissionCreated = null;
             var eventDispatcherMock = new Mock<IEventDispatcher>();
             eventDispatcherMock
                 .Setup(e => e.Dispatch(It.IsAny<IEvent>()))
-                .Callback((IEvent p) => permissionCreatedEvent = p as PermissionCreatedEvent);
+                .Callback((IEvent p) => permissionCreated = p as PermissionCreated);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var resourceId = new ResourceId("MyResource");
             var resourcesRepositoryMock = new Mock<IResourcesRepository>();
@@ -144,17 +144,17 @@ namespace Identity.Tests.Unit.Domain
             {
             }
 
-            Assert.That(permissionCreatedEvent, Is.Null);
+            Assert.That(permissionCreated, Is.Null);
         }
 
         [Test]
-        public void TestCreatePermission_WhenGetResourceThrowsException_ThenResourceCreatedEventIsNotPublished()
+        public void TestCreatePermission_WhenGetResourceThrowsException_ThenResourceCreatedIsNotPublished()
         {
-            PermissionCreatedEvent permissionCreatedEvent = null;
+            PermissionCreated permissionCreated = null;
             var eventDispatcherMock = new Mock<IEventDispatcher>();
             eventDispatcherMock
                 .Setup(e => e.Dispatch(It.IsAny<IEvent>()))
-                .Callback((IEvent p) => permissionCreatedEvent = p as PermissionCreatedEvent);
+                .Callback((IEvent p) => permissionCreated = p as PermissionCreated);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var resourceId = new ResourceId("MyResource");
             var resourcesRepositoryMock = new Mock<IResourcesRepository>();
@@ -174,17 +174,17 @@ namespace Identity.Tests.Unit.Domain
             {
             }
 
-            Assert.That(permissionCreatedEvent, Is.Null);
+            Assert.That(permissionCreated, Is.Null);
         }
 
         [Test]
         public void TestCreatePermission_WhenGetResourceReturnsNull_ThenResourceNotFoundExceptionIsThrown()
         {
-            PermissionCreatedEvent permissionCreatedEvent = null;
+            PermissionCreated permissionCreated = null;
             var eventDispatcherMock = new Mock<IEventDispatcher>();
             eventDispatcherMock
                 .Setup(e => e.Dispatch(It.IsAny<IEvent>()))
-                .Callback((IEvent p) => permissionCreatedEvent = p as PermissionCreatedEvent);
+                .Callback((IEvent p) => permissionCreated = p as PermissionCreated);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var resourceId = new ResourceId("MyResource");
             var resourcesRepositoryMock = new Mock<IResourcesRepository>();
@@ -222,13 +222,13 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public async Task TestCreatePermissionAsync_WhenNoExceptionsThrown_ThenPermissionCreatedEventIsPublished()
+        public async Task TestCreatePermissionAsync_WhenNoExceptionsThrown_ThenPermissionCreatedIsPublished()
         {
-            PermissionCreatedEvent permissionCreatedEvent = null;
+            PermissionCreated permissionCreated = null;
             var eventDispatcherMock = new Mock<IEventDispatcher>();
             eventDispatcherMock
                 .Setup(e => e.Dispatch(It.IsAny<IEvent>()))
-                .Callback((IEvent p) => permissionCreatedEvent = p as PermissionCreatedEvent);
+                .Callback((IEvent p) => permissionCreated = p as PermissionCreated);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var resourceId = new ResourceId("MyResource");
             var resourcesRepositoryMock = new Mock<IResourcesRepository>();
@@ -244,19 +244,19 @@ namespace Identity.Tests.Unit.Domain
 
             Assert.Multiple(() =>
             {
-                Assert.That(permissionCreatedEvent.PermissionId, Is.EqualTo(new PermissionId(resourceId, "AddSomething")));
-                Assert.That(permissionCreatedEvent.PermissionDescription, Is.EqualTo("Permission description."));
+                Assert.That(permissionCreated.PermissionId, Is.EqualTo(new PermissionId(resourceId, "AddSomething")));
+                Assert.That(permissionCreated.PermissionDescription, Is.EqualTo("Permission description."));
             });
         }
 
         [Test]
-        public async Task TestCreatePermissionAsync_WhenAddPermissionThrowsException_ThenResourceCreatedEventIsNotPublished()
+        public async Task TestCreatePermissionAsync_WhenAddPermissionThrowsException_ThenResourceCreatedIsNotPublished()
         {
-            PermissionCreatedEvent permissionCreatedEvent = null;
+            PermissionCreated permissionCreated = null;
             var eventDispatcherMock = new Mock<IEventDispatcher>();
             eventDispatcherMock
                 .Setup(e => e.Dispatch(It.IsAny<IEvent>()))
-                .Callback((IEvent p) => permissionCreatedEvent = p as PermissionCreatedEvent);
+                .Callback((IEvent p) => permissionCreated = p as PermissionCreated);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var resourceId = new ResourceId("MyResource");
             var resourcesRepositoryMock = new Mock<IResourcesRepository>();
@@ -279,17 +279,17 @@ namespace Identity.Tests.Unit.Domain
             {
             }
 
-            Assert.That(permissionCreatedEvent, Is.Null);
+            Assert.That(permissionCreated, Is.Null);
         }
 
         [Test]
-        public async Task TestCreatePermissionAsync_WhenGetResourceThrowsException_ThenResourceCreatedEventIsNotPublished()
+        public async Task TestCreatePermissionAsync_WhenGetResourceThrowsException_ThenResourceCreatedIsNotPublished()
         {
-            PermissionCreatedEvent permissionCreatedEvent = null;
+            PermissionCreated permissionCreated = null;
             var eventDispatcherMock = new Mock<IEventDispatcher>();
             eventDispatcherMock
                 .Setup(e => e.Dispatch(It.IsAny<IEvent>()))
-                .Callback((IEvent p) => permissionCreatedEvent = p as PermissionCreatedEvent);
+                .Callback((IEvent p) => permissionCreated = p as PermissionCreated);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var resourceId = new ResourceId("MyResource");
             var resourcesRepositoryMock = new Mock<IResourcesRepository>();
@@ -309,17 +309,17 @@ namespace Identity.Tests.Unit.Domain
             {
             }
 
-            Assert.That(permissionCreatedEvent, Is.Null);
+            Assert.That(permissionCreated, Is.Null);
         }
 
         [Test]
         public void TestCreatePermissionAsync_WhenGetResourceReturnsNull_ThenResourceNotFoundExceptionIsThrown()
         {
-            PermissionCreatedEvent permissionCreatedEvent = null;
+            PermissionCreated permissionCreated = null;
             var eventDispatcherMock = new Mock<IEventDispatcher>();
             eventDispatcherMock
                 .Setup(e => e.Dispatch(It.IsAny<IEvent>()))
-                .Callback((IEvent p) => permissionCreatedEvent = p as PermissionCreatedEvent);
+                .Callback((IEvent p) => permissionCreated = p as PermissionCreated);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var resourceId = new ResourceId("MyResource");
             var resourcesRepositoryMock = new Mock<IResourcesRepository>();

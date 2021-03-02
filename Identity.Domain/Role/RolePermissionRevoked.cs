@@ -2,12 +2,12 @@
 
 namespace Identity.Domain
 {
-    public class RolePermissionRevokedEvent : Event
+    public class RolePermissionRevoked : Event
     {
         public RoleId RoleId { get; }
         public PermissionId RevokedPermissionId { get; }
 
-        internal RolePermissionRevokedEvent(
+        internal RolePermissionRevoked(
             RoleId roleId,
             PermissionId revokedPermissionId)
         {

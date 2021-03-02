@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace Identity.Tests.Unit.Domain
 {
     [TestFixture]
-    public class RolePermissionObtainedEventTest
+    public class RolePermissionObtainedTest
     {
         [Test]
         public void TestConstruction_WhenRoleIdGiven_ThenRoleIdIsSet()
@@ -12,11 +12,11 @@ namespace Identity.Tests.Unit.Domain
             var roleId = RoleId.Generate();
             var obtainedPermissionId = new PermissionId(new ResourceId("MyResource"), "Permission");
 
-            var roleCreatedEvent = new RolePermissionObtainedEvent(
+            var roleCreated = new RolePermissionObtained(
                 roleId: roleId,
                 obtainedPermissionId: obtainedPermissionId);
 
-            Assert.That(roleCreatedEvent.RoleId, Is.EqualTo(roleId));
+            Assert.That(roleCreated.RoleId, Is.EqualTo(roleId));
         }
 
         [Test]
@@ -25,11 +25,11 @@ namespace Identity.Tests.Unit.Domain
             var roleId = RoleId.Generate();
             var obtainedPermissionId = new PermissionId(new ResourceId("MyResource"), "Permission");
 
-            var roleCreatedEvent = new RolePermissionObtainedEvent(
+            var roleCreated = new RolePermissionObtained(
                 roleId: roleId,
                 obtainedPermissionId: obtainedPermissionId);
 
-            Assert.That(roleCreatedEvent.ObtainedPermissionId, Is.EqualTo(obtainedPermissionId));
+            Assert.That(roleCreated.ObtainedPermissionId, Is.EqualTo(obtainedPermissionId));
         }
     }
 }

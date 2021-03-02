@@ -4,14 +4,14 @@ using NUnit.Framework;
 namespace Identity.Tests.Unit.Domain
 {
     [TestFixture]
-    public class UserCreatedEventTest
+    public class UserCreatedTest
     {
         [Test]
         public void TestConstruction_WhenUserIdGiven_ThenUserIdIsSet()
         {
             var userId = UserId.Generate();
 
-            var userCreatedEvent = new UserCreatedEvent(
+            var userCreatedEvent = new UserCreated(
                 userId: userId,
                 userEmail: new EmailAddress("example@example.com"));
 
@@ -23,7 +23,7 @@ namespace Identity.Tests.Unit.Domain
         {
             var userId = UserId.Generate();
 
-            var userCreatedEvent = new UserCreatedEvent(
+            var userCreatedEvent = new UserCreated(
                 userId: userId,
                 userEmail: new EmailAddress("example@example.com"));
 

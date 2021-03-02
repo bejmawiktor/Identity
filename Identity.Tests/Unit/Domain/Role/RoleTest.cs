@@ -186,13 +186,13 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestCreate_WhenCreatingRole_ThenRoleCreatedEventIsNotified()
+        public void TestCreate_WhenCreatingRole_ThenRoleCreatedIsNotified()
         {
-            RoleCreatedEvent roleCreatedEvent = null;
+            RoleCreated roleCreated = null;
             var eventDispatcherMock = new Mock<IEventDispatcher>();
             eventDispatcherMock
-                .Setup(e => e.Dispatch(It.IsAny<RoleCreatedEvent>()))
-                .Callback((RoleCreatedEvent p) => roleCreatedEvent = p);
+                .Setup(e => e.Dispatch(It.IsAny<RoleCreated>()))
+                .Callback((RoleCreated p) => roleCreated = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
 
             var role = Role.Create(
@@ -201,21 +201,21 @@ namespace Identity.Tests.Unit.Domain
 
             Assert.Multiple(() =>
             {
-                Assert.That(roleCreatedEvent.RoleId, Is.EqualTo(role.Id));
-                Assert.That(roleCreatedEvent.RoleName, Is.EqualTo(role.Name));
-                Assert.That(roleCreatedEvent.RoleDescription, Is.EqualTo(role.Description));
+                Assert.That(roleCreated.RoleId, Is.EqualTo(role.Id));
+                Assert.That(roleCreated.RoleName, Is.EqualTo(role.Name));
+                Assert.That(roleCreated.RoleDescription, Is.EqualTo(role.Description));
             });
         }
 
         [Test]
-        public void TestObtainPermission_WhenObtainingPermission_ThenRolePermissionObtainedEventIsNotified()
+        public void TestObtainPermission_WhenObtainingPermission_ThenRolePermissionObtainedIsNotified()
         {
-            RolePermissionObtainedEvent rolePermissionObtainedEvent = null;
+            RolePermissionObtained rolePermissionObtained = null;
             var permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
             var eventDispatcherMock = new Mock<IEventDispatcher>();
             eventDispatcherMock
-                .Setup(e => e.Dispatch(It.IsAny<RolePermissionObtainedEvent>()))
-                .Callback((RolePermissionObtainedEvent p) => rolePermissionObtainedEvent = p);
+                .Setup(e => e.Dispatch(It.IsAny<RolePermissionObtained>()))
+                .Callback((RolePermissionObtained p) => rolePermissionObtained = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var role = Role.Create(
                 name: "MyRole",
@@ -225,8 +225,8 @@ namespace Identity.Tests.Unit.Domain
 
             Assert.Multiple(() =>
             {
-                Assert.That(rolePermissionObtainedEvent.RoleId, Is.EqualTo(role.Id));
-                Assert.That(rolePermissionObtainedEvent.ObtainedPermissionId, Is.EqualTo(permissionId));
+                Assert.That(rolePermissionObtained.RoleId, Is.EqualTo(role.Id));
+                Assert.That(rolePermissionObtained.ObtainedPermissionId, Is.EqualTo(permissionId));
             });
         }
 
@@ -244,14 +244,14 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestRevokePermission_WhenRovekingPermission_ThenRolePermissionRevokedEventIsNotified()
+        public void TestRevokePermission_WhenRovekingPermission_ThenRolePermissionRevokedIsNotified()
         {
-            RolePermissionRevokedEvent rolePermissionRevokedEvent = null;
+            RolePermissionRevoked rolePermissionRevoked = null;
             var permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
             var eventDispatcherMock = new Mock<IEventDispatcher>();
             eventDispatcherMock
-                .Setup(e => e.Dispatch(It.IsAny<RolePermissionRevokedEvent>()))
-                .Callback((RolePermissionRevokedEvent p) => rolePermissionRevokedEvent = p);
+                .Setup(e => e.Dispatch(It.IsAny<RolePermissionRevoked>()))
+                .Callback((RolePermissionRevoked p) => rolePermissionRevoked = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var role = Role.Create(
                 name: "MyRole",
@@ -262,8 +262,8 @@ namespace Identity.Tests.Unit.Domain
 
             Assert.Multiple(() =>
             {
-                Assert.That(rolePermissionRevokedEvent.RoleId, Is.EqualTo(role.Id));
-                Assert.That(rolePermissionRevokedEvent.RevokedPermissionId, Is.EqualTo(permissionId));
+                Assert.That(rolePermissionRevoked.RoleId, Is.EqualTo(role.Id));
+                Assert.That(rolePermissionRevoked.RevokedPermissionId, Is.EqualTo(permissionId));
             });
         }
 

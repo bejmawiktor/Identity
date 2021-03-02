@@ -43,13 +43,13 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestCreateResource_WhenNoExceptionsThrown_ThenResourceCreatedEventIsPublished()
+        public void TestCreateResource_WhenNoExceptionsThrown_ThenResourceCreatedIsPublished()
         {
-            ResourceCreatedEvent resourceCreatedEvent = null;
+            ResourceCreated resourceCreated = null;
             var eventDispatcherMock = new Mock<IEventDispatcher>();
             eventDispatcherMock
                 .Setup(e => e.Dispatch(It.IsAny<IEvent>()))
-                .Callback((IEvent p) => resourceCreatedEvent = p as ResourceCreatedEvent);
+                .Callback((IEvent p) => resourceCreated = p as ResourceCreated);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var repositoryMock = new Mock<IResourcesRepository>();
             var resourceService = new ResourceService(repositoryMock.Object);
@@ -58,19 +58,19 @@ namespace Identity.Tests.Unit.Domain
 
             Assert.Multiple(() =>
             {
-                Assert.That(resourceCreatedEvent.ResourceId, Is.EqualTo(new ResourceId("MyResource")));
-                Assert.That(resourceCreatedEvent.ResourceDescription, Is.EqualTo("My resource description."));
+                Assert.That(resourceCreated.ResourceId, Is.EqualTo(new ResourceId("MyResource")));
+                Assert.That(resourceCreated.ResourceDescription, Is.EqualTo("My resource description."));
             });
         }
 
         [Test]
-        public void TestCreateResource_WhenExceptionsThrown_ThenResourceCreatedEventIsNotPublished()
+        public void TestCreateResource_WhenExceptionsThrown_ThenResourceCreatedIsNotPublished()
         {
-            ResourceCreatedEvent resourceCreatedEvent = null;
+            ResourceCreated resourceCreated = null;
             var eventDispatcherMock = new Mock<IEventDispatcher>();
             eventDispatcherMock
                 .Setup(e => e.Dispatch(It.IsAny<IEvent>()))
-                .Callback((IEvent p) => resourceCreatedEvent = p as ResourceCreatedEvent);
+                .Callback((IEvent p) => resourceCreated = p as ResourceCreated);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var repositoryMock = new Mock<IResourcesRepository>();
             repositoryMock.Setup(r => r.Add(It.IsAny<Resource>())).Throws(new Exception());
@@ -84,7 +84,7 @@ namespace Identity.Tests.Unit.Domain
             {
             }
 
-            Assert.That(resourceCreatedEvent, Is.Null);
+            Assert.That(resourceCreated, Is.Null);
         }
 
         [Test]
@@ -99,13 +99,13 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public async Task TestCreateResourceAsync_WhenNoExceptionsThrown_ThenResourceCreatedEventIsPublished()
+        public async Task TestCreateResourceAsync_WhenNoExceptionsThrown_ThenResourceCreatedIsPublished()
         {
-            ResourceCreatedEvent resourceCreatedEvent = null;
+            ResourceCreated resourceCreated = null;
             var eventDispatcherMock = new Mock<IEventDispatcher>();
             eventDispatcherMock
                 .Setup(e => e.Dispatch(It.IsAny<IEvent>()))
-                .Callback((IEvent p) => resourceCreatedEvent = p as ResourceCreatedEvent);
+                .Callback((IEvent p) => resourceCreated = p as ResourceCreated);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var repositoryMock = new Mock<IResourcesRepository>();
             var resourceService = new ResourceService(repositoryMock.Object);
@@ -114,19 +114,19 @@ namespace Identity.Tests.Unit.Domain
 
             Assert.Multiple(() =>
             {
-                Assert.That(resourceCreatedEvent.ResourceId, Is.EqualTo(new ResourceId("MyResource")));
-                Assert.That(resourceCreatedEvent.ResourceDescription, Is.EqualTo("My resource description."));
+                Assert.That(resourceCreated.ResourceId, Is.EqualTo(new ResourceId("MyResource")));
+                Assert.That(resourceCreated.ResourceDescription, Is.EqualTo("My resource description."));
             });
         }
 
         [Test]
-        public async Task TestCreateResourceAsync_WhenExceptionsThrown_ThenResourceCreatedEventIsNotPublished()
+        public async Task TestCreateResourceAsync_WhenExceptionsThrown_ThenResourceCreatedIsNotPublished()
         {
-            ResourceCreatedEvent resourceCreatedEvent = null;
+            ResourceCreated resourceCreated = null;
             var eventDispatcherMock = new Mock<IEventDispatcher>();
             eventDispatcherMock
                 .Setup(e => e.Dispatch(It.IsAny<IEvent>()))
-                .Callback((IEvent p) => resourceCreatedEvent = p as ResourceCreatedEvent);
+                .Callback((IEvent p) => resourceCreated = p as ResourceCreated);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var repositoryMock = new Mock<IResourcesRepository>();
             repositoryMock.Setup(r => r.AddAsync(It.IsAny<Resource>())).Throws(new Exception());
@@ -140,7 +140,7 @@ namespace Identity.Tests.Unit.Domain
             {
             }
 
-            Assert.That(resourceCreatedEvent, Is.Null);
+            Assert.That(resourceCreated, Is.Null);
         }
     }
 }

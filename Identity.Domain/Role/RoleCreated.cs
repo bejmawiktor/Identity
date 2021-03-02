@@ -2,13 +2,13 @@
 
 namespace Identity.Domain
 {
-    public class RoleCreatedEvent : Event
+    public class RoleCreated : Event
     {
         public RoleId RoleId { get; }
         public string RoleName { get; }
         public string RoleDescription { get; }
 
-        internal RoleCreatedEvent(
+        internal RoleCreated(
             RoleId roleId,
             string roleName,
             string roleDescription)

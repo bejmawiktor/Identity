@@ -105,13 +105,13 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestCreate_WhenCreatingUser_ThenUserCreatedEventIsNotified()
+        public void TestCreate_WhenCreatingUser_ThenUserCreatedIsNotified()
         {
-            UserCreatedEvent userCreatedEvent = null;
+            UserCreated userCreatedEvent = null;
             var eventDispatcherMock = new Mock<IEventDispatcher>();
             eventDispatcherMock
-                .Setup(e => e.Dispatch(It.IsAny<UserCreatedEvent>()))
-                .Callback((UserCreatedEvent p) => userCreatedEvent = p);
+                .Setup(e => e.Dispatch(It.IsAny<UserCreated>()))
+                .Callback((UserCreated p) => userCreatedEvent = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var password = HashedPassword.Hash("MyPassword");
 
@@ -192,14 +192,14 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestObtainPermission_WhenObtainingPermission_ThenUserPermissionObtainedEventIsNotified()
+        public void TestObtainPermission_WhenObtainingPermission_ThenUserPermissionObtainedIsNotified()
         {
-            UserPermissionObtainedEvent userPermissionObtainedEvent = null;
+            UserPermissionObtained userPermissionObtained = null;
             var permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
             var eventDispatcherMock = new Mock<IEventDispatcher>();
             eventDispatcherMock
-                .Setup(e => e.Dispatch(It.IsAny<UserPermissionObtainedEvent>()))
-                .Callback((UserPermissionObtainedEvent p) => userPermissionObtainedEvent = p);
+                .Setup(e => e.Dispatch(It.IsAny<UserPermissionObtained>()))
+                .Callback((UserPermissionObtained p) => userPermissionObtained = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var password = HashedPassword.Hash("MyPassword");
             User user = User.Create(
@@ -210,8 +210,8 @@ namespace Identity.Tests.Unit.Domain
 
             Assert.Multiple(() =>
             {
-                Assert.That(userPermissionObtainedEvent.UserId, Is.EqualTo(user.Id));
-                Assert.That(userPermissionObtainedEvent.ObtainedPermissionId, Is.EqualTo(permissionId));
+                Assert.That(userPermissionObtained.UserId, Is.EqualTo(user.Id));
+                Assert.That(userPermissionObtained.ObtainedPermissionId, Is.EqualTo(permissionId));
             });
         }
 
@@ -230,14 +230,14 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestRevokePermission_WhenRovekingPermission_ThenUserPermissionRevokedEventIsNotified()
+        public void TestRevokePermission_WhenRovekingPermission_ThenUserPermissionRevokedIsNotified()
         {
-            UserPermissionRevokedEvent userPermissionRevokedEvent = null;
+            UserPermissionRevoked userPermissionRevokedEvent = null;
             var permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
             var eventDispatcherMock = new Mock<IEventDispatcher>();
             eventDispatcherMock
-                .Setup(e => e.Dispatch(It.IsAny<UserPermissionRevokedEvent>()))
-                .Callback((UserPermissionRevokedEvent p) => userPermissionRevokedEvent = p);
+                .Setup(e => e.Dispatch(It.IsAny<UserPermissionRevoked>()))
+                .Callback((UserPermissionRevoked p) => userPermissionRevokedEvent = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var password = HashedPassword.Hash("MyPassword");
             User user = User.Create(
@@ -373,13 +373,13 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestAssumeRole_WhenAssumingRole_ThenUserRoleAssumedEventIsNotified()
+        public void TestAssumeRole_WhenAssumingRole_ThenUserRoleAssumedIsNotified()
         {
-            UserRoleAssumedEvent userRoleAssumedEvent = null;
+            UserRoleAssumed userRoleAssumed = null;
             var eventDispatcherMock = new Mock<IEventDispatcher>();
             eventDispatcherMock
-                .Setup(e => e.Dispatch(It.IsAny<UserRoleAssumedEvent>()))
-                .Callback((UserRoleAssumedEvent p) => userRoleAssumedEvent = p);
+                .Setup(e => e.Dispatch(It.IsAny<UserRoleAssumed>()))
+                .Callback((UserRoleAssumed p) => userRoleAssumed = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var roleId = RoleId.Generate();
             var password = HashedPassword.Hash("MyPassword");
@@ -392,8 +392,8 @@ namespace Identity.Tests.Unit.Domain
 
             Assert.Multiple(() =>
             {
-                Assert.That(userRoleAssumedEvent.UserId, Is.EqualTo(user.Id));
-                Assert.That(userRoleAssumedEvent.AssumedRoleId, Is.EqualTo(roleId));
+                Assert.That(userRoleAssumed.UserId, Is.EqualTo(user.Id));
+                Assert.That(userRoleAssumed.AssumedRoleId, Is.EqualTo(roleId));
             });
         }
 
@@ -447,13 +447,13 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestRevokeRole_WhenAssumingRole_ThenUserRoleRevokedEventIsNotified()
+        public void TestRevokeRole_WhenAssumingRole_ThenUserRoleRevokedIsNotified()
         {
-            UserRoleRevokedEvent userRoleRevokedEvent = null;
+            UserRoleRevoked userRoleRevoked = null;
             var eventDispatcherMock = new Mock<IEventDispatcher>();
             eventDispatcherMock
-                .Setup(e => e.Dispatch(It.IsAny<UserRoleRevokedEvent>()))
-                .Callback((UserRoleRevokedEvent p) => userRoleRevokedEvent = p);
+                .Setup(e => e.Dispatch(It.IsAny<UserRoleRevoked>()))
+                .Callback((UserRoleRevoked p) => userRoleRevoked = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var roleId = RoleId.Generate();
             var password = HashedPassword.Hash("MyPassword");
@@ -467,8 +467,8 @@ namespace Identity.Tests.Unit.Domain
 
             Assert.Multiple(() =>
             {
-                Assert.That(userRoleRevokedEvent.UserId, Is.EqualTo(user.Id));
-                Assert.That(userRoleRevokedEvent.RevokedRoleId, Is.EqualTo(roleId));
+                Assert.That(userRoleRevoked.UserId, Is.EqualTo(user.Id));
+                Assert.That(userRoleRevoked.RevokedRoleId, Is.EqualTo(roleId));
             });
         }
     }

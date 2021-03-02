@@ -70,7 +70,7 @@ namespace Identity.Domain
         {
             var user = new User(UserId.Generate(), email, password);
 
-            EventManager.Instance.Notify(new UserCreatedEvent(
+            EventManager.Instance.Notify(new UserCreated(
                 user.Id,
                 user.Email));
 
@@ -81,14 +81,14 @@ namespace Identity.Domain
         {
             base.ObtainPermission(permissionId);
 
-            EventManager.Instance.Notify(new UserPermissionObtainedEvent(this.Id, permissionId));
+            EventManager.Instance.Notify(new UserPermissionObtained(this.Id, permissionId));
         }
 
         public override void RevokePermission(PermissionId permissionId)
         {
             base.RevokePermission(permissionId);
 
-            EventManager.Instance.Notify(new UserPermissionRevokedEvent(this.Id, permissionId));
+            EventManager.Instance.Notify(new UserPermissionRevoked(this.Id, permissionId));
         }
 
         public bool HasRole(RoleId roleId)
@@ -115,7 +115,7 @@ namespace Identity.Domain
 
             this.roles.Add(roleId);
 
-            EventManager.Instance.Notify(new UserRoleAssumedEvent(this.Id, roleId));
+            EventManager.Instance.Notify(new UserRoleAssumed(this.Id, roleId));
         }
 
         public void RevokeRole(RoleId roleId)
@@ -132,7 +132,7 @@ namespace Identity.Domain
 
             this.roles.Remove(roleId);
 
-            EventManager.Instance.Notify(new UserRoleRevokedEvent(this.Id, roleId));
+            EventManager.Instance.Notify(new UserRoleRevoked(this.Id, roleId));
         }
     }
 }

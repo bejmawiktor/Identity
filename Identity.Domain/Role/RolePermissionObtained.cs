@@ -2,16 +2,16 @@
 
 namespace Identity.Domain
 {
-    public class UserPermissionObtainedEvent : Event
+    public class RolePermissionObtained : Event
     {
-        public UserId UserId { get; }
+        public RoleId RoleId { get; }
         public PermissionId ObtainedPermissionId { get; }
 
-        internal UserPermissionObtainedEvent(
-            UserId userId,
+        internal RolePermissionObtained(
+            RoleId roleId,
             PermissionId obtainedPermissionId)
         {
-            this.UserId = userId;
+            this.RoleId = roleId;
             this.ObtainedPermissionId = obtainedPermissionId;
         }
     }

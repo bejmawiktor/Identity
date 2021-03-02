@@ -65,13 +65,13 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestCreatePermission_WhenCreating_ThenPermissionCreatedEventIsNotified()
+        public void TestCreatePermission_WhenCreating_ThenPermissionCreatedIsNotified()
         {
-            PermissionCreatedEvent permissionCreatedEvent = null;
+            PermissionCreated permissionCreated = null;
             var eventDispatcherMock = new Mock<IEventDispatcher>();
             eventDispatcherMock
-                .Setup(e => e.Dispatch(It.IsAny<PermissionCreatedEvent>()))
-                .Callback((PermissionCreatedEvent p) => permissionCreatedEvent = p);
+                .Setup(e => e.Dispatch(It.IsAny<PermissionCreated>()))
+                .Callback((PermissionCreated p) => permissionCreated = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var resourceId = new ResourceId("TestResource");
             var resource = new Resource(
@@ -84,8 +84,8 @@ namespace Identity.Tests.Unit.Domain
 
             Assert.Multiple(() =>
             {
-                Assert.That(permissionCreatedEvent.PermissionId, Is.EqualTo(permission.Id));
-                Assert.That(permissionCreatedEvent.PermissionDescription, Is.EqualTo(permission.Description));
+                Assert.That(permissionCreated.PermissionId, Is.EqualTo(permission.Id));
+                Assert.That(permissionCreated.PermissionDescription, Is.EqualTo(permission.Description));
             });
         }
 
@@ -104,13 +104,13 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestCreate_WhenCreatingResource_ThenResourceCreatedEventIsNotified()
+        public void TestCreate_WhenCreatingResource_ThenResourceCreatedIsNotified()
         {
-            ResourceCreatedEvent resourceCreatedEvent = null;
+            ResourceCreated resourceCreated = null;
             var eventDispatcherMock = new Mock<IEventDispatcher>();
             eventDispatcherMock
-                .Setup(e => e.Dispatch(It.IsAny<ResourceCreatedEvent>()))
-                .Callback((ResourceCreatedEvent p) => resourceCreatedEvent = p);
+                .Setup(e => e.Dispatch(It.IsAny<ResourceCreated>()))
+                .Callback((ResourceCreated p) => resourceCreated = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
 
             var resource = Resource.Create(
@@ -119,8 +119,8 @@ namespace Identity.Tests.Unit.Domain
 
             Assert.Multiple(() =>
             {
-                Assert.That(resourceCreatedEvent.ResourceId, Is.EqualTo(resource.Id));
-                Assert.That(resourceCreatedEvent.ResourceDescription, Is.EqualTo(resource.Description));
+                Assert.That(resourceCreated.ResourceId, Is.EqualTo(resource.Id));
+                Assert.That(resourceCreated.ResourceDescription, Is.EqualTo(resource.Description));
             });
         }
     }

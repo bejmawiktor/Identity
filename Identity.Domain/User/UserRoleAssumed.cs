@@ -2,12 +2,12 @@
 
 namespace Identity.Domain
 {
-    public class UserRoleAssumedEvent : Event
+    public class UserRoleAssumed : Event
     {
         public UserId UserId { get; }
         public RoleId AssumedRoleId { get; }
 
-        public UserRoleAssumedEvent(UserId userId, RoleId assumedRoleId)
+        public UserRoleAssumed(UserId userId, RoleId assumedRoleId)
         {
             this.UserId = userId;
             this.AssumedRoleId = assumedRoleId;
