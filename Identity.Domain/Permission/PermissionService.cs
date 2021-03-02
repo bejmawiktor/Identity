@@ -1,4 +1,4 @@
-﻿using DDD.Events;
+﻿using DDD.Domain.Events;
 using System;
 using System.Threading.Tasks;
 

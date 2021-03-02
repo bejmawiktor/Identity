@@ -1,4 +1,4 @@
-﻿using DDD.Model;
+﻿using DDD.Domain.Model;
 
 namespace Identity.Domain
 {

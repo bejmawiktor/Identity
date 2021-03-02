@@ -1,4 +1,4 @@
-﻿using DDD.Persistence;
+﻿using DDD.Domain.Persistence;
 
 namespace Identity.Domain
 {

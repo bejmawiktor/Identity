@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="DDD">
-      <HintPath>..\Libraries\DDD.dll</HintPath>
+    <Reference Include="DDD.Domain">
+      <HintPath>..\Libraries\DDD.Domain.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

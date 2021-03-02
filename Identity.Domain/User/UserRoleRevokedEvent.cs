@@ -1,4 +1,4 @@
-﻿using DDD.Events;
+﻿using DDD.Domain.Events;
 
 namespace Identity.Domain
 {

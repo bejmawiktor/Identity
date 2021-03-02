@@ -1,5 +1,5 @@
-﻿using DDD.Events;
-using DDD.Model;
+﻿using DDD.Domain.Events;
+using DDD.Domain.Model;
 using System;
 
 namespace Identity.Domain

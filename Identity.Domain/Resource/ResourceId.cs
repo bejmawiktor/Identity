@@ -1,4 +1,4 @@
-﻿using DDD.Model;
+﻿using DDD.Domain.Model;
 using System;
 using System.Text.RegularExpressions;
 
