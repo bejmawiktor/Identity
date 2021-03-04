@@ -3,7 +3,7 @@ using Identity.Domain;
 
 namespace Identity.Application
 {
-    public class ResourceDto : AggregateRootDto<Resource, ResourceId>
+    public record ResourceDto : IAggregateRootDto<Resource, ResourceId>
     {
         public string Id { get; }
         public string Description { get; }
@@ -19,11 +19,11 @@ namespace Identity.Application
         }
 
         internal Resource ToResource()
-            => this.ToDomainObject();
-
-        protected override Resource ToDomainObject()
             => new Resource(
-                id: new ResourceId(this.Id),
-                description: this.Description);
+                    id: new ResourceId(this.Id),
+                    description: this.Description);
+
+        Resource IDomainObjectDto<Resource>.ToDomainObject()
+             => this.ToResource();
     }
 }
