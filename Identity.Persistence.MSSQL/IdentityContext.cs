@@ -8,19 +8,23 @@ namespace Identity.Persistence.MSSQL
     public class IdentityContext : DbContext
     {
         internal DbSet<ResourceDto> Resources { get; set; }
-        public string ConnectionString { get; }
 
         public IdentityContext(string connectionString)
+        : base(GetDefaultOptions(connectionString ?? throw new ArgumentNullException(nameof(connectionString))))
         {
-            this.ConnectionString = connectionString
-                ?? throw new ArgumentNullException(nameof(connectionString));
+        }
+
+        private static DbContextOptions GetDefaultOptions(string connectionString = null)
+        {
+            return new DbContextOptionsBuilder().UseSqlServer(connectionString).Options;
+        }
+
+        internal IdentityContext(DbContextOptions options) : base(options)
+        {
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(
-                this.ConnectionString,
-                b => b.MigrationsAssembly("Identity.Persistence.MSSQL"));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -38,10 +42,10 @@ namespace Identity.Persistence.MSSQL
         private void AddResourcesData(EntityTypeBuilder<ResourceDto> entityBuilder)
         {
             entityBuilder.HasData(
-                    new ResourceDto(
-                        id: "Identity",
-                        description: "Identity service responsible for "
-                            + "authentication and authorization of users."));
+                new ResourceDto(
+                    id: "Identity",
+                    description: "Identity service responsible for "
+                        + "authentication and authorization of users."));
         }
     }
 }

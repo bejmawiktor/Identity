@@ -8,7 +8,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
     public class IdentityContextTest
     {
         [Test]
-        public void TestConstructing_WhenConnectionStringGiven_ThenConnectionStringIsSet()
+        public void TestConstructing_WhenNullConnectionStringGiven_ThenArgumentNullExceptionIsThrown()
         {
             var identityContext = new IdentityContext("TestConnectionString");
 
@@ -16,15 +16,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 Is.InstanceOf<ArgumentNullException>()
                     .And.Property(nameof(ArgumentNullException.ParamName))
                     .EqualTo("connectionString"),
-                () => new IdentityContext(null));
-        }
-
-        [Test]
-        public void TestConstructing_WhenNullConnectionStringGiven_ThenArgumentNullExceptionIsThrown()
-        {
-            var identityContext = new IdentityContext("TestConnectionString");
-
-            Assert.That(identityContext.ConnectionString, Is.EqualTo("TestConnectionString"));
+                () => new IdentityContext((string)null));
         }
     }
 }
