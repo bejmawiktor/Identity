@@ -86,7 +86,10 @@ namespace Identity.Domain
 
         protected override IEnumerable<object> GetEqualityMembers()
         {
-            yield return this.HashedValue;
+            foreach(var @byte in this.HashedValue)
+            {
+                yield return @byte;
+            }
         }
 
         public override string ToString()
