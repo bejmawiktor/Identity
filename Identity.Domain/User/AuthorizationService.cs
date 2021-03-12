@@ -27,6 +27,11 @@ namespace Identity.Domain
 
             User user = this.UsersRepository.Get(userId);
 
+            if(user == null)
+            {
+                throw new UserNotFoundException(userId);
+            }
+
             if(user.IsPermittedTo(permissionId))
             {
                 return true;

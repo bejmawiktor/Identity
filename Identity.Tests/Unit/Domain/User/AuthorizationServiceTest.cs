@@ -95,6 +95,26 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
+        public void TestCheckUserAccess_WhenNotFoundUserIdGiven_ThenUserNotFoundExceptionIsThrown()
+        {
+            var usersRepositoryMock = new Mock<IUsersRepository>();
+            usersRepositoryMock.Setup(u => u.Get(It.IsAny<UserId>())).Returns((User)null);
+            var rolesRepositoryMock = new Mock<IRolesRepository>();
+            IUsersRepository usersRepository = usersRepositoryMock.Object;
+            IRolesRepository rolesRepository = rolesRepositoryMock.Object;
+            var userId = UserId.Generate();
+            var authorizationService = new AuthorizationService(usersRepository, rolesRepository);
+
+            Assert.Throws(
+               Is.InstanceOf<UserNotFoundException>()
+                   .And.Message
+                   .EqualTo($"User {userId} not found."),
+               () => authorizationService.CheckUserAccess(
+                   userId: userId,
+                   permissionId: new PermissionId(new ResourceId("MyResource"), "MyPermission")));
+        }
+
+        [Test]
         public void TestCheckUserAccess_WhenUserPermittedByRoleGiven_ThenTrueIsReturned()
         {
             var usersRepositoryMock = new Mock<IUsersRepository>();
