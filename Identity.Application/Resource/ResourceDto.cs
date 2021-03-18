@@ -14,14 +14,10 @@ namespace Identity.Application
             this.Description = description;
         }
 
-        private ResourceDto()
-        {
-        }
-
         internal Resource ToResource()
             => new Resource(
-                    id: new ResourceId(this.Id),
-                    description: this.Description);
+                id: new ResourceId(this.Id),
+                description: this.Description);
 
         Resource IDomainObjectDto<Resource>.ToDomainObject()
              => this.ToResource();
