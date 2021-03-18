@@ -1,13 +1,7 @@
-﻿using DDD.Application.Persistence;
-using DDD.Application.Persistence.Adapters;
-using DDD.Domain.Persistence;
-using Identity.Application;
-using Identity.Domain;
+﻿using Identity.Application;
 using Moq;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using IResourcesRepository = Identity.Application.IResourcesRepository;
 
 namespace Identity.Tests.Unit.Application
