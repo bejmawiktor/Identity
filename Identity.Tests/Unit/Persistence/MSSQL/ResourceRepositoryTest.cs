@@ -11,7 +11,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
     [TestFixture]
     public class ResourceRepositoryTest : DatabaseTestBase
     {
-        private static IEnumerable<ResourceDto> Resources1 => new ResourceDto[]
+        private static ResourceDto[] ResourcesTestData => new ResourceDto[]
         {
             new ResourceDto("MyResource1", "My resource description."),
             new ResourceDto("MyResource2", "My resource description."),
@@ -26,42 +26,42 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             {
                 yield return new TestCaseData(new object[]
                 {
-                    ResourceRepositoryTest.Resources1,
+                    ResourceRepositoryTest.ResourcesTestData,
                     new Pagination(0, 5),
-                    ResourceRepositoryTest.Resources1
+                    ResourceRepositoryTest.ResourcesTestData
                 }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenResourcesAreReturned)}(1)");
                 yield return new TestCaseData(new object[]
                 {
-                    ResourceRepositoryTest.Resources1,
+                    ResourceRepositoryTest.ResourcesTestData,
                     new Pagination(0, 2),
                     new ResourceDto[]
                     {
-                        new ResourceDto("MyResource1", "My resource description."),
-                        new ResourceDto("MyResource2", "My resource description."),
+                        ResourceRepositoryTest.ResourcesTestData[0],
+                        ResourceRepositoryTest.ResourcesTestData[1]
                     }
                 }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenResourcesAreReturned)}(2)");
                 yield return new TestCaseData(new object[]
                 {
-                    ResourceRepositoryTest.Resources1,
+                    ResourceRepositoryTest.ResourcesTestData,
                     new Pagination(1, 2),
                     new ResourceDto[]
                     {
-                        new ResourceDto("MyResource3", "My resource description."),
-                        new ResourceDto("MyResource4", "My resource description."),
+                        ResourceRepositoryTest.ResourcesTestData[2],
+                        ResourceRepositoryTest.ResourcesTestData[3]
                     }
                 }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenResourcesAreReturned)}(3)");
                 yield return new TestCaseData(new object[]
                 {
-                    ResourceRepositoryTest.Resources1,
+                    ResourceRepositoryTest.ResourcesTestData,
                     new Pagination(2, 2),
                     new ResourceDto[]
                     {
-                        new ResourceDto("MyResource5", "My resource description.")
+                        ResourceRepositoryTest.ResourcesTestData[4]
                     }
                 }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenResourcesAreReturned)}(4)");
                 yield return new TestCaseData(new object[]
                 {
-                    ResourceRepositoryTest.Resources1,
+                    ResourceRepositoryTest.ResourcesTestData,
                     new Pagination(3, 2),
                     Enumerable.Empty<ResourceDto>()
                 }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenResourcesAreReturned)}(5)");
@@ -74,42 +74,42 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             {
                 yield return new TestCaseData(new object[]
                 {
-                    ResourceRepositoryTest.Resources1,
+                    ResourceRepositoryTest.ResourcesTestData,
                     new Pagination(0, 5),
-                    ResourceRepositoryTest.Resources1
+                    ResourceRepositoryTest.ResourcesTestData
                 }).SetName($"{nameof(TestGetAsync_WhenPaginationGiven_ThenResourcesAreReturned)}(1)");
                 yield return new TestCaseData(new object[]
                 {
-                    ResourceRepositoryTest.Resources1,
+                    ResourceRepositoryTest.ResourcesTestData,
                     new Pagination(0, 2),
                     new ResourceDto[]
                     {
-                        new ResourceDto("MyResource1", "My resource description."),
-                        new ResourceDto("MyResource2", "My resource description."),
+                        ResourceRepositoryTest.ResourcesTestData[0],
+                        ResourceRepositoryTest.ResourcesTestData[1]
                     }
                 }).SetName($"{nameof(TestGetAsync_WhenPaginationGiven_ThenResourcesAreReturned)}(2)");
                 yield return new TestCaseData(new object[]
                 {
-                    ResourceRepositoryTest.Resources1,
+                    ResourceRepositoryTest.ResourcesTestData,
                     new Pagination(1, 2),
                     new ResourceDto[]
                     {
-                        new ResourceDto("MyResource3", "My resource description."),
-                        new ResourceDto("MyResource4", "My resource description."),
+                        ResourceRepositoryTest.ResourcesTestData[2],
+                        ResourceRepositoryTest.ResourcesTestData[3]
                     }
                 }).SetName($"{nameof(TestGetAsync_WhenPaginationGiven_ThenResourcesAreReturned)}(3)");
                 yield return new TestCaseData(new object[]
                 {
-                    ResourceRepositoryTest.Resources1,
+                    ResourceRepositoryTest.ResourcesTestData,
                     new Pagination(2, 2),
                     new ResourceDto[]
                     {
-                        new ResourceDto("MyResource5", "My resource description.")
+                        ResourceRepositoryTest.ResourcesTestData[4]
                     }
                 }).SetName($"{nameof(TestGetAsync_WhenPaginationGiven_ThenResourcesAreReturned)}(4)");
                 yield return new TestCaseData(new object[]
                 {
-                    ResourceRepositoryTest.Resources1,
+                    ResourceRepositoryTest.ResourcesTestData,
                     new Pagination(3, 2),
                     Enumerable.Empty<ResourceDto>()
                 }).SetName($"{nameof(TestGetAsync_WhenPaginationGiven_ThenResourcesAreReturned)}(5)");
@@ -208,9 +208,6 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 description: "My test resource");
             var resourceRepository = new ResourcesRepository(this.IdentityContext);
             resourceRepository.Add(resourceDto);
-            resourceDto = new ResourceDto(
-                id: "MyResource",
-                description: "My test resource 2");
 
             resourceRepository.Remove(resourceDto);
 
@@ -227,9 +224,6 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 description: "My test resource");
             var resourceRepository = new ResourcesRepository(this.IdentityContext);
             resourceRepository.Add(resourceDto);
-            resourceDto = new ResourceDto(
-                id: "MyResource",
-                description: "My test resource 2");
 
             await resourceRepository.RemoveAsync(resourceDto);
 
