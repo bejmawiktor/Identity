@@ -1,9 +1,10 @@
 ﻿using DDD.Application.Model;
 using Identity.Domain;
+using System;
 
 namespace Identity.Application
 {
-    public record ResourceDto : IAggregateRootDto<Resource, ResourceId>
+    public class ResourceDto : IAggregateRootDto<Resource, ResourceId>
     {
         public string Id { get; }
         public string Description { get; }
@@ -21,5 +22,17 @@ namespace Identity.Application
 
         Resource IDomainObjectDto<Resource>.ToDomainObject()
              => this.ToResource();
+
+        public override bool Equals(object obj)
+        {
+            return obj is ResourceDto dto
+                && this.Id == dto.Id
+                && this.Description == dto.Description;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(this.Id, this.Description);
+        }
     }
 }
