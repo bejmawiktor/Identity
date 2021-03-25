@@ -9,6 +9,7 @@ namespace Identity.Persistence.MSSQL
     {
         internal DbSet<ResourceDto> Resources { get; set; }
         internal DbSet<PermissionDto> Permissions { get; set; }
+        internal DbSet<RoleDto> Roles { get; set; }
 
         public IdentityContext(string connectionString)
         : base(GetDefaultOptions(connectionString ?? throw new ArgumentNullException(nameof(connectionString))))
@@ -47,6 +48,22 @@ namespace Identity.Persistence.MSSQL
                 p.ToTable("Permissions");
 
                 this.AddPermissionsData(p);
+            });
+            modelBuilder.Entity<RoleDto>(r =>
+            {
+                r.HasKey(r => r.Id);
+                r.Property(r => r.Name);
+                r.Property(r => r.Description).HasMaxLength(2000);
+                r.HasMany(r => r.Permissions).WithOne(p => p.RoleDto).HasForeignKey(p => p.RoleId);
+                r.ToTable("Roles");
+            });
+            modelBuilder.Entity<RolePermissionDto>(r =>
+            {
+                r.HasKey(p => new { p.PermissionName, p.PermissionResourceId, p.RoleId });
+                r.Property(r => r.PermissionName);
+                r.Property(r => r.PermissionResourceId);
+                r.Property(r => r.RoleId);
+                r.ToTable("RolesPermissions");
             });
         }
 
