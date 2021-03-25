@@ -105,5 +105,107 @@ namespace Identity.Tests.Unit.Application
                 }));
             });
         }
+
+        [Test]
+        public void TestEquals_WhenTwoIdentitcalRolesDtosGiven_ThenTrueIsReturned()
+        {
+            var id = Guid.NewGuid();
+            var leftRoleDto = new RoleDto(
+                id: id,
+                name: "MyRole",
+                description: "My role description",
+                permissions: new (string ResourceId, string Name)[]
+                {
+                    ("MyResource", "MyPermission"),
+                    ("MyResource2", "MyPermission2")
+                });
+            var rightRoleDto = new RoleDto(
+                id: id,
+                name: "MyRole",
+                description: "My role description",
+                permissions: new (string ResourceId, string Name)[]
+                {
+                    ("MyResource", "MyPermission"),
+                    ("MyResource2", "MyPermission2")
+                });
+
+            Assert.That(leftRoleDto.Equals(rightRoleDto), Is.True);
+        }
+
+        [Test]
+        public void TestEquals_WhenTwoDifferentRolesDtosGiven_ThenFalseIsReturned()
+        {
+            var id = Guid.NewGuid();
+            var leftRoleDto = new RoleDto(
+                id: id,
+                name: "MyRole",
+                description: "My role description",
+                permissions: new (string ResourceId, string Name)[]
+                {
+                    ("MyResource", "MyPermission"),
+                    ("MyResource2", "MyPermission2")
+                });
+            var rightRoleDto = new RoleDto(
+                id: id,
+                name: "MyRole2",
+                description: "My role description",
+                permissions: new (string ResourceId, string Name)[]
+                {
+                    ("MyResource", "MyPermission"),
+                });
+
+            Assert.That(leftRoleDto.Equals(rightRoleDto), Is.False);
+        }
+
+        [Test]
+        public void TestGetHashCode_WhenTwoIdenticalRolesDtosGiven_ThenSameHashCodesIsReturned()
+        {
+            var id = Guid.NewGuid();
+            var leftRoleDto = new RoleDto(
+                id: id,
+                name: "MyRole",
+                description: "My role description",
+                permissions: new (string ResourceId, string Name)[]
+                {
+                    ("MyResource", "MyPermission"),
+                    ("MyResource2", "MyPermission2")
+                });
+            var rightRoleDto = new RoleDto(
+                id: id,
+                name: "MyRole",
+                description: "My role description",
+                permissions: new (string ResourceId, string Name)[]
+                {
+                    ("MyResource", "MyPermission"),
+                    ("MyResource2", "MyPermission2")
+                });
+
+            Assert.That(leftRoleDto.GetHashCode(), Is.EqualTo(rightRoleDto.GetHashCode()));
+        }
+
+        [Test]
+        public void TestGetHashCode_WhenTwoDifferentRolesDtosGiven_ThenDifferentHashCodesIsReturned()
+        {
+            var id = Guid.NewGuid();
+            var leftRoleDto = new RoleDto(
+                id: id,
+                name: "MyRole",
+                description: "My role description",
+                permissions: new (string ResourceId, string Name)[]
+                {
+                    ("MyResource", "MyPermission"),
+                    ("MyResource2", "MyPermission2")
+                });
+            var rightRoleDto = new RoleDto(
+                id: id,
+                name: "MyRole2",
+                description: "My role description",
+                permissions: new (string ResourceId, string Name)[]
+                {
+                    ("MyResource", "MyPermission"),
+                });
+
+            Assert.That(leftRoleDto.GetHashCode(), Is.Not.EqualTo(rightRoleDto.GetHashCode()));
+        }
     }
 }

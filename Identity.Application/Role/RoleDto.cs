@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Identity.Application
 {
-    public record RoleDto : IAggregateRootDto<Role, RoleId>
+    public class RoleDto : IAggregateRootDto<Role, RoleId>
     {
         public Guid Id { get; }
         public string Name { get; }
@@ -40,5 +40,33 @@ namespace Identity.Application
 
         Role IDomainObjectDto<Role>.ToDomainObject()
             => this.ToRole();
+
+        public override bool Equals(object obj)
+        {
+            return obj is RoleDto dto
+                && this.Id.Equals(dto.Id)
+                && this.Name == dto.Name
+                && this.Description == dto.Description
+                && this.Permissions.SequenceEqual(dto.Permissions);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 17;
+
+                hash = hash * 23 + this.Id.GetHashCode();
+                hash = hash * 23 + this.Name?.GetHashCode() ?? 0;
+                hash = hash * 23 + this.Description?.GetHashCode() ?? 0;
+
+                foreach(var permission in this.Permissions)
+                {
+                    hash = hash * 23 + permission.GetHashCode();
+                }
+
+                return hash;
+            }
+        }
     }
 }
