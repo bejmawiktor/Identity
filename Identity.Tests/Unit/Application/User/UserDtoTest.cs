@@ -117,5 +117,171 @@ namespace Identity.Tests.Unit.Application
                 }));
             });
         }
+
+        [Test]
+        public void TestEquals_WhenTwoIdentitcalUsersDtosGiven_ThenTrueIsReturned()
+        {
+            var rolesLeft = new Guid[]
+            {
+                Guid.NewGuid(),
+                Guid.NewGuid()
+            };
+            var rolesRight = new Guid[]
+            {
+                new Guid(rolesLeft[0].ToString()),
+                new Guid(rolesLeft[1].ToString())
+            };
+            var permissionsLeft = new (string ResourceId, string Name)[]
+            {
+                ("MyResource", "MyPermission"),
+                ("MyResource2", "MyPermission2")
+            };
+            var permissionsRight = new (string ResourceId, string Name)[]
+            {
+                ("MyResource", "MyPermission"),
+                ("MyResource2", "MyPermission2")
+            };
+            var userIdLeft = Guid.NewGuid();
+            var userIdRight = new Guid(userIdLeft.ToString());
+            var hashedPasswordLeft = HashedPassword.Hash("MyPassword");
+            var leftUserDto = new UserDto(
+                userIdLeft,
+                "example@example.com",
+                hashedPasswordLeft.ToString(),
+                rolesLeft,
+                permissionsLeft);
+            var rightUserDto = new UserDto(
+                userIdRight,
+                "example@example.com",
+                hashedPasswordLeft.ToString(),
+                rolesRight,
+                permissionsRight);
+
+            Assert.That(leftUserDto.Equals(rightUserDto), Is.True);
+        }
+
+        [Test]
+        public void TestEquals_WhenTwoDifferentUsersDtosGiven_ThenFalseIsReturned()
+        {
+            var rolesLeft = new Guid[]
+            {
+                Guid.NewGuid(),
+                Guid.NewGuid()
+            };
+            var rolesRight = new Guid[]
+            {
+                rolesLeft[0]
+            };
+            var permissionsLeft = new (string ResourceId, string Name)[]
+            {
+                ("MyResource", "MyPermission"),
+                ("MyResource2", "MyPermission2")
+            };
+            var permissionsRight = new (string ResourceId, string Name)[]
+            {
+                ("MyResource2", "MyPermission2")
+            };
+            var userIdLeft = Guid.NewGuid();
+            var userIdRight = Guid.NewGuid();
+            var hashedPasswordLeft = HashedPassword.Hash("MyPassword");
+            var hashedPasswordRight = HashedPassword.Hash("MyPassword2");
+            var leftUserDto = new UserDto(
+                userIdLeft,
+                "example@example.com",
+                hashedPasswordLeft.ToString(),
+                rolesLeft,
+                permissionsLeft);
+            var rightUserDto = new UserDto(
+                userIdRight,
+                "example2@example.com",
+                hashedPasswordRight.ToString(),
+                rolesRight,
+                permissionsRight);
+
+            Assert.That(leftUserDto.Equals(rightUserDto), Is.False);
+        }
+
+        [Test]
+        public void TestGetHashCode_WhenTwoIdenticalUsersDtosGiven_ThenSameHashCodesIsReturned()
+        {
+            var rolesLeft = new Guid[]
+            {
+                Guid.NewGuid(),
+                Guid.NewGuid()
+            };
+            var rolesRight = new Guid[]
+            {
+                new Guid(rolesLeft[0].ToString()),
+                new Guid(rolesLeft[1].ToString())
+            };
+            var permissionsLeft = new (string ResourceId, string Name)[]
+            {
+                ("MyResource", "MyPermission"),
+                ("MyResource2", "MyPermission2")
+            };
+            var permissionsRight = new (string ResourceId, string Name)[]
+            {
+                ("MyResource", "MyPermission"),
+                ("MyResource2", "MyPermission2")
+            };
+            var userIdLeft = Guid.NewGuid();
+            var userIdRight = new Guid(userIdLeft.ToString());
+            var hashedPasswordLeft = HashedPassword.Hash("MyPassword");
+            var leftUserDto = new UserDto(
+                userIdLeft,
+                "example@example.com",
+                hashedPasswordLeft.ToString(),
+                rolesLeft,
+                permissionsLeft);
+            var rightUserDto = new UserDto(
+                userIdRight,
+                "example@example.com",
+                hashedPasswordLeft.ToString(),
+                rolesRight,
+                permissionsRight);
+
+            Assert.That(leftUserDto.GetHashCode(), Is.EqualTo(rightUserDto.GetHashCode()));
+        }
+
+        [Test]
+        public void TestGetHashCode_WhenTwoDifferentUsersDtosGiven_ThenDifferentHashCodesIsReturned()
+        {
+            var rolesLeft = new Guid[]
+            {
+                Guid.NewGuid(),
+                Guid.NewGuid()
+            };
+            var rolesRight = new Guid[]
+            {
+                rolesLeft[0]
+            };
+            var permissionsLeft = new (string ResourceId, string Name)[]
+            {
+                ("MyResource", "MyPermission"),
+                ("MyResource2", "MyPermission2")
+            };
+            var permissionsRight = new (string ResourceId, string Name)[]
+            {
+                ("MyResource2", "MyPermission2")
+            };
+            var userIdLeft = Guid.NewGuid();
+            var userIdRight = Guid.NewGuid();
+            var hashedPasswordLeft = HashedPassword.Hash("MyPassword");
+            var hashedPasswordRight = HashedPassword.Hash("MyPassword2");
+            var leftUserDto = new UserDto(
+                userIdLeft,
+                "example@example.com",
+                hashedPasswordLeft.ToString(),
+                rolesLeft,
+                permissionsLeft);
+            var rightUserDto = new UserDto(
+                userIdRight,
+                "example2@example.com",
+                hashedPasswordRight.ToString(),
+                rolesRight,
+                permissionsRight);
+
+            Assert.That(leftUserDto.GetHashCode(), Is.Not.EqualTo(rightUserDto.GetHashCode()));
+        }
     }
 }

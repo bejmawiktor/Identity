@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Identity.Application
 {
-    public record UserDto : IAggregateRootDto<User, UserId>
+    public class UserDto : IAggregateRootDto<User, UserId>
     {
         public Guid Id { get; }
         public string Email { get; }
@@ -47,5 +47,39 @@ namespace Identity.Application
 
         User IDomainObjectDto<User>.ToDomainObject()
             => this.ToUser();
+
+        public override bool Equals(object obj)
+        {
+            return obj is UserDto dto
+                && this.Id.Equals(dto.Id)
+                && this.Email == dto.Email
+                && this.HashedPassword == dto.HashedPassword
+                && this.Roles.SequenceEqual(dto.Roles)
+                && this.Permissions.SequenceEqual(dto.Permissions);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 17;
+
+                hash = hash * 23 + this.Id.GetHashCode();
+                hash = hash * 23 + this.Email?.GetHashCode() ?? 0;
+                hash = hash * 23 + this.HashedPassword?.GetHashCode() ?? 0;
+                
+                foreach(var role in this.Roles)
+                {
+                    hash = hash * 23 + role.GetHashCode();
+                }
+
+                foreach(var permission in this.Permissions)
+                {
+                    hash = hash * 23 + permission.GetHashCode();
+                }
+
+                return hash;
+            }
+        }
     }
 }
