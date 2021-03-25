@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Identity.Tests.Unit.Persistence.MSSQL
 {
     [TestFixture]
-    public class ResourceRepositoryTest : DatabaseTestBase
+    public class ResourcesRepositoryTest : DatabaseTestBase
     {
         private static ResourceDto[] ResourcesTestData => new ResourceDto[]
         {
@@ -26,42 +26,42 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             {
                 yield return new TestCaseData(new object[]
                 {
-                    ResourceRepositoryTest.ResourcesTestData,
+                    ResourcesRepositoryTest.ResourcesTestData,
                     new Pagination(0, 5),
-                    ResourceRepositoryTest.ResourcesTestData
+                    ResourcesRepositoryTest.ResourcesTestData
                 }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenResourcesAreReturned)}(1)");
                 yield return new TestCaseData(new object[]
                 {
-                    ResourceRepositoryTest.ResourcesTestData,
+                    ResourcesRepositoryTest.ResourcesTestData,
                     new Pagination(0, 2),
                     new ResourceDto[]
                     {
-                        ResourceRepositoryTest.ResourcesTestData[0],
-                        ResourceRepositoryTest.ResourcesTestData[1]
+                        ResourcesRepositoryTest.ResourcesTestData[0],
+                        ResourcesRepositoryTest.ResourcesTestData[1]
                     }
                 }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenResourcesAreReturned)}(2)");
                 yield return new TestCaseData(new object[]
                 {
-                    ResourceRepositoryTest.ResourcesTestData,
+                    ResourcesRepositoryTest.ResourcesTestData,
                     new Pagination(1, 2),
                     new ResourceDto[]
                     {
-                        ResourceRepositoryTest.ResourcesTestData[2],
-                        ResourceRepositoryTest.ResourcesTestData[3]
+                        ResourcesRepositoryTest.ResourcesTestData[2],
+                        ResourcesRepositoryTest.ResourcesTestData[3]
                     }
                 }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenResourcesAreReturned)}(3)");
                 yield return new TestCaseData(new object[]
                 {
-                    ResourceRepositoryTest.ResourcesTestData,
+                    ResourcesRepositoryTest.ResourcesTestData,
                     new Pagination(2, 2),
                     new ResourceDto[]
                     {
-                        ResourceRepositoryTest.ResourcesTestData[4]
+                        ResourcesRepositoryTest.ResourcesTestData[4]
                     }
                 }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenResourcesAreReturned)}(4)");
                 yield return new TestCaseData(new object[]
                 {
-                    ResourceRepositoryTest.ResourcesTestData,
+                    ResourcesRepositoryTest.ResourcesTestData,
                     new Pagination(3, 2),
                     Enumerable.Empty<ResourceDto>()
                 }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenResourcesAreReturned)}(5)");
@@ -74,42 +74,42 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             {
                 yield return new TestCaseData(new object[]
                 {
-                    ResourceRepositoryTest.ResourcesTestData,
+                    ResourcesRepositoryTest.ResourcesTestData,
                     new Pagination(0, 5),
-                    ResourceRepositoryTest.ResourcesTestData
+                    ResourcesRepositoryTest.ResourcesTestData
                 }).SetName($"{nameof(TestGetAsync_WhenPaginationGiven_ThenResourcesAreReturned)}(1)");
                 yield return new TestCaseData(new object[]
                 {
-                    ResourceRepositoryTest.ResourcesTestData,
+                    ResourcesRepositoryTest.ResourcesTestData,
                     new Pagination(0, 2),
                     new ResourceDto[]
                     {
-                        ResourceRepositoryTest.ResourcesTestData[0],
-                        ResourceRepositoryTest.ResourcesTestData[1]
+                        ResourcesRepositoryTest.ResourcesTestData[0],
+                        ResourcesRepositoryTest.ResourcesTestData[1]
                     }
                 }).SetName($"{nameof(TestGetAsync_WhenPaginationGiven_ThenResourcesAreReturned)}(2)");
                 yield return new TestCaseData(new object[]
                 {
-                    ResourceRepositoryTest.ResourcesTestData,
+                    ResourcesRepositoryTest.ResourcesTestData,
                     new Pagination(1, 2),
                     new ResourceDto[]
                     {
-                        ResourceRepositoryTest.ResourcesTestData[2],
-                        ResourceRepositoryTest.ResourcesTestData[3]
+                        ResourcesRepositoryTest.ResourcesTestData[2],
+                        ResourcesRepositoryTest.ResourcesTestData[3]
                     }
                 }).SetName($"{nameof(TestGetAsync_WhenPaginationGiven_ThenResourcesAreReturned)}(3)");
                 yield return new TestCaseData(new object[]
                 {
-                    ResourceRepositoryTest.ResourcesTestData,
+                    ResourcesRepositoryTest.ResourcesTestData,
                     new Pagination(2, 2),
                     new ResourceDto[]
                     {
-                        ResourceRepositoryTest.ResourcesTestData[4]
+                        ResourcesRepositoryTest.ResourcesTestData[4]
                     }
                 }).SetName($"{nameof(TestGetAsync_WhenPaginationGiven_ThenResourcesAreReturned)}(4)");
                 yield return new TestCaseData(new object[]
                 {
-                    ResourceRepositoryTest.ResourcesTestData,
+                    ResourcesRepositoryTest.ResourcesTestData,
                     new Pagination(3, 2),
                     Enumerable.Empty<ResourceDto>()
                 }).SetName($"{nameof(TestGetAsync_WhenPaginationGiven_ThenResourcesAreReturned)}(5)");
