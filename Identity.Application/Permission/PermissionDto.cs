@@ -1,9 +1,10 @@
 ﻿using DDD.Application.Model;
 using Identity.Domain;
+using System;
 
 namespace Identity.Application
 {
-    public record PermissionDto : IAggregateRootDto<Permission, PermissionId>
+    public class PermissionDto : IAggregateRootDto<Permission, PermissionId>
     {
         public (string ResourceId, string Name) Id { get; }
         public string Description { get; }
@@ -21,5 +22,17 @@ namespace Identity.Application
 
         Permission IDomainObjectDto<Permission>.ToDomainObject()
              => this.ToPermission();
+
+        public override bool Equals(object obj)
+        {
+            return obj is PermissionDto dto 
+                && this.Id.Equals(dto.Id) 
+                && this.Description == dto.Description;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(this.Id, this.Description);
+        }
     }
 }

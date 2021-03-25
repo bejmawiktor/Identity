@@ -1,6 +1,7 @@
 ﻿using Identity.Application;
 using Identity.Domain;
 using NUnit.Framework;
+using System;
 
 namespace Identity.Tests.Unit.Application
 {
@@ -42,6 +43,42 @@ namespace Identity.Tests.Unit.Application
                 Assert.That(permission.Id, Is.EqualTo(new PermissionId(new ResourceId("MyResource"), "MyPermission")));
                 Assert.That(permission.Description, Is.EqualTo("My permission description."));
             });
+        }
+
+        [Test]
+        public void TestEquals_WhenTwoIdentitcalPermissionsDtosGiven_ThenTrueIsReturned()
+        {
+            var leftPermissionDto = new PermissionDto("MyResource", "MyPermission", "My permission description.");
+            var rightPermissionDto = new PermissionDto("MyResource", "MyPermission", "My permission description.");
+
+            Assert.That(leftPermissionDto.Equals(rightPermissionDto), Is.True);
+        }
+
+        [Test]
+        public void TestEquals_WhenTwoDifferentPermissionsDtosGiven_ThenFalseIsReturned()
+        {
+            var leftPermissionDto = new PermissionDto("MyResource", "MyPermission", "My permission description.");
+            var rightPermissionDto = new PermissionDto("MyResource2", "MyPermission2", "My permission description.");
+
+            Assert.That(leftPermissionDto.Equals(rightPermissionDto), Is.False);
+        }
+
+        [Test]
+        public void TestGetHashCode_WhenTwoIdenticalPermissionsDtosGiven_ThenSameHashCodesIsReturned()
+        {
+            var leftPermissionDto = new PermissionDto("MyResource", "MyPermission", "My permission description.");
+            var rightPermissionDto = new PermissionDto("MyResource", "MyPermission", "My permission description.");
+
+            Assert.That(leftPermissionDto.GetHashCode(), Is.EqualTo(rightPermissionDto.GetHashCode()));
+        }
+
+        [Test]
+        public void TestGetHashCode_WhenTwoDifferentPermissionsDtosGiven_ThenDifferentHashCodesIsReturned()
+        {
+            var leftPermissionDto = new PermissionDto("MyResource", "MyPermission", "My permission description.");
+            var rightPermissionDto = new PermissionDto("MyResource2", "MyPermission2", "My permission description.");
+
+            Assert.That(leftPermissionDto.GetHashCode(), Is.Not.EqualTo(rightPermissionDto.GetHashCode()));
         }
     }
 }
