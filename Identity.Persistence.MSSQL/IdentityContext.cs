@@ -2,15 +2,16 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
+using Identity.Persistence.MSSQL.DataModels;
 
 namespace Identity.Persistence.MSSQL
 {
     public class IdentityContext : DbContext
     {
         internal DbSet<ResourceDto> Resources { get; set; }
-        internal DbSet<PermissionDto> Permissions { get; set; }
-        internal DbSet<RoleDto> Roles { get; set; }
-        internal DbSet<UserDto> Users { get; set; }
+        internal DbSet<Permission> Permissions { get; set; }
+        internal DbSet<Role> Roles { get; set; }
+        internal DbSet<User> Users { get; set; }
 
         public IdentityContext(string connectionString)
         : base(GetDefaultOptions(connectionString ?? throw new ArgumentNullException(nameof(connectionString))))
@@ -42,7 +43,7 @@ namespace Identity.Persistence.MSSQL
 
                 this.AddResourcesData(r);
             });
-            modelBuilder.Entity<PermissionDto>(p =>
+            modelBuilder.Entity<Permission>(p =>
             {
                 p.HasKey(p => new { p.Name, p.ResourceId });
                 p.Property(p => p.Name).IsRequired();
@@ -52,18 +53,18 @@ namespace Identity.Persistence.MSSQL
 
                 this.AddPermissionsData(p);
             });
-            modelBuilder.Entity<RoleDto>(r =>
+            modelBuilder.Entity<Role>(r =>
             {
                 r.HasKey(r => r.Id);
                 r.Property(r => r.Id).HasColumnType("UNIQUEIDENTIFIER");
                 r.Property(r => r.Name);
                 r.Property(r => r.Description).HasMaxLength(2000);
-                r.HasMany(r => r.Permissions).WithOne(p => p.RoleDto).HasForeignKey(p => p.RoleId);
+                r.HasMany(r => r.Permissions).WithOne(p => p.Role).HasForeignKey(p => p.RoleId);
                 r.ToTable("Roles");
 
                 this.AddRolesData(r, adminRoleId);
             });
-            modelBuilder.Entity<RolePermissionDto>(r =>
+            modelBuilder.Entity<RolePermission>(r =>
             {
                 r.HasKey(p => new { p.PermissionName, p.PermissionResourceId, p.RoleId });
                 r.Property(r => r.PermissionName);
@@ -73,17 +74,17 @@ namespace Identity.Persistence.MSSQL
 
                 this.AddRolesPermissionsData(r, adminRoleId);
             });
-            modelBuilder.Entity<UserDto>(u =>
+            modelBuilder.Entity<User>(u =>
             {
                 u.HasKey(u => u.Id);
                 u.Property(u => u.Id).HasColumnType("UNIQUEIDENTIFIER");
                 u.Property(u => u.Email);
                 u.Property(u => u.HashedPassword).HasMaxLength(2000);
-                u.HasMany(u => u.Roles).WithOne(r => r.UserDto).HasForeignKey(r => r.UserId);
-                u.HasMany(u => u.Permissions).WithOne(p => p.UserDto).HasForeignKey(p => p.UserId);
+                u.HasMany(u => u.Roles).WithOne(r => r.User).HasForeignKey(r => r.UserId);
+                u.HasMany(u => u.Permissions).WithOne(p => p.User).HasForeignKey(p => p.UserId);
                 u.ToTable("Users");
             });
-            modelBuilder.Entity<UserPermissionDto>(u =>
+            modelBuilder.Entity<UserPermission>(u =>
             {
                 u.HasKey(p => new { p.PermissionName, p.PermissionResourceId, p.UserId });
                 u.Property(u => u.PermissionName);
@@ -91,7 +92,7 @@ namespace Identity.Persistence.MSSQL
                 u.Property(u => u.UserId).HasColumnType("UNIQUEIDENTIFIER");
                 u.ToTable("UsersPermissions");
             });
-            modelBuilder.Entity<UserRoleDto>(u =>
+            modelBuilder.Entity<UserRole>(u =>
             {
                 u.HasKey(p => new { p.UserId, p.RoleId });
                 u.Property(u => u.UserId).HasColumnType("UNIQUEIDENTIFIER");
@@ -109,28 +110,28 @@ namespace Identity.Persistence.MSSQL
                         + "authentication and authorization of users."));
         }
 
-        private void AddPermissionsData(EntityTypeBuilder<PermissionDto> entityBuilder)
+        private void AddPermissionsData(EntityTypeBuilder<Permission> entityBuilder)
         {
             entityBuilder.HasData(
-                new PermissionDto()
+                new Permission()
                 {
                     ResourceId = "Identity",
                     Name = "CreateUser",
                     Description = "It allows to create new users."
                 },
-                new PermissionDto()
+                new Permission()
                 {
                     ResourceId = "Identity",
                     Name = "CreateRole",
                     Description = "It allows to create new roles."
                 },
-                new PermissionDto()
+                new Permission()
                 {
                     ResourceId = "Identity",
                     Name = "CreateResource",
                     Description = "It allows to create new resources."
                 },
-                new PermissionDto()
+                new Permission()
                 {
                     ResourceId = "Identity",
                     Name = "CreatePermission",
@@ -138,10 +139,10 @@ namespace Identity.Persistence.MSSQL
                 });
         }
 
-        private void AddRolesData(EntityTypeBuilder<RoleDto> entityBuilder, Guid adminRoleId)
+        private void AddRolesData(EntityTypeBuilder<Role> entityBuilder, Guid adminRoleId)
         {
             entityBuilder.HasData(
-                new RoleDto()
+                new Role()
                 {
                     Id = adminRoleId,
                     Name = "Admin",
@@ -149,31 +150,31 @@ namespace Identity.Persistence.MSSQL
                 });
         }
 
-        private void AddRolesPermissionsData(EntityTypeBuilder<RolePermissionDto> entityBuilder, Guid adminRoleId)
+        private void AddRolesPermissionsData(EntityTypeBuilder<RolePermission> entityBuilder, Guid adminRoleId)
         {
             entityBuilder.HasData(
-                new RolePermissionDto()
+                new RolePermission()
                 {
                     RoleId = adminRoleId,
                     PermissionResourceId = "Identity",
                     PermissionName = "CreateUser",
                 });
             entityBuilder.HasData(
-                new RolePermissionDto()
+                new RolePermission()
                 {
                     RoleId = adminRoleId,
                     PermissionResourceId = "Identity",
                     PermissionName = "CreateRole",
                 });
             entityBuilder.HasData(
-                new RolePermissionDto()
+                new RolePermission()
                 {
                     RoleId = adminRoleId,
                     PermissionResourceId = "Identity",
                     PermissionName = "CreateResource",
                 });
             entityBuilder.HasData(
-                new RolePermissionDto()
+                new RolePermission()
                 {
                     RoleId = adminRoleId,
                     PermissionResourceId = "Identity",

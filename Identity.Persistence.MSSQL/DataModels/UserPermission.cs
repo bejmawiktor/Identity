@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace Identity.Persistence.MSSQL
+namespace Identity.Persistence.MSSQL.DataModels
 {
-    internal record UserPermissionDto
+    internal record UserPermission
     {
         public Guid UserId { get; set; }
-        public UserDto UserDto { get; set; }
+        public User User { get; set; }
         public string PermissionResourceId { get; set; }
         public string PermissionName { get; set; }
     }

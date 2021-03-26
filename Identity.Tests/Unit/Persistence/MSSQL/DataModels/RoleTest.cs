@@ -1,18 +1,19 @@
-﻿using Identity.Persistence.MSSQL;
+﻿using Identity.Application;
+using Identity.Persistence.MSSQL.DataModels;
 using NUnit.Framework;
 using System;
 
 namespace Identity.Tests.Unit.Persistence.MSSQL
 {
     [TestFixture]
-    public class RoleDtoTest
+    public class RoleTest
     {
         [Test]
-        public void TestConstructing_WhenApplictaionDtoGiven_ThenMembersAreSet()
+        public void TestConstructing_WhenDtoGiven_ThenMembersAreSet()
         {
             var roleId = Guid.NewGuid();
-            var roleDto = new RoleDto(
-                new Identity.Application.RoleDto(
+            var role = new Role(
+                new RoleDto(
                     id: roleId,
                     name: "MyRole",
                     description: "My role description.",
@@ -23,15 +24,15 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
 
             Assert.Multiple(() =>
             {
-                Assert.That(roleDto.Id, Is.EqualTo(roleId));
-                Assert.That(roleDto.Name, Is.EqualTo("MyRole"));
-                Assert.That(roleDto.Description, Is.EqualTo("My role description."));
-                Assert.That(roleDto.Permissions, Is.EqualTo(new RolePermissionDto[]
+                Assert.That(role.Id, Is.EqualTo(roleId));
+                Assert.That(role.Name, Is.EqualTo("MyRole"));
+                Assert.That(role.Description, Is.EqualTo("My role description."));
+                Assert.That(role.Permissions, Is.EqualTo(new RolePermission[]
                 {
-                    new RolePermissionDto()
+                    new RolePermission()
                     {
                         RoleId = roleId,
-                        RoleDto = roleDto,
+                        Role = role,
                         PermissionResourceId = "MyResource",
                         PermissionName = "MyPermission"
                     }
@@ -40,35 +41,35 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         }
 
         [Test]
-        public void TestToApplicationDto_WhenConvertingToApplicationDto_ThenRoleDtoIsReturned()
+        public void TestToDto_WhenConvertingToDto_ThenRoleDtoIsReturned()
         {
             var roleId = Guid.NewGuid();
-            var roleDto = new RoleDto
+            var role = new Role
             {
                 Id = roleId,
                 Name = "MyRole",
                 Description = "My role description.",
             };
-            roleDto.Permissions = new RolePermissionDto[]
+            role.Permissions = new RolePermission[]
             {
-                new RolePermissionDto()
+                new RolePermission()
                 {
                     RoleId = roleId,
-                    RoleDto = roleDto,
+                    Role = role,
                     PermissionResourceId = "MyResource",
                     PermissionName = "MyPermission"
                 }
             };
 
-            Identity.Application.RoleDto appRoleDto = roleDto.ToApplicationDto();
+            RoleDto roleDto = role.ToDto();
 
             Assert.Multiple(() =>
             {
-                Assert.That(appRoleDto.Id, Is.EqualTo(roleId));
-                Assert.That(appRoleDto.Name, Is.EqualTo("MyRole"));
-                Assert.That(appRoleDto.Description, Is.EqualTo("My role description."));
-                Assert.That(appRoleDto.Permissions, Is.EqualTo(new (string ResourceId, string Name)[] 
-                { 
+                Assert.That(roleDto.Id, Is.EqualTo(roleId));
+                Assert.That(roleDto.Name, Is.EqualTo("MyRole"));
+                Assert.That(roleDto.Description, Is.EqualTo("My role description."));
+                Assert.That(roleDto.Permissions, Is.EqualTo(new (string ResourceId, string Name)[]
+                {
                     ("MyResource", "MyPermission")
                 }));
             });

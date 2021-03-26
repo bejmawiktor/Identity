@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Identity.Persistence.MSSQL.DataModels;
 
 namespace Identity.Persistence.MSSQL
 {
@@ -17,57 +18,57 @@ namespace Identity.Persistence.MSSQL
             this.Context = context;
         }
 
-        public void Add(Identity.Application.RoleDto role)
+        public void Add(RoleDto role)
         {
-            this.Context.Roles.Add(new RoleDto(role));
+            this.Context.Roles.Add(new Role(role));
 
             this.Context.SaveChanges();
         }
 
-        public Task AddAsync(Identity.Application.RoleDto role)
+        public Task AddAsync(RoleDto role)
         {
             return this.Context.Roles
-                .AddAsync(new RoleDto(role))
+                .AddAsync(new Role(role))
                 .AsTask()
                 .ContinueWith((t) => _ = this.Context.SaveChangesAsync().Result);
         }
 
-        public Identity.Application.RoleDto Get(Guid id)
+        public RoleDto Get(Guid id)
             => this.Context.Roles
                 .FirstOrDefault(r => r.Id == id)?
-                .ToApplicationDto();
+                .ToDto();
 
-        public IEnumerable<Identity.Application.RoleDto> Get(Pagination pagination)
+        public IEnumerable<RoleDto> Get(Pagination pagination)
         {
             return this.Context.Roles
                 .Skip((int)pagination.Page * (int)pagination.ItemsPerPage)
                 .Take((int)pagination.ItemsPerPage)
-                .Select(r => r.ToApplicationDto());
+                .Select(r => r.ToDto());
         }
 
-        public Task<Identity.Application.RoleDto> GetAsync(Guid id)
+        public Task<RoleDto> GetAsync(Guid id)
             => this.Context.Roles
                 .FirstOrDefaultAsync(r => r.Id == id)
-                .ContinueWith(r => r.Result?.ToApplicationDto());
+                .ContinueWith(r => r.Result?.ToDto());
 
-        public Task<IEnumerable<Identity.Application.RoleDto>> GetAsync(Pagination pagination = null)
+        public Task<IEnumerable<RoleDto>> GetAsync(Pagination pagination = null)
         {
             return Task.Run(() => this.Context.Roles
                 .Skip((int)pagination.Page * (int)pagination.ItemsPerPage)
                 .Take((int)pagination.ItemsPerPage).AsEnumerable())
-                .ContinueWith(p => p.Result.Select(r => r.ToApplicationDto()));
+                .ContinueWith(p => p.Result.Select(r => r.ToDto()));
         }
 
-        public void Remove(Identity.Application.RoleDto role)
+        public void Remove(RoleDto role)
         {
             this.SetDeletedState(role);
 
             this.Context.SaveChanges();
         }
 
-        private void SetDeletedState(Identity.Application.RoleDto role)
+        private void SetDeletedState(RoleDto role)
         {
-            var local = this.Context.Set<RoleDto>()
+            var local = this.Context.Set<Role>()
                 .Local
                 .FirstOrDefault(entry => entry.Id == role.Id);
 
@@ -76,25 +77,25 @@ namespace Identity.Persistence.MSSQL
                 this.Context.Entry(local).State = EntityState.Detached;
             }
 
-            this.Context.Entry(new RoleDto(role)).State = EntityState.Deleted;
+            this.Context.Entry(new Role(role)).State = EntityState.Deleted;
         }
 
-        public Task RemoveAsync(Identity.Application.RoleDto role)
+        public Task RemoveAsync(RoleDto role)
         {
             return Task.Run(() => this.SetDeletedState(role))
                 .ContinueWith((t) => _ = this.Context.SaveChangesAsync().Result);
         }
 
-        public void Update(Identity.Application.RoleDto role)
+        public void Update(RoleDto role)
         {
             this.SetModifiedState(role);
 
             this.Context.SaveChanges();
         }
 
-        private void SetModifiedState(Identity.Application.RoleDto role)
+        private void SetModifiedState(RoleDto role)
         {
-            var local = this.Context.Set<RoleDto>()
+            var local = this.Context.Set<Role>()
                 .Local
                 .FirstOrDefault(entry => entry.Id == role.Id);
 
@@ -103,10 +104,10 @@ namespace Identity.Persistence.MSSQL
                 this.Context.Entry(local).State = EntityState.Detached;
             }
 
-            this.Context.Entry(new RoleDto(role)).State = EntityState.Modified;
+            this.Context.Entry(new Role(role)).State = EntityState.Modified;
         }
 
-        public Task UpdateAsync(Identity.Application.RoleDto entity)
+        public Task UpdateAsync(RoleDto entity)
         {
             return Task.Run(() => this.SetModifiedState(entity))
                 .ContinueWith((t) => _ = this.Context.SaveChangesAsync().Result);

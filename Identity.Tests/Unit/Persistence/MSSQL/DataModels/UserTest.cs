@@ -1,17 +1,18 @@
-﻿using Identity.Domain;
-using Identity.Persistence.MSSQL;
+﻿using Identity.Application;
+using Identity.Domain;
+using Identity.Persistence.MSSQL.DataModels;
 using NUnit.Framework;
 using System;
 
 namespace Identity.Tests.Unit.Persistence.MSSQL
 {
-    using UserDto = Identity.Persistence.MSSQL.UserDto;
+    using User = Identity.Persistence.MSSQL.DataModels.User;
 
     [TestFixture]
-    public class UserDtoTest
+    public class UserTest
     {
         [Test]
-        public void TestConstructing_WhenApplictaionDtoGiven_ThenMembersAreSet()
+        public void TestConstructing_WhenDtoGiven_ThenMembersAreSet()
         {
             var roles = new Guid[]
             {
@@ -25,49 +26,49 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             };
             var userId = Guid.NewGuid();
             var hashedPassword = HashedPassword.Hash("MyPassword");
-            var appUserDto = new Identity.Application.UserDto(
+            var userDto = new Identity.Application.UserDto(
                 userId,
                 "example@example.com",
                 hashedPassword.ToString(),
                 roles,
                 permissions);
 
-            var userDto = new UserDto(
-                appUserDto);
+            var user = new User(
+                userDto);
 
             Assert.Multiple(() =>
             {
-                Assert.That(userDto.Id, Is.EqualTo(appUserDto.Id));
-                Assert.That(userDto.Email, Is.EqualTo(appUserDto.Email));
-                Assert.That(userDto.HashedPassword, Is.EqualTo(appUserDto.HashedPassword));
-                Assert.That(userDto.Roles, Is.EqualTo(new UserRoleDto[]
+                Assert.That(user.Id, Is.EqualTo(userDto.Id));
+                Assert.That(user.Email, Is.EqualTo(userDto.Email));
+                Assert.That(user.HashedPassword, Is.EqualTo(userDto.HashedPassword));
+                Assert.That(user.Roles, Is.EqualTo(new UserRole[]
                 {
-                    new UserRoleDto()
+                    new UserRole()
                     {
                         UserId = userId,
-                        UserDto = userDto,
+                        User = user,
                         RoleId = roles[0]
                     },
-                    new UserRoleDto()
+                    new UserRole()
                     {
                         UserId = userId,
-                        UserDto = userDto,
+                        User = user,
                         RoleId = roles[1]
                     }
                 }));
-                Assert.That(userDto.Permissions, Is.EqualTo(new UserPermissionDto[]
+                Assert.That(user.Permissions, Is.EqualTo(new UserPermission[]
                 {
-                    new UserPermissionDto()
+                    new UserPermission()
                     {
                         UserId = userId,
-                        UserDto = userDto,
+                        User = user,
                         PermissionResourceId = "MyResource",
                         PermissionName = "MyPermission"
                     },
-                    new UserPermissionDto()
+                    new UserPermission()
                     {
                         UserId = userId,
-                        UserDto = userDto,
+                        User = user,
                         PermissionResourceId = "MyResource2",
                         PermissionName = "MyPermission2"
                     }
@@ -76,7 +77,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         }
 
         [Test]
-        public void TestToApplicationDto_WhenConvertingToApplicationDto_ThenUserDtoIsReturned()
+        public void TestToDto_WhenConvertingToDto_ThenUserDtoIsReturned()
         {
             var roles = new Guid[]
             {
@@ -90,55 +91,55 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             };
             var userId = Guid.NewGuid();
             var hashedPassword = HashedPassword.Hash("MyPassword");
-            var userDto = new UserDto()
+            var user = new User()
             {
                 Id = userId,
                 Email = "example@example.com",
                 HashedPassword = hashedPassword.ToString(),
                 
             };
-            userDto.Permissions = new UserPermissionDto[]
+            user.Permissions = new UserPermission[]
             {
-                new UserPermissionDto()
+                new UserPermission()
                 {
-                    UserId = userDto.Id,
-                    UserDto = userDto,
+                    UserId = user.Id,
+                    User = user,
                     PermissionName = "MyPermission",
                     PermissionResourceId = "MyResource"
                 },
-                new UserPermissionDto()
+                new UserPermission()
                 {
-                    UserId = userDto.Id,
-                    UserDto = userDto,
+                    UserId = user.Id,
+                    User = user,
                     PermissionName = "MyPermission2",
                     PermissionResourceId = "MyResource2"
                 },
             };
-            userDto.Roles = new UserRoleDto[]
+            user.Roles = new UserRole[]
             {
-                new UserRoleDto()
+                new UserRole()
                 {
-                    UserId = userDto.Id,
-                    UserDto = userDto,
+                    UserId = user.Id,
+                    User = user,
                     RoleId = roles[0]
                 },
-                new UserRoleDto()
+                new UserRole()
                 {
-                    UserId = userDto.Id,
-                    UserDto = userDto,
+                    UserId = user.Id,
+                    User = user,
                     RoleId = roles[1]
                 },
             };
 
-            Identity.Application.UserDto appUserDto = userDto.ToApplicationDto();
+            UserDto userDto = user.ToDto();
 
             Assert.Multiple(() =>
             {
-                Assert.That(appUserDto.Id, Is.EqualTo(userId));
-                Assert.That(appUserDto.Email, Is.EqualTo(appUserDto.Email));
-                Assert.That(appUserDto.HashedPassword, Is.EqualTo(appUserDto.HashedPassword));
-                Assert.That(appUserDto.Roles, Is.EqualTo(roles));
-                Assert.That(appUserDto.Permissions, Is.EqualTo(permissions));
+                Assert.That(userDto.Id, Is.EqualTo(userId));
+                Assert.That(userDto.Email, Is.EqualTo(userDto.Email));
+                Assert.That(userDto.HashedPassword, Is.EqualTo(userDto.HashedPassword));
+                Assert.That(userDto.Roles, Is.EqualTo(roles));
+                Assert.That(userDto.Permissions, Is.EqualTo(permissions));
             });
         }
     }

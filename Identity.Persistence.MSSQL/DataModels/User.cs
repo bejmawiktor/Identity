@@ -1,45 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Identity.Application;
 
-namespace Identity.Persistence.MSSQL
+namespace Identity.Persistence.MSSQL.DataModels
 {
-    internal record UserDto
+    internal record User
     {
         public Guid Id { get; set; }
         public string Email { get; set; }
         public string HashedPassword { get; set; }
-        public IEnumerable<UserRoleDto> Roles { get; set; }
-        public IEnumerable<UserPermissionDto> Permissions { get; set; }
+        public IEnumerable<UserRole> Roles { get; set; }
+        public IEnumerable<UserPermission> Permissions { get; set; }
 
-        public UserDto(Identity.Application.UserDto userDto)
+        public User(UserDto userDto)
         {
             this.Id = userDto.Id;
             this.Email = userDto.Email;
             this.HashedPassword = userDto.HashedPassword;
             this.Roles = userDto.Roles.Select(r =>
-                new UserRoleDto()
+                new UserRole()
                 {
                     RoleId = r,
                     UserId = userDto.Id,
-                    UserDto = this
+                    User = this
                 }).ToList();
             this.Permissions = userDto.Permissions.Select(p =>
-                new UserPermissionDto()
+                new UserPermission()
                 {
                     PermissionResourceId = p.ResourceId,
                     PermissionName = p.Name,
                     UserId = userDto.Id,
-                    UserDto = this
+                    User = this
                 }).ToList();
         }
 
-        public UserDto()
+        public User()
         {
         }
 
-        public Identity.Application.UserDto ToApplicationDto()
-            => new Application.UserDto(
+        public UserDto ToDto()
+            => new UserDto(
                 this.Id, 
                 this.Email, 
                 this.HashedPassword,

@@ -1,37 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Identity.Application;
 
-namespace Identity.Persistence.MSSQL
+namespace Identity.Persistence.MSSQL.DataModels
 {
-    internal record RoleDto
+    internal record Role
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public ICollection<RolePermissionDto> Permissions { get; set; }
+        public ICollection<RolePermission> Permissions { get; set; }
 
-        public RoleDto(Identity.Application.RoleDto roleDto)
+        public Role(RoleDto roleDto)
         {
             this.Id = roleDto.Id;
             this.Name = roleDto.Name;
             this.Description = roleDto.Description;
             this.Permissions = roleDto.Permissions.Select(r =>
-                new RolePermissionDto()
+                new RolePermission()
                 {
                     PermissionResourceId = r.ResourceId,
                     PermissionName = r.Name,
                     RoleId = roleDto.Id,
-                    RoleDto = this
+                    Role = this
                 }).ToList();
         }
 
-        public RoleDto()
+        public Role()
         {
         }
 
-        public Identity.Application.RoleDto ToApplicationDto()
-            => new Identity.Application.RoleDto(
+        public RoleDto ToDto()
+            => new RoleDto(
                 this.Id,
                 this.Name,
                 this.Description,
