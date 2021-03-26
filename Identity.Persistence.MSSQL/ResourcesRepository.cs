@@ -1,5 +1,6 @@
 ﻿using DDD.Domain.Persistence;
 using Identity.Application;
+using Identity.Persistence.MSSQL.DataModels;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace Identity.Persistence.MSSQL
 
         public void Add(ResourceDto resource)
         {
-            this.Context.Resources.Add(resource);
+            this.Context.Resources.Add(new Resource(resource));
 
             this.Context.SaveChanges();
         }
@@ -26,29 +27,35 @@ namespace Identity.Persistence.MSSQL
         public Task AddAsync(ResourceDto resource)
         {
             return this.Context.Resources
-                .AddAsync(resource)
+                .AddAsync(new Resource(resource))
                 .AsTask()
                 .ContinueWith((t) => _ = this.Context.SaveChangesAsync().Result);
         }
 
         public ResourceDto Get(string id)
-            => this.Context.Resources.FirstOrDefault(r => r.Id == id);
+            => this.Context.Resources
+                .FirstOrDefault(r => r.Id == id)?
+                .ToDto();
 
         public IEnumerable<ResourceDto> Get(Pagination pagination)
         {
             return this.Context.Resources
                 .Skip((int)pagination.Page * (int)pagination.ItemsPerPage)
-                .Take((int)pagination.ItemsPerPage);
+                .Take((int)pagination.ItemsPerPage)
+                .Select(r => r.ToDto());
         }
 
         public Task<ResourceDto> GetAsync(string id)
-            => this.Context.Resources.FirstOrDefaultAsync(r => r.Id == id);
+            => this.Context.Resources
+                .FirstOrDefaultAsync(r => r.Id == id)
+                .ContinueWith(r => r.Result?.ToDto());
 
         public Task<IEnumerable<ResourceDto>> GetAsync(Pagination pagination = null)
         {
             return Task.Run(() => this.Context.Resources
                 .Skip((int)pagination.Page * (int)pagination.ItemsPerPage)
-                .Take((int)pagination.ItemsPerPage).AsEnumerable());
+                .Take((int)pagination.ItemsPerPage).AsEnumerable())
+                .ContinueWith(r => r.Result.Select(r => r.ToDto()));
         }
 
         public void Remove(ResourceDto resource)
@@ -60,7 +67,7 @@ namespace Identity.Persistence.MSSQL
 
         private void SetDeletedState(ResourceDto resource)
         {
-            var local = this.Context.Set<ResourceDto>()
+            var local = this.Context.Set<Resource>()
                .Local
                .FirstOrDefault(entry => entry.Id == resource.Id);
 
@@ -69,7 +76,7 @@ namespace Identity.Persistence.MSSQL
                 this.Context.Entry(local).State = EntityState.Detached;
             }
 
-            this.Context.Entry(resource).State = EntityState.Deleted;
+            this.Context.Entry(new Resource(resource)).State = EntityState.Deleted;
         }
 
         public Task RemoveAsync(ResourceDto resource)
@@ -87,7 +94,7 @@ namespace Identity.Persistence.MSSQL
 
         private void SetModifiedState(ResourceDto resource)
         {
-            var local = this.Context.Set<ResourceDto>()
+            var local = this.Context.Set<Resource>()
                 .Local
                 .FirstOrDefault(entry => entry.Id == resource.Id);
 
@@ -96,12 +103,12 @@ namespace Identity.Persistence.MSSQL
                 this.Context.Entry(local).State = EntityState.Detached;
             }
 
-            this.Context.Entry(resource).State = EntityState.Modified;
+            this.Context.Entry(new Resource(resource)).State = EntityState.Modified;
         }
 
-        public Task UpdateAsync(ResourceDto entity)
+        public Task UpdateAsync(ResourceDto resource)
         {
-            return Task.Run(() => this.SetModifiedState(entity))
+            return Task.Run(() => this.SetModifiedState(resource))
                 .ContinueWith((t) => _ = this.Context.SaveChangesAsync().Result);
         }
     }

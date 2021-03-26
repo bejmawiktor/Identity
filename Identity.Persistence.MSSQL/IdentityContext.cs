@@ -8,7 +8,7 @@ namespace Identity.Persistence.MSSQL
 {
     public class IdentityContext : DbContext
     {
-        internal DbSet<ResourceDto> Resources { get; set; }
+        internal DbSet<Resource> Resources { get; set; }
         internal DbSet<Permission> Permissions { get; set; }
         internal DbSet<Role> Roles { get; set; }
         internal DbSet<User> Users { get; set; }
@@ -35,7 +35,7 @@ namespace Identity.Persistence.MSSQL
         {
             var adminRoleId = Guid.NewGuid();
 
-            modelBuilder.Entity<ResourceDto>(r =>
+            modelBuilder.Entity<Resource>(r =>
             {
                 r.HasKey(r => r.Id);
                 r.Property(r => r.Description).HasMaxLength(2000).IsRequired();
@@ -101,13 +101,15 @@ namespace Identity.Persistence.MSSQL
             });
         }
 
-        private void AddResourcesData(EntityTypeBuilder<ResourceDto> entityBuilder)
+        private void AddResourcesData(EntityTypeBuilder<Resource> entityBuilder)
         {
             entityBuilder.HasData(
-                new ResourceDto(
-                    id: "Identity",
-                    description: "Identity service responsible for "
-                        + "authentication and authorization of users."));
+                new Resource
+                {
+                    Id = "Identity",
+                    Description = "Identity service responsible for "
+                        + "authentication and authorization of users."
+                });
         }
 
         private void AddPermissionsData(EntityTypeBuilder<Permission> entityBuilder)

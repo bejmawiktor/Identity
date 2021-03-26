@@ -5,7 +5,7 @@ namespace Identity.Persistence.MSSQL.DataModels
     internal record Permission
     {
         public string ResourceId { get; set; }
-        public ResourceDto Resource { get; set; }
+        public Resource Resource { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
 
