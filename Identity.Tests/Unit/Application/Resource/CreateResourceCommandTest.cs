@@ -1,5 +1,6 @@
 ﻿using Identity.Application;
 using NUnit.Framework;
+using System;
 
 namespace Identity.Tests.Unit.Application
 {
@@ -11,7 +12,8 @@ namespace Identity.Tests.Unit.Application
         {
             var createResourceCommand = new CreateResourceCommand(
                 resourceId: "MyResource",
-                resourceDescription: "Resource description.");
+                resourceDescription: "Resource description.",
+                userId: Guid.NewGuid());
 
             Assert.That(createResourceCommand.ResourceId, Is.EqualTo("MyResource"));
         }
@@ -21,9 +23,22 @@ namespace Identity.Tests.Unit.Application
         {
             var createResourceCommand = new CreateResourceCommand(
                 resourceId: "MyResource",
-                resourceDescription: "Resource description.");
+                resourceDescription: "Resource description.",
+                userId: Guid.NewGuid());
 
             Assert.That(createResourceCommand.ResourceDescription, Is.EqualTo("Resource description."));
+        }
+
+        [Test]
+        public void TestConstructing_WhenUserIdGiven_ThenUserIdIsSet()
+        {
+            var userId = Guid.NewGuid();
+            var createResourceCommand = new CreateResourceCommand(
+                resourceId: "MyResource",
+                resourceDescription: "Resource description.",
+                userId: userId);
+
+            Assert.That(createResourceCommand.UserId, Is.EqualTo(userId));
         }
     }
 }

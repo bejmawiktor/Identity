@@ -1,5 +1,6 @@
 ﻿using DDD.Domain.Events;
 using Identity.Application;
+using Identity.Domain;
 using Identity.Persistence.MSSQL;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
@@ -20,6 +21,14 @@ namespace Identity.Tests.Integration
 
         private IdentityContext IdentityContext { get; set; }
         private IDbContextTransaction Transaction { get; set; }
+        private static readonly UserDto TestUserDto = new UserDto(
+            id: Guid.NewGuid(),
+            email: "example@example.com",
+            hashedPassword: HashedPassword.Hash("MyPassword").ToString(),
+            permissions: new (string ResourceId, string Name)[]
+            {
+                ("Identity", "CreateResource")
+            });
 
         [SetUp]
         public void SetUp()
@@ -41,9 +50,15 @@ namespace Identity.Tests.Integration
         [Test]
         public void TestCreateResource_WhenResourceDataGiven_ThenResourceIsStored()
         {
-            var createResourceCommand = new CreateResourceCommand("MyResource", "Resource description");
+            var createResourceCommand = new CreateResourceCommand(
+                resourceId: "MyResource", 
+                resourceDescription: "Resource description", 
+                userId: MSSQLWithCreateResourceHandlerIntegrationTest.TestUserDto.Id);
             var resourceRepository = new ResourcesRepository(this.IdentityContext);
-            var createResourceCommandHandler = new CreateResourceCommandHandler(resourceRepository);
+            var usersRepository = new UsersRepository(this.IdentityContext);
+            var rolesRepository = new RolesRepository(this.IdentityContext);
+            var createResourceCommandHandler = new CreateResourceCommandHandler(resourceRepository, usersRepository, rolesRepository);
+            usersRepository.Add(MSSQLWithCreateResourceHandlerIntegrationTest.TestUserDto);
 
             createResourceCommandHandler.Handle(createResourceCommand);
 
@@ -53,9 +68,15 @@ namespace Identity.Tests.Integration
         [Test]
         public async Task TestAsyncCreateResource_WhenResourceDataGiven_ThenResourceIsStored()
         {
-            var createResourceCommand = new CreateResourceCommand("MyResource", "Resource description");
+            var createResourceCommand = new CreateResourceCommand(
+                resourceId: "MyResource",
+                resourceDescription: "Resource description",
+                userId: MSSQLWithCreateResourceHandlerIntegrationTest.TestUserDto.Id);
             var resourceRepository = new ResourcesRepository(this.IdentityContext);
-            var createResourceCommandHandler = new CreateResourceCommandHandler(resourceRepository);
+            var usersRepository = new UsersRepository(this.IdentityContext);
+            var rolesRepository = new RolesRepository(this.IdentityContext);
+            var createResourceCommandHandler = new CreateResourceCommandHandler(resourceRepository, usersRepository, rolesRepository);
+            usersRepository.Add(MSSQLWithCreateResourceHandlerIntegrationTest.TestUserDto);
 
             await createResourceCommandHandler.HandleAsync(createResourceCommand);
 
