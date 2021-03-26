@@ -7,6 +7,8 @@ namespace Identity.Tests.Unit.Domain
     [TestFixture]
     public class HashedPasswordTest
     {
+        private static readonly HashedPassword TestPassword = HashedPassword.Hash("MyPassword");
+
         [Test]
         public void TestConstructing_WhenNullStringHashedPasswordGiven_ThenArgumentNullExceptionIsThrown()
         {
@@ -40,7 +42,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestConstructing_WhenBase64HashedStringGiven_ThenToStringReturnsBased64HashedString()
         {
-            string base64HashedPassword = HashedPassword.Hash("MySimplePassword").ToString();
+            string base64HashedPassword = HashedPasswordTest.TestPassword.ToString();
             var password = new HashedPassword(base64HashedPassword);
 
             Assert.That(password.ToString(), Is.EqualTo(base64HashedPassword));
@@ -49,7 +51,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestConstructing_WhenHashedPasswordBytesGiven_ThenToByteArrayReturnsSameByteArray()
         {
-            byte[] hashedPassowrdBytes = HashedPassword.Hash("MySimplePassword").ToByteArray();
+            byte[] hashedPassowrdBytes = HashedPasswordTest.TestPassword.ToByteArray();
             var password = new HashedPassword(hashedPassowrdBytes);
 
             Assert.That(password.ToByteArray(), Is.EqualTo(hashedPassowrdBytes));
@@ -58,7 +60,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestToString_WhenConvertingToString_ThenStringIsReturned()
         {
-            var password = HashedPassword.Hash("mysimplepassword");
+            var password = HashedPasswordTest.TestPassword;
 
             Assert.That(password.ToString(), Is.Not.Empty);
         }
@@ -66,7 +68,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestToByteArray_WhenConvertingToByteArray_ThenByteArrayIsReturned()
         {
-            var password = HashedPassword.Hash("mysimplepassword");
+            var password = HashedPasswordTest.TestPassword;
 
             Assert.That(password.ToByteArray(), Is.Not.Empty);
         }
@@ -74,7 +76,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestHash_WhenStringGiven_ThenPasswordIsReturned()
         {
-            var password = HashedPassword.Hash("mysimplepassword");
+            var password = HashedPasswordTest.TestPassword;
 
             Assert.That(password, Is.TypeOf<HashedPassword>());
         }
@@ -145,7 +147,7 @@ namespace Identity.Tests.Unit.Domain
                 Is.InstanceOf<ArgumentNullException>()
                     .And.Property(nameof(ArgumentNullException.ParamName))
                     .EqualTo("verifiedPassword"),
-                () => HashedPassword.Hash("mysimplepassword").Verify(null));
+                () => HashedPasswordTest.TestPassword.Verify(null));
         }
 
         [Test]
@@ -155,7 +157,7 @@ namespace Identity.Tests.Unit.Domain
                 Is.InstanceOf<ArgumentException>()
                     .And.Message
                     .EqualTo("Verified password can't be empty."),
-                () => HashedPassword.Hash("mysimplepassword").Verify(string.Empty));
+                () => HashedPasswordTest.TestPassword.Verify(string.Empty));
         }
     }
 }

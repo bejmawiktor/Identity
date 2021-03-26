@@ -8,6 +8,8 @@ namespace Identity.Tests.Unit.Domain
     [TestFixture]
     public class AuthorizationServiceTest
     {
+        private static readonly HashedPassword TestPassword = HashedPassword.Hash("MyPassword");
+
         [Test]
         public void TestConstructing_WhenUsersRepositoryGiven_ThenUsersRepositoryIsSet()
         {
@@ -124,7 +126,7 @@ namespace Identity.Tests.Unit.Domain
             var user = new User(
                 id: UserId.Generate(),
                 email: new EmailAddress("example@example.com"),
-                password: HashedPassword.Hash("MyPassword"),
+                password: AuthorizationServiceTest.TestPassword,
                 roles: new RoleId[]
                 {
                     notPermittedRoleId,
@@ -164,7 +166,7 @@ namespace Identity.Tests.Unit.Domain
             var user = new User(
                 id: UserId.Generate(),
                 email: new EmailAddress("example@example.com"),
-                password: HashedPassword.Hash("MyPassword"),
+                password: AuthorizationServiceTest.TestPassword,
                 permissions: new PermissionId[]
                 {
                     permissionId,
@@ -189,7 +191,7 @@ namespace Identity.Tests.Unit.Domain
             var user = new User(
                 id: UserId.Generate(),
                 email: new EmailAddress("example@example.com"),
-                password: HashedPassword.Hash("MyPassword"),
+                password: AuthorizationServiceTest.TestPassword,
                 roles: new RoleId[]
                 {
                     RoleId.Generate()
@@ -226,7 +228,7 @@ namespace Identity.Tests.Unit.Domain
             var user = new User(
                 id: UserId.Generate(),
                 email: new EmailAddress("example@example.com"),
-                password: HashedPassword.Hash("MyPassword"));
+                password: AuthorizationServiceTest.TestPassword);
             usersRepositoryMock.Setup(u => u.Get(It.IsAny<UserId>())).Returns(user);
             IUsersRepository usersRepository = usersRepositoryMock.Object;
             IRolesRepository rolesRepository = rolesRepositoryMock.Object;

@@ -9,13 +9,15 @@ namespace Identity.Tests.Unit.Domain
     [TestFixture]
     public class UserTest
     {
+        private static HashedPassword TestPassword = HashedPassword.Hash("MyPassword");
+
         [Test]
         public void TestConstructing_WhenEmailGiven_ThenEmailIsSet()
         {
             var user = new User(
                 id: UserId.Generate(),
                 email: new EmailAddress("myemail@example.com"),
-                password: HashedPassword.Hash("MyPassword"));
+                password: UserTest.TestPassword);
 
             Assert.That(user.Email, Is.EqualTo(new EmailAddress("myemail@example.com")));
         }
@@ -30,19 +32,18 @@ namespace Identity.Tests.Unit.Domain
                 () => new User(
                     id: UserId.Generate(),
                     email: null,
-                    password: HashedPassword.Hash("MyPassword")));
+                    password: UserTest.TestPassword));
         }
 
         [Test]
         public void TestConstructing_WhenPasswordGiven_ThenPasswordIsSet()
         {
-            var password = HashedPassword.Hash("MyPassword");
             var user = new User(
                 id: UserId.Generate(),
                 email: new EmailAddress("myemail@example.com"),
-                password: password);
+                password: UserTest.TestPassword);
 
-            Assert.That(user.Password, Is.EqualTo(password));
+            Assert.That(user.Password, Is.EqualTo(UserTest.TestPassword));
         }
 
         [Test]
@@ -66,11 +67,10 @@ namespace Identity.Tests.Unit.Domain
                 RoleId.Generate(),
                 RoleId.Generate()
             };
-            var password = HashedPassword.Hash("MyPassword");
             var user = new User(
                 id: UserId.Generate(),
                 email: new EmailAddress("myemail@example.com"),
-                password: password,
+                password: UserTest.TestPassword,
                 roles: roles);
 
             Assert.That(user.Roles, Is.EqualTo(roles));
@@ -79,11 +79,10 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestConstructing_WhenRolesNotGiven_ThenRolesAreEmpty()
         {
-            var password = HashedPassword.Hash("MyPassword");
             var user = new User(
                 id: UserId.Generate(),
                 email: new EmailAddress("myemail@example.com"),
-                password: password);
+                password: UserTest.TestPassword);
 
             Assert.That(user.Roles, Is.Empty);
         }
@@ -91,16 +90,14 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestCreate_WhenCreatingUser_ThenNewUserIsReturned()
         {
-            var password = HashedPassword.Hash("MyPassword");
-
             User user = User.Create(
                 email: new EmailAddress("myemail@example.com"),
-                password: password);
+                password: UserTest.TestPassword);
 
             Assert.Multiple(() =>
             {
                 Assert.That(user.Email, Is.EqualTo(new EmailAddress("myemail@example.com")));
-                Assert.That(user.Password, Is.EqualTo(password));
+                Assert.That(user.Password, Is.EqualTo(UserTest.TestPassword));
             });
         }
 
@@ -113,11 +110,10 @@ namespace Identity.Tests.Unit.Domain
                 .Setup(e => e.Dispatch(It.IsAny<UserCreated>()))
                 .Callback((UserCreated p) => userCreatedEvent = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
-            var password = HashedPassword.Hash("MyPassword");
 
             User user = User.Create(
                 email: new EmailAddress("myemail@example.com"),
-                password: password);
+                password: UserTest.TestPassword);
 
             Assert.Multiple(() =>
             {
@@ -129,12 +125,11 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestEmailSet_WhenNullEmailGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var password = HashedPassword.Hash("MyPassword");
             var userId = UserId.Generate();
             var user = new User(
                 id: userId,
                 email: new EmailAddress("myemail@example.com"),
-                password: password);
+                password: UserTest.TestPassword);
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -146,12 +141,11 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestEmailSet_WhenEmailGiven_ThenEmailIsSet()
         {
-            var password = HashedPassword.Hash("MyPassword");
             var userId = UserId.Generate();
             var user = new User(
                 id: userId,
                 email: new EmailAddress("myemail@example.com"),
-                password: password);
+                password: UserTest.TestPassword);
 
             user.Email = new EmailAddress("newemail@example.com");
 
@@ -161,12 +155,11 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestPasswordSet_WhenNullPasswordGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var password = HashedPassword.Hash("MyPassword");
             var userId = UserId.Generate();
             var user = new User(
                 id: userId,
                 email: new EmailAddress("myemail@example.com"),
-                password: password);
+                password: UserTest.TestPassword);
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -178,13 +171,12 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestPasswordSet_WhenPasswordGiven_ThenPasswordIsSet()
         {
-            var password = HashedPassword.Hash("MyPassword");
             var newPassword = HashedPassword.Hash("MyPassword2");
             var userId = UserId.Generate();
             var user = new User(
                 id: userId,
                 email: new EmailAddress("myemail@example.com"),
-                password: password);
+                password: UserTest.TestPassword);
 
             user.Password = newPassword;
 
@@ -201,10 +193,10 @@ namespace Identity.Tests.Unit.Domain
                 .Setup(e => e.Dispatch(It.IsAny<UserPermissionObtained>()))
                 .Callback((UserPermissionObtained p) => userPermissionObtained = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
-            var password = HashedPassword.Hash("MyPassword");
+
             User user = User.Create(
                 email: new EmailAddress("myemail@example.com"),
-                password: password);
+                password: UserTest.TestPassword);
 
             user.ObtainPermission(permissionId);
 
@@ -219,10 +211,10 @@ namespace Identity.Tests.Unit.Domain
         public void TestObtainPermission_WhenPermissionGiven_ThenUserHasPermission()
         {
             var permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
-            var password = HashedPassword.Hash("MyPassword");
+
             User user = User.Create(
                 email: new EmailAddress("myemail@example.com"),
-                password: password);
+                password: UserTest.TestPassword);
 
             user.ObtainPermission(permissionId);
 
@@ -239,10 +231,10 @@ namespace Identity.Tests.Unit.Domain
                 .Setup(e => e.Dispatch(It.IsAny<UserPermissionRevoked>()))
                 .Callback((UserPermissionRevoked p) => userPermissionRevokedEvent = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
-            var password = HashedPassword.Hash("MyPassword");
+
             User user = User.Create(
                 email: new EmailAddress("myemail@example.com"),
-                password: password);
+                password: UserTest.TestPassword);
             user.ObtainPermission(permissionId);
 
             user.RevokePermission(permissionId);
@@ -258,10 +250,10 @@ namespace Identity.Tests.Unit.Domain
         public void TestRevokePermission_WhenPermissionIdGiven_ThenPermissionIsRevoked()
         {
             var permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
-            var password = HashedPassword.Hash("MyPassword");
+
             User user = User.Create(
                 email: new EmailAddress("myemail@example.com"),
-                password: password);
+                password: UserTest.TestPassword);
             user.ObtainPermission(permissionId);
 
             user.RevokePermission(permissionId);
@@ -272,10 +264,9 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestHasRole_WhenNullRoleIdGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var password = HashedPassword.Hash("MyPassword");
             User user = User.Create(
                 email: new EmailAddress("myemail@example.com"),
-                password: password);
+                password: UserTest.TestPassword);
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -292,11 +283,11 @@ namespace Identity.Tests.Unit.Domain
             {
                 roleId
             };
-            var password = HashedPassword.Hash("MyPassword");
+
             User user = new User(
                 id: UserId.Generate(),
                 email: new EmailAddress("email@example.com"),
-                password: password,
+                password: UserTest.TestPassword,
                 roles: roles);
 
             bool result = user.HasRole(roleId);
@@ -308,11 +299,11 @@ namespace Identity.Tests.Unit.Domain
         public void TestHasRole_WhenUserHasntRole_ThenFalseIsReturned()
         {
             var roleId = RoleId.Generate();
-            var password = HashedPassword.Hash("MyPassword");
+
             User user = new User(
                 id: UserId.Generate(),
                 email: new EmailAddress("email@example.com"),
-                password: password);
+                password: UserTest.TestPassword);
 
             bool result = user.HasRole(roleId);
 
@@ -322,11 +313,10 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestAssumeRole_WhenNullRoleIdGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var password = HashedPassword.Hash("MyPassword");
             var user = new User(
                 id: UserId.Generate(),
                 email: new EmailAddress("email@example.com"),
-                password: password);
+                password: UserTest.TestPassword);
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -343,11 +333,11 @@ namespace Identity.Tests.Unit.Domain
             {
                 roleId
             };
-            var password = HashedPassword.Hash("MyPassword");
+
             User user = new User(
                 id: UserId.Generate(),
                 email: new EmailAddress("email@example.com"),
-                password: password,
+                password: UserTest.TestPassword,
                 roles: roles);
 
             Assert.Throws(
@@ -361,11 +351,11 @@ namespace Identity.Tests.Unit.Domain
         public void TestAssumeRole_WhenRoleGiven_ThenUserHasRole()
         {
             var roleId = RoleId.Generate();
-            var password = HashedPassword.Hash("MyPassword");
+
             var user = new User(
                 id: UserId.Generate(),
                 email: new EmailAddress("email@example.com"),
-                password: password);
+                password: UserTest.TestPassword);
 
             user.AssumeRole(roleId);
 
@@ -382,11 +372,11 @@ namespace Identity.Tests.Unit.Domain
                 .Callback((UserRoleAssumed p) => userRoleAssumed = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var roleId = RoleId.Generate();
-            var password = HashedPassword.Hash("MyPassword");
+
             var user = new User(
                 id: UserId.Generate(),
                 email: new EmailAddress("email@example.com"),
-                password: password);
+                password: UserTest.TestPassword);
 
             user.AssumeRole(roleId);
 
@@ -400,11 +390,10 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestRevokeRole_WhenNullRoleIdGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var password = HashedPassword.Hash("MyPassword");
             var user = new User(
                 id: UserId.Generate(),
                 email: new EmailAddress("email@example.com"),
-                password: password);
+                password: UserTest.TestPassword);
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -417,11 +406,11 @@ namespace Identity.Tests.Unit.Domain
         public void TestRevokeRole_WhenUserRoleWasAlreadyRevoked_ThenInvalidOperationIsThrown()
         {
             var roleId = RoleId.Generate();
-            var password = HashedPassword.Hash("MyPassword");
+
             User user = new User(
                 id: UserId.Generate(),
                 email: new EmailAddress("email@example.com"),
-                password: password);
+                password: UserTest.TestPassword);
 
             Assert.Throws(
                 Is.InstanceOf<InvalidOperationException>()
@@ -434,11 +423,11 @@ namespace Identity.Tests.Unit.Domain
         public void TestRevokeRole_WhenRoleIdGiven_ThenUserRoleIsRevoked()
         {
             var roleId = RoleId.Generate();
-            var password = HashedPassword.Hash("MyPassword");
+
             var user = new User(
                 id: UserId.Generate(),
                 email: new EmailAddress("email@example.com"),
-                password: password);
+                password: UserTest.TestPassword);
             user.AssumeRole(roleId);
 
             user.RevokeRole(roleId);
@@ -456,11 +445,11 @@ namespace Identity.Tests.Unit.Domain
                 .Callback((UserRoleRevoked p) => userRoleRevoked = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var roleId = RoleId.Generate();
-            var password = HashedPassword.Hash("MyPassword");
+
             var user = new User(
                 id: UserId.Generate(),
                 email: new EmailAddress("email@example.com"),
-                password: password);
+                password: UserTest.TestPassword);
             user.AssumeRole(roleId);
 
             user.RevokeRole(roleId);
