@@ -18,14 +18,14 @@ namespace Identity.Persistence.MSSQL
             this.Context = context;
         }
 
-        public void Add(Identity.Application.UserDto user)
+        public void Add(UserDto user)
         {
             this.Context.Users.Add(new User(user));
 
             this.Context.SaveChanges();
         }
 
-        public Task AddAsync(Identity.Application.UserDto user)
+        public Task AddAsync(UserDto user)
         {
             return this.Context.Users
                 .AddAsync(new User(user))
@@ -33,12 +33,12 @@ namespace Identity.Persistence.MSSQL
                 .ContinueWith((t) => _ = this.Context.SaveChangesAsync().Result);
         }
 
-        public Identity.Application.UserDto Get(Guid id)
+        public UserDto Get(Guid id)
             => this.Context.Users
                 .FirstOrDefault(r => r.Id == id)?
                 .ToDto();
 
-        public IEnumerable<Identity.Application.UserDto> Get(Pagination pagination)
+        public IEnumerable<UserDto> Get(Pagination pagination)
         {
             return this.Context.Users
                 .Skip((int)pagination.Page * (int)pagination.ItemsPerPage)
@@ -46,12 +46,12 @@ namespace Identity.Persistence.MSSQL
                 .Select(r => r.ToDto());
         }
 
-        public Task<Identity.Application.UserDto> GetAsync(Guid id)
+        public Task<UserDto> GetAsync(Guid id)
             => this.Context.Users
                 .FirstOrDefaultAsync(r => r.Id == id)
                 .ContinueWith(r => r.Result?.ToDto());
 
-        public Task<IEnumerable<Identity.Application.UserDto>> GetAsync(Pagination pagination = null)
+        public Task<IEnumerable<UserDto>> GetAsync(Pagination pagination = null)
         {
             return Task.Run(() => this.Context.Users
                 .Skip((int)pagination.Page * (int)pagination.ItemsPerPage)
@@ -59,14 +59,14 @@ namespace Identity.Persistence.MSSQL
                 .ContinueWith(p => p.Result.Select(r => r.ToDto()));
         }
 
-        public void Remove(Identity.Application.UserDto user)
+        public void Remove(UserDto user)
         {
             this.SetDeletedState(user);
 
             this.Context.SaveChanges();
         }
 
-        private void SetDeletedState(Identity.Application.UserDto user)
+        private void SetDeletedState(UserDto user)
         {
             var local = this.Context.Set<User>()
                 .Local
@@ -80,20 +80,20 @@ namespace Identity.Persistence.MSSQL
             this.Context.Entry(new User(user)).State = EntityState.Deleted;
         }
 
-        public Task RemoveAsync(Identity.Application.UserDto user)
+        public Task RemoveAsync(UserDto user)
         {
             return Task.Run(() => this.SetDeletedState(user))
                 .ContinueWith((t) => _ = this.Context.SaveChangesAsync().Result);
         }
 
-        public void Update(Identity.Application.UserDto user)
+        public void Update(UserDto user)
         {
             this.SetModifiedState(user);
 
             this.Context.SaveChanges();
         }
 
-        private void SetModifiedState(Identity.Application.UserDto user)
+        private void SetModifiedState(UserDto user)
         {
             var local = this.Context.Set<User>()
                 .Local
@@ -107,7 +107,7 @@ namespace Identity.Persistence.MSSQL
             this.Context.Entry(new User(user)).State = EntityState.Modified;
         }
 
-        public Task UpdateAsync(Identity.Application.UserDto entity)
+        public Task UpdateAsync(UserDto entity)
         {
             return Task.Run(() => this.SetModifiedState(entity))
                 .ContinueWith((t) => _ = this.Context.SaveChangesAsync().Result);

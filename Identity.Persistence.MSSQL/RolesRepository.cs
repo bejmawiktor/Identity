@@ -107,9 +107,9 @@ namespace Identity.Persistence.MSSQL
             this.Context.Entry(new Role(role)).State = EntityState.Modified;
         }
 
-        public Task UpdateAsync(RoleDto entity)
+        public Task UpdateAsync(RoleDto role)
         {
-            return Task.Run(() => this.SetModifiedState(entity))
+            return Task.Run(() => this.SetModifiedState(role))
                 .ContinueWith((t) => _ = this.Context.SaveChangesAsync().Result);
         }
     }
