@@ -27,11 +27,22 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestGenerate_WhenGeneretingUserId_ThenNewUserIdIsReturned()
+        public void TestGenerate_WhenGeneratingUserId_ThenNewUserIdIsReturned()
         {
             var userId = UserId.Generate();
 
             Assert.That(userId, Is.Not.Null);
+        }
+
+        [Test]
+        public void TestToString_WhenConvertingToString_ThenGuidStringIsReturned()
+        {
+            var guid = Guid.NewGuid();
+            var userId = new UserId(guid);
+
+            string userIdString = userId.ToString();
+
+            Assert.That(userIdString, Is.EqualTo(guid.ToString()));
         }
     }
 }

@@ -22,5 +22,8 @@ namespace Identity.Domain
 
         public static UserId Generate()
             => new UserId(Guid.NewGuid());
+
+        public override string ToString()
+            => this.Value.ToString();
     }
 }
