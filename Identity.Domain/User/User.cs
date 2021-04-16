@@ -134,5 +134,31 @@ namespace Identity.Domain
 
             EventManager.Instance.Notify(new UserRoleRevoked(this.Id, roleId));
         }
+
+        public TokenPair GenerateTokens()
+        {
+            return new TokenPair(
+                accessToken: Token.GenerateAccessToken(this.Id),
+                refreshToken: Token.GenerateRefreshToken(this.Id));
+        }
+
+        public TokenPair RefreshTokens(Token refreshToken)
+        {
+            if(refreshToken.UserId != this.Id)
+            {
+                throw new InvalidTokenException("Wrong refresh token given.");
+            }
+
+            TokenVerificationResult verificationResult = refreshToken.Verify();
+
+            if(verificationResult == TokenVerificationResult.Failed)
+            {
+                throw new InvalidTokenException(verificationResult.Message);
+            }
+
+            return new TokenPair(
+                accessToken: Token.GenerateAccessToken(this.Id),
+                refreshToken: Token.GenerateRefreshToken(this.Id, refreshToken.ExpiresAt));
+        }
     }
 }

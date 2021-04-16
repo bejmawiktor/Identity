@@ -460,5 +460,94 @@ namespace Identity.Tests.Unit.Domain
                 Assert.That(userRoleRevoked.RevokedRoleId, Is.EqualTo(roleId));
             });
         }
+
+        [Test]
+        public void TestGenerateTokens_WhenGenerating_ThenTokenPairIsReturnedWithUserId()
+        {
+            var userId = UserId.Generate();
+            var user = new User(
+               id: userId,
+               email: new EmailAddress("email@example.com"),
+               password: UserTest.TestPassword);
+
+            TokenPair tokens = user.GenerateTokens();
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(tokens.AccessToken.UserId, Is.EqualTo(userId));
+                Assert.That(tokens.RefreshToken.UserId, Is.EqualTo(userId));
+            });
+        }
+
+        [Test]
+        public void TestRefreshTokens_WhenRefreshing_ThenTokenPairIsReturnedWithUserId()
+        {
+            var userId = UserId.Generate();
+            var dateTime = DateTime.Now.AddDays(1);
+            var refreshToken = Token.GenerateRefreshToken(userId, dateTime);
+            var user = new User(
+               id: userId,
+               email: new EmailAddress("email@example.com"),
+               password: UserTest.TestPassword);
+
+            TokenPair tokens = user.RefreshTokens(refreshToken);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(tokens.AccessToken.UserId, Is.EqualTo(userId));
+                Assert.That(tokens.RefreshToken.UserId, Is.EqualTo(userId));
+            });
+        }
+
+        [Test]
+        public void TestRefreshTokens_WhenRefreshing_ThenTokenPairIsReturnedWithRefreshTokenExpirationDateSameAsRefreshTokenGiven()
+        {
+            var userId = UserId.Generate();
+            var dateTime = DateTime.Now.AddDays(1);
+            var refreshToken = Token.GenerateRefreshToken(userId, dateTime);
+            var user = new User(
+               id: userId,
+               email: new EmailAddress("email@example.com"),
+               password: UserTest.TestPassword);
+
+            TokenPair tokens = user.RefreshTokens(refreshToken);
+
+            Assert.That(tokens.RefreshToken.ExpiresAt, Is.EqualTo(dateTime).Within(1).Seconds);
+        }
+
+        [Test]
+        public void TestRefreshTokens_WhenWrongUserIdRefreshTokenGiven_ThenInvalidTokenExceptionIsThrown()
+        {
+            var userId = UserId.Generate();
+            var refreshTokenUserId = UserId.Generate();
+            var dateTime = DateTime.Now.AddDays(1);
+            var refreshToken = Token.GenerateRefreshToken(refreshTokenUserId, dateTime);
+            var user = new User(
+               id: userId,
+               email: new EmailAddress("email@example.com"),
+               password: UserTest.TestPassword);
+
+            Assert.Throws(
+                Is.InstanceOf<InvalidTokenException>()
+                    .And.Message
+                    .EqualTo("Wrong refresh token given."),
+                () => user.RefreshTokens(refreshToken));
+        }
+
+        [Test]
+        public void TestRefreshTokens_WhenRefreshTokenWithFailedVerificationGiven_ThenInvalidTokenExceptionIsThrown()
+        {
+            var userId = UserId.Generate();
+            var dateTime = DateTime.Now.AddDays(-1);
+            var refreshToken = Token.GenerateRefreshToken(userId, dateTime);
+            var user = new User(
+               id: userId,
+               email: new EmailAddress("email@example.com"),
+               password: UserTest.TestPassword);
+
+            Assert.Throws(
+                Is.InstanceOf<InvalidTokenException>(),
+                () => user.RefreshTokens(refreshToken));
+        }
     }
 }
