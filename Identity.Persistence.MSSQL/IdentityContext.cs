@@ -1,17 +1,19 @@
-﻿using Identity.Application;
+﻿using Identity.Persistence.MSSQL.DataModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
-using Identity.Persistence.MSSQL.DataModels;
 
 namespace Identity.Persistence.MSSQL
 {
+    using Application = Identity.Persistence.MSSQL.DataModels.Application;
+
     public class IdentityContext : DbContext
     {
         internal DbSet<Resource> Resources { get; set; }
         internal DbSet<Permission> Permissions { get; set; }
         internal DbSet<Role> Roles { get; set; }
         internal DbSet<User> Users { get; set; }
+        internal DbSet<Application> Applications { get; set; }
 
         public IdentityContext(string connectionString)
         : base(GetDefaultOptions(connectionString ?? throw new ArgumentNullException(nameof(connectionString))))
@@ -63,6 +65,17 @@ namespace Identity.Persistence.MSSQL
                 r.ToTable("Roles");
 
                 this.AddRolesData(r, adminRoleId);
+            });
+            modelBuilder.Entity<Application>(r =>
+            {
+                r.HasKey(r => r.Id);
+                r.Property(r => r.Id).HasColumnType("UNIQUEIDENTIFIER");
+                r.Property(r => r.UserId).HasColumnType("UNIQUEIDENTIFIER");
+                r.HasOne(r => r.User).WithMany().HasForeignKey(r => r.UserId);
+                r.Property(r => r.Name);
+                r.Property(r => r.HomepageUrl).HasMaxLength(2000);
+                r.Property(r => r.CallbackUrl).HasMaxLength(2000);
+                r.ToTable("Applications");
             });
             modelBuilder.Entity<RolePermission>(r =>
             {
