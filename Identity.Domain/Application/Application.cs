@@ -1,5 +1,4 @@
-﻿using DDD.Domain.Events;
-using DDD.Domain.Model;
+﻿using DDD.Domain.Model;
 using System;
 
 namespace Identity.Domain
@@ -57,29 +56,6 @@ namespace Identity.Domain
             {
                 throw new ArgumentNullException(nameof(callbackUrl));
             }
-        }
-
-        internal static Application Create(
-            UserId userId,
-            string name,
-            Url homepageUrl,
-            Url callbackUrl)
-        {
-            var applicationId = ApplicationId.Generate();
-
-            EventManager.Instance.Notify(new ApplicationCreated(
-                applicationId: applicationId,
-                applicationUserId: userId,
-                applicationName: name,
-                applicationHomepageUrl: homepageUrl,
-                applicationCallbackUrl: callbackUrl));
-
-            return new Application(
-                id: applicationId,
-                userId: userId,
-                name: name,
-                homepageUrl: homepageUrl,
-                callbackUrl: callbackUrl);
         }
     }
 }

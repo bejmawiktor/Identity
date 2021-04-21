@@ -160,5 +160,24 @@ namespace Identity.Domain
                 accessToken: Token.GenerateAccessToken(this.Id),
                 refreshToken: Token.GenerateRefreshToken(this.Id, refreshToken.ExpiresAt));
         }
+
+        public Application CreateApplication(string name, Url homepageUrl, Url callbackUrl)
+        {
+            var applicationId = ApplicationId.Generate();
+
+            EventManager.Instance.Notify(new ApplicationCreated(
+                applicationId: applicationId,
+                applicationUserId: this.Id,
+                applicationName: name,
+                applicationHomepageUrl: homepageUrl,
+                applicationCallbackUrl: callbackUrl));
+
+            return new Application(
+                id: applicationId,
+                userId: this.Id,
+                name: name,
+                homepageUrl: homepageUrl,
+                callbackUrl: callbackUrl);
+        }
     }
 }
