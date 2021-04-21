@@ -16,7 +16,7 @@ namespace Identity.Application
                 id: CreateResourceId,
                 description: "It allows to create new resources.");
 
-        public readonly static PermissionDto CreateResourceDto 
+        public readonly static PermissionDto CreateResourceDto
             = Permissions.Converter.ToDto(Permissions.CreateResource);
     }
 }

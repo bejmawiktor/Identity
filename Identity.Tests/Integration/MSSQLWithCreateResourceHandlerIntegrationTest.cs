@@ -21,6 +21,7 @@ namespace Identity.Tests.Integration
 
         private IdentityContext IdentityContext { get; set; }
         private IDbContextTransaction Transaction { get; set; }
+
         private static readonly UserDto TestUserDto = new UserDto(
             id: Guid.NewGuid(),
             email: "example@example.com",
@@ -51,8 +52,8 @@ namespace Identity.Tests.Integration
         public void TestCreateResource_WhenResourceDataGiven_ThenResourceIsStored()
         {
             var createResourceCommand = new CreateResourceCommand(
-                resourceId: "MyResource", 
-                resourceDescription: "Resource description", 
+                resourceId: "MyResource",
+                resourceDescription: "Resource description",
                 userId: MSSQLWithCreateResourceHandlerIntegrationTest.TestUserDto.Id);
             var resourceRepository = new ResourcesRepository(this.IdentityContext);
             var usersRepository = new UsersRepository(this.IdentityContext);

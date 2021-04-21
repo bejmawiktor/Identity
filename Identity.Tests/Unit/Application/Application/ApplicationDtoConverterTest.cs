@@ -3,7 +3,7 @@ using Identity.Domain;
 using NUnit.Framework;
 using System;
 
-namespace Identity.Tests.Unit.Application.Application
+namespace Identity.Tests.Unit.Application
 {
     using Application = Identity.Domain.Application;
     using ApplicationId = Identity.Domain.ApplicationId;

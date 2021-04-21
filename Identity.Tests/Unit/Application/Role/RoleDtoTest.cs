@@ -1,6 +1,6 @@
-﻿using NUnit.Framework;
-using Identity.Application;
+﻿using Identity.Application;
 using Identity.Domain;
+using NUnit.Framework;
 using System;
 using System.Linq;
 
@@ -53,7 +53,7 @@ namespace Identity.Tests.Unit.Application
                 id: id,
                 name: "MyRole",
                 description: "My role description",
-                permissions: new(string ResourceId, string Name)[]
+                permissions: new (string ResourceId, string Name)[]
                 {
                     ("MyResource", "MyPermission")
                 });

@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Identity.Application;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Identity.Application;
 
 namespace Identity.Persistence.MSSQL.DataModels
 {
@@ -41,8 +41,8 @@ namespace Identity.Persistence.MSSQL.DataModels
 
         public UserDto ToDto()
             => new UserDto(
-                this.Id, 
-                this.Email, 
+                this.Id,
+                this.Email,
                 this.HashedPassword,
                 this.Roles.Select(r => r.RoleId),
                 this.Permissions.Select(p => (p.PermissionResourceId, p.PermissionName)));

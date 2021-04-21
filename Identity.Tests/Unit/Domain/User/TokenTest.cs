@@ -141,7 +141,7 @@ namespace Identity.Tests.Unit.Domain
                     .EqualTo("userId"),
                 () => Token.GenerateRefreshToken(null, expiresAt));
         }
-        
+
         [Test]
         public void TestVerify_WhenCorrectTokenGiven_ThenSuccessIsReturned()
         {

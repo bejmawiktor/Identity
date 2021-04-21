@@ -1,5 +1,4 @@
-﻿using Identity.Domain;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System;
 
 namespace Identity.Tests.Unit.Domain

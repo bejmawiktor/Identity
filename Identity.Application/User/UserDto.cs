@@ -67,7 +67,7 @@ namespace Identity.Application
                 hash = hash * 23 + this.Id.GetHashCode();
                 hash = hash * 23 + this.Email?.GetHashCode() ?? 0;
                 hash = hash * 23 + this.HashedPassword?.GetHashCode() ?? 0;
-                
+
                 foreach(var role in this.Roles)
                 {
                     hash = hash * 23 + role.GetHashCode();

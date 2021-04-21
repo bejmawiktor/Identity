@@ -25,8 +25,8 @@ namespace Identity.Application
 
         public override bool Equals(object obj)
         {
-            return obj is PermissionDto dto 
-                && this.Id.Equals(dto.Id) 
+            return obj is PermissionDto dto
+                && this.Id.Equals(dto.Id)
                 && this.Description == dto.Description;
         }
 

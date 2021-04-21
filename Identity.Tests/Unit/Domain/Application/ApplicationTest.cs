@@ -1,8 +1,8 @@
-﻿using NUnit.Framework;
+﻿using DDD.Domain.Events;
 using Identity.Domain;
-using System;
 using Moq;
-using DDD.Domain.Events;
+using NUnit.Framework;
+using System;
 
 namespace Identity.Tests.Unit.Domain
 {

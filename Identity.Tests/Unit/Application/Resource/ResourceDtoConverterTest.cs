@@ -13,7 +13,7 @@ namespace Identity.Tests.Unit.Application
         {
             var resourceId = new ResourceId("MyResource");
             var resource = new Resource(
-                id: resourceId, 
+                id: resourceId,
                 description: "My resource description");
             var resourceDtoConverter = new ResourceDtoConverter();
 

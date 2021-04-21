@@ -1,5 +1,4 @@
 ﻿using Identity.Application;
-using Identity.Persistence.MSSQL.DataModels;
 using NUnit.Framework;
 using System;
 

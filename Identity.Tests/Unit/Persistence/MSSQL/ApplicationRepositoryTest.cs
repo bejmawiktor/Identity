@@ -1,11 +1,11 @@
 ﻿using DDD.Domain.Persistence;
+using Identity.Application;
 using Identity.Persistence.MSSQL;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Identity.Application;
-using System;
 
 namespace Identity.Tests.Unit.Persistence.MSSQL
 {

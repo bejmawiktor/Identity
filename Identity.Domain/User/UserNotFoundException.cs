@@ -4,7 +4,6 @@ namespace Identity.Domain
 {
     public class UserNotFoundException : Exception
     {
-
         public UserNotFoundException() : base()
         {
         }

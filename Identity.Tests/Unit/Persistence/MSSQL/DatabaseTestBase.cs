@@ -1,6 +1,5 @@
 ﻿using Identity.Persistence.MSSQL;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using NUnit.Framework;
 
 namespace Identity.Tests.Unit.Persistence.MSSQL

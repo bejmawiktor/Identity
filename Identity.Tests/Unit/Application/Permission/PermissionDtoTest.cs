@@ -1,7 +1,6 @@
 ﻿using Identity.Application;
 using Identity.Domain;
 using NUnit.Framework;
-using System;
 
 namespace Identity.Tests.Unit.Application
 {

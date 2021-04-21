@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Identity.Application;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Identity.Application;
 
 namespace Identity.Persistence.MSSQL.DataModels
 {

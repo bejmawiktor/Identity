@@ -1,11 +1,11 @@
 ﻿using DDD.Domain.Persistence;
 using Identity.Application;
+using Identity.Persistence.MSSQL.DataModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Identity.Persistence.MSSQL.DataModels;
 
 namespace Identity.Persistence.MSSQL
 {

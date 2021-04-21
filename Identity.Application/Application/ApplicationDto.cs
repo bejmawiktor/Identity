@@ -47,12 +47,12 @@ namespace Identity.Application
 
         public override bool Equals(object obj)
         {
-            return obj is ApplicationDto dto &&
-                   this.Id.Equals(dto.Id) &&
-                   this.UserId.Equals(dto.UserId) &&
-                   this.Name == dto.Name &&
-                   this.HomepageUrl == dto.HomepageUrl &&
-                   this.CallbackUrl == dto.CallbackUrl;
+            return obj is ApplicationDto dto 
+                && this.Id.Equals(dto.Id) 
+                && this.UserId.Equals(dto.UserId) 
+                && this.Name == dto.Name 
+                && this.HomepageUrl == dto.HomepageUrl 
+                && this.CallbackUrl == dto.CallbackUrl;
         }
     }
 }

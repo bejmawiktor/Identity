@@ -96,7 +96,6 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 Id = userId,
                 Email = "example@example.com",
                 HashedPassword = hashedPassword.ToString(),
-                
             };
             user.Permissions = new UserPermission[]
             {

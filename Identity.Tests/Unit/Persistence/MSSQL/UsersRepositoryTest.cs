@@ -15,6 +15,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
     public class UsersRepositoryTest : DatabaseTestBase
     {
         private static readonly HashedPassword TestPassword = HashedPassword.Hash("MyPassword1");
+
         private static readonly UserDto[] UsersTestData = new UserDto[]
         {
             new UserDto(

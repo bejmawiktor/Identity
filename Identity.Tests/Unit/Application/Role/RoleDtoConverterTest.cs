@@ -17,7 +17,7 @@ namespace Identity.Tests.Unit.Application
                 id: roleId,
                 name: "MyRole",
                 description: "My role description",
-                permissions: new PermissionId[] 
+                permissions: new PermissionId[]
                 {
                     new PermissionId(new ResourceId("MyResource"), "MyPermission"),
                     new PermissionId(new ResourceId("MyResource2"), "MyPermission2")
@@ -74,6 +74,5 @@ namespace Identity.Tests.Unit.Application
                     .EqualTo("roleId"),
                 () => roleDtoConverter.ToDtoIdentifier(null));
         }
-
     }
 }
