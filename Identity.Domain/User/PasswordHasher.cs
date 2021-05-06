@@ -7,16 +7,11 @@ namespace Identity.Domain
         public static int AlgorithmSymbolLength => 1;
         public static IPasswordHashingAlgorithm CurrentAlgorithm => new Pbkdf2HashingAlgorithm();
 
-        public static HashedPassword Hash(string password)
+        public static HashedPassword Hash(Password password)
         {
             if(password == null)
             {
                 throw new ArgumentNullException(nameof(password));
-            }
-
-            if(password.Length == 0)
-            {
-                throw new ArgumentException("Can't hash empty password.");
             }
 
             var algorithmHashedPassword = CurrentAlgorithm.Hash(password);
@@ -36,7 +31,7 @@ namespace Identity.Domain
 
         public static PasswordVerificationResult Verify(
             HashedPassword hashedPassword,
-            string verifiedPassword)
+            Password verifiedPassword)
         {
             if(verifiedPassword == null)
             {

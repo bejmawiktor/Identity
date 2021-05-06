@@ -8,7 +8,7 @@ namespace Identity.Tests.Unit.Application
     [TestFixture]
     public class UserDtoTest
     {
-        private static readonly HashedPassword TestPassword = HashedPassword.Hash("MyPassword");
+        private static readonly HashedPassword TestPassword = HashedPassword.Hash(new Password("MyPassword"));
 
         [Test]
         public void TestConstructing_WhenIdGiven_ThenIdIsSet()
@@ -184,7 +184,7 @@ namespace Identity.Tests.Unit.Application
             var userIdLeft = Guid.NewGuid();
             var userIdRight = Guid.NewGuid();
             var hashedPasswordLeft = UserDtoTest.TestPassword;
-            var hashedPasswordRight = HashedPassword.Hash("MyPassword2");
+            var hashedPasswordRight = HashedPassword.Hash(new Password("MyPassword2"));
             var leftUserDto = new UserDto(
                 userIdLeft,
                 "example@example.com",
@@ -266,7 +266,7 @@ namespace Identity.Tests.Unit.Application
             var userIdLeft = Guid.NewGuid();
             var userIdRight = Guid.NewGuid();
             var hashedPasswordLeft = UserDtoTest.TestPassword;
-            var hashedPasswordRight = HashedPassword.Hash("MyPassword2");
+            var hashedPasswordRight = HashedPassword.Hash(new Password("MyPassword2"));
             var leftUserDto = new UserDto(
                 userIdLeft,
                 "example@example.com",

@@ -11,6 +11,10 @@ namespace Identity.Tests.Unit.Application
     [TestFixture]
     public class ApplicationDtoTest
     {
+        private static readonly string SecretKey = EncryptedSecretKey
+            .Encrypt(Identity.Domain.SecretKey.Generate())
+            .ToString();
+
         [Test]
         public void TestConstructing_WhenIdGiven_ThenIdIsSet()
         {
@@ -20,6 +24,7 @@ namespace Identity.Tests.Unit.Application
                 id: applicationId,
                 userId: userId,
                 name: "MyApp",
+                secretKey: SecretKey,
                 homepageUrl: "http://www.example.com",
                 callbackUrl: "http://www.example.com/1");
 
@@ -35,6 +40,7 @@ namespace Identity.Tests.Unit.Application
                 id: applicationId,
                 userId: userId,
                 name: "MyApp",
+                secretKey: SecretKey,
                 homepageUrl: "http://www.example.com",
                 callbackUrl: "http://www.example.com/1");
 
@@ -50,10 +56,27 @@ namespace Identity.Tests.Unit.Application
                 id: applicationId,
                 userId: userId,
                 name: "MyApp",
+                secretKey: SecretKey,
                 homepageUrl: "http://www.example.com",
                 callbackUrl: "http://www.example.com/1");
 
             Assert.That(applicationDto.Name, Is.EqualTo("MyApp"));
+        }
+
+        [Test]
+        public void TestConstructing_WhenSecretKeyGiven_ThenSecretKeyIsSet()
+        {
+            var applicationId = Guid.NewGuid();
+            var userId = Guid.NewGuid();
+            var applicationDto = new ApplicationDto(
+                id: applicationId,
+                userId: userId,
+                name: "MyApp",
+                secretKey: SecretKey,
+                homepageUrl: "http://www.example.com",
+                callbackUrl: "http://www.example.com/1");
+
+            Assert.That(applicationDto.SecretKey, Is.EqualTo(SecretKey));
         }
 
         [Test]
@@ -65,6 +88,7 @@ namespace Identity.Tests.Unit.Application
                 id: applicationId,
                 userId: userId,
                 name: "MyApp",
+                secretKey: SecretKey,
                 homepageUrl: "http://www.example.com",
                 callbackUrl: "http://www.example.com/1");
 
@@ -80,6 +104,7 @@ namespace Identity.Tests.Unit.Application
                 id: applicationId,
                 userId: userId,
                 name: "MyApp",
+                secretKey: SecretKey,
                 homepageUrl: "http://www.example.com",
                 callbackUrl: "http://www.example.com/1");
 
@@ -95,6 +120,7 @@ namespace Identity.Tests.Unit.Application
                 id: applicationId,
                 userId: userId,
                 name: "MyApp",
+                secretKey: SecretKey,
                 homepageUrl: "http://www.example.com",
                 callbackUrl: "http://www.example.com/1");
 
@@ -105,6 +131,7 @@ namespace Identity.Tests.Unit.Application
                 Assert.That(application.Id, Is.EqualTo(new ApplicationId(applicationId)));
                 Assert.That(application.UserId, Is.EqualTo(new UserId(userId)));
                 Assert.That(application.Name, Is.EqualTo("MyApp"));
+                Assert.That(application.SecretKey, Is.EqualTo(new EncryptedSecretKey(SecretKey)));
                 Assert.That(application.HomepageUrl, Is.EqualTo(new Url("http://www.example.com")));
                 Assert.That(application.CallbackUrl, Is.EqualTo(new Url("http://www.example.com/1")));
             });
@@ -119,12 +146,14 @@ namespace Identity.Tests.Unit.Application
                 id: applicationId,
                 userId: userId,
                 name: "MyApp",
+                secretKey: SecretKey,
                 homepageUrl: "http://www.example.com",
                 callbackUrl: "http://www.example.com/1");
             var rightApplicationDto = new ApplicationDto(
                 id: applicationId,
                 userId: userId,
                 name: "MyApp",
+                secretKey: SecretKey,
                 homepageUrl: "http://www.example.com",
                 callbackUrl: "http://www.example.com/1");
 
@@ -142,12 +171,14 @@ namespace Identity.Tests.Unit.Application
                 id: firstApplicationId,
                 userId: firstUserId,
                 name: "MyApp",
+                secretKey: SecretKey,
                 homepageUrl: "http://www.example.com",
                 callbackUrl: "http://www.example.com/1");
             var rightApplicationDto = new ApplicationDto(
                 id: secondApplicationId,
                 userId: secondUserId,
                 name: "MyApp2",
+                secretKey: SecretKey,
                 homepageUrl: "http://www.example.com",
                 callbackUrl: "http://www.example.com/1");
 
@@ -163,12 +194,14 @@ namespace Identity.Tests.Unit.Application
                 id: applicationId,
                 userId: userId,
                 name: "MyApp",
+                secretKey: SecretKey,
                 homepageUrl: "http://www.example.com",
                 callbackUrl: "http://www.example.com/1");
             var rightApplicationDto = new ApplicationDto(
                 id: applicationId,
                 userId: userId,
                 name: "MyApp",
+                secretKey: SecretKey,
                 homepageUrl: "http://www.example.com",
                 callbackUrl: "http://www.example.com/1");
 
@@ -186,12 +219,14 @@ namespace Identity.Tests.Unit.Application
                 id: firstApplicationId,
                 userId: firstUserId,
                 name: "MyApp",
+                secretKey: SecretKey,
                 homepageUrl: "http://www.example.com",
                 callbackUrl: "http://www.example.com/1");
             var rightApplicationDto = new ApplicationDto(
                 id: secondApplicationId,
                 userId: secondUserId,
                 name: "MyApp2",
+                secretKey: SecretKey,
                 homepageUrl: "http://www.example.com",
                 callbackUrl: "http://www.example.com/1");
 

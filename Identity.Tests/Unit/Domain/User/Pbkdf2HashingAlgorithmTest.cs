@@ -20,23 +20,11 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestHash_WhenEmptyPasswordGiven_ThenArgumentExceptionIsThrown()
-        {
-            var pbkdf2PasswordHashingAlgorithm = new Pbkdf2HashingAlgorithm();
-
-            Assert.Throws(
-                Is.InstanceOf<ArgumentException>()
-                    .And.Message
-                    .EqualTo("Can't hash empty password."),
-                () => pbkdf2PasswordHashingAlgorithm.Hash(string.Empty));
-        }
-
-        [Test]
         public void TestHash_WhenPasswordGiven_ThenHashedPasswordIsReturned()
         {
             var pbkdf2PasswordHashingAlgorithm = new Pbkdf2HashingAlgorithm();
 
-            byte[] hashedPassword = pbkdf2PasswordHashingAlgorithm.Hash("MySecretPassword");
+            byte[] hashedPassword = pbkdf2PasswordHashingAlgorithm.Hash(new Password("MySecretPassword"));
 
             Assert.That(hashedPassword, Is.Not.Empty);
         }
@@ -46,8 +34,8 @@ namespace Identity.Tests.Unit.Domain
         {
             var pbkdf2PasswordHashingAlgorithm = new Pbkdf2HashingAlgorithm();
 
-            byte[] firstHashedPassword = pbkdf2PasswordHashingAlgorithm.Hash("MySecretPassword");
-            byte[] secondHashedPassword = pbkdf2PasswordHashingAlgorithm.Hash("MySecretPassword");
+            byte[] firstHashedPassword = pbkdf2PasswordHashingAlgorithm.Hash(new Password("MySecretPassword"));
+            byte[] secondHashedPassword = pbkdf2PasswordHashingAlgorithm.Hash(new Password("MySecretPassword"));
 
             Assert.That(firstHashedPassword, Is.Not.EqualTo(secondHashedPassword));
         }
@@ -61,7 +49,7 @@ namespace Identity.Tests.Unit.Domain
                 Is.InstanceOf<ArgumentNullException>()
                     .And.Property(nameof(ArgumentNullException.ParamName))
                     .EqualTo("hashedPassword"),
-                () => pbkdf2PasswordHashingAlgorithm.Verify(null, "MySecretPassword"));
+                () => pbkdf2PasswordHashingAlgorithm.Verify(null, new Password("MySecretPassword")));
         }
 
         [Test]
@@ -73,7 +61,7 @@ namespace Identity.Tests.Unit.Domain
                 Is.InstanceOf<ArgumentNullException>()
                     .And.Property(nameof(ArgumentNullException.ParamName))
                     .EqualTo("verifiedPassword"),
-                () => pbkdf2PasswordHashingAlgorithm.Verify(pbkdf2PasswordHashingAlgorithm.Hash("MySecretPassword"), null));
+                () => pbkdf2PasswordHashingAlgorithm.Verify(pbkdf2PasswordHashingAlgorithm.Hash(new Password("MySecretPassword")), null));
         }
 
         [TestCase("MySimplePass123")]
@@ -82,9 +70,9 @@ namespace Identity.Tests.Unit.Domain
         public void TestVerify_WhenCorrectPasswordGiven_ThenSuccessIsReturned(string verifiedPassword)
         {
             var pbkdf2PasswordHashingAlgorithm = new Pbkdf2HashingAlgorithm();
-            byte[] hashedPassword = pbkdf2PasswordHashingAlgorithm.Hash(verifiedPassword);
+            byte[] hashedPassword = pbkdf2PasswordHashingAlgorithm.Hash(new Password(verifiedPassword));
 
-            PasswordVerificationResult result = pbkdf2PasswordHashingAlgorithm.Verify(hashedPassword, verifiedPassword);
+            PasswordVerificationResult result = pbkdf2PasswordHashingAlgorithm.Verify(hashedPassword, new Password(verifiedPassword));
 
             Assert.That(result, Is.EqualTo(PasswordVerificationResult.Success));
         }
@@ -95,9 +83,9 @@ namespace Identity.Tests.Unit.Domain
         public void TestVerify_WhenIncorrectPasswordGiven_ThenFailedIsReturned(string verifiedPassword, string incorrectPassword)
         {
             var pbkdf2PasswordHashingAlgorithm = new Pbkdf2HashingAlgorithm();
-            byte[] hashedPassword = pbkdf2PasswordHashingAlgorithm.Hash(verifiedPassword);
+            byte[] hashedPassword = pbkdf2PasswordHashingAlgorithm.Hash(new Password(verifiedPassword));
 
-            PasswordVerificationResult result = pbkdf2PasswordHashingAlgorithm.Verify(hashedPassword, incorrectPassword);
+            PasswordVerificationResult result = pbkdf2PasswordHashingAlgorithm.Verify(hashedPassword, new Password(incorrectPassword));
 
             Assert.That(result, Is.EqualTo(PasswordVerificationResult.Failed));
         }
@@ -130,7 +118,7 @@ namespace Identity.Tests.Unit.Domain
         public void TestValidate_WhenCorrectHashedPasswordGiven_ThenNoExceptionIsThrown()
         {
             var pbkdf2PasswordHashingAlgorithm = new Pbkdf2HashingAlgorithm();
-            var hashedPassword = pbkdf2PasswordHashingAlgorithm.Hash("MySecretPassword");
+            var hashedPassword = pbkdf2PasswordHashingAlgorithm.Hash(new Password("MySecretPassword"));
 
             Assert.DoesNotThrow(
                 () => pbkdf2PasswordHashingAlgorithm.Validate(hashedPassword));

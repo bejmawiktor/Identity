@@ -11,7 +11,7 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestToDto_WhenRoleGiven_ThenRoleDtoIsReturned()
         {
-            var password = HashedPassword.Hash("MyPassword");
+            var password = HashedPassword.Hash(new Password("MyPassword"));
             var roleId = new RoleId(Guid.NewGuid());
             var role = new Role(
                 id: roleId,

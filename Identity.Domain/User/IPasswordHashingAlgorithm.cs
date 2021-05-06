@@ -2,9 +2,9 @@
 {
     internal interface IPasswordHashingAlgorithm
     {
-        byte[] Hash(string password);
+        byte[] Hash(Password password);
 
-        PasswordVerificationResult Verify(byte[] hashedPassword, string verifiedPassword);
+        PasswordVerificationResult Verify(byte[] hashedPassword, Password verifiedPassword);
 
         void Validate(byte[] hashedPassword);
     }

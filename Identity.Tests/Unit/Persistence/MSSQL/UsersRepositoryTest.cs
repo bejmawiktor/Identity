@@ -14,7 +14,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
     [TestFixture]
     public class UsersRepositoryTest : DatabaseTestBase
     {
-        private static readonly HashedPassword TestPassword = HashedPassword.Hash("MyPassword1");
+        private static readonly HashedPassword TestPassword = HashedPassword.Hash(new Password("MyPassword1"));
 
         private static readonly UserDto[] UsersTestData = new UserDto[]
         {
@@ -233,7 +233,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             userDto = new UserDto(
                 id: userId,
                 email: "example2@example.com",
-                hashedPassword: HashedPassword.Hash("MyPassword2").ToString(),
+                hashedPassword: HashedPassword.Hash(new Password("MyPassword2")).ToString(),
                 roles: new Guid[]
                 {
                     roles[0]
@@ -286,7 +286,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             userDto = new UserDto(
                 id: userId,
                 email: "example2@example.com",
-                hashedPassword: HashedPassword.Hash("MyPassword2").ToString(),
+                hashedPassword: HashedPassword.Hash(new Password("MyPassword2")).ToString(),
                 roles: new Guid[]
                 {
                     roles[0]

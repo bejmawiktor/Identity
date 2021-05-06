@@ -25,7 +25,7 @@ namespace Identity.Tests.Integration
         private static readonly UserDto TestUserDto = new UserDto(
             id: Guid.NewGuid(),
             email: "example@example.com",
-            hashedPassword: HashedPassword.Hash("MyPassword").ToString(),
+            hashedPassword: HashedPassword.Hash(new Password("MyPassword")).ToString(),
             permissions: new (string ResourceId, string Name)[]
             {
                 ("Identity", "CreateResource")

@@ -7,6 +7,7 @@ namespace Identity.Domain
     {
         public UserId UserId { get; }
         public string Name { get; }
+        public EncryptedSecretKey SecretKey { get; private set; }
         public Url HomepageUrl { get; }
         public Url CallbackUrl { get; }
 
@@ -14,14 +15,16 @@ namespace Identity.Domain
             ApplicationId id,
             UserId userId,
             string name,
+            EncryptedSecretKey secretKey,
             Url homepageUrl,
             Url callbackUrl)
         : base(id)
         {
-            this.ValidateMembers(userId, name, homepageUrl, callbackUrl);
+            this.ValidateMembers(userId, name, secretKey, homepageUrl, callbackUrl);
 
-            this.Name = name;
             this.UserId = userId;
+            this.Name = name;
+            this.SecretKey = secretKey;
             this.HomepageUrl = homepageUrl;
             this.CallbackUrl = callbackUrl;
         }
@@ -29,9 +32,15 @@ namespace Identity.Domain
         private void ValidateMembers(
             UserId userId,
             string name,
+            EncryptedSecretKey secretKey,
             Url homepageUrl,
             Url callbackUrl)
         {
+            if(userId == null)
+            {
+                throw new ArgumentNullException(nameof(userId));
+            }
+
             if(name == null)
             {
                 throw new ArgumentNullException(nameof(name));
@@ -42,9 +51,9 @@ namespace Identity.Domain
                 throw new ArgumentException("Name can't be empty.");
             }
 
-            if(userId == null)
+            if(secretKey == null)
             {
-                throw new ArgumentNullException(nameof(userId));
+                throw new ArgumentNullException(nameof(secretKey));
             }
 
             if(homepageUrl == null)
@@ -56,6 +65,14 @@ namespace Identity.Domain
             {
                 throw new ArgumentNullException(nameof(callbackUrl));
             }
+        }
+
+        public SecretKey DecryptSecretKey()
+            => this.SecretKey.Decrypt();
+
+        public void RegenerateSecretKey()
+        {
+            this.SecretKey = EncryptedSecretKey.Encrypt(Domain.SecretKey.Generate());
         }
     }
 }

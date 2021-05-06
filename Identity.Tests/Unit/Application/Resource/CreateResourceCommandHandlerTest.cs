@@ -5,6 +5,8 @@ using System;
 
 namespace Identity.Tests.Unit.Application
 {
+    using Password = Identity.Domain.Password;
+
     [TestFixture]
     public class CreateResourceCommandHandlerTest
     {
@@ -111,7 +113,7 @@ namespace Identity.Tests.Unit.Application
             var user = new UserDto(
                 id: userId,
                 email: "example@example.com",
-                hashedPassword: Identity.Domain.HashedPassword.Hash("MyPassword").ToString());
+                hashedPassword: Identity.Domain.HashedPassword.Hash(new Password("MyPassword")).ToString());
             var resourcesRepositoryMock = new Mock<IResourcesRepository>();
             var usersRepositoryMock = new Mock<IUsersRepository>();
             var rolesRepositoryMock = new Mock<IRolesRepository>();
@@ -142,7 +144,7 @@ namespace Identity.Tests.Unit.Application
             var user = new UserDto(
                 id: userId,
                 email: "example@example.com",
-                hashedPassword: Identity.Domain.HashedPassword.Hash("MyPassword").ToString());
+                hashedPassword: Identity.Domain.HashedPassword.Hash(new Password("MyPassword")).ToString());
             var resourcesRepositoryMock = new Mock<IResourcesRepository>();
             var usersRepositoryMock = new Mock<IUsersRepository>();
             var rolesRepositoryMock = new Mock<IRolesRepository>();

@@ -11,22 +11,17 @@ namespace Identity.Domain
         public HashAlgorithmName HashAlgorithmName => HashAlgorithmName.SHA256;
         public int HashedPasswordLength => this.SaltLength + this.Pbkdf2SubkeyLength;
 
-        public byte[] Hash(string password)
+        public byte[] Hash(Password password)
         {
             if(password == null)
             {
                 throw new ArgumentNullException(nameof(password));
             }
 
-            if(password.Length == 0)
-            {
-                throw new ArgumentException("Can't hash empty password.");
-            }
-
             byte[] salt;
             byte[] pbkdf2Subkey;
 
-            using(var rfc2898DeriveBytes = new Rfc2898DeriveBytes(password, this.SaltLength, this.Pbkdf2IterCount, this.HashAlgorithmName))
+            using(var rfc2898DeriveBytes = new Rfc2898DeriveBytes(password.ToString(), this.SaltLength, this.Pbkdf2IterCount, this.HashAlgorithmName))
             {
                 salt = rfc2898DeriveBytes.Salt;
                 pbkdf2Subkey = rfc2898DeriveBytes.GetBytes(this.Pbkdf2SubkeyLength);
@@ -58,7 +53,7 @@ namespace Identity.Domain
             }
         }
 
-        public PasswordVerificationResult Verify(byte[] hashedPassword, string verifiedPassword)
+        public PasswordVerificationResult Verify(byte[] hashedPassword, Password verifiedPassword)
         {
             if(verifiedPassword == null)
             {
@@ -71,7 +66,7 @@ namespace Identity.Domain
             byte[] pbkdf2Subkey = this.ExtractPbkdf2Subkey(hashedPassword);
             byte[] verifiedPasswordBytes;
 
-            using(var rfc2898DeriveBytes = new Rfc2898DeriveBytes(verifiedPassword, salt, this.Pbkdf2IterCount, this.HashAlgorithmName))
+            using(var rfc2898DeriveBytes = new Rfc2898DeriveBytes(verifiedPassword.ToString(), salt, this.Pbkdf2IterCount, this.HashAlgorithmName))
             {
                 verifiedPasswordBytes = rfc2898DeriveBytes.GetBytes(this.Pbkdf2SubkeyLength);
             }

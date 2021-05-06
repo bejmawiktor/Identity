@@ -1,4 +1,5 @@
 ﻿using Identity.Application;
+using Identity.Domain;
 using NUnit.Framework;
 using System;
 
@@ -8,6 +9,8 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
 
     public class ApplicationTest
     {
+        private static readonly string SecretKey = Identity.Domain.SecretKey.Generate().ToString();
+
         [Test]
         public void TestConstructing_WhenDtoGiven_ThenMembersAreSet()
         {
@@ -18,6 +21,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                     id: applicationId,
                     userId: userId,
                     name: "MyApp",
+                    secretKey: SecretKey,
                     homepageUrl: "http://www.example.com",
                     callbackUrl: "http://www.example.com/1"));
 
@@ -41,6 +45,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                     id: applicationId,
                     userId: userId,
                     name: "MyApp",
+                    secretKey: SecretKey,
                     homepageUrl: "http://www.example.com",
                     callbackUrl: "http://www.example.com/1"));
 

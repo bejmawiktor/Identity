@@ -8,7 +8,6 @@ namespace Identity.Domain
     public class HashedPassword : ValueObject
     {
         private IEnumerable<byte> HashedValue { get; }
-        private static int RequiredPasswordLength => 7;
 
         public HashedPassword(string base64HashedPassword)
         {
@@ -49,36 +48,21 @@ namespace Identity.Domain
             PasswordHasher.Validate(hashedPassword);
         }
 
-        public static HashedPassword Hash(string password)
+        public static HashedPassword Hash(Password password)
         {
             if(password == null)
             {
                 throw new ArgumentNullException(nameof(password));
             }
 
-            if(password.Length == 0)
-            {
-                throw new ArgumentException("Password can't be empty.");
-            }
-
-            if(password.Length < HashedPassword.RequiredPasswordLength)
-            {
-                throw new ArgumentException("Password must be longer than 6 characters.");
-            }
-
             return PasswordHasher.Hash(password);
         }
 
-        public PasswordVerificationResult Verify(string verifiedPassword)
+        public PasswordVerificationResult Verify(Password verifiedPassword)
         {
             if(verifiedPassword == null)
             {
                 throw new ArgumentNullException(nameof(verifiedPassword));
-            }
-
-            if(verifiedPassword.Length == 0)
-            {
-                throw new ArgumentException("Verified password can't be empty.");
             }
 
             return PasswordHasher.Verify(this, verifiedPassword);

@@ -11,7 +11,7 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestToDto_WhenUserGiven_ThenUserDtoIsReturned()
         {
-            var password = HashedPassword.Hash("MyPassword");
+            var password = HashedPassword.Hash(new Password("MyPassword"));
             var userId = new UserId(Guid.NewGuid());
             var user = new User(
                 id: userId,

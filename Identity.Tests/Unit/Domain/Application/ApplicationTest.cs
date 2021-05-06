@@ -10,15 +10,19 @@ namespace Identity.Tests.Unit.Domain
     [TestFixture]
     public class ApplicationTest
     {
+        private static EncryptedSecretKey TestSecretKey = EncryptedSecretKey.Encrypt(SecretKey.Generate());
+
         [Test]
         public void TestConstruction_WhenUserIdGiven_ThenUserIdIsSet()
         {
             ApplicationId applicationId = ApplicationId.Generate();
             UserId userId = UserId.Generate();
+
             var application = new Application(
                 id: applicationId,
                 userId: userId,
                 name: "MyApp",
+                secretKey: TestSecretKey,
                 homepageUrl: new Url("https://www.example.com"),
                 callbackUrl: new Url("https://www.example.com/1"));
 
@@ -38,6 +42,7 @@ namespace Identity.Tests.Unit.Domain
                     id: applicationId,
                     userId: null,
                     name: "MyApp",
+                    secretKey: TestSecretKey,
                     homepageUrl: new Url("https://www.example.com"),
                     callbackUrl: new Url("https://www.example.com/1")));
         }
@@ -47,10 +52,12 @@ namespace Identity.Tests.Unit.Domain
         {
             ApplicationId applicationId = ApplicationId.Generate();
             UserId userId = UserId.Generate();
+
             var application = new Application(
                 id: applicationId,
                 userId: userId,
                 name: "MyApp",
+                secretKey: TestSecretKey,
                 homepageUrl: new Url("https://www.example.com"),
                 callbackUrl: new Url("https://www.example.com/1"));
 
@@ -71,6 +78,7 @@ namespace Identity.Tests.Unit.Domain
                     id: applicationId,
                     userId: userId,
                     name: null,
+                    secretKey: TestSecretKey,
                     homepageUrl: new Url("https://www.example.com"),
                     callbackUrl: new Url("https://www.example.com/1")));
         }
@@ -89,6 +97,7 @@ namespace Identity.Tests.Unit.Domain
                     id: applicationId,
                     userId: userId,
                     name: string.Empty,
+                    secretKey: TestSecretKey,
                     homepageUrl: new Url("https://www.example.com"),
                     callbackUrl: new Url("https://www.example.com/1")));
         }
@@ -98,10 +107,12 @@ namespace Identity.Tests.Unit.Domain
         {
             ApplicationId applicationId = ApplicationId.Generate();
             UserId userId = UserId.Generate();
+
             var application = new Application(
                 id: applicationId,
                 userId: userId,
                 name: "MyApp",
+                secretKey: TestSecretKey,
                 homepageUrl: new Url("https://www.example.com"),
                 callbackUrl: new Url("https://www.example.com/1"));
 
@@ -122,7 +133,44 @@ namespace Identity.Tests.Unit.Domain
                     id: applicationId,
                     userId: userId,
                     name: "MyApp",
+                    secretKey: TestSecretKey,
                     homepageUrl: null,
+                    callbackUrl: new Url("https://www.example.com/1")));
+        }
+
+        [Test]
+        public void TestConstruction_WhenSecretKeyGiven_ThenSecretKeyIsSet()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            UserId userId = UserId.Generate();
+
+            var application = new Application(
+                id: applicationId,
+                userId: userId,
+                name: "MyApp",
+                secretKey: TestSecretKey,
+                homepageUrl: new Url("https://www.example.com"),
+                callbackUrl: new Url("https://www.example.com/1"));
+
+            Assert.That(application.SecretKey, Is.EqualTo(TestSecretKey));
+        }
+
+        [Test]
+        public void TestConstruction_WhenNullSecretKeyGiven_ThenArgumentNullExceptionIsThrown()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            UserId userId = UserId.Generate();
+
+            Assert.Throws(
+                Is.InstanceOf<ArgumentNullException>()
+                    .And.Property(nameof(ArgumentNullException.ParamName))
+                    .EqualTo("secretKey"),
+                () => new Application(
+                    id: applicationId,
+                    userId: userId,
+                    name: "MyApp",
+                    secretKey: null,
+                    homepageUrl: new Url("https://www.example.com/"),
                     callbackUrl: new Url("https://www.example.com/1")));
         }
 
@@ -131,10 +179,12 @@ namespace Identity.Tests.Unit.Domain
         {
             ApplicationId applicationId = ApplicationId.Generate();
             UserId userId = UserId.Generate();
+
             var application = new Application(
                 id: applicationId,
                 userId: userId,
                 name: "MyApp",
+                secretKey: TestSecretKey,
                 homepageUrl: new Url("https://www.example.com"),
                 callbackUrl: new Url("https://www.example.com/1"));
 
@@ -155,8 +205,70 @@ namespace Identity.Tests.Unit.Domain
                     id: applicationId,
                     userId: userId,
                     name: "MyApp",
+                    secretKey: TestSecretKey,
                     homepageUrl: new Url("https://www.example.com"),
                     callbackUrl: null));
+        }
+
+        [Test]
+        public void TestDecryptSecretKey_WhenDecrypting_ThenSecretKeyIsReturned()
+        {
+            var secretKey = SecretKey.Generate();
+            EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
+            ApplicationId applicationId = ApplicationId.Generate();
+            UserId userId = UserId.Generate();
+            var application = new Application(
+                id: applicationId,
+                userId: userId,
+                name: "MyApp",
+                secretKey: encryptedSecretKey,
+                homepageUrl: new Url("https://www.example.com"),
+                callbackUrl: new Url("https://www.example.com/1"));
+
+
+            var decryptedSecretKey = application.DecryptSecretKey();
+
+            Assert.That(decryptedSecretKey, Is.EqualTo(secretKey));
+        }
+
+        [Test]
+        public void TestRegenerateSecretKey_WhenRegenerating_ThenSecretKeyIsDifferentThanPrevious()
+        {
+            var secretKey = SecretKey.Generate();
+            EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
+            ApplicationId applicationId = ApplicationId.Generate();
+            UserId userId = UserId.Generate();
+            var application = new Application(
+                id: applicationId,
+                userId: userId,
+                name: "MyApp",
+                secretKey: encryptedSecretKey,
+                homepageUrl: new Url("https://www.example.com"),
+                callbackUrl: new Url("https://www.example.com/1"));
+
+            application.RegenerateSecretKey();
+
+            Assert.That(application.SecretKey, Is.Not.EqualTo(encryptedSecretKey));
+        }
+
+        [Test]
+        public void TestRegenerateSecretKey_WhenRegenerating_ThenNewSecretKeyIsNotNull()
+        {
+            var secretKey = SecretKey.Generate();
+            EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
+            ApplicationId applicationId = ApplicationId.Generate();
+            UserId userId = UserId.Generate();
+            var application = new Application(
+                id: applicationId,
+                userId: userId,
+                name: "MyApp",
+                secretKey: encryptedSecretKey,
+                homepageUrl: new Url("https://www.example.com"),
+                callbackUrl: new Url("https://www.example.com/1"));
+
+            application.RegenerateSecretKey();
+
+            Assert.That(application.SecretKey, Is.Not.Null);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Identity.Tests.Unit.Domain
     [TestFixture]
     public class AuthorizationServiceTest
     {
-        private static readonly HashedPassword TestPassword = HashedPassword.Hash("MyPassword");
+        private static readonly HashedPassword TestPassword = HashedPassword.Hash(new Password("MyPassword"));
 
         [Test]
         public void TestConstructing_WhenUsersRepositoryGiven_ThenUsersRepositoryIsSet()

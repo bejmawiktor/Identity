@@ -7,7 +7,7 @@ namespace Identity.Tests.Unit.Domain
     [TestFixture]
     public class HashedPasswordTest
     {
-        private static readonly HashedPassword TestPassword = HashedPassword.Hash("MyPassword");
+        private static readonly HashedPassword TestPassword = HashedPassword.Hash(new Password("MyPassword"));
 
         [Test]
         public void TestConstructing_WhenNullStringHashedPasswordGiven_ThenArgumentNullExceptionIsThrown()
@@ -91,39 +91,15 @@ namespace Identity.Tests.Unit.Domain
                 () => HashedPassword.Hash(null));
         }
 
-        [Test]
-        public void TestHash_WhenEmptyPasswordGiven_ThenArgumentExceptionIsThrown()
-        {
-            Assert.Throws(
-                Is.InstanceOf<ArgumentException>()
-                    .And.Message
-                    .EqualTo("Password can't be empty."),
-                () => HashedPassword.Hash(string.Empty));
-        }
-
-        [TestCase("a")]
-        [TestCase("as")]
-        [TestCase("asd")]
-        [TestCase("asdf")]
-        [TestCase("asdfg")]
-        [TestCase("asdfgh")]
-        public void TestHash_WhenTooShortPasswordGiven_ThenArgumentExceptionIsThrown(string password)
-        {
-            Assert.Throws(
-                Is.InstanceOf<ArgumentException>()
-                    .And.Message
-                    .EqualTo("Password must be longer than 6 characters."),
-                () => HashedPassword.Hash(password));
-        }
-
         [TestCase("MySimplePass123")]
         [TestCase("12345678")]
         [TestCase("!2#Asdfg;'p*&")]
         public void TestVerify_WhenCorrectPasswordGiven_ThenSuccessIsReturned(string verifiedPassword)
         {
-            var password = HashedPassword.Hash(verifiedPassword);
+            var password = new Password(verifiedPassword);
+            var hashedPassword = HashedPassword.Hash(password);
 
-            PasswordVerificationResult result = password.Verify(verifiedPassword);
+            PasswordVerificationResult result = hashedPassword.Verify(password);
 
             Assert.That(result, Is.EqualTo(PasswordVerificationResult.Success));
         }
@@ -133,9 +109,9 @@ namespace Identity.Tests.Unit.Domain
         [TestCase("!2#Asdfg;'p*&", "!2#Asdfg'p*&")]
         public void TestVerify_WhenIncorrectPasswordGiven_ThenFailedIsReturned(string verifiedPassword, string incorrectPassword)
         {
-            var password = HashedPassword.Hash(verifiedPassword);
+            var password = HashedPassword.Hash(new Password(verifiedPassword));
 
-            PasswordVerificationResult result = password.Verify(incorrectPassword);
+            PasswordVerificationResult result = password.Verify(new Password(incorrectPassword));
 
             Assert.That(result, Is.EqualTo(PasswordVerificationResult.Failed));
         }
@@ -148,16 +124,6 @@ namespace Identity.Tests.Unit.Domain
                     .And.Property(nameof(ArgumentNullException.ParamName))
                     .EqualTo("verifiedPassword"),
                 () => HashedPasswordTest.TestPassword.Verify(null));
-        }
-
-        [Test]
-        public void TestVerify_WhenEmptyPasswordGiven_ThenArgumentExceptionIsThrown()
-        {
-            Assert.Throws(
-                Is.InstanceOf<ArgumentException>()
-                    .And.Message
-                    .EqualTo("Verified password can't be empty."),
-                () => HashedPasswordTest.TestPassword.Verify(string.Empty));
         }
     }
 }

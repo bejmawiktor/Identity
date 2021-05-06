@@ -19,6 +19,7 @@ namespace Identity.Application
                 id: application.Id.ToGuid(),
                 userId: application.UserId.ToGuid(),
                 name: application.Name,
+                secretKey: application.SecretKey.ToString(),
                 homepageUrl: application.HomepageUrl.ToString(),
                 callbackUrl: application.CallbackUrl.ToString());
         }

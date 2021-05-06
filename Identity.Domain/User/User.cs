@@ -176,6 +176,7 @@ namespace Identity.Domain
                 id: applicationId,
                 userId: this.Id,
                 name: name,
+                secretKey: EncryptedSecretKey.Encrypt(SecretKey.Generate()),
                 homepageUrl: homepageUrl,
                 callbackUrl: callbackUrl);
         }

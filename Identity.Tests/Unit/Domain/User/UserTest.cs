@@ -11,7 +11,7 @@ namespace Identity.Tests.Unit.Domain
     [TestFixture]
     public class UserTest
     {
-        private static HashedPassword TestPassword = HashedPassword.Hash("MyPassword");
+        private static HashedPassword TestPassword = HashedPassword.Hash(new Password("MyPassword"));
 
         [Test]
         public void TestConstructing_WhenEmailGiven_ThenEmailIsSet()
@@ -173,7 +173,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestPasswordSet_WhenPasswordGiven_ThenPasswordIsSet()
         {
-            var newPassword = HashedPassword.Hash("MyPassword2");
+            var newPassword = HashedPassword.Hash(new Password("MyPassword2"));
             var userId = UserId.Generate();
             var user = new User(
                 id: userId,
@@ -556,6 +556,7 @@ namespace Identity.Tests.Unit.Domain
         public void TestCreateApplication_WhenCreatingApplication_ThenNewApplicationIsReturned()
         {
             UserId userId = UserId.Generate();
+            SecretKey secretKey = SecretKey.Generate();
             var user = new User(
                 id: userId,
                 email: new EmailAddress("myemail@example.com"),

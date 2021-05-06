@@ -11,12 +11,15 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
 {
     public class ApplicationRepositoryTest : DatabaseTestBase
     {
+        private static readonly string SecretKey = Identity.Domain.SecretKey.Generate().ToString();
+
         private static readonly ApplicationDto[] ApplicationsTestData = new ApplicationDto[]
         {
             new ApplicationDto(
                 id: Guid.NewGuid(),
                 userId: Guid.NewGuid(),
                 name: "MyApplication1",
+                secretKey: Identity.Domain.SecretKey.Generate().ToString(),
                 homepageUrl: "http://www.example1.com",
                 callbackUrl: "http://www.example1.com/1"
             ),
@@ -24,6 +27,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 id: Guid.NewGuid(),
                 userId: Guid.NewGuid(),
                 name: "MyApplication2",
+                secretKey: Identity.Domain.SecretKey.Generate().ToString(),
                 homepageUrl: "http://www.example2.com",
                 callbackUrl: "http://www.example2.com/1"
             ),
@@ -31,6 +35,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 id: Guid.NewGuid(),
                 userId: Guid.NewGuid(),
                 name: "MyApplication3",
+                secretKey: Identity.Domain.SecretKey.Generate().ToString(),
                 homepageUrl: "http://www.example3.com",
                 callbackUrl: "http://www.example3.com/1"
             ),
@@ -38,6 +43,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 id: Guid.NewGuid(),
                 userId: Guid.NewGuid(),
                 name: "MyApplication4",
+                secretKey: Identity.Domain.SecretKey.Generate().ToString(),
                 homepageUrl: "http://www.example4.com",
                 callbackUrl: "http://www.example4.com/1"
             ),
@@ -45,6 +51,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 id: Guid.NewGuid(),
                 userId: Guid.NewGuid(),
                 name: "MyApplication5",
+                secretKey: Identity.Domain.SecretKey.Generate().ToString(),
                 homepageUrl: "http://www.example5.com",
                 callbackUrl: "http://www.example5.com/1"
             )
@@ -154,6 +161,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             var applicationDto = new ApplicationDto(
                 id: applicationId,
                 userId: userId,
+                secretKey: SecretKey,
                 name: "MyApplication1",
                 homepageUrl: "http://www.example1.com",
                 callbackUrl: "http://www.example1.com/1");
@@ -182,6 +190,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 id: applicationId,
                 userId: userId,
                 name: "MyApplication1",
+                secretKey: SecretKey,
                 homepageUrl: "http://www.example1.com",
                 callbackUrl: "http://www.example1.com/1");
             var applicationRepository = new ApplicationsRepository(this.IdentityContext);
@@ -209,6 +218,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 id: applicationId,
                 userId: userId,
                 name: "MyApplication1",
+                secretKey: SecretKey,
                 homepageUrl: "http://www.example1.com",
                 callbackUrl: "http://www.example1.com/1");
             var applicationRepository = new ApplicationsRepository(this.IdentityContext);
@@ -217,6 +227,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 id: applicationId,
                 userId: userId,
                 name: "MyApplication2",
+                secretKey: SecretKey,
                 homepageUrl: "http://www.example1.com",
                 callbackUrl: "http://www.example1.com/1");
 
@@ -243,6 +254,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 id: applicationId,
                 userId: userId,
                 name: "MyApplication1",
+                secretKey: SecretKey,
                 homepageUrl: "http://www.example1.com",
                 callbackUrl: "http://www.example1.com/1");
             var applicationRepository = new ApplicationsRepository(this.IdentityContext);
@@ -251,6 +263,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 id: applicationId,
                 userId: userId,
                 name: "MyApplication2",
+                secretKey: SecretKey,
                 homepageUrl: "http://www.example1.com",
                 callbackUrl: "http://www.example1.com/1");
 
@@ -276,6 +289,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 id: applicationId,
                 userId: Guid.NewGuid(),
                 name: "MyApplication1",
+                secretKey: SecretKey,
                 homepageUrl: "http://www.example1.com",
                 callbackUrl: "http://www.example1.com/1");
             var applicationRepository = new ApplicationsRepository(this.IdentityContext);
@@ -296,6 +310,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 id: applicationId,
                 userId: Guid.NewGuid(),
                 name: "MyApplication1",
+                secretKey: SecretKey,
                 homepageUrl: "http://www.example1.com",
                 callbackUrl: "http://www.example1.com/1");
             var applicationRepository = new ApplicationsRepository(this.IdentityContext);
@@ -316,6 +331,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 id: applicationId,
                 userId: Guid.NewGuid(),
                 name: "MyApplication1",
+                secretKey: SecretKey,
                 homepageUrl: "http://www.example1.com",
                 callbackUrl: "http://www.example1.com/1");
             var applicationRepository = new ApplicationsRepository(this.IdentityContext);
@@ -334,6 +350,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 id: applicationId,
                 userId: Guid.NewGuid(),
                 name: "MyApplication1",
+                secretKey: SecretKey,
                 homepageUrl: "http://www.example1.com",
                 callbackUrl: "http://www.example1.com/1");
             var applicationRepository = new ApplicationsRepository(this.IdentityContext);
