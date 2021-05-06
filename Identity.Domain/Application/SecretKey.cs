@@ -1,0 +1,52 @@
+﻿using DDD.Domain.Model;
+using System;
+using System.Collections.Generic;
+using System.Security.Cryptography;
+
+namespace Identity.Domain
+{
+    public class SecretKey : ValueObject
+    {
+        private string Value { get; }
+
+        private static uint Length => 32;
+
+        public SecretKey(string value)
+        {
+            this.ValidateValue(value);
+
+            this.Value = value;
+        }
+
+        private void ValidateValue(string value)
+        {
+            if(value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            if(value == string.Empty)
+            {
+                throw new ArgumentException("Secret key can't be empty.");
+            }
+        }
+
+        protected override IEnumerable<object> GetEqualityMembers()
+        {
+            yield return this.Value;
+        }
+
+        internal static SecretKey Generate()
+        {
+            RandomNumberGenerator cryptoRandomDataGenerator = new RNGCryptoServiceProvider();
+            byte[] buffer = new byte[SecretKey.Length];
+
+            cryptoRandomDataGenerator.GetBytes(buffer);
+
+            return new SecretKey(Convert.ToBase64String(buffer));
+        }
+
+        public override string ToString()
+            => this.Value;
+    }
+}
