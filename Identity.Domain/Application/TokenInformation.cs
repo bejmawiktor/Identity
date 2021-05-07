@@ -6,20 +6,23 @@ namespace Identity.Domain
 {
     internal class TokenInformation : ValueObject
     {
-        public UserId UserId { get; }
+        public ApplicationId ApplicationId { get; }
         public TokenType TokenType { get; }
         public DateTime ExpirationDate { get; }
 
-        public TokenInformation(UserId userId, TokenType tokenType, DateTime? expirationDate = null)
+        public TokenInformation(
+            ApplicationId applicationId,
+            TokenType tokenType,
+            DateTime? expirationDate = null)
         {
-            this.UserId = userId;
             this.TokenType = tokenType;
+            this.ApplicationId = applicationId;
             this.ExpirationDate = expirationDate ?? tokenType.GenerateExpirationDate();
         }
 
         protected override IEnumerable<object> GetEqualityMembers()
         {
-            yield return this.UserId;
+            yield return this.ApplicationId;
             yield return this.TokenType;
             yield return this.ExpirationDate;
         }

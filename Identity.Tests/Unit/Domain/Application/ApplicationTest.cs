@@ -270,5 +270,122 @@ namespace Identity.Tests.Unit.Domain
 
             Assert.That(application.SecretKey, Is.Not.Null);
         }
+
+        [Test]
+        public void TestGenerateTokens_WhenGenerating_ThenTokenPairIsReturnedWithUserId()
+        {
+            var secretKey = SecretKey.Generate();
+            EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
+            ApplicationId applicationId = ApplicationId.Generate();
+            UserId userId = UserId.Generate();
+            var application = new Application(
+                id: applicationId,
+                userId: userId,
+                name: "MyApp",
+                secretKey: encryptedSecretKey,
+                homepageUrl: new Url("https://www.example.com"),
+                callbackUrl: new Url("https://www.example.com/1"));
+
+            TokenPair tokens = application.GenerateTokens();
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(tokens.AccessToken.ApplicationId, Is.EqualTo(applicationId));
+                Assert.That(tokens.RefreshToken.ApplicationId, Is.EqualTo(applicationId));
+            });
+        }
+
+        [Test]
+        public void TestRefreshTokens_WhenRefreshing_ThenTokenPairIsReturnedWithApplicationId()
+        {
+            var secretKey = SecretKey.Generate();
+            EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
+            ApplicationId applicationId = ApplicationId.Generate();
+            UserId userId = UserId.Generate();
+            var application = new Application(
+                id: applicationId,
+                userId: userId,
+                name: "MyApp",
+                secretKey: encryptedSecretKey,
+                homepageUrl: new Url("https://www.example.com"),
+                callbackUrl: new Url("https://www.example.com/1"));
+            var refreshToken = Token.GenerateRefreshToken(applicationId);
+
+            TokenPair tokens = application.RefreshTokens(refreshToken);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(tokens.AccessToken.ApplicationId, Is.EqualTo(applicationId));
+                Assert.That(tokens.RefreshToken.ApplicationId, Is.EqualTo(applicationId));
+            });
+        }
+
+        [Test]
+        public void TestRefreshTokens_WhenRefreshing_ThenTokenPairIsReturnedWithRefreshTokenExpirationDateSameAsPreviousRefreshTokenGiven()
+        {
+            var secretKey = SecretKey.Generate();
+            EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
+            ApplicationId applicationId = ApplicationId.Generate();
+            UserId userId = UserId.Generate();
+            var application = new Application(
+                id: applicationId,
+                userId: userId,
+                name: "MyApp",
+                secretKey: encryptedSecretKey,
+                homepageUrl: new Url("https://www.example.com"),
+                callbackUrl: new Url("https://www.example.com/1"));
+            var dateTime = DateTime.Now.AddDays(1);
+            var refreshToken = Token.GenerateRefreshToken(applicationId, dateTime);
+
+            TokenPair tokens = application.RefreshTokens(refreshToken);
+
+            Assert.That(tokens.RefreshToken.ExpiresAt, Is.EqualTo(dateTime).Within(1).Seconds);
+        }
+
+        [Test]
+        public void TestRefreshTokens_WhenWrongApplicationIdRefreshTokenGiven_ThenInvalidTokenExceptionIsThrown()
+        {
+            var secretKey = SecretKey.Generate();
+            EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
+            ApplicationId applicationId = ApplicationId.Generate();
+            ApplicationId wrongApplicationId = ApplicationId.Generate();
+            UserId userId = UserId.Generate();
+            var application = new Application(
+                id: applicationId,
+                userId: userId,
+                name: "MyApp",
+                secretKey: encryptedSecretKey,
+                homepageUrl: new Url("https://www.example.com"),
+                callbackUrl: new Url("https://www.example.com/1"));
+            var refreshToken = Token.GenerateRefreshToken(wrongApplicationId);
+
+            Assert.Throws(
+                Is.InstanceOf<InvalidTokenException>()
+                    .And.Message
+                    .EqualTo("Wrong refresh token given."),
+                () => application.RefreshTokens(refreshToken));
+        }
+
+        [Test]
+        public void TestRefreshTokens_WhenRefreshTokenWithFailedVerificationGiven_ThenInvalidTokenExceptionIsThrown()
+        {
+            var dateTime = DateTime.Now.AddDays(-1);
+            var secretKey = SecretKey.Generate();
+            EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
+            ApplicationId applicationId = ApplicationId.Generate();
+            UserId userId = UserId.Generate();
+            var application = new Application(
+                id: applicationId,
+                userId: userId,
+                name: "MyApp",
+                secretKey: encryptedSecretKey,
+                homepageUrl: new Url("https://www.example.com"),
+                callbackUrl: new Url("https://www.example.com/1"));
+            var refreshToken = Token.GenerateRefreshToken(applicationId, dateTime);
+
+            Assert.Throws(
+                Is.InstanceOf<InvalidTokenException>(),
+                () => application.RefreshTokens(refreshToken));
+        }
     }
 }

@@ -31,7 +31,7 @@ namespace Identity.Domain
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithm);
             var claims = new Claim[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, tokenInformation.UserId.ToString()),
+                new Claim(JwtRegisteredClaimNames.Sub, tokenInformation.ApplicationId.ToString()),
                 new Claim(this.TokenTypeClaimName, tokenInformation.TokenType.Name)
             };
             var token = new JwtSecurityToken(
@@ -53,7 +53,7 @@ namespace Identity.Domain
             }
 
             return new TokenInformation(
-                userId: this.ExtractUserId(jwtSecurityToken),
+                applicationId: this.ExtractApplicationId(jwtSecurityToken),
                 tokenType: this.ExtractTokenType(jwtSecurityToken),
                 expirationDate: this.ExtractExpirationDate(jwtSecurityToken));
         }
@@ -82,7 +82,7 @@ namespace Identity.Domain
 
             try
             {
-                var userId = this.ExtractUserId(jwtSecurityToken);
+                ApplicationId applicationId = this.ExtractApplicationId(jwtSecurityToken);
             }
             catch
             {
@@ -133,13 +133,13 @@ namespace Identity.Domain
             return true;
         }
 
-        private UserId ExtractUserId(JwtSecurityToken jwtSecurityToken)
+        private ApplicationId ExtractApplicationId(JwtSecurityToken jwtSecurityToken)
         {
             string sub = jwtSecurityToken.Claims
                 .FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?
                 .Value;
 
-            return new UserId(new Guid(sub));
+            return new ApplicationId(new Guid(sub));
         }
 
         private TokenType ExtractTokenType(JwtSecurityToken jwtSecurityToken)

@@ -12,7 +12,7 @@ namespace Identity.Domain
         private string Value { get; }
         private TokenInformation TokenInformation { get; }
 
-        public UserId UserId => this.TokenInformation.UserId;
+        public ApplicationId ApplicationId => this.TokenInformation.ApplicationId;
         public TokenType Type => this.TokenInformation.TokenType;
         public DateTime ExpiresAt => this.TokenInformation.ExpirationDate;
 
@@ -39,27 +39,27 @@ namespace Identity.Domain
             TokenGenerationAlgorithm.Validate(value);
         }
 
-        internal static Token GenerateAccessToken(UserId userId)
+        internal static Token GenerateAccessToken(ApplicationId applicationId)
         {
-            if(userId == null)
+            if(applicationId == null)
             {
-                throw new ArgumentNullException(nameof(userId));
+                throw new ArgumentNullException(nameof(applicationId));
             }
 
             return new Token(TokenGenerationAlgorithm.Encode(new TokenInformation(
-                userId: userId,
+                applicationId: applicationId,
                 tokenType: TokenType.Access)));
         }
 
-        internal static Token GenerateRefreshToken(UserId userId, DateTime? expiresAt = null)
+        internal static Token GenerateRefreshToken(ApplicationId applicationId, DateTime? expiresAt = null)
         {
-            if(userId == null)
+            if(applicationId == null)
             {
-                throw new ArgumentNullException(nameof(userId));
+                throw new ArgumentNullException(nameof(applicationId));
             }
 
             return new Token(TokenGenerationAlgorithm.Encode(new TokenInformation(
-                userId: userId,
+                applicationId: applicationId,
                 tokenType: TokenType.Refresh,
                 expirationDate: expiresAt)));
         }

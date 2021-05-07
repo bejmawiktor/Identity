@@ -8,6 +8,8 @@ using System.Text;
 
 namespace Identity.Tests.Unit.Domain
 {
+    using ApplicationId = Identity.Domain.ApplicationId;
+
     [TestFixture]
     public class HS256JWTTokenGenerationAlgorithmTest
     {
@@ -28,7 +30,8 @@ namespace Identity.Tests.Unit.Domain
         {
             var algorithm = new HS256JWTTokenGenerationAlgorithm();
             UserId userId = UserId.Generate();
-            var tokenInformation = new TokenInformation(userId, TokenType.Refresh);
+            ApplicationId applicationId = ApplicationId.Generate();
+            var tokenInformation = new TokenInformation(applicationId, TokenType.Refresh);
 
             string token = algorithm.Encode(tokenInformation);
 
@@ -40,7 +43,8 @@ namespace Identity.Tests.Unit.Domain
         {
             var algorithm = new HS256JWTTokenGenerationAlgorithm();
             UserId userId = UserId.Generate();
-            var tokenInformation = new TokenInformation(userId, TokenType.Refresh);
+            ApplicationId applicationId = ApplicationId.Generate();
+            var tokenInformation = new TokenInformation(applicationId, TokenType.Refresh);
 
             string token = algorithm.Encode(tokenInformation);
 
@@ -51,11 +55,17 @@ namespace Identity.Tests.Unit.Domain
         public void TestEncode_WhenGeneratingTokenWithDifferentTokenInformation_ThenTokensAreDifferent()
         {
             var algorithm = new HS256JWTTokenGenerationAlgorithm();
-            UserId firstUserId = UserId.Generate();
-            UserId secondUserId = UserId.Generate();
             var expirationDate = DateTime.Now;
-            var firstTokenInformation = new TokenInformation(firstUserId, TokenType.Refresh, expirationDate);
-            var secondTokenInformation = new TokenInformation(secondUserId, TokenType.Refresh, expirationDate);
+            ApplicationId firstApplicationId = ApplicationId.Generate();
+            ApplicationId secondApplicationId = ApplicationId.Generate();
+            var firstTokenInformation = new TokenInformation(
+                firstApplicationId,
+                TokenType.Refresh,
+                expirationDate);
+            var secondTokenInformation = new TokenInformation(
+                secondApplicationId,
+                TokenType.Refresh,
+                expirationDate);
 
             string firstToken = algorithm.Encode(firstTokenInformation);
             string secondToken = algorithm.Encode(secondTokenInformation);
@@ -99,7 +109,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestValidate_WhenTokenWithoutUserIdGiven_ThenInvalidTokenExceptionIsThrown()
+        public void TestValidate_WhenTokenWithoutApplicationIdGiven_ThenInvalidTokenExceptionIsThrown()
         {
             var claims = new Claim[] { new Claim("tokenType", TokenType.Access) };
             var algorithm = new HS256JWTTokenGenerationAlgorithm();
@@ -237,7 +247,8 @@ namespace Identity.Tests.Unit.Domain
         {
             var algorithm = new HS256JWTTokenGenerationAlgorithm();
             UserId userId = UserId.Generate();
-            var tokenInformation = new TokenInformation(userId, TokenType.Refresh);
+            ApplicationId applicationId = ApplicationId.Generate();
+            var tokenInformation = new TokenInformation(applicationId, TokenType.Refresh);
 
             string token = algorithm.Encode(tokenInformation);
 
@@ -264,16 +275,17 @@ namespace Identity.Tests.Unit.Domain
         {
             var algorithm = new HS256JWTTokenGenerationAlgorithm();
             UserId userId = UserId.Generate();
-            var tokenInformation = new TokenInformation(userId, TokenType.Refresh);
+            ApplicationId applicationId = ApplicationId.Generate();
+            var tokenInformation = new TokenInformation(applicationId, TokenType.Refresh);
             string token = algorithm.Encode(tokenInformation);
 
             TokenInformation result = algorithm.Decode(token);
 
             Assert.Multiple(() =>
             {
-                Assert.That(tokenInformation.UserId, Is.EqualTo(userId));
-                Assert.That(tokenInformation.TokenType, Is.EqualTo(TokenType.Refresh));
-                Assert.That(tokenInformation.ExpirationDate, Is.EqualTo(TokenType.Refresh.GenerateExpirationDate()).Within(1).Hours);
+                Assert.That(result.ApplicationId, Is.EqualTo(applicationId));
+                Assert.That(result.TokenType, Is.EqualTo(TokenType.Refresh));
+                Assert.That(result.ExpirationDate, Is.EqualTo(TokenType.Refresh.GenerateExpirationDate()).Within(1).Hours);
             });
         }
     }

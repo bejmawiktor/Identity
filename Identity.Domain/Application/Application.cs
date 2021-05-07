@@ -74,5 +74,31 @@ namespace Identity.Domain
         {
             this.SecretKey = EncryptedSecretKey.Encrypt(Domain.SecretKey.Generate());
         }
+
+        public TokenPair GenerateTokens()
+        {
+            return new TokenPair(
+                accessToken: Token.GenerateAccessToken(this.Id),
+                refreshToken: Token.GenerateRefreshToken(this.Id));
+        }
+
+        public TokenPair RefreshTokens(Token refreshToken)
+        {
+            if(refreshToken.ApplicationId != this.Id)
+            {
+                throw new InvalidTokenException("Wrong refresh token given.");
+            }
+
+            TokenVerificationResult verificationResult = refreshToken.Verify();
+
+            if(verificationResult == TokenVerificationResult.Failed)
+            {
+                throw new InvalidTokenException(verificationResult.Message);
+            }
+
+            return new TokenPair(
+                accessToken: Token.GenerateAccessToken(this.Id),
+                refreshToken: Token.GenerateRefreshToken(this.Id, refreshToken.ExpiresAt));
+        }
     }
 }

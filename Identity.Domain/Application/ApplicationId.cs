@@ -22,5 +22,8 @@ namespace Identity.Domain
 
         public static ApplicationId Generate()
             => new ApplicationId(Guid.NewGuid());
+
+        public override string ToString()
+            => this.Value.ToString();
     }
 }

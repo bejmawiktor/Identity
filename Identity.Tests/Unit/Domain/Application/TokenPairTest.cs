@@ -4,15 +4,17 @@ using System;
 
 namespace Identity.Tests.Unit.Domain
 {
+    using ApplicationId = Identity.Domain.ApplicationId;
+
     [TestFixture]
     public class TokenPairTest
     {
         [Test]
         public void TestConstruction_WhenAccessTokenGiven_ThenAccessTokenIsSet()
         {
-            var userId = UserId.Generate();
-            var accessToken = Token.GenerateAccessToken(userId);
-            var refreshToken = Token.GenerateRefreshToken(userId);
+            var applicationId = ApplicationId.Generate();
+            var accessToken = Token.GenerateAccessToken(applicationId);
+            var refreshToken = Token.GenerateRefreshToken(applicationId);
             var tokenPair = new TokenPair(
                 accessToken: accessToken,
                 refreshToken: refreshToken);
@@ -23,9 +25,9 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestConstruction_WhenRefreshTokenGiven_ThenRefreshTokenIsSet()
         {
-            var userId = UserId.Generate();
-            var accessToken = Token.GenerateAccessToken(userId);
-            var refreshToken = Token.GenerateRefreshToken(userId);
+            var applicationId = ApplicationId.Generate();
+            var accessToken = Token.GenerateAccessToken(applicationId);
+            var refreshToken = Token.GenerateRefreshToken(applicationId);
             var tokenPair = new TokenPair(
                 accessToken: accessToken,
                 refreshToken: refreshToken);
@@ -36,8 +38,8 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestConstruction_WhenRefreshTokenGivenInAccessTokenPlace_ThenArgumentExceptionIsThrown()
         {
-            var userId = UserId.Generate();
-            var refreshToken = Token.GenerateRefreshToken(userId);
+            var applicationId = ApplicationId.Generate();
+            var refreshToken = Token.GenerateRefreshToken(applicationId);
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()
@@ -51,8 +53,8 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestConstruction_WhenAccessTokenGivenInRefreshTokenPlace_ThenArgumentExceptionIsThrown()
         {
-            var userId = UserId.Generate();
-            var accessToken = Token.GenerateAccessToken(userId);
+            var applicationId = ApplicationId.Generate();
+            var accessToken = Token.GenerateAccessToken(applicationId);
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()
@@ -66,8 +68,8 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestConstruction_WhenNullAccessTokenGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var userId = UserId.Generate();
-            var refreshToken = Token.GenerateRefreshToken(userId);
+            var applicationId = ApplicationId.Generate();
+            var refreshToken = Token.GenerateRefreshToken(applicationId);
 
             Assert.Throws(
                Is.InstanceOf<ArgumentNullException>()
@@ -81,8 +83,8 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestConstruction_WhenNullRefreshTokenGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var userId = UserId.Generate();
-            var accessToken = Token.GenerateAccessToken(userId);
+            var applicationId = ApplicationId.Generate();
+            var accessToken = Token.GenerateAccessToken(applicationId);
 
             Assert.Throws(
                Is.InstanceOf<ArgumentNullException>()

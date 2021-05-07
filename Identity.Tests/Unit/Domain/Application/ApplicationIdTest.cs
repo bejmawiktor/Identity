@@ -34,5 +34,16 @@ namespace Identity.Tests.Unit.Domain
 
             Assert.That(applicationId, Is.Not.Null);
         }
+
+        [Test]
+        public void TestToString_WhenConvertingToString_ThenGuidStringIsReturned()
+        {
+            var guid = Guid.NewGuid();
+            var applicationId = new ApplicationId(guid);
+
+            string applicationIdString = applicationId.ToString();
+
+            Assert.That(applicationIdString, Is.EqualTo(guid.ToString()));
+        }
     }
 }
