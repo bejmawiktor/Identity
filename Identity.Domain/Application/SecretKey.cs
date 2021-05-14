@@ -1,7 +1,9 @@
 ﻿using DDD.Domain.Model;
+using Microsoft.AspNetCore.WebUtilities;
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using System.Web;
 
 namespace Identity.Domain
 {
@@ -43,7 +45,7 @@ namespace Identity.Domain
 
             cryptoRandomDataGenerator.GetBytes(buffer);
 
-            return new SecretKey(Convert.ToBase64String(buffer));
+            return new SecretKey(WebEncoders.Base64UrlEncode(buffer));
         }
 
         public override string ToString()
