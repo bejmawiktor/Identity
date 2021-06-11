@@ -100,5 +100,9 @@ namespace Identity.Domain
                 accessToken: Token.GenerateAccessToken(this.Id),
                 refreshToken: Token.GenerateRefreshToken(this.Id, refreshToken.ExpiresAt));
         }
+
+        public AuthorizationCode GenerateAuthorizationCode()
+            => new AuthorizationCode(
+                id: AuthorizationCodeId.Generate(this.Id));
     }
 }

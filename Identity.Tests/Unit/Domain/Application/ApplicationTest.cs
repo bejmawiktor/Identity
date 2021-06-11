@@ -381,11 +381,32 @@ namespace Identity.Tests.Unit.Domain
                 secretKey: encryptedSecretKey,
                 homepageUrl: new Url("https://www.example.com"),
                 callbackUrl: new Url("https://www.example.com/1"));
+
             var refreshToken = Token.GenerateRefreshToken(applicationId, dateTime);
 
             Assert.Throws(
                 Is.InstanceOf<InvalidTokenException>(),
                 () => application.RefreshTokens(refreshToken));
+        }
+
+        [Test]
+        public void TestGenerateAuthorizationCode_WhenGenerating_ThenAuthorizationCodeIsReturnedWithApplicationId()
+        {
+            var secretKey = SecretKey.Generate();
+            EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
+            ApplicationId applicationId = ApplicationId.Generate();
+            UserId userId = UserId.Generate();
+            var application = new Application(
+                id: applicationId,
+                userId: userId,
+                name: "MyApp",
+                secretKey: encryptedSecretKey,
+                homepageUrl: new Url("https://www.example.com"),
+                callbackUrl: new Url("https://www.example.com/1"));
+
+            AuthorizationCode authorizationCode = application.GenerateAuthorizationCode();
+
+            Assert.That(authorizationCode.Id.ApplicationId, Is.EqualTo(applicationId));
         }
     }
 }

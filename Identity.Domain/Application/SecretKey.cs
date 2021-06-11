@@ -40,10 +40,12 @@ namespace Identity.Domain
 
         internal static SecretKey Generate()
         {
-            RandomNumberGenerator cryptoRandomDataGenerator = new RNGCryptoServiceProvider();
             byte[] buffer = new byte[SecretKey.Length];
 
-            cryptoRandomDataGenerator.GetBytes(buffer);
+            using(RandomNumberGenerator cryptoRandomDataGenerator = new RNGCryptoServiceProvider())
+            {
+                cryptoRandomDataGenerator.GetBytes(buffer);
+            }
 
             return new SecretKey(WebEncoders.Base64UrlEncode(buffer));
         }
