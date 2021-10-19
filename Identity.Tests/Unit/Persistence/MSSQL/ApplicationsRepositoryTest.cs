@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Identity.Tests.Unit.Persistence.MSSQL
 {
-    public class ApplicationRepositoryTest : DatabaseTestBase
+    public class ApplicationsRepositoryTest : DatabaseTestBase
     {
         private static readonly string SecretKey = Identity.Domain.SecretKey.Generate().ToString();
 
@@ -63,42 +63,42 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             {
                 yield return new TestCaseData(new object[]
                 {
-                    ApplicationRepositoryTest.ApplicationsTestData,
+                    ApplicationsRepositoryTest.ApplicationsTestData,
                     new Pagination(0, 5),
-                    ApplicationRepositoryTest.ApplicationsTestData
+                    ApplicationsRepositoryTest.ApplicationsTestData
                 }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenApplicationsAreReturned)}(1)");
                 yield return new TestCaseData(new object[]
                 {
-                    ApplicationRepositoryTest.ApplicationsTestData,
+                    ApplicationsRepositoryTest.ApplicationsTestData,
                     new Pagination(0, 2),
                     new ApplicationDto[]
                     {
-                        ApplicationRepositoryTest.ApplicationsTestData[0],
-                        ApplicationRepositoryTest.ApplicationsTestData[1],
+                        ApplicationsRepositoryTest.ApplicationsTestData[0],
+                        ApplicationsRepositoryTest.ApplicationsTestData[1],
                     }
                 }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenApplicationsAreReturned)}(2)");
                 yield return new TestCaseData(new object[]
                 {
-                    ApplicationRepositoryTest.ApplicationsTestData,
+                    ApplicationsRepositoryTest.ApplicationsTestData,
                     new Pagination(1, 2),
                     new ApplicationDto[]
                     {
-                        ApplicationRepositoryTest.ApplicationsTestData[2],
-                        ApplicationRepositoryTest.ApplicationsTestData[3],
+                        ApplicationsRepositoryTest.ApplicationsTestData[2],
+                        ApplicationsRepositoryTest.ApplicationsTestData[3],
                     }
                 }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenApplicationsAreReturned)}(3)");
                 yield return new TestCaseData(new object[]
                 {
-                    ApplicationRepositoryTest.ApplicationsTestData,
+                    ApplicationsRepositoryTest.ApplicationsTestData,
                     new Pagination(2, 2),
                     new ApplicationDto[]
                     {
-                        ApplicationRepositoryTest.ApplicationsTestData[4]
+                        ApplicationsRepositoryTest.ApplicationsTestData[4]
                     }
                 }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenApplicationsAreReturned)}(4)");
                 yield return new TestCaseData(new object[]
                 {
-                    ApplicationRepositoryTest.ApplicationsTestData,
+                    ApplicationsRepositoryTest.ApplicationsTestData,
                     new Pagination(3, 2),
                     Enumerable.Empty<ApplicationDto>()
                 }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenApplicationsAreReturned)}(5)");
@@ -111,42 +111,42 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             {
                 yield return new TestCaseData(new object[]
                 {
-                    ApplicationRepositoryTest.ApplicationsTestData,
+                    ApplicationsRepositoryTest.ApplicationsTestData,
                     new Pagination(0, 5),
-                    ApplicationRepositoryTest.ApplicationsTestData
+                    ApplicationsRepositoryTest.ApplicationsTestData
                 }).SetName($"{nameof(TestGetAsync_WhenPaginationGiven_ThenApplicationsAreReturned)}(1)");
                 yield return new TestCaseData(new object[]
                 {
-                    ApplicationRepositoryTest.ApplicationsTestData,
+                    ApplicationsRepositoryTest.ApplicationsTestData,
                     new Pagination(0, 2),
                     new ApplicationDto[]
                     {
-                        ApplicationRepositoryTest.ApplicationsTestData[0],
-                        ApplicationRepositoryTest.ApplicationsTestData[1],
+                        ApplicationsRepositoryTest.ApplicationsTestData[0],
+                        ApplicationsRepositoryTest.ApplicationsTestData[1],
                     }
                 }).SetName($"{nameof(TestGetAsync_WhenPaginationGiven_ThenApplicationsAreReturned)}(2)");
                 yield return new TestCaseData(new object[]
                 {
-                    ApplicationRepositoryTest.ApplicationsTestData,
+                    ApplicationsRepositoryTest.ApplicationsTestData,
                     new Pagination(1, 2),
                     new ApplicationDto[]
                     {
-                        ApplicationRepositoryTest.ApplicationsTestData[2],
-                        ApplicationRepositoryTest.ApplicationsTestData[3],
+                        ApplicationsRepositoryTest.ApplicationsTestData[2],
+                        ApplicationsRepositoryTest.ApplicationsTestData[3],
                     }
                 }).SetName($"{nameof(TestGetAsync_WhenPaginationGiven_ThenApplicationsAreReturned)}(3)");
                 yield return new TestCaseData(new object[]
                 {
-                    ApplicationRepositoryTest.ApplicationsTestData,
+                    ApplicationsRepositoryTest.ApplicationsTestData,
                     new Pagination(2, 2),
                     new ApplicationDto[]
                     {
-                        ApplicationRepositoryTest.ApplicationsTestData[4],
+                        ApplicationsRepositoryTest.ApplicationsTestData[4],
                     }
                 }).SetName($"{nameof(TestGetAsync_WhenPaginationGiven_ThenApplicationsAreReturned)}(4)");
                 yield return new TestCaseData(new object[]
                 {
-                    ApplicationRepositoryTest.ApplicationsTestData,
+                    ApplicationsRepositoryTest.ApplicationsTestData,
                     new Pagination(3, 2),
                     Enumerable.Empty<ApplicationDto>()
                 }).SetName($"{nameof(TestGetAsync_WhenPaginationGiven_ThenApplicationsAreReturned)}(5)");
