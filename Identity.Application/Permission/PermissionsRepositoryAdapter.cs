@@ -7,7 +7,8 @@ namespace Identity.Application
     using IAsyncPermissionsRepositoryAdapter = IAsyncRepositoryAdapter<PermissionDto, (string ResourceId, string Name), IPermissionsRepository, PermissionDtoConverter, Permission, PermissionId>;
     using IPermissionsRepositoryAdapter = IRepositoryAdapter<PermissionDto, (string ResourceId, string Name), IPermissionsRepository, PermissionDtoConverter, Permission, PermissionId>;
 
-    internal class PermissionsRepositoryAdapter : IPermissionsRepositoryAdapter, IAsyncPermissionsRepositoryAdapter
+    internal class PermissionsRepositoryAdapter 
+    : IPermissionsRepositoryAdapter, IAsyncPermissionsRepositoryAdapter, Domain.IPermissionsRepository
     {
         public IPermissionsRepository PermissionsRepository { get; }
 

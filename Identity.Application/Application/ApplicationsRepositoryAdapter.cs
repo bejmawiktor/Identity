@@ -6,7 +6,8 @@ namespace Identity.Application
     using IApplicationsRepositoryAdapter = IRepositoryAdapter<ApplicationDto, Guid, IApplicationsRepository, ApplicationDtoConverter, Identity.Domain.Application, Identity.Domain.ApplicationId>;
     using IAsyncApplicationsRepositoryAdapter = IAsyncRepositoryAdapter<ApplicationDto, Guid, IApplicationsRepository, ApplicationDtoConverter, Identity.Domain.Application, Identity.Domain.ApplicationId>;
 
-    internal class ApplicationsRepositoryAdapter : IApplicationsRepositoryAdapter, IAsyncApplicationsRepositoryAdapter
+    internal class ApplicationsRepositoryAdapter 
+    : IApplicationsRepositoryAdapter, IAsyncApplicationsRepositoryAdapter, Domain.IApplicationsRepository
     {
         public IApplicationsRepository ApplicationsRepository { get; }
 

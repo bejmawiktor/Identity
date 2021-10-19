@@ -8,9 +8,7 @@ namespace Identity.Application
     using IUsersRepositoryAdapter = IRepositoryAdapter<UserDto, Guid, IUsersRepository, UserDtoConverter, User, UserId>;
 
     internal class UsersRepositoryAdapter
-    : IAsyncUsersRepositoryAdapter,
-        IUsersRepositoryAdapter,
-        Identity.Domain.IUsersRepository
+    : IAsyncUsersRepositoryAdapter, IUsersRepositoryAdapter, Domain.IUsersRepository
     {
         public IUsersRepository UsersRepository { get; }
 

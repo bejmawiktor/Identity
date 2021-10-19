@@ -8,9 +8,7 @@ namespace Identity.Application
     using IRolesRepositoryAdapter = IRepositoryAdapter<RoleDto, Guid, IRolesRepository, RoleDtoConverter, Role, RoleId>;
 
     internal class RolesRepositoryAdapter
-    : IAsyncRolesRepositoryAdapter,
-        IRolesRepositoryAdapter,
-        Identity.Domain.IRolesRepository
+    : IAsyncRolesRepositoryAdapter, IRolesRepositoryAdapter, Domain.IRolesRepository
     {
         public IRolesRepository RolesRepository { get; }
 

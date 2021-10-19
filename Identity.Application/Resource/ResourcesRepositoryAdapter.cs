@@ -8,9 +8,7 @@ namespace Identity.Application
     using IResourcesRepositoryAdapter = IRepositoryAdapter<ResourceDto, string, IResourcesRepository, ResourceDtoConverter, Resource, ResourceId>;
 
     internal class ResourcesRepositoryAdapter
-    : IAsyncResourcesRepositoryAdapter,
-        IResourcesRepositoryAdapter,
-        Identity.Domain.IResourcesRepository
+    : IAsyncResourcesRepositoryAdapter, IResourcesRepositoryAdapter, Domain.IResourcesRepository
     {
         public IResourcesRepository ResourcesRepository { get; }
 
