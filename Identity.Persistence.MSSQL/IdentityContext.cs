@@ -14,6 +14,7 @@ namespace Identity.Persistence.MSSQL
         internal DbSet<Role> Roles { get; set; }
         internal DbSet<User> Users { get; set; }
         internal DbSet<Application> Applications { get; set; }
+        internal DbSet<AuthorizationCode> AuthorizationCodes { get; set; }
 
         public IdentityContext(string connectionString)
         : base(GetDefaultOptions(connectionString ?? throw new ArgumentNullException(nameof(connectionString))))
@@ -66,16 +67,16 @@ namespace Identity.Persistence.MSSQL
 
                 this.AddRolesData(r, adminRoleId);
             });
-            modelBuilder.Entity<Application>(r =>
+            modelBuilder.Entity<Application>(a =>
             {
-                r.HasKey(r => r.Id);
-                r.Property(r => r.Id).HasColumnType("UNIQUEIDENTIFIER");
-                r.Property(r => r.UserId).HasColumnType("UNIQUEIDENTIFIER");
-                r.HasOne(r => r.User).WithMany().HasForeignKey(r => r.UserId);
-                r.Property(r => r.Name);
-                r.Property(r => r.HomepageUrl).HasMaxLength(2000);
-                r.Property(r => r.CallbackUrl).HasMaxLength(2000);
-                r.ToTable("Applications");
+                a.HasKey(r => r.Id);
+                a.Property(r => r.Id).HasColumnType("UNIQUEIDENTIFIER");
+                a.Property(r => r.UserId).HasColumnType("UNIQUEIDENTIFIER");
+                a.HasOne(r => r.User).WithMany().HasForeignKey(r => r.UserId);
+                a.Property(r => r.Name);
+                a.Property(r => r.HomepageUrl).HasMaxLength(2000);
+                a.Property(r => r.CallbackUrl).HasMaxLength(2000);
+                a.ToTable("Applications");
             });
             modelBuilder.Entity<RolePermission>(r =>
             {
@@ -111,6 +112,15 @@ namespace Identity.Persistence.MSSQL
                 u.Property(u => u.UserId).HasColumnType("UNIQUEIDENTIFIER");
                 u.Property(u => u.RoleId).HasColumnType("UNIQUEIDENTIFIER");
                 u.ToTable("UsersRoles");
+            });
+            modelBuilder.Entity<AuthorizationCode>(a =>
+            {
+                a.HasKey(p => new { p.Code, p.ApplicationId });
+                a.Property(p => p.Code);
+                a.Property(p => p.ApplicationId).HasColumnType("UNIQUEIDENTIFIER");
+                a.Property(p => p.ExpiresAt);
+                a.Property(p => p.Used);
+                a.ToTable("AuthorizationCodes");
             });
         }
 
