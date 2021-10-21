@@ -112,5 +112,15 @@ namespace Identity.Persistence.MSSQL
             return Task.Run(() => this.SetModifiedState(entity))
                 .ContinueWith((t) => _ = this.Context.SaveChangesAsync().Result);
         }
+
+        public UserDto Get(string emailAddress)
+            => this.Context.Users
+                .FirstOrDefault(r => r.Email == emailAddress)?
+                .ToDto();
+
+        public Task<UserDto> GetAsync(string emailAddress)
+            => this.Context.Users
+                .FirstOrDefaultAsync(r => r.Email == emailAddress)
+                .ContinueWith(r => r.Result?.ToDto());
     }
 }

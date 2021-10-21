@@ -1,6 +1,7 @@
 ﻿using DDD.Application.Persistence.Adapters;
 using Identity.Domain;
 using System;
+using System.Threading.Tasks;
 
 namespace Identity.Application
 {
@@ -23,5 +24,15 @@ namespace Identity.Application
             this.UsersRepository = usersRepository
                 ?? throw new ArgumentNullException(nameof(usersRepository));
         }
+
+        public User Get(EmailAddress emailAddress)
+            => this.UsersRepository
+                .Get(emailAddress.ToString())?
+                .ToUser();
+
+        public Task<User> GetAsync(EmailAddress emailAddress)
+            => this.UsersRepository
+                .GetAsync(emailAddress.ToString())
+                .ContinueWith(u => u.Result?.ToUser());
     }
 }

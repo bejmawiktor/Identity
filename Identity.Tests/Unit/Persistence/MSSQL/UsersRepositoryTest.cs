@@ -451,5 +451,57 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
 
             Assert.That(result, Is.EquivalentTo(expectedUsers));
         }
+
+        [Test]
+        public void TestGet_WhenEmailAddressGiven_ThenUserIsReturned()
+        {
+            var userId = Guid.NewGuid();
+            var roles = new Guid[]
+            {
+                Guid.NewGuid(),
+                Guid.NewGuid()
+            };
+            var userDto = new UserDto(
+                id: userId,
+                email: "example1@example.com",
+                hashedPassword: UsersRepositoryTest.TestPassword.ToString(),
+                roles: roles,
+                permissions: new (string ResourceId, string Name)[]
+                {
+                    ("MyResource", "MyPermission")
+                });
+            var userRepository = new UsersRepository(this.IdentityContext);
+            userRepository.Add(userDto);
+
+            UserDto result = userRepository.Get("example1@example.com");
+
+            Assert.That(result, Is.EqualTo(userDto));
+        }
+
+        [Test]
+        public async Task TestGetAsync_WhenEmailAddressGiven_ThenUserIsReturned()
+        {
+            var userId = Guid.NewGuid();
+            var roles = new Guid[]
+            {
+                Guid.NewGuid(),
+                Guid.NewGuid()
+            };
+            var userDto = new UserDto(
+                id: userId,
+                email: "example1@example.com",
+                hashedPassword: UsersRepositoryTest.TestPassword.ToString(),
+                roles: roles,
+                permissions: new (string ResourceId, string Name)[]
+                {
+                    ("MyResource", "MyPermission")
+                });
+            var userRepository = new UsersRepository(this.IdentityContext);
+            userRepository.Add(userDto);
+
+            UserDto result = await userRepository.GetAsync("example1@example.com");
+
+            Assert.That(result, Is.EqualTo(userDto));
+        }
     }
 }
