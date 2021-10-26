@@ -51,54 +51,6 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             )
         };
 
-        public static IEnumerable<TestCaseData> PaginatedGetTestData
-        {
-            get
-            {
-                yield return new TestCaseData(new object[]
-                {
-                    AuthorizationCodesRepositoryTest.AuthorizationCodesTestData,
-                    new Pagination(0, 5),
-                    AuthorizationCodesRepositoryTest.AuthorizationCodesTestData
-                }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenAuthorizationCodesAreReturned)}(1)");
-                yield return new TestCaseData(new object[]
-                {
-                    AuthorizationCodesRepositoryTest.AuthorizationCodesTestData,
-                    new Pagination(0, 2),
-                    new AuthorizationCodeDto[]
-                    {
-                        AuthorizationCodesRepositoryTest.AuthorizationCodesTestData[0],
-                        AuthorizationCodesRepositoryTest.AuthorizationCodesTestData[1],
-                    }
-                }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenAuthorizationCodesAreReturned)}(2)");
-                yield return new TestCaseData(new object[]
-                {
-                    AuthorizationCodesRepositoryTest.AuthorizationCodesTestData,
-                    new Pagination(1, 2),
-                    new AuthorizationCodeDto[]
-                    {
-                        AuthorizationCodesRepositoryTest.AuthorizationCodesTestData[2],
-                        AuthorizationCodesRepositoryTest.AuthorizationCodesTestData[3],
-                    }
-                }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenAuthorizationCodesAreReturned)}(3)");
-                yield return new TestCaseData(new object[]
-                {
-                    AuthorizationCodesRepositoryTest.AuthorizationCodesTestData,
-                    new Pagination(2, 2),
-                    new AuthorizationCodeDto[]
-                    {
-                        AuthorizationCodesRepositoryTest.AuthorizationCodesTestData[4]
-                    }
-                }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenAuthorizationCodesAreReturned)}(4)");
-                yield return new TestCaseData(new object[]
-                {
-                    AuthorizationCodesRepositoryTest.AuthorizationCodesTestData,
-                    new Pagination(3, 2),
-                    Enumerable.Empty<AuthorizationCodeDto>()
-                }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenAuthorizationCodesAreReturned)}(5)");
-            }
-        }
-
         public static IEnumerable<TestCaseData> PaginatedAsyncGetTestData
         {
             get
@@ -148,31 +100,6 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         }
 
         [Test]
-        public void TestAdd_WhenAuthorizationCodeGiven_ThenAuthorizationCodeIsStored()
-        {
-            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId);
-            DateTime now = DateTime.Now; 
-            var authorizationCodeDto = new AuthorizationCodeDto(
-                code: authorizationCodeId.Code,
-                applicationId: authorizationCodeId.ApplicationId.ToGuid(),
-                expiresAt: now,
-                used: true);
-            var authorizationCodesRepository = new AuthorizationCodesRepository(this.IdentityContext);
-
-            authorizationCodesRepository.Add(authorizationCodeDto);
-
-            AuthorizationCodeDto result = authorizationCodesRepository.Get((authorizationCodeId.ApplicationId.ToGuid(), authorizationCodeId.Code));
-
-            Assert.Multiple(() =>
-            {
-                Assert.That(result.Code, Is.EqualTo(authorizationCodeDto.Code));
-                Assert.That(result.ApplicationId, Is.EqualTo(AuthorizationCodesRepositoryTest.ApplicationId.ToGuid()));
-                Assert.That(result.ExpiresAt, Is.EqualTo(now));
-                Assert.That(result.Used, Is.True);
-            });
-        }
-
-        [Test]
         public async Task TestAddAsync_WhenAuthorizationCodeGiven_ThenAuthorizationCodeIsStored()
         {
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId);
@@ -186,38 +113,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
 
             await authorizationCodesRepository.AddAsync(authorizationCodeDto);
 
-            AuthorizationCodeDto result = authorizationCodesRepository.Get((authorizationCodeId.ApplicationId.ToGuid(), authorizationCodeId.Code));
-
-            Assert.Multiple(() =>
-            {
-                Assert.That(result.Code, Is.EqualTo(authorizationCodeDto.Code));
-                Assert.That(result.ApplicationId, Is.EqualTo(AuthorizationCodesRepositoryTest.ApplicationId.ToGuid()));
-                Assert.That(result.ExpiresAt, Is.EqualTo(now));
-                Assert.That(result.Used, Is.True);
-            });
-        }
-
-        [Test]
-        public void TestUpdate_WhenAuthorizationCodeGiven_ThenAuthorizationCodeIsUpdated()
-        {
-            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId);
-            DateTime now = DateTime.Now;
-            var authorizationCodeDto = new AuthorizationCodeDto(
-                code: authorizationCodeId.Code,
-                applicationId: authorizationCodeId.ApplicationId.ToGuid(),
-                expiresAt: now,
-                used: false);
-            var authorizationCodesRepository = new AuthorizationCodesRepository(this.IdentityContext);
-            authorizationCodesRepository.Add(authorizationCodeDto);
-            authorizationCodeDto = new AuthorizationCodeDto(
-                code: authorizationCodeId.Code,
-                applicationId: authorizationCodeId.ApplicationId.ToGuid(),
-                expiresAt: now,
-                used: true);
-
-            authorizationCodesRepository.Update(authorizationCodeDto);
-
-            AuthorizationCodeDto result = authorizationCodesRepository.Get((authorizationCodeId.ApplicationId.ToGuid(), authorizationCodeId.Code));
+            AuthorizationCodeDto result = await authorizationCodesRepository.GetAsync((authorizationCodeId.ApplicationId.ToGuid(), authorizationCodeId.Code));
 
             Assert.Multiple(() =>
             {
@@ -239,7 +135,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 expiresAt: now,
                 used: false);
             var authorizationCodesRepository = new AuthorizationCodesRepository(this.IdentityContext);
-            authorizationCodesRepository.Add(authorizationCodeDto);
+            await authorizationCodesRepository.AddAsync(authorizationCodeDto);
             authorizationCodeDto = new AuthorizationCodeDto(
                 code: authorizationCodeId.Code,
                 applicationId: authorizationCodeId.ApplicationId.ToGuid(),
@@ -248,7 +144,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
 
             await authorizationCodesRepository.UpdateAsync(authorizationCodeDto);
 
-            AuthorizationCodeDto result = authorizationCodesRepository.Get((authorizationCodeId.ApplicationId.ToGuid(), authorizationCodeId.Code));
+            AuthorizationCodeDto result = await authorizationCodesRepository.GetAsync((authorizationCodeId.ApplicationId.ToGuid(), authorizationCodeId.Code));
 
             Assert.Multiple(() =>
             {
@@ -257,26 +153,6 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 Assert.That(result.ExpiresAt, Is.EqualTo(now));
                 Assert.That(result.Used, Is.True);
             });
-        }
-
-        [Test]
-        public void TestRemove_WhenAuthorizationCodeGiven_ThenAuthorizationCodeIsRemoved()
-        {
-            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId);
-            DateTime now = DateTime.Now;
-            var authorizationCodeDto = new AuthorizationCodeDto(
-                code: authorizationCodeId.Code,
-                applicationId: authorizationCodeId.ApplicationId.ToGuid(),
-                expiresAt: now,
-                used: false);
-            var authorizationCodesRepository = new AuthorizationCodesRepository(this.IdentityContext);
-            authorizationCodesRepository.Add(authorizationCodeDto);
-
-            authorizationCodesRepository.Remove(authorizationCodeDto);
-
-            AuthorizationCodeDto result = authorizationCodesRepository.Get((authorizationCodeId.ApplicationId.ToGuid(), authorizationCodeId.Code));
-
-            Assert.That(result, Is.Null);
         }
 
         [Test]
@@ -290,31 +166,13 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 expiresAt: now,
                 used: false);
             var authorizationCodesRepository = new AuthorizationCodesRepository(this.IdentityContext);
-            authorizationCodesRepository.Add(authorizationCodeDto);
+            await authorizationCodesRepository.AddAsync(authorizationCodeDto);
 
             await authorizationCodesRepository.RemoveAsync(authorizationCodeDto);
 
-            AuthorizationCodeDto result = authorizationCodesRepository.Get((authorizationCodeId.ApplicationId.ToGuid(), authorizationCodeId.Code));
+            AuthorizationCodeDto result = await authorizationCodesRepository.GetAsync((authorizationCodeId.ApplicationId.ToGuid(), authorizationCodeId.Code));
 
             Assert.That(result, Is.Null);
-        }
-
-        [Test]
-        public void TestGet_WhenAuthorizationCodeIdGiven_ThenAuthorizationCodeIsReturned()
-        {
-            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId);
-            DateTime now = DateTime.Now;
-            var authorizationCodeDto = new AuthorizationCodeDto(
-                code: authorizationCodeId.Code,
-                applicationId: authorizationCodeId.ApplicationId.ToGuid(),
-                expiresAt: now,
-                used: false);
-            var authorizationCodesRepository = new AuthorizationCodesRepository(this.IdentityContext);
-            authorizationCodesRepository.Add(authorizationCodeDto);
-
-            AuthorizationCodeDto result = authorizationCodesRepository.Get((authorizationCodeId.ApplicationId.ToGuid(), authorizationCodeId.Code));
-
-            Assert.That(result, Is.EqualTo(authorizationCodeDto));
         }
 
         [Test]
@@ -328,25 +186,11 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 expiresAt: now,
                 used: false);
             var authorizationCodesRepository = new AuthorizationCodesRepository(this.IdentityContext);
-            authorizationCodesRepository.Add(authorizationCodeDto);
+            await authorizationCodesRepository.AddAsync(authorizationCodeDto);
 
             AuthorizationCodeDto result = await authorizationCodesRepository.GetAsync((authorizationCodeId.ApplicationId.ToGuid(), authorizationCodeId.Code));
 
             Assert.That(result, Is.EqualTo(authorizationCodeDto));
-        }
-
-        [TestCaseSource(nameof(PaginatedGetTestData))]
-        public void TestGet_WhenPaginationGiven_ThenAuthorizationCodesAreReturned(
-            IEnumerable<AuthorizationCodeDto> authorizationCodes,
-            Pagination pagination,
-            IEnumerable<AuthorizationCodeDto> expectedAuthorizationCodes)
-        {
-            var authorizationCodesRepository = new AuthorizationCodesRepository(this.IdentityContext);
-            authorizationCodes.ToList().ForEach(r => authorizationCodesRepository.Add(r));
-
-            IEnumerable<AuthorizationCodeDto> result = authorizationCodesRepository.Get(pagination);
-
-            Assert.That(result, Is.EquivalentTo(expectedAuthorizationCodes));
         }
 
         [TestCaseSource(nameof(PaginatedAsyncGetTestData))]
@@ -356,7 +200,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             IEnumerable<AuthorizationCodeDto> expectedAuthorizationCodes)
         {
             var authorizationCodesRepository = new AuthorizationCodesRepository(this.IdentityContext);
-            authorizationCodes.ToList().ForEach(r => authorizationCodesRepository.Add(r));
+            authorizationCodes.ToList().ForEach(r => authorizationCodesRepository.AddAsync(r).Wait());
 
             IEnumerable<AuthorizationCodeDto> result = await authorizationCodesRepository.GetAsync(pagination);
 

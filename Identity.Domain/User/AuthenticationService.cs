@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Identity.Domain
 {
@@ -11,9 +12,9 @@ namespace Identity.Domain
             this.UsersRepository = usersRepository ?? throw new ArgumentNullException(nameof(usersRepository));
         }
 
-        public User Authenticate(EmailAddress emailAddress, Password password)
+        public async Task<User> Authenticate(EmailAddress emailAddress, Password password)
         {
-            User user = this.UsersRepository.Get(emailAddress);
+            User user = await this.UsersRepository.GetAsync(emailAddress);
 
             if (user == null)
             {

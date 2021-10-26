@@ -2,6 +2,7 @@
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Threading.Tasks;
 
 namespace Identity.Tests.Unit.Domain
 {
@@ -19,7 +20,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestAuthenticate_WhenUserCredentialsAreGood_ThenUserIsReturned()
+        public async Task TestAuthenticate_WhenUserCredentialsAreGood_ThenUserIsReturned()
         {
             var password = new Password("examplepassword");
             HashedPassword hashedPassword = HashedPassword.Hash(password);
@@ -28,18 +29,16 @@ namespace Identity.Tests.Unit.Domain
                 email: emailAddress, 
                 password: hashedPassword);
             var usersRepositoryMock = new Mock<IUsersRepository>();
-            usersRepositoryMock
-                .Setup(u => u.Get(emailAddress))
-                .Returns(user);
+            usersRepositoryMock.Setup(u => u.GetAsync(emailAddress)).Returns(Task.FromResult(user));
             var authenticationService = new AuthenticationService(usersRepositoryMock.Object);
 
-            User authenticatedUser = authenticationService.Authenticate(emailAddress, password);
+            User authenticatedUser = await authenticationService.Authenticate(emailAddress, password);
 
             Assert.That(authenticatedUser, Is.EqualTo(user));
         }
 
         [Test]
-        public void TestAuthenticate_WhenWrongUserEmailGiven_ThenNullIsReturned()
+        public async Task TestAuthenticate_WhenWrongUserEmailGiven_ThenNullIsReturned()
         {
             var password = new Password("examplepassword");
             HashedPassword hashedPassword = HashedPassword.Hash(password);
@@ -48,18 +47,16 @@ namespace Identity.Tests.Unit.Domain
                 email: emailAddress,
                 password: hashedPassword);
             var usersRepositoryMock = new Mock<IUsersRepository>();
-            usersRepositoryMock
-                .Setup(u => u.Get(emailAddress))
-                .Returns(user);
+            usersRepositoryMock.Setup(u => u.GetAsync(emailAddress)).Returns(Task.FromResult(user));
             var authenticationService = new AuthenticationService(usersRepositoryMock.Object);
 
-            User authenticatedUser = authenticationService.Authenticate(new EmailAddress("example2@example.com"), password);
+            User authenticatedUser = await authenticationService.Authenticate(new EmailAddress("example2@example.com"), password);
 
             Assert.That(authenticatedUser, Is.Null);
         }
 
         [Test]
-        public void TestAuthenticate_WhenWrongPasswordGiven_ThenNullIsReturned()
+        public async Task TestAuthenticate_WhenWrongPasswordGiven_ThenNullIsReturned()
         {
             var password = new Password("examplepassword");
             HashedPassword hashedPassword = HashedPassword.Hash(password);
@@ -68,12 +65,10 @@ namespace Identity.Tests.Unit.Domain
                 email: emailAddress,
                 password: hashedPassword);
             var usersRepositoryMock = new Mock<IUsersRepository>();
-            usersRepositoryMock
-                .Setup(u => u.Get(emailAddress))
-                .Returns(user);
+            usersRepositoryMock.Setup(u => u.GetAsync(emailAddress)).Returns(Task.FromResult(user));
             var authenticationService = new AuthenticationService(usersRepositoryMock.Object);
 
-            User authenticatedUser = authenticationService.Authenticate(emailAddress, new Password("wrongpassword"));
+            User authenticatedUser = await authenticationService.Authenticate(emailAddress, new Password("wrongpassword"));
 
             Assert.That(authenticatedUser, Is.Null);
         }

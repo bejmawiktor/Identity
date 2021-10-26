@@ -2,8 +2,7 @@
 
 namespace Identity.Domain
 {
-    public interface IRolesRepository
-    : IRepository<Role, RoleId>, IAsyncRepository<Role, RoleId>
+    public interface IRolesRepository : IAsyncRepository<Role, RoleId>
     {
     }
 }

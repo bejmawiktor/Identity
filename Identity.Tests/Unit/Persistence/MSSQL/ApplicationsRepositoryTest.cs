@@ -57,54 +57,6 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             )
         };
 
-        public static IEnumerable<TestCaseData> PaginatedGetTestData
-        {
-            get
-            {
-                yield return new TestCaseData(new object[]
-                {
-                    ApplicationsRepositoryTest.ApplicationsTestData,
-                    new Pagination(0, 5),
-                    ApplicationsRepositoryTest.ApplicationsTestData
-                }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenApplicationsAreReturned)}(1)");
-                yield return new TestCaseData(new object[]
-                {
-                    ApplicationsRepositoryTest.ApplicationsTestData,
-                    new Pagination(0, 2),
-                    new ApplicationDto[]
-                    {
-                        ApplicationsRepositoryTest.ApplicationsTestData[0],
-                        ApplicationsRepositoryTest.ApplicationsTestData[1],
-                    }
-                }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenApplicationsAreReturned)}(2)");
-                yield return new TestCaseData(new object[]
-                {
-                    ApplicationsRepositoryTest.ApplicationsTestData,
-                    new Pagination(1, 2),
-                    new ApplicationDto[]
-                    {
-                        ApplicationsRepositoryTest.ApplicationsTestData[2],
-                        ApplicationsRepositoryTest.ApplicationsTestData[3],
-                    }
-                }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenApplicationsAreReturned)}(3)");
-                yield return new TestCaseData(new object[]
-                {
-                    ApplicationsRepositoryTest.ApplicationsTestData,
-                    new Pagination(2, 2),
-                    new ApplicationDto[]
-                    {
-                        ApplicationsRepositoryTest.ApplicationsTestData[4]
-                    }
-                }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenApplicationsAreReturned)}(4)");
-                yield return new TestCaseData(new object[]
-                {
-                    ApplicationsRepositoryTest.ApplicationsTestData,
-                    new Pagination(3, 2),
-                    Enumerable.Empty<ApplicationDto>()
-                }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenApplicationsAreReturned)}(5)");
-            }
-        }
-
         public static IEnumerable<TestCaseData> PaginatedAsyncGetTestData
         {
             get
@@ -154,34 +106,6 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         }
 
         [Test]
-        public void TestAdd_WhenApplicationGiven_ThenApplicationIsStored()
-        {
-            var applicationId = Guid.NewGuid();
-            var userId = Guid.NewGuid();
-            var applicationDto = new ApplicationDto(
-                id: applicationId,
-                userId: userId,
-                secretKey: SecretKey,
-                name: "MyApplication1",
-                homepageUrl: "http://www.example1.com",
-                callbackUrl: "http://www.example1.com/1");
-            var applicationRepository = new ApplicationsRepository(this.IdentityContext);
-
-            applicationRepository.Add(applicationDto);
-
-            ApplicationDto result = applicationRepository.Get(applicationId);
-
-            Assert.Multiple(() =>
-            {
-                Assert.That(result.Id, Is.EqualTo(applicationId));
-                Assert.That(result.UserId, Is.EqualTo(userId));
-                Assert.That(result.Name, Is.EqualTo("MyApplication1"));
-                Assert.That(result.HomepageUrl, Is.EqualTo("http://www.example1.com"));
-                Assert.That(result.CallbackUrl, Is.EqualTo("http://www.example1.com/1"));
-            });
-        }
-
-        [Test]
         public async Task TestAddAsync_WhenApplicationGiven_ThenApplicationIsStored()
         {
             var applicationId = Guid.NewGuid();
@@ -197,49 +121,13 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
 
             await applicationRepository.AddAsync(applicationDto);
 
-            ApplicationDto result = applicationRepository.Get(applicationId);
+            ApplicationDto result = await applicationRepository.GetAsync(applicationId);
 
             Assert.Multiple(() =>
             {
                 Assert.That(result.Id, Is.EqualTo(applicationId));
                 Assert.That(result.UserId, Is.EqualTo(userId));
                 Assert.That(result.Name, Is.EqualTo("MyApplication1"));
-                Assert.That(result.HomepageUrl, Is.EqualTo("http://www.example1.com"));
-                Assert.That(result.CallbackUrl, Is.EqualTo("http://www.example1.com/1"));
-            });
-        }
-
-        [Test]
-        public void TestUpdate_WhenApplicationGiven_ThenApplicationIsUpdated()
-        {
-            var applicationId = Guid.NewGuid();
-            var userId = Guid.NewGuid();
-            var applicationDto = new ApplicationDto(
-                id: applicationId,
-                userId: userId,
-                name: "MyApplication1",
-                secretKey: SecretKey,
-                homepageUrl: "http://www.example1.com",
-                callbackUrl: "http://www.example1.com/1");
-            var applicationRepository = new ApplicationsRepository(this.IdentityContext);
-            applicationRepository.Add(applicationDto);
-            applicationDto = new ApplicationDto(
-                id: applicationId,
-                userId: userId,
-                name: "MyApplication2",
-                secretKey: SecretKey,
-                homepageUrl: "http://www.example1.com",
-                callbackUrl: "http://www.example1.com/1");
-
-            applicationRepository.Update(applicationDto);
-
-            ApplicationDto result = applicationRepository.Get(applicationId);
-
-            Assert.Multiple(() =>
-            {
-                Assert.That(result.Id, Is.EqualTo(applicationId));
-                Assert.That(result.UserId, Is.EqualTo(userId));
-                Assert.That(result.Name, Is.EqualTo("MyApplication2"));
                 Assert.That(result.HomepageUrl, Is.EqualTo("http://www.example1.com"));
                 Assert.That(result.CallbackUrl, Is.EqualTo("http://www.example1.com/1"));
             });
@@ -258,7 +146,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 homepageUrl: "http://www.example1.com",
                 callbackUrl: "http://www.example1.com/1");
             var applicationRepository = new ApplicationsRepository(this.IdentityContext);
-            applicationRepository.Add(applicationDto);
+            await applicationRepository.AddAsync(applicationDto);
             applicationDto = new ApplicationDto(
                 id: applicationId,
                 userId: userId,
@@ -269,7 +157,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
 
             await applicationRepository.UpdateAsync(applicationDto);
 
-            ApplicationDto result = applicationRepository.Get(applicationId);
+            ApplicationDto result = await applicationRepository.GetAsync(applicationId);
 
             Assert.Multiple(() =>
             {
@@ -279,27 +167,6 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 Assert.That(result.HomepageUrl, Is.EqualTo("http://www.example1.com"));
                 Assert.That(result.CallbackUrl, Is.EqualTo("http://www.example1.com/1"));
             });
-        }
-
-        [Test]
-        public void TestRemove_WhenApplicationGiven_ThenApplicationIsRemoved()
-        {
-            var applicationId = Guid.NewGuid();
-            var applicationDto = new ApplicationDto(
-                id: applicationId,
-                userId: Guid.NewGuid(),
-                name: "MyApplication1",
-                secretKey: SecretKey,
-                homepageUrl: "http://www.example1.com",
-                callbackUrl: "http://www.example1.com/1");
-            var applicationRepository = new ApplicationsRepository(this.IdentityContext);
-            applicationRepository.Add(applicationDto);
-
-            applicationRepository.Remove(applicationDto);
-
-            ApplicationDto result = applicationRepository.Get(applicationId);
-
-            Assert.That(result, Is.Null);
         }
 
         [Test]
@@ -314,32 +181,13 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 homepageUrl: "http://www.example1.com",
                 callbackUrl: "http://www.example1.com/1");
             var applicationRepository = new ApplicationsRepository(this.IdentityContext);
-            applicationRepository.Add(applicationDto);
+            await applicationRepository.AddAsync(applicationDto);
 
             await applicationRepository.RemoveAsync(applicationDto);
 
-            ApplicationDto result = applicationRepository.Get(applicationId);
+            ApplicationDto result = await applicationRepository.GetAsync(applicationId);
 
             Assert.That(result, Is.Null);
-        }
-
-        [Test]
-        public void TestGet_WhenApplicationIdGiven_ThenApplicationIsReturned()
-        {
-            var applicationId = Guid.NewGuid();
-            var applicationDto = new ApplicationDto(
-                id: applicationId,
-                userId: Guid.NewGuid(),
-                name: "MyApplication1",
-                secretKey: SecretKey,
-                homepageUrl: "http://www.example1.com",
-                callbackUrl: "http://www.example1.com/1");
-            var applicationRepository = new ApplicationsRepository(this.IdentityContext);
-            applicationRepository.Add(applicationDto);
-
-            ApplicationDto result = applicationRepository.Get(applicationId);
-
-            Assert.That(result, Is.EqualTo(applicationDto));
         }
 
         [Test]
@@ -354,25 +202,11 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 homepageUrl: "http://www.example1.com",
                 callbackUrl: "http://www.example1.com/1");
             var applicationRepository = new ApplicationsRepository(this.IdentityContext);
-            applicationRepository.Add(applicationDto);
+            await applicationRepository.AddAsync(applicationDto);
 
             ApplicationDto result = await applicationRepository.GetAsync(applicationId);
 
             Assert.That(result, Is.EqualTo(applicationDto));
-        }
-
-        [TestCaseSource(nameof(PaginatedGetTestData))]
-        public void TestGet_WhenPaginationGiven_ThenApplicationsAreReturned(
-            IEnumerable<ApplicationDto> applications,
-            Pagination pagination,
-            IEnumerable<ApplicationDto> expectedApplications)
-        {
-            var applicationRepository = new ApplicationsRepository(this.IdentityContext);
-            applications.ToList().ForEach(r => applicationRepository.Add(r));
-
-            IEnumerable<ApplicationDto> result = applicationRepository.Get(pagination);
-
-            Assert.That(result, Is.EquivalentTo(expectedApplications));
         }
 
         [TestCaseSource(nameof(PaginatedAsyncGetTestData))]
@@ -382,7 +216,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             IEnumerable<ApplicationDto> expectedApplications)
         {
             var applicationRepository = new ApplicationsRepository(this.IdentityContext);
-            applications.ToList().ForEach(r => applicationRepository.Add(r));
+            applications.ToList().ForEach(r => applicationRepository.AddAsync(r).Wait());
 
             IEnumerable<ApplicationDto> result = await applicationRepository.GetAsync(pagination);
 

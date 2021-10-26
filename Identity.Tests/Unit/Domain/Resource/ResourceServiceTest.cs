@@ -32,62 +32,6 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestCreateResource_WhenNoExceptionsThrown_ThenResourceIsPersisted()
-        {
-            var repositoryMock = new Mock<IResourcesRepository>();
-            var resourceService = new ResourceService(repositoryMock.Object);
-
-            resourceService.CreateResource("MyResource", "My resource description.");
-
-            repositoryMock.Verify(r => r.Add(It.IsAny<Resource>()), Times.Once);
-        }
-
-        [Test]
-        public void TestCreateResource_WhenNoExceptionsThrown_ThenResourceCreatedIsPublished()
-        {
-            ResourceCreated resourceCreated = null;
-            var eventDispatcherMock = new Mock<IEventDispatcher>();
-            eventDispatcherMock
-                .Setup(e => e.Dispatch(It.IsAny<IEvent>()))
-                .Callback((IEvent p) => resourceCreated = p as ResourceCreated);
-            EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
-            var repositoryMock = new Mock<IResourcesRepository>();
-            var resourceService = new ResourceService(repositoryMock.Object);
-
-            resourceService.CreateResource("MyResource", "My resource description.");
-
-            Assert.Multiple(() =>
-            {
-                Assert.That(resourceCreated.ResourceId, Is.EqualTo(new ResourceId("MyResource")));
-                Assert.That(resourceCreated.ResourceDescription, Is.EqualTo("My resource description."));
-            });
-        }
-
-        [Test]
-        public void TestCreateResource_WhenExceptionsThrown_ThenResourceCreatedIsNotPublished()
-        {
-            ResourceCreated resourceCreated = null;
-            var eventDispatcherMock = new Mock<IEventDispatcher>();
-            eventDispatcherMock
-                .Setup(e => e.Dispatch(It.IsAny<IEvent>()))
-                .Callback((IEvent p) => resourceCreated = p as ResourceCreated);
-            EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
-            var repositoryMock = new Mock<IResourcesRepository>();
-            repositoryMock.Setup(r => r.Add(It.IsAny<Resource>())).Throws(new Exception());
-            var resourceService = new ResourceService(repositoryMock.Object);
-
-            try
-            {
-                resourceService.CreateResource("MyResource", "My resource description.");
-            }
-            catch(Exception)
-            {
-            }
-
-            Assert.That(resourceCreated, Is.Null);
-        }
-
-        [Test]
         public async Task TestCreateResourceAsync_WhenNoExceptionsThrown_ThenResourceIsPersisted()
         {
             var repositoryMock = new Mock<IResourcesRepository>();

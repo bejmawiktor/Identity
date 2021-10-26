@@ -5,17 +5,12 @@ using System;
 namespace Identity.Application
 {
     using IAsyncRolesRepositoryAdapter = IAsyncRepositoryAdapter<RoleDto, Guid, IRolesRepository, RoleDtoConverter, Role, RoleId>;
-    using IRolesRepositoryAdapter = IRepositoryAdapter<RoleDto, Guid, IRolesRepository, RoleDtoConverter, Role, RoleId>;
-
-    internal class RolesRepositoryAdapter
-    : IAsyncRolesRepositoryAdapter, IRolesRepositoryAdapter, Domain.IRolesRepository
+    
+    internal class RolesRepositoryAdapter : IAsyncRolesRepositoryAdapter, Domain.IRolesRepository
     {
         public IRolesRepository RolesRepository { get; }
 
         IRolesRepository IAsyncRolesRepositoryAdapter.DtoRepository
-            => this.RolesRepository;
-
-        IRolesRepository IRolesRepositoryAdapter.DtoRepository
             => this.RolesRepository;
 
         public RolesRepositoryAdapter(IRolesRepository rolesRepository)

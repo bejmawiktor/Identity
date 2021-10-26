@@ -10,7 +10,7 @@ namespace Identity.Persistence.MSSQL
 {
     using Application = Identity.Persistence.MSSQL.DataModels.Application;
 
-    public class ApplicationsRepository
+    public class ApplicationsRepository : IApplicationsRepository
     {
         private IdentityContext Context { get; }
 
@@ -19,32 +19,12 @@ namespace Identity.Persistence.MSSQL
             this.Context = context;
         }
 
-        public void Add(ApplicationDto application)
-        {
-            this.Context.Applications.Add(new Application(application));
-
-            this.Context.SaveChanges();
-        }
-
         public Task AddAsync(ApplicationDto application)
         {
             return this.Context.Applications
                 .AddAsync(new Application(application))
                 .AsTask()
                 .ContinueWith((t) => _ = this.Context.SaveChangesAsync().Result);
-        }
-
-        public ApplicationDto Get(Guid id)
-            => this.Context.Applications
-                .FirstOrDefault(r => r.Id == id)?
-                .ToDto();
-
-        public IEnumerable<ApplicationDto> Get(Pagination pagination)
-        {
-            return this.Context.Applications
-                .Skip((int)pagination.Page * (int)pagination.ItemsPerPage)
-                .Take((int)pagination.ItemsPerPage)
-                .Select(r => r.ToDto());
         }
 
         public Task<ApplicationDto> GetAsync(Guid id)
@@ -60,11 +40,10 @@ namespace Identity.Persistence.MSSQL
                 .ContinueWith(p => p.Result.Select(r => r.ToDto()));
         }
 
-        public void Remove(ApplicationDto application)
+        public Task RemoveAsync(ApplicationDto application)
         {
-            this.SetDeletedState(application);
-
-            this.Context.SaveChanges();
+            return Task.Run(() => this.SetDeletedState(application))
+                .ContinueWith((t) => _ = this.Context.SaveChangesAsync().Result);
         }
 
         private void SetDeletedState(ApplicationDto application)
@@ -81,17 +60,10 @@ namespace Identity.Persistence.MSSQL
             this.Context.Entry(new Application(application)).State = EntityState.Deleted;
         }
 
-        public Task RemoveAsync(ApplicationDto application)
+        public Task UpdateAsync(ApplicationDto application)
         {
-            return Task.Run(() => this.SetDeletedState(application))
+            return Task.Run(() => this.SetModifiedState(application))
                 .ContinueWith((t) => _ = this.Context.SaveChangesAsync().Result);
-        }
-
-        public void Update(ApplicationDto application)
-        {
-            this.SetModifiedState(application);
-
-            this.Context.SaveChanges();
         }
 
         private void SetModifiedState(ApplicationDto application)
@@ -106,12 +78,6 @@ namespace Identity.Persistence.MSSQL
             }
 
             this.Context.Entry(new Application(application)).State = EntityState.Modified;
-        }
-
-        public Task UpdateAsync(ApplicationDto application)
-        {
-            return Task.Run(() => this.SetModifiedState(application))
-                .ContinueWith((t) => _ = this.Context.SaveChangesAsync().Result);
         }
     }
 }

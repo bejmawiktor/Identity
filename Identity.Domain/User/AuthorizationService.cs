@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Identity.Domain
 {
@@ -13,7 +14,7 @@ namespace Identity.Domain
             this.RolesRepository = rolesRepository ?? throw new ArgumentNullException(nameof(rolesRepository));
         }
 
-        public bool CheckUserAccess(UserId userId, PermissionId permissionId)
+        public async Task<bool> CheckUserAccess(UserId userId, PermissionId permissionId)
         {
             if(userId == null)
             {
@@ -25,7 +26,7 @@ namespace Identity.Domain
                 throw new ArgumentNullException(nameof(permissionId));
             }
 
-            User user = this.UsersRepository.Get(userId);
+            User user = await this.UsersRepository.GetAsync(userId);
 
             if(user == null)
             {
@@ -39,7 +40,7 @@ namespace Identity.Domain
 
             foreach(var roleId in user.Roles)
             {
-                Role role = this.RolesRepository.Get(roleId);
+                Role role = await this.RolesRepository.GetAsync(roleId);
 
                 if(role.IsPermittedTo(permissionId))
                 {

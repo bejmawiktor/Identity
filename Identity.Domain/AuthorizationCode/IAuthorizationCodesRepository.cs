@@ -2,8 +2,7 @@
 
 namespace Identity.Domain
 {
-    public interface IAuthorizationCodesRepository
-    : IRepository<AuthorizationCode, AuthorizationCodeId>, IAsyncRepository<AuthorizationCode, AuthorizationCodeId>
+    public interface IAuthorizationCodesRepository : IAsyncRepository<AuthorizationCode, AuthorizationCodeId>
     {
     }
 }

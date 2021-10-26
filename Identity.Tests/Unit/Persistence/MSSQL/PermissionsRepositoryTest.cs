@@ -41,54 +41,6 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             ),
         };
 
-        public static IEnumerable<TestCaseData> PaginatedGetTestData
-        {
-            get
-            {
-                yield return new TestCaseData(new object[]
-                {
-                    PermissionRepositoryTest.PermissionsTestData,
-                    new Pagination(0, 5),
-                    PermissionRepositoryTest.PermissionsTestData
-                }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenPermissionsAreReturned)}(1)");
-                yield return new TestCaseData(new object[]
-                {
-                    PermissionRepositoryTest.PermissionsTestData,
-                    new Pagination(0, 2),
-                    new PermissionDto[]
-                    {
-                        PermissionRepositoryTest.PermissionsTestData[0],
-                        PermissionRepositoryTest.PermissionsTestData[1],
-                    }
-                }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenPermissionsAreReturned)}(2)");
-                yield return new TestCaseData(new object[]
-                {
-                    PermissionRepositoryTest.PermissionsTestData,
-                    new Pagination(1, 2),
-                    new PermissionDto[]
-                    {
-                        PermissionRepositoryTest.PermissionsTestData[2],
-                        PermissionRepositoryTest.PermissionsTestData[3],
-                    }
-                }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenPermissionsAreReturned)}(3)");
-                yield return new TestCaseData(new object[]
-                {
-                    PermissionRepositoryTest.PermissionsTestData,
-                    new Pagination(2, 2),
-                    new PermissionDto[]
-                    {
-                        PermissionRepositoryTest.PermissionsTestData[4]
-                    }
-                }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenPermissionsAreReturned)}(4)");
-                yield return new TestCaseData(new object[]
-                {
-                    PermissionRepositoryTest.PermissionsTestData,
-                    new Pagination(3, 2),
-                    Enumerable.Empty<PermissionDto>()
-                }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenPermissionsAreReturned)}(5)");
-            }
-        }
-
         public static IEnumerable<TestCaseData> PaginatedAsyncGetTestData
         {
             get
@@ -138,26 +90,6 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         }
 
         [Test]
-        public void TestAdd_WhenPermissionGiven_ThenPermissionIsStored()
-        {
-            var permissionDto = new PermissionDto(
-                resourceId: "MyResource",
-                name: "MyPermission",
-                description: "My permission description.");
-            var permissionRepository = new PermissionsRepository(this.IdentityContext);
-
-            permissionRepository.Add(permissionDto);
-
-            PermissionDto result = permissionRepository.Get(("MyResource", "MyPermission"));
-
-            Assert.Multiple(() =>
-            {
-                Assert.That(result.Id, Is.EqualTo(("MyResource", "MyPermission")));
-                Assert.That(result.Description, Is.EqualTo("My permission description."));
-            });
-        }
-
-        [Test]
         public async Task TestAddAsync_WhenPermissionGiven_ThenPermissionIsStored()
         {
             var permissionDto = new PermissionDto(
@@ -168,37 +100,12 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
 
             await permissionRepository.AddAsync(permissionDto);
 
-            PermissionDto result = permissionRepository.Get(("MyResource", "MyPermission"));
+            PermissionDto result = await permissionRepository.GetAsync(("MyResource", "MyPermission"));
 
             Assert.Multiple(() =>
             {
                 Assert.That(result.Id, Is.EqualTo(("MyResource", "MyPermission")));
                 Assert.That(result.Description, Is.EqualTo("My permission description."));
-            });
-        }
-
-        [Test]
-        public void TestUpdate_WhenPermissionGiven_ThenPermissionIsUpdated()
-        {
-            var permissionDto = new PermissionDto(
-                resourceId: "MyResource",
-                name: "MyPermission",
-                description: "My permission description.");
-            var permissionRepository = new PermissionsRepository(this.IdentityContext);
-            permissionRepository.Add(permissionDto);
-            permissionDto = new PermissionDto(
-                resourceId: "MyResource",
-                name: "MyPermission",
-                description: "My permission description 2.");
-
-            permissionRepository.Update(permissionDto);
-
-            PermissionDto result = permissionRepository.Get(("MyResource", "MyPermission"));
-
-            Assert.Multiple(() =>
-            {
-                Assert.That(result.Id, Is.EqualTo(("MyResource", "MyPermission")));
-                Assert.That(result.Description, Is.EqualTo("My permission description 2."));
             });
         }
 
@@ -210,7 +117,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 name: "MyPermission",
                 description: "My permission description.");
             var permissionRepository = new PermissionsRepository(this.IdentityContext);
-            permissionRepository.Add(permissionDto);
+            await permissionRepository.AddAsync(permissionDto);
             permissionDto = new PermissionDto(
                 resourceId: "MyResource",
                 name: "MyPermission",
@@ -218,30 +125,13 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
 
             await permissionRepository.UpdateAsync(permissionDto);
 
-            PermissionDto result = permissionRepository.Get(("MyResource", "MyPermission"));
+            PermissionDto result = await permissionRepository.GetAsync(("MyResource", "MyPermission"));
 
             Assert.Multiple(() =>
             {
                 Assert.That(result.Id, Is.EqualTo(("MyResource", "MyPermission")));
                 Assert.That(result.Description, Is.EqualTo("My permission description 2."));
             });
-        }
-
-        [Test]
-        public void TestRemove_WhenPermissionGiven_ThenPermissionIsRemoved()
-        {
-            var permissionDto = new PermissionDto(
-              resourceId: "MyResource",
-              name: "MyPermission",
-              description: "My permission description.");
-            var permissionRepository = new PermissionsRepository(this.IdentityContext);
-            permissionRepository.Add(permissionDto);
-
-            permissionRepository.Remove(permissionDto);
-
-            PermissionDto result = permissionRepository.Get(("MyResource", "MyPermission"));
-
-            Assert.That(result, Is.Null);
         }
 
         [Test]
@@ -252,28 +142,13 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 name: "MyPermission",
                 description: "My permission description.");
             var permissionRepository = new PermissionsRepository(this.IdentityContext);
-            permissionRepository.Add(permissionDto);
+            await permissionRepository.AddAsync(permissionDto);
 
             await permissionRepository.RemoveAsync(permissionDto);
 
-            PermissionDto result = permissionRepository.Get(("MyResource", "MyPermission"));
+            PermissionDto result = await permissionRepository.GetAsync(("MyResource", "MyPermission"));
 
             Assert.That(result, Is.Null);
-        }
-
-        [Test]
-        public void TestGet_WhenPermissionIdGiven_ThenPermissionIsReturned()
-        {
-            var permissionDto = new PermissionDto(
-                resourceId: "MyResource",
-                name: "MyPermission",
-                description: "My permission description.");
-            var permissionRepository = new PermissionsRepository(this.IdentityContext);
-            permissionRepository.Add(permissionDto);
-
-            PermissionDto result = permissionRepository.Get(("MyResource", "MyPermission"));
-
-            Assert.That(result, Is.EqualTo(permissionDto));
         }
 
         [Test]
@@ -284,29 +159,11 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 name: "MyPermission",
                 description: "My permission description.");
             var permissionRepository = new PermissionsRepository(this.IdentityContext);
-            permissionRepository.Add(permissionDto);
+            await permissionRepository.AddAsync(permissionDto);
 
             PermissionDto result = await permissionRepository.GetAsync(("MyResource", "MyPermission"));
 
             Assert.That(result, Is.EqualTo(permissionDto));
-        }
-
-        [TestCaseSource(nameof(PaginatedGetTestData))]
-        public void TestGet_WhenPaginationGiven_ThenPermissionsAreReturned(
-            IEnumerable<PermissionDto> permissions,
-            Pagination pagination,
-            IEnumerable<PermissionDto> expectedPermissions)
-        {
-            var permissionDto = new PermissionDto(
-                resourceId: "MyResource",
-                name: "MyPermission",
-                description: "My permission description.");
-            var permissionRepository = new PermissionsRepository(this.IdentityContext);
-            permissions.ToList().ForEach(r => permissionRepository.Add(r));
-
-            IEnumerable<PermissionDto> result = permissionRepository.Get(pagination);
-
-            Assert.That(result, Is.EquivalentTo(expectedPermissions));
         }
 
         [TestCaseSource(nameof(PaginatedAsyncGetTestData))]
@@ -320,7 +177,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 name: "MyPermission",
                 description: "My permission description.");
             var permissionRepository = new PermissionsRepository(this.IdentityContext);
-            permissions.ToList().ForEach(r => permissionRepository.Add(r));
+            permissions.ToList().ForEach(r => permissionRepository.AddAsync(r).Wait());
 
             IEnumerable<PermissionDto> result = await permissionRepository.GetAsync(pagination);
 

@@ -2,7 +2,7 @@
 
 namespace Identity.Application
 {
-    public interface IResourcesRepository : IAsyncDtoRepository<ResourceDto, string>, IDtoRepository<ResourceDto, string>
+    public interface IResourcesRepository : IAsyncDtoRepository<ResourceDto, string>
     {
     }
 }

@@ -19,25 +19,6 @@ namespace Identity.Domain
                 ?? throw new ArgumentNullException(nameof(usersRepository));
         }
 
-        public void CreateApplication(UserId userId, string name, Url homepageUrl, Url callbackUrl)
-        {
-            using(var eventsScope = new EventsScope())
-            {
-                User user = this.UsersRepository.Get(userId);
-
-                if(user == null)
-                {
-                    throw new UserNotFoundException(userId);
-                }
-
-                Application application = user.CreateApplication(name, homepageUrl, callbackUrl);
-
-                this.ApplicationsRepository.Add(application);
-
-                eventsScope.Publish();
-            }
-        }
-
         public async Task CreateApplicationAsync(UserId userId, string name, Url homepageUrl, Url callbackUrl)
         {
             using(var eventsScope = new EventsScope())

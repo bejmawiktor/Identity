@@ -20,54 +20,6 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             new ResourceDto("MyResource5", "My resource description.")
         };
 
-        public static IEnumerable<TestCaseData> PaginatedGetTestData
-        {
-            get
-            {
-                yield return new TestCaseData(new object[]
-                {
-                    ResourcesRepositoryTest.ResourcesTestData,
-                    new Pagination(0, 5),
-                    ResourcesRepositoryTest.ResourcesTestData
-                }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenResourcesAreReturned)}(1)");
-                yield return new TestCaseData(new object[]
-                {
-                    ResourcesRepositoryTest.ResourcesTestData,
-                    new Pagination(0, 2),
-                    new ResourceDto[]
-                    {
-                        ResourcesRepositoryTest.ResourcesTestData[0],
-                        ResourcesRepositoryTest.ResourcesTestData[1]
-                    }
-                }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenResourcesAreReturned)}(2)");
-                yield return new TestCaseData(new object[]
-                {
-                    ResourcesRepositoryTest.ResourcesTestData,
-                    new Pagination(1, 2),
-                    new ResourceDto[]
-                    {
-                        ResourcesRepositoryTest.ResourcesTestData[2],
-                        ResourcesRepositoryTest.ResourcesTestData[3]
-                    }
-                }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenResourcesAreReturned)}(3)");
-                yield return new TestCaseData(new object[]
-                {
-                    ResourcesRepositoryTest.ResourcesTestData,
-                    new Pagination(2, 2),
-                    new ResourceDto[]
-                    {
-                        ResourcesRepositoryTest.ResourcesTestData[4]
-                    }
-                }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenResourcesAreReturned)}(4)");
-                yield return new TestCaseData(new object[]
-                {
-                    ResourcesRepositoryTest.ResourcesTestData,
-                    new Pagination(3, 2),
-                    Enumerable.Empty<ResourceDto>()
-                }).SetName($"{nameof(TestGet_WhenPaginationGiven_ThenResourcesAreReturned)}(5)");
-            }
-        }
-
         public static IEnumerable<TestCaseData> PaginatedAsyncGetTestData
         {
             get
@@ -117,25 +69,6 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         }
 
         [Test]
-        public void TestAdd_WhenResourceGiven_ThenResourceIsStored()
-        {
-            var resourceDto = new ResourceDto(
-                id: "MyResource",
-                description: "My test resource");
-            var resourceRepository = new ResourcesRepository(this.IdentityContext);
-
-            resourceRepository.Add(resourceDto);
-
-            ResourceDto result = resourceRepository.Get("MyResource");
-
-            Assert.Multiple(() =>
-            {
-                Assert.That(result.Id, Is.EqualTo("MyResource"));
-                Assert.That(result.Description, Is.EqualTo("My test resource"));
-            });
-        }
-
-        [Test]
         public async Task TestAddAsync_WhenResourceGiven_ThenResourceIsStored()
         {
             var resourceDto = new ResourceDto(
@@ -145,35 +78,12 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
 
             await resourceRepository.AddAsync(resourceDto);
 
-            ResourceDto result = resourceRepository.Get("MyResource");
+            ResourceDto result = await resourceRepository.GetAsync("MyResource");
 
             Assert.Multiple(() =>
             {
                 Assert.That(result.Id, Is.EqualTo("MyResource"));
                 Assert.That(result.Description, Is.EqualTo("My test resource"));
-            });
-        }
-
-        [Test]
-        public void TestUpdate_WhenResourceGiven_ThenResourceIsUpdated()
-        {
-            var resourceDto = new ResourceDto(
-                id: "MyResource",
-                description: "My test resource");
-            var resourceRepository = new ResourcesRepository(this.IdentityContext);
-            resourceRepository.Add(resourceDto);
-            resourceDto = new ResourceDto(
-                id: "MyResource",
-                description: "My test resource 2");
-
-            resourceRepository.Update(resourceDto);
-
-            ResourceDto result = resourceRepository.Get("MyResource");
-
-            Assert.Multiple(() =>
-            {
-                Assert.That(result.Id, Is.EqualTo("MyResource"));
-                Assert.That(result.Description, Is.EqualTo("My test resource 2"));
             });
         }
 
@@ -184,14 +94,14 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 id: "MyResource",
                 description: "My test resource");
             var resourceRepository = new ResourcesRepository(this.IdentityContext);
-            resourceRepository.Add(resourceDto);
+            await resourceRepository.AddAsync(resourceDto);
             resourceDto = new ResourceDto(
                 id: "MyResource",
                 description: "My test resource 2");
 
             await resourceRepository.UpdateAsync(resourceDto);
 
-            ResourceDto result = resourceRepository.Get("MyResource");
+            ResourceDto result = await resourceRepository.GetAsync("MyResource");
 
             Assert.Multiple(() =>
             {
@@ -201,49 +111,19 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         }
 
         [Test]
-        public void TestRemove_WhenResourceGiven_ThenResourceIsRemoved()
-        {
-            var resourceDto = new ResourceDto(
-                id: "MyResource",
-                description: "My test resource");
-            var resourceRepository = new ResourcesRepository(this.IdentityContext);
-            resourceRepository.Add(resourceDto);
-
-            resourceRepository.Remove(resourceDto);
-
-            ResourceDto result = resourceRepository.Get("MyResource");
-
-            Assert.That(result, Is.Null);
-        }
-
-        [Test]
         public async Task TestRemoveAsync_WhenResourceGiven_ThenResourceIsRemoved()
         {
             var resourceDto = new ResourceDto(
                 id: "MyResource",
                 description: "My test resource");
             var resourceRepository = new ResourcesRepository(this.IdentityContext);
-            resourceRepository.Add(resourceDto);
+            await resourceRepository.AddAsync(resourceDto);
 
             await resourceRepository.RemoveAsync(resourceDto);
 
-            ResourceDto result = resourceRepository.Get("MyResource");
+            ResourceDto result = await resourceRepository.GetAsync("MyResource");
 
             Assert.That(result, Is.Null);
-        }
-
-        [Test]
-        public void TestGet_WhenResourceIdGiven_ThenResourceIsReturned()
-        {
-            var resourceDto = new ResourceDto(
-                id: "MyResource",
-                description: "My test resource");
-            var resourceRepository = new ResourcesRepository(this.IdentityContext);
-            resourceRepository.Add(resourceDto);
-
-            ResourceDto result = resourceRepository.Get("MyResource");
-
-            Assert.That(result, Is.EqualTo(resourceDto));
         }
 
         [Test]
@@ -253,28 +133,11 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 id: "MyResource",
                 description: "My test resource");
             var resourceRepository = new ResourcesRepository(this.IdentityContext);
-            resourceRepository.Add(resourceDto);
+            await resourceRepository.AddAsync(resourceDto);
 
             ResourceDto result = await resourceRepository.GetAsync("MyResource");
 
             Assert.That(result, Is.EqualTo(resourceDto));
-        }
-
-        [TestCaseSource(nameof(PaginatedGetTestData))]
-        public void TestGet_WhenPaginationGiven_ThenResourcesAreReturned(
-            IEnumerable<ResourceDto> resources,
-            Pagination pagination,
-            IEnumerable<ResourceDto> expectedResources)
-        {
-            var resourceDto = new ResourceDto(
-                id: "MyResource",
-                description: "My test resource");
-            var resourceRepository = new ResourcesRepository(this.IdentityContext);
-            resources.ToList().ForEach(r => resourceRepository.Add(r));
-
-            IEnumerable<ResourceDto> result = resourceRepository.Get(pagination);
-
-            Assert.That(result, Is.EquivalentTo(expectedResources));
         }
 
         [TestCaseSource(nameof(PaginatedAsyncGetTestData))]
@@ -287,7 +150,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 id: "MyResource",
                 description: "My test resource");
             var resourceRepository = new ResourcesRepository(this.IdentityContext);
-            resources.ToList().ForEach(r => resourceRepository.Add(r));
+            resources.ToList().ForEach(r => resourceRepository.AddAsync(r).Wait());
 
             IEnumerable<ResourceDto> result = await resourceRepository.GetAsync(pagination);
 

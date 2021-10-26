@@ -3,8 +3,7 @@ using System;
 
 namespace Identity.Application
 {
-    public interface IApplicationsRepository
-    : IAsyncDtoRepository<ApplicationDto, Guid>, IDtoRepository<ApplicationDto, Guid>
+    public interface IApplicationsRepository : IAsyncDtoRepository<ApplicationDto, Guid>
     {
     }
 }

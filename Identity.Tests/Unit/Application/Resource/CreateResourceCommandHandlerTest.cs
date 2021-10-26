@@ -2,10 +2,12 @@
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Threading.Tasks;
 
 namespace Identity.Tests.Unit.Application
 {
     using Password = Identity.Domain.Password;
+    using UnauthorizedAccessException = Identity.Application.UnauthorizedAccessException;
 
     [TestFixture]
     public class CreateResourceCommandHandlerTest
@@ -107,37 +109,6 @@ namespace Identity.Tests.Unit.Application
         }
 
         [Test]
-        public void TestHandle_WhenUserIsNotAuthorizedToCreateResource_ThenUnauthorizedAccessExceptionIsThrown()
-        {
-            var userId = Guid.NewGuid();
-            var user = new UserDto(
-                id: userId,
-                email: "example@example.com",
-                hashedPassword: Identity.Domain.HashedPassword.Hash(new Password("MyPassword")).ToString());
-            var resourcesRepositoryMock = new Mock<IResourcesRepository>();
-            var usersRepositoryMock = new Mock<IUsersRepository>();
-            var rolesRepositoryMock = new Mock<IRolesRepository>();
-            usersRepositoryMock.Setup(u => u.Get(It.IsAny<Guid>())).Returns(user);
-            IResourcesRepository resourcesRepository = resourcesRepositoryMock.Object;
-            IUsersRepository usersRepository = usersRepositoryMock.Object;
-            IRolesRepository rolesRepository = rolesRepositoryMock.Object;
-            var createResourceCommandHandler = new CreateResourceCommandHandler(
-                resourcesRepository,
-                usersRepository,
-                rolesRepository);
-            var createResourceCommand = new CreateResourceCommand(
-                "MyResource",
-                "My resource description.",
-                userId);
-
-            Assert.Throws(
-               Is.InstanceOf<Identity.Application.UnauthorizedAccessException>()
-                   .And.Message
-                   .EqualTo("User isn't authorized to create resource."),
-               () => createResourceCommandHandler.Handle(createResourceCommand));
-        }
-
-        [Test]
         public void TestHandleAsync_WhenUserIsNotAuthorizedToCreateResource_ThenUnauthorizedAccessExceptionIsThrown()
         {
             var userId = Guid.NewGuid();
@@ -148,7 +119,7 @@ namespace Identity.Tests.Unit.Application
             var resourcesRepositoryMock = new Mock<IResourcesRepository>();
             var usersRepositoryMock = new Mock<IUsersRepository>();
             var rolesRepositoryMock = new Mock<IRolesRepository>();
-            usersRepositoryMock.Setup(u => u.Get(It.IsAny<Guid>())).Returns(user);
+            usersRepositoryMock.Setup(u => u.GetAsync(It.IsAny<Guid>())).Returns(Task.FromResult(user));
             IResourcesRepository resourcesRepository = resourcesRepositoryMock.Object;
             IUsersRepository usersRepository = usersRepositoryMock.Object;
             IRolesRepository rolesRepository = rolesRepositoryMock.Object;
@@ -161,11 +132,12 @@ namespace Identity.Tests.Unit.Application
                 "My resource description.",
                 userId);
 
-            Assert.Throws(
-               Is.InstanceOf<Identity.Application.UnauthorizedAccessException>()
-                   .And.Message
-                   .EqualTo("User isn't authorized to create resource."),
-               () => createResourceCommandHandler.HandleAsync(createResourceCommand).Wait());
+            UnauthorizedAccessException exception = Assert.ThrowsAsync<UnauthorizedAccessException>(
+                async () => await createResourceCommandHandler.HandleAsync(createResourceCommand));
+            
+            Assert.That(exception, Is.InstanceOf<UnauthorizedAccessException>()
+                .And.Message
+                .EqualTo("User isn't authorized to create resource."));
         }
     }
 }

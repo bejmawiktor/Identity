@@ -5,8 +5,7 @@ using System.Threading.Tasks;
 
 namespace Identity.Application
 {
-    public class CreateResourceCommandHandler
-    : ICommandHandler<CreateResourceCommand>, IAsyncCommandHandler<CreateResourceCommand>
+    public class CreateResourceCommandHandler : IAsyncCommandHandler<CreateResourceCommand>
     {
         public IUsersRepository UsersRepository { get; }
         public IResourcesRepository ResourcesRepository { get; }
@@ -32,26 +31,19 @@ namespace Identity.Application
                 new RolesRepositoryAdapter(this.RolesRepository));
         }
 
-        public void Handle(CreateResourceCommand command)
+        public async Task HandleAsync(CreateResourceCommand command)
         {
-            this.ValidateUserIsAuthorized(command);
+            await this.ValidateUserIsAuthorized(command);
 
-            this.ResourceService.CreateResource(command.ResourceId, command.ResourceDescription);
+            await this.ResourceService.CreateResourceAsync(command.ResourceId, command.ResourceDescription);
         }
 
-        private void ValidateUserIsAuthorized(CreateResourceCommand command)
+        private async Task ValidateUserIsAuthorized(CreateResourceCommand command)
         {
-            if(!this.AuthorizationService.CheckUserAccess(new UserId(command.UserId), Permissions.CreateResource.Id))
+            if (!await this.AuthorizationService.CheckUserAccess(new UserId(command.UserId), Permissions.CreateResource.Id))
             {
                 throw new UnauthorizedAccessException("User isn't authorized to create resource.");
             }
-        }
-
-        public Task HandleAsync(CreateResourceCommand command)
-        {
-            this.ValidateUserIsAuthorized(command);
-
-            return this.ResourceService.CreateResourceAsync(command.ResourceId, command.ResourceDescription);
         }
     }
 }

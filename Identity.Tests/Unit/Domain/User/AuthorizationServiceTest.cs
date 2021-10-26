@@ -2,6 +2,7 @@
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Threading.Tasks;
 
 namespace Identity.Tests.Unit.Domain
 {
@@ -69,13 +70,14 @@ namespace Identity.Tests.Unit.Domain
             IRolesRepository rolesRepository = rolesRepositoryMock.Object;
             var authorizationService = new AuthorizationService(usersRepository, rolesRepository);
 
-            Assert.Throws(
-               Is.InstanceOf<ArgumentNullException>()
-                   .And.Property(nameof(ArgumentNullException.ParamName))
-                   .EqualTo("userId"),
-               () => authorizationService.CheckUserAccess(
+            ArgumentNullException exception = Assert.ThrowsAsync<ArgumentNullException>(
+               async () => await authorizationService.CheckUserAccess(
                    userId: null,
                    permissionId: new PermissionId(new ResourceId("MyResource"), "MyPermission")));
+
+            Assert.That(exception, Is.InstanceOf<ArgumentNullException>()
+                .And.Property(nameof(ArgumentNullException.ParamName))
+                .EqualTo("userId"));
         }
 
         [Test]
@@ -87,37 +89,39 @@ namespace Identity.Tests.Unit.Domain
             IRolesRepository rolesRepository = rolesRepositoryMock.Object;
             var authorizationService = new AuthorizationService(usersRepository, rolesRepository);
 
-            Assert.Throws(
-               Is.InstanceOf<ArgumentNullException>()
-                   .And.Property(nameof(ArgumentNullException.ParamName))
-                   .EqualTo("permissionId"),
-               () => authorizationService.CheckUserAccess(
+            ArgumentNullException exception = Assert.ThrowsAsync<ArgumentNullException>(
+               async () => await authorizationService.CheckUserAccess(
                    userId: UserId.Generate(),
                    permissionId: null));
+
+            Assert.That(exception, Is.InstanceOf<ArgumentNullException>()
+                .And.Property(nameof(ArgumentNullException.ParamName))
+                .EqualTo("permissionId"));
         }
 
         [Test]
         public void TestCheckUserAccess_WhenNotFoundUserIdGiven_ThenUserNotFoundExceptionIsThrown()
         {
             var usersRepositoryMock = new Mock<IUsersRepository>();
-            usersRepositoryMock.Setup(u => u.Get(It.IsAny<UserId>())).Returns((User)null);
+            usersRepositoryMock.Setup(u => u.GetAsync(It.IsAny<UserId>())).Returns(Task.FromResult((User)null));
             var rolesRepositoryMock = new Mock<IRolesRepository>();
             IUsersRepository usersRepository = usersRepositoryMock.Object;
             IRolesRepository rolesRepository = rolesRepositoryMock.Object;
             var userId = UserId.Generate();
             var authorizationService = new AuthorizationService(usersRepository, rolesRepository);
 
-            Assert.Throws(
-               Is.InstanceOf<UserNotFoundException>()
-                   .And.Message
-                   .EqualTo($"User {userId} not found."),
-               () => authorizationService.CheckUserAccess(
+            UserNotFoundException exception = Assert.ThrowsAsync<UserNotFoundException>(
+               async () => await authorizationService.CheckUserAccess(
                    userId: userId,
                    permissionId: new PermissionId(new ResourceId("MyResource"), "MyPermission")));
+
+            Assert.That(exception, Is.InstanceOf<UserNotFoundException>()
+                .And.Message
+                .EqualTo($"User {userId} not found."));
         }
 
         [Test]
-        public void TestCheckUserAccess_WhenUserPermittedByRoleGiven_ThenTrueIsReturned()
+        public async Task TestCheckUserAccess_WhenUserPermittedByRoleGiven_ThenTrueIsReturned()
         {
             var usersRepositoryMock = new Mock<IUsersRepository>();
             var rolesRepositoryMock = new Mock<IRolesRepository>();
@@ -145,20 +149,20 @@ namespace Identity.Tests.Unit.Domain
                 id: notPermittedRoleId,
                 name: "MyRole",
                 description: "My role description");
-            usersRepositoryMock.Setup(u => u.Get(It.IsAny<UserId>())).Returns(user);
-            rolesRepositoryMock.Setup(u => u.Get(permittedRoleId)).Returns(permittedRole);
-            rolesRepositoryMock.Setup(u => u.Get(notPermittedRoleId)).Returns(notPermittedRole);
+            usersRepositoryMock.Setup(u => u.GetAsync(It.IsAny<UserId>())).Returns(Task.FromResult(user));
+            rolesRepositoryMock.Setup(u => u.GetAsync(permittedRoleId)).Returns(Task.FromResult(permittedRole));
+            rolesRepositoryMock.Setup(u => u.GetAsync(notPermittedRoleId)).Returns(Task.FromResult(notPermittedRole));
             IUsersRepository usersRepository = usersRepositoryMock.Object;
             IRolesRepository rolesRepository = rolesRepositoryMock.Object;
             var authorizationService = new AuthorizationService(usersRepository, rolesRepository);
 
-            bool userIsPermitted = authorizationService.CheckUserAccess(user.Id, permissionId);
+            bool userIsPermitted = await authorizationService.CheckUserAccess(user.Id, permissionId);
 
             Assert.That(userIsPermitted, Is.True);
         }
 
         [Test]
-        public void TestCheckUserAccess_WhenUserPermittedBySinglePermissionGiven_ThenTrueIsReturned()
+        public async Task TestCheckUserAccess_WhenUserPermittedBySinglePermissionGiven_ThenTrueIsReturned()
         {
             var usersRepositoryMock = new Mock<IUsersRepository>();
             var rolesRepositoryMock = new Mock<IRolesRepository>();
@@ -172,18 +176,18 @@ namespace Identity.Tests.Unit.Domain
                     permissionId,
                     new PermissionId(new ResourceId("MyResource"), "MyPermission2")
         });
-            usersRepositoryMock.Setup(u => u.Get(It.IsAny<UserId>())).Returns(user);
+            usersRepositoryMock.Setup(u => u.GetAsync(It.IsAny<UserId>())).Returns(Task.FromResult(user));
             IUsersRepository usersRepository = usersRepositoryMock.Object;
             IRolesRepository rolesRepository = rolesRepositoryMock.Object;
             var authorizationService = new AuthorizationService(usersRepository, rolesRepository);
 
-            bool userIsPermitted = authorizationService.CheckUserAccess(user.Id, permissionId);
+            bool userIsPermitted = await authorizationService.CheckUserAccess(user.Id, permissionId);
 
             Assert.That(userIsPermitted, Is.True);
         }
 
         [Test]
-        public void TestCheckUserAccess_WhenUserPermittedFromRoleAndSinglePermissionGiven_ThenTrueIsReturned()
+        public async Task TestCheckUserAccess_WhenUserPermittedFromRoleAndSinglePermissionGiven_ThenTrueIsReturned()
         {
             var usersRepositoryMock = new Mock<IUsersRepository>();
             var rolesRepositoryMock = new Mock<IRolesRepository>();
@@ -208,19 +212,19 @@ namespace Identity.Tests.Unit.Domain
                 {
                     permissionId
                 });
-            usersRepositoryMock.Setup(u => u.Get(It.IsAny<UserId>())).Returns(user);
-            rolesRepositoryMock.Setup(u => u.Get(It.IsAny<RoleId>())).Returns(role);
+            usersRepositoryMock.Setup(u => u.GetAsync(It.IsAny<UserId>())).Returns(Task.FromResult(user));
+            rolesRepositoryMock.Setup(u => u.GetAsync(It.IsAny<RoleId>())).Returns(Task.FromResult(role));
             IUsersRepository usersRepository = usersRepositoryMock.Object;
             IRolesRepository rolesRepository = rolesRepositoryMock.Object;
             var authorizationService = new AuthorizationService(usersRepository, rolesRepository);
 
-            bool userIsPermitted = authorizationService.CheckUserAccess(user.Id, permissionId);
+            bool userIsPermitted = await authorizationService.CheckUserAccess(user.Id, permissionId);
 
             Assert.That(userIsPermitted, Is.True);
         }
 
         [Test]
-        public void TestCheckUserAccess_WhenUserIsntPermittedFromRoleAndSinglePermissionGiven_ThenFalseIsReturned()
+        public async Task TestCheckUserAccess_WhenUserIsntPermittedFromRoleAndSinglePermissionGiven_ThenFalseIsReturned()
         {
             var usersRepositoryMock = new Mock<IUsersRepository>();
             var rolesRepositoryMock = new Mock<IRolesRepository>();
@@ -229,12 +233,12 @@ namespace Identity.Tests.Unit.Domain
                 id: UserId.Generate(),
                 email: new EmailAddress("example@example.com"),
                 password: AuthorizationServiceTest.TestPassword);
-            usersRepositoryMock.Setup(u => u.Get(It.IsAny<UserId>())).Returns(user);
+            usersRepositoryMock.Setup(u => u.GetAsync(It.IsAny<UserId>())).Returns(Task.FromResult(user));
             IUsersRepository usersRepository = usersRepositoryMock.Object;
             IRolesRepository rolesRepository = rolesRepositoryMock.Object;
             var authorizationService = new AuthorizationService(usersRepository, rolesRepository);
 
-            bool userIsPermitted = authorizationService.CheckUserAccess(user.Id, permissionId);
+            bool userIsPermitted = await authorizationService.CheckUserAccess(user.Id, permissionId);
 
             Assert.That(userIsPermitted, Is.False);
         }

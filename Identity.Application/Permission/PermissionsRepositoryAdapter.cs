@@ -5,17 +5,12 @@ using System;
 namespace Identity.Application
 {
     using IAsyncPermissionsRepositoryAdapter = IAsyncRepositoryAdapter<PermissionDto, (string ResourceId, string Name), IPermissionsRepository, PermissionDtoConverter, Permission, PermissionId>;
-    using IPermissionsRepositoryAdapter = IRepositoryAdapter<PermissionDto, (string ResourceId, string Name), IPermissionsRepository, PermissionDtoConverter, Permission, PermissionId>;
-
-    internal class PermissionsRepositoryAdapter 
-    : IPermissionsRepositoryAdapter, IAsyncPermissionsRepositoryAdapter, Domain.IPermissionsRepository
+    
+    internal class PermissionsRepositoryAdapter : IAsyncPermissionsRepositoryAdapter, Domain.IPermissionsRepository
     {
         public IPermissionsRepository PermissionsRepository { get; }
 
         IPermissionsRepository IAsyncPermissionsRepositoryAdapter.DtoRepository
-            => this.PermissionsRepository;
-
-        IPermissionsRepository IPermissionsRepositoryAdapter.DtoRepository
             => this.PermissionsRepository;
 
         public PermissionsRepositoryAdapter(IPermissionsRepository permissionsRepository)

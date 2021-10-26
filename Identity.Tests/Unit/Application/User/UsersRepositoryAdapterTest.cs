@@ -35,23 +35,6 @@ namespace Identity.Tests.Unit.Application
         }
 
         [Test]
-        public void TestGet_WhenUserWithEmailRegistered_ThenUserIsReturned()
-        {
-            var emailAddress = new EmailAddress("example@example.com");
-            User user = User.Create(new EmailAddress("example@example.com"), this.HashedPassword);
-            var usersRepositoryMock = new Mock<IUsersRepository>();
-            usersRepositoryMock
-                .Setup(u => u.Get(It.IsAny<string>()))
-                .Returns(new UserDtoConverter().ToDto(user));
-            IUsersRepository usersRepository = usersRepositoryMock.Object;
-            var usersRepositoryAdapter = new UsersRepositoryAdapter(usersRepository);
-
-            User result = usersRepositoryAdapter.Get(emailAddress);
-
-            Assert.That(result, Is.EqualTo(user));
-        }
-
-        [Test]
         public async Task TestGetAsync_WhenUserWithEmailRegistered_ThenUserIsReturned()
         {
             var emailAddress = new EmailAddress("example@example.com");

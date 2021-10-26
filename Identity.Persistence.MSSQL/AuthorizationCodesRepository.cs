@@ -11,20 +11,13 @@ namespace Identity.Persistence.MSSQL
 {
     using AuthorizationCode = Identity.Persistence.MSSQL.DataModels.AuthorizationCode;
 
-    public class AuthorizationCodesRepository
+    public class AuthorizationCodesRepository : IAuthorizationCodesRepository
     {
         private IdentityContext Context { get; }
 
         public AuthorizationCodesRepository(IdentityContext context)
         {
             this.Context = context;
-        }
-
-        public void Add(AuthorizationCodeDto authorizationCodeDto)
-        {
-            this.Context.AuthorizationCodes.Add(new AuthorizationCode(authorizationCodeDto));
-
-            this.Context.SaveChanges();
         }
 
         public Task AddAsync(AuthorizationCodeDto authorizationCodeDto)
@@ -35,23 +28,10 @@ namespace Identity.Persistence.MSSQL
                 .ContinueWith((t) => _ = this.Context.SaveChangesAsync().Result);
         }
 
-        public AuthorizationCodeDto Get((Guid ApplicationId, string Code) id)
-            => this.Context.AuthorizationCodes
-                .FirstOrDefault(r => r.Code == id.Code && r.ApplicationId == id.ApplicationId)?
-                .ToDto();
-
         public Task<AuthorizationCodeDto> GetAsync((Guid ApplicationId, string Code) id)
             => this.Context.AuthorizationCodes
                 .FirstOrDefaultAsync(r => r.Code == id.Code && r.ApplicationId == id.ApplicationId)
                 .ContinueWith(r => r.Result?.ToDto());
-
-        public IEnumerable<AuthorizationCodeDto> Get(Pagination pagination)
-        {
-            return this.Context.AuthorizationCodes
-                .Skip((int)pagination.Page * (int)pagination.ItemsPerPage)
-                .Take((int)pagination.ItemsPerPage)
-                .Select(r => r.ToDto());
-        }
 
         public Task<IEnumerable<AuthorizationCodeDto>> GetAsync(Pagination pagination = null)
         {
@@ -61,11 +41,10 @@ namespace Identity.Persistence.MSSQL
                 .ContinueWith(p => p.Result.Select(r => r.ToDto()));
         }
 
-        public void Update(AuthorizationCodeDto authorizationCode)
+        public Task UpdateAsync(AuthorizationCodeDto authorizationCode)
         {
-            this.SetModifiedState(authorizationCode);
-
-            this.Context.SaveChanges();
+            return Task.Run(() => this.SetModifiedState(authorizationCode))
+                .ContinueWith((t) => _ = this.Context.SaveChangesAsync().Result);
         }
 
         private void SetModifiedState(AuthorizationCodeDto authorizationCode)
@@ -83,17 +62,10 @@ namespace Identity.Persistence.MSSQL
             this.Context.Entry(new AuthorizationCode(authorizationCode)).State = EntityState.Modified;
         }
 
-        public Task UpdateAsync(AuthorizationCodeDto authorizationCode)
+        public Task RemoveAsync(AuthorizationCodeDto authorizationCode)
         {
-            return Task.Run(() => this.SetModifiedState(authorizationCode))
+            return Task.Run(() => this.SetDeletedState(authorizationCode))
                 .ContinueWith((t) => _ = this.Context.SaveChangesAsync().Result);
-        }
-
-        public void Remove(AuthorizationCodeDto authorizationCode)
-        {
-            this.SetDeletedState(authorizationCode);
-
-            this.Context.SaveChanges();
         }
 
         private void SetDeletedState(AuthorizationCodeDto authorizationCode)
@@ -109,12 +81,6 @@ namespace Identity.Persistence.MSSQL
             }
 
             this.Context.Entry(new AuthorizationCode(authorizationCode)).State = EntityState.Deleted;
-        }
-
-        public Task RemoveAsync(AuthorizationCodeDto authorizationCode)
-        {
-            return Task.Run(() => this.SetDeletedState(authorizationCode))
-                .ContinueWith((t) => _ = this.Context.SaveChangesAsync().Result);
         }
     }
 }

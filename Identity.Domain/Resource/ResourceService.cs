@@ -14,18 +14,6 @@ namespace Identity.Domain
                 ?? throw new ArgumentNullException(nameof(resourcesRepository));
         }
 
-        public void CreateResource(string name, string description)
-        {
-            using(var eventsScope = new EventsScope())
-            {
-                var resource = Resource.Create(name, description);
-
-                this.ResourcesRepository.Add(resource);
-
-                eventsScope.Publish();
-            }
-        }
-
         public async Task CreateResourceAsync(string name, string description)
         {
             using(EventsScope eventsScope = new EventsScope())
