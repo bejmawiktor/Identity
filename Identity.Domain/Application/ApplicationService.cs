@@ -21,7 +21,7 @@ namespace Identity.Domain
 
         public void CreateApplication(UserId userId, string name, Url homepageUrl, Url callbackUrl)
         {
-            using(EventsScope eventsScope = EventManager.Instance.CreateScope())
+            using(var eventsScope = new EventsScope())
             {
                 User user = this.UsersRepository.Get(userId);
 
@@ -40,7 +40,7 @@ namespace Identity.Domain
 
         public async Task CreateApplicationAsync(UserId userId, string name, Url homepageUrl, Url callbackUrl)
         {
-            using(EventsScope eventsScope = EventManager.Instance.CreateScope())
+            using(var eventsScope = new EventsScope())
             {
                 User user = await this.UsersRepository.GetAsync(userId);
 

@@ -21,7 +21,7 @@ namespace Identity.Domain
 
         public void CreatePermission(ResourceId resourceId, string name, string description)
         {
-            using(EventsScope eventsScope = EventManager.Instance.CreateScope())
+            using(var eventsScope = new EventsScope())
             {
                 Resource resource = this.ResourcesRepository.Get(resourceId);
 
@@ -40,7 +40,7 @@ namespace Identity.Domain
 
         public async Task CreatePermissionAsync(ResourceId resourceId, string name, string description)
         {
-            using(EventsScope eventsScope = EventManager.Instance.CreateScope())
+            using (var eventsScope = new EventsScope())
             {
                 Resource resource = await this.ResourcesRepository.GetAsync(resourceId);
 

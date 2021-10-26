@@ -16,7 +16,7 @@ namespace Identity.Domain
 
         public void CreateResource(string name, string description)
         {
-            using(EventsScope eventsScope = EventManager.Instance.CreateScope())
+            using(var eventsScope = new EventsScope())
             {
                 var resource = Resource.Create(name, description);
 
@@ -28,7 +28,7 @@ namespace Identity.Domain
 
         public async Task CreateResourceAsync(string name, string description)
         {
-            using(EventsScope eventsScope = EventManager.Instance.CreateScope())
+            using(EventsScope eventsScope = new EventsScope())
             {
                 var resource = Resource.Create(name, description);
 
