@@ -27,7 +27,7 @@ namespace Identity.Tests.Unit.Application
             Assert.Multiple(() =>
             {
                 Assert.That(authorizationCodeDto.ApplicationId, Is.EqualTo(authorizationCodeId.ApplicationId.ToGuid()));
-                Assert.That(authorizationCodeDto.Code, Is.EqualTo(authorizationCodeId.Code));
+                Assert.That(authorizationCodeDto.Code, Is.EqualTo(authorizationCodeId.Code.ToString()));
                 Assert.That(authorizationCodeDto.ExpiresAt, Is.EqualTo(expiresAt));
                 Assert.That(authorizationCodeDto.Used, Is.True);
             });
@@ -54,7 +54,7 @@ namespace Identity.Tests.Unit.Application
 
             (Guid ApplicationId, string Code) authorizationCodeDtoId = authorizationCodeDtoConverter.ToDtoIdentifier(authorizationCodeId);
 
-            Assert.That(authorizationCodeDtoId, Is.EqualTo((authorizationCodeId.ApplicationId.ToGuid(), authorizationCodeId.Code)));
+            Assert.That(authorizationCodeDtoId, Is.EqualTo((authorizationCodeId.ApplicationId.ToGuid(), authorizationCodeId.Code.ToString())));
         }
 
         [Test]

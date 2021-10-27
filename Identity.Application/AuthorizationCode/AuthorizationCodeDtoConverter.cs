@@ -15,7 +15,7 @@ namespace Identity.Application
             }
 
             return new AuthorizationCodeDto(
-                code: authorizationCode.Id.Code,
+                code: authorizationCode.Id.Code.ToString(),
                 applicationId: authorizationCode.Id.ApplicationId.ToGuid(),
                 expiresAt: authorizationCode.ExpiresAt,
                 used: authorizationCode.Used);
@@ -28,7 +28,7 @@ namespace Identity.Application
                 throw new ArgumentNullException(nameof(authorizationCodeId));
             }
 
-            return (authorizationCodeId.ApplicationId.ToGuid(), authorizationCodeId.Code);
+            return (authorizationCodeId.ApplicationId.ToGuid(), authorizationCodeId.Code.ToString());
         }
     }
 }

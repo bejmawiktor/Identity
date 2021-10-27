@@ -16,12 +16,12 @@ namespace Identity.Tests.Unit.Application
             ApplicationId applicationId = ApplicationId.Generate();
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId);
             var authorizationCodeDto = new AuthorizationCodeDto(
-                code: authorizationCodeId.Code,
+                code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
                 expiresAt: DateTime.Now,
                 used: true);
 
-            Assert.That(authorizationCodeDto.Code, Is.EqualTo(authorizationCodeId.Code));
+            Assert.That(authorizationCodeDto.Code, Is.EqualTo(authorizationCodeId.Code.ToString()));
         }
 
         [Test]
@@ -30,7 +30,7 @@ namespace Identity.Tests.Unit.Application
             ApplicationId applicationId = ApplicationId.Generate();
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId);
             var authorizationCodeDto = new AuthorizationCodeDto(
-                code: authorizationCodeId.Code,
+                code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
                 expiresAt: DateTime.Now,
                 used: true);
@@ -45,7 +45,7 @@ namespace Identity.Tests.Unit.Application
             ApplicationId applicationId = ApplicationId.Generate();
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId);
             var authorizationCodeDto = new AuthorizationCodeDto(
-                code: authorizationCodeId.Code,
+                code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
                 expiresAt: expiresAt,
                 used: true);
@@ -60,7 +60,7 @@ namespace Identity.Tests.Unit.Application
             ApplicationId applicationId = ApplicationId.Generate();
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId);
             var authorizationCodeDto = new AuthorizationCodeDto(
-                code: authorizationCodeId.Code,
+                code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
                 expiresAt: expiresAt,
                 used: true);
@@ -75,12 +75,12 @@ namespace Identity.Tests.Unit.Application
             ApplicationId applicationId = ApplicationId.Generate();
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId);
             var firstAuthorizationCodeDto = new AuthorizationCodeDto(
-                code: authorizationCodeId.Code,
+                code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
                 expiresAt: expiresAt,
                 used: true);
             var secondAuthorizationCodeDto = new AuthorizationCodeDto(
-                code: authorizationCodeId.Code,
+                code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
                 expiresAt: expiresAt,
                 used: true);
@@ -95,12 +95,12 @@ namespace Identity.Tests.Unit.Application
             ApplicationId applicationId = ApplicationId.Generate();
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId);
             var firstAuthorizationCodeDto = new AuthorizationCodeDto(
-                code: authorizationCodeId.Code,
+                code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
                 expiresAt: expiresAt,
                 used: true);
             var secondAuthorizationCodeDto = new AuthorizationCodeDto(
-                code: authorizationCodeId.Code,
+                code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
                 expiresAt: expiresAt,
                 used: false);
@@ -115,12 +115,12 @@ namespace Identity.Tests.Unit.Application
             ApplicationId applicationId = ApplicationId.Generate();
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId);
             var firstAuthorizationCodeDto = new AuthorizationCodeDto(
-                code: authorizationCodeId.Code,
+                code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
                 expiresAt: expiresAt,
                 used: true);
             var secondAuthorizationCodeDto = new AuthorizationCodeDto(
-                code: authorizationCodeId.Code,
+                code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
                 expiresAt: expiresAt,
                 used: true);
@@ -135,12 +135,12 @@ namespace Identity.Tests.Unit.Application
             ApplicationId applicationId = ApplicationId.Generate();
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId);
             var firstAuthorizationCodeDto = new AuthorizationCodeDto(
-                code: authorizationCodeId.Code,
+                code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
                 expiresAt: expiresAt,
                 used: true);
             var secondAuthorizationCodeDto = new AuthorizationCodeDto(
-                code: authorizationCodeId.Code,
+                code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
                 expiresAt: expiresAt,
                 used: false);
@@ -155,7 +155,7 @@ namespace Identity.Tests.Unit.Application
             ApplicationId applicationId = ApplicationId.Generate();
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId);
             var authorizationCodeDto = new AuthorizationCodeDto(
-                code: authorizationCodeId.Code,
+                code: authorizationCodeId.Code.ToString(),
                 applicationId: authorizationCodeId.ApplicationId.ToGuid(),
                 expiresAt: expiresAt,
                 used: true);

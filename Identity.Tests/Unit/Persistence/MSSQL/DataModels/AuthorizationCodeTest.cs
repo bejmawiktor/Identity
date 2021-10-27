@@ -19,14 +19,14 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             DateTime now = DateTime.Now;
             var authorizationCode = new AuthorizationCode(
                 new AuthorizationCodeDto(
-                    authorizationCodeId.Code,
+                    authorizationCodeId.Code.ToString(),
                     authorizationCodeId.ApplicationId.ToGuid(),
                     now,
                     true));
 
             Assert.Multiple(() =>
             {
-                Assert.That(authorizationCode.Code, Is.EqualTo(authorizationCodeId.Code));
+                Assert.That(authorizationCode.Code, Is.EqualTo(authorizationCodeId.Code.ToString()));
                 Assert.That(authorizationCode.ApplicationId, Is.EqualTo(applicationId.ToGuid()));
                 Assert.That(authorizationCode.ExpiresAt, Is.EqualTo(now));
                 Assert.That(authorizationCode.Used, Is.True);
@@ -42,14 +42,14 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             var authorizationCode = new AuthorizationCode();
 
             authorizationCode.SetFields(new AuthorizationCodeDto(
-                authorizationCodeId.Code,
+                authorizationCodeId.Code.ToString(),
                 authorizationCodeId.ApplicationId.ToGuid(),
                 now,
                 true));
 
             Assert.Multiple(() =>
             {
-                Assert.That(authorizationCode.Code, Is.EqualTo(authorizationCodeId.Code));
+                Assert.That(authorizationCode.Code, Is.EqualTo(authorizationCodeId.Code.ToString()));
                 Assert.That(authorizationCode.ApplicationId, Is.EqualTo(applicationId.ToGuid()));
                 Assert.That(authorizationCode.ExpiresAt, Is.EqualTo(now));
                 Assert.That(authorizationCode.Used, Is.True);
@@ -64,7 +64,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             DateTime now = DateTime.Now;
             var authorizationCode = new AuthorizationCode(
                 new AuthorizationCodeDto(
-                    authorizationCodeId.Code,
+                    authorizationCodeId.Code.ToString(),
                     authorizationCodeId.ApplicationId.ToGuid(),
                     now,
                     true));
@@ -73,7 +73,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
 
             Assert.Multiple(() =>
             {
-                Assert.That(authorizationCodeDto.Code, Is.EqualTo(authorizationCodeId.Code));
+                Assert.That(authorizationCodeDto.Code, Is.EqualTo(authorizationCodeId.Code.ToString()));
                 Assert.That(authorizationCodeDto.ApplicationId, Is.EqualTo(applicationId.ToGuid()));
                 Assert.That(authorizationCodeDto.ExpiresAt, Is.EqualTo(now));
                 Assert.That(authorizationCodeDto.Used, Is.True);

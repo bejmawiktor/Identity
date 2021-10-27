@@ -20,31 +20,31 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         private static readonly AuthorizationCodeDto[] AuthorizationCodesTestData = new AuthorizationCodeDto[]
         {
             new AuthorizationCodeDto(
-                code: AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId).Code,
+                code: AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId).Code.ToString(),
                 applicationId: ApplicationId.ToGuid(),
                 expiresAt: DateTime.Now,
                 used: true
             ),
             new AuthorizationCodeDto(
-                code: AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId).Code,
+                code: AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId).Code.ToString(),
                 applicationId: ApplicationId.ToGuid(),
                 expiresAt: DateTime.Now,
                 used: true
             ),
             new AuthorizationCodeDto(
-                code: AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId).Code,
+                code: AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId).Code.ToString(),
                 applicationId: ApplicationId.ToGuid(),
                 expiresAt: DateTime.Now,
                 used: false
             ),
             new AuthorizationCodeDto(
-                code: AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId).Code,
+                code: AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId).Code.ToString(),
                 applicationId: ApplicationId.ToGuid(),
                 expiresAt: DateTime.Now,
                 used: true
             ),
             new AuthorizationCodeDto(
-                code: AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId).Code,
+                code: AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId).Code.ToString(),
                 applicationId: ApplicationId.ToGuid(),
                 expiresAt: DateTime.Now,
                 used: false
@@ -105,7 +105,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId);
             DateTime now = DateTime.Now;
             var authorizationCodeDto = new AuthorizationCodeDto(
-                code: authorizationCodeId.Code,
+                code: authorizationCodeId.Code.ToString(),
                 applicationId: authorizationCodeId.ApplicationId.ToGuid(),
                 expiresAt: now,
                 used: true);
@@ -113,7 +113,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
 
             await authorizationCodesRepository.AddAsync(authorizationCodeDto);
 
-            AuthorizationCodeDto result = await authorizationCodesRepository.GetAsync((authorizationCodeId.ApplicationId.ToGuid(), authorizationCodeId.Code));
+            AuthorizationCodeDto result = await authorizationCodesRepository.GetAsync((authorizationCodeId.ApplicationId.ToGuid(), authorizationCodeId.Code.ToString()));
 
             Assert.Multiple(() =>
             {
@@ -130,21 +130,21 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId);
             DateTime now = DateTime.Now;
             var authorizationCodeDto = new AuthorizationCodeDto(
-                code: authorizationCodeId.Code,
+                code: authorizationCodeId.Code.ToString(),
                 applicationId: authorizationCodeId.ApplicationId.ToGuid(),
                 expiresAt: now,
                 used: false);
             var authorizationCodesRepository = new AuthorizationCodesRepository(this.IdentityContext);
             await authorizationCodesRepository.AddAsync(authorizationCodeDto);
             authorizationCodeDto = new AuthorizationCodeDto(
-                code: authorizationCodeId.Code,
+                code: authorizationCodeId.Code.ToString(),
                 applicationId: authorizationCodeId.ApplicationId.ToGuid(),
                 expiresAt: now,
                 used: true);
 
             await authorizationCodesRepository.UpdateAsync(authorizationCodeDto);
 
-            AuthorizationCodeDto result = await authorizationCodesRepository.GetAsync((authorizationCodeId.ApplicationId.ToGuid(), authorizationCodeId.Code));
+            AuthorizationCodeDto result = await authorizationCodesRepository.GetAsync((authorizationCodeId.ApplicationId.ToGuid(), authorizationCodeId.Code.ToString()));
 
             Assert.Multiple(() =>
             {
@@ -161,7 +161,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId);
             DateTime now = DateTime.Now;
             var authorizationCodeDto = new AuthorizationCodeDto(
-                code: authorizationCodeId.Code,
+                code: authorizationCodeId.Code.ToString(),
                 applicationId: authorizationCodeId.ApplicationId.ToGuid(),
                 expiresAt: now,
                 used: false);
@@ -170,7 +170,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
 
             await authorizationCodesRepository.RemoveAsync(authorizationCodeDto);
 
-            AuthorizationCodeDto result = await authorizationCodesRepository.GetAsync((authorizationCodeId.ApplicationId.ToGuid(), authorizationCodeId.Code));
+            AuthorizationCodeDto result = await authorizationCodesRepository.GetAsync((authorizationCodeId.ApplicationId.ToGuid(), authorizationCodeId.Code.ToString()));
 
             Assert.That(result, Is.Null);
         }
@@ -181,14 +181,14 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId);
             DateTime now = DateTime.Now;
             var authorizationCodeDto = new AuthorizationCodeDto(
-                code: authorizationCodeId.Code,
+                code: authorizationCodeId.Code.ToString(),
                 applicationId: authorizationCodeId.ApplicationId.ToGuid(),
                 expiresAt: now,
                 used: false);
             var authorizationCodesRepository = new AuthorizationCodesRepository(this.IdentityContext);
             await authorizationCodesRepository.AddAsync(authorizationCodeDto);
 
-            AuthorizationCodeDto result = await authorizationCodesRepository.GetAsync((authorizationCodeId.ApplicationId.ToGuid(), authorizationCodeId.Code));
+            AuthorizationCodeDto result = await authorizationCodesRepository.GetAsync((authorizationCodeId.ApplicationId.ToGuid(), authorizationCodeId.Code.ToString()));
 
             Assert.That(result, Is.EqualTo(authorizationCodeDto));
         }

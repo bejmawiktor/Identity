@@ -30,7 +30,7 @@ namespace Identity.Application
 
         public AuthorizationCode ToAuthorizationCode()
             => new AuthorizationCode(
-                new AuthorizationCodeId(this.Code, new ApplicationId(this.ApplicationId)),
+                new AuthorizationCodeId(new HashedCode(this.Code), new ApplicationId(this.ApplicationId)),
                 this.ExpiresAt,
                 this.Used);
 
