@@ -15,6 +15,15 @@ namespace Identity.Persistence.MSSQL.DataModels
 
         public User(UserDto userDto)
         {
+            this.SetFields(userDto);
+        }
+
+        public User()
+        {
+        }
+
+        public void SetFields(UserDto userDto)
+        {
             this.Id = userDto.Id;
             this.Email = userDto.Email;
             this.HashedPassword = userDto.HashedPassword;
@@ -33,10 +42,6 @@ namespace Identity.Persistence.MSSQL.DataModels
                     UserId = userDto.Id,
                     User = this
                 }).ToList();
-        }
-
-        public User()
-        {
         }
 
         public UserDto ToDto()

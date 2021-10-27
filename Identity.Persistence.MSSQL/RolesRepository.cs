@@ -28,7 +28,8 @@ namespace Identity.Persistence.MSSQL
 
         public Task<RoleDto> GetAsync(Guid id)
             => this.Context.Roles
-                .FirstOrDefaultAsync(r => r.Id == id)
+                .FindAsync(new object[] { id })
+                .AsTask()
                 .ContinueWith(r => r.Result?.ToDto());
 
         public Task<IEnumerable<RoleDto>> GetAsync(Pagination pagination = null)
@@ -41,42 +42,31 @@ namespace Identity.Persistence.MSSQL
 
         public Task RemoveAsync(RoleDto role)
         {
-            return Task.Run(() => this.SetDeletedState(role))
+            return Task.Run(() => this.Remove(role))
                 .ContinueWith((t) => _ = this.Context.SaveChangesAsync().Result);
         }
 
-        private void SetDeletedState(RoleDto role)
+        private void Remove(RoleDto role)
         {
-            var local = this.Context.Set<Role>()
-                .Local
-                .FirstOrDefault(entry => entry.Id == role.Id);
+            var dataModel = this.Context
+                .Find<Role>(new object[] { role.Id });
 
-            if (local != null)
-            {
-                this.Context.Entry(local).State = EntityState.Detached;
-            }
-
-            this.Context.Entry(new Role(role)).State = EntityState.Deleted;
+            this.Context.Remove(dataModel);
         }
 
         public Task UpdateAsync(RoleDto role)
         {
-            return Task.Run(() => this.SetModifiedState(role))
+            return Task.Run(() => this.Update(role))
                 .ContinueWith((t) => _ = this.Context.SaveChangesAsync().Result);
         }
 
-        private void SetModifiedState(RoleDto role)
+        private void Update(RoleDto role)
         {
-            var local = this.Context.Set<Role>()
-                .Local
-                .FirstOrDefault(entry => entry.Id == role.Id);
+            var dataModel = this.Context
+                .Find<Role>(new object[] { role.Id });
+            dataModel.SetFields(role);
 
-            if (local != null)
-            {
-                this.Context.Entry(local).State = EntityState.Detached;
-            }
-
-            this.Context.Entry(new Role(role)).State = EntityState.Modified;
+            this.Context.Update(dataModel);
         }
     }
 }

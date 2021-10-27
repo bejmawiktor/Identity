@@ -15,16 +15,21 @@ namespace Identity.Persistence.MSSQL.DataModels
 
         public Application(ApplicationDto applicationDto)
         {
+            this.SetFields(applicationDto);
+        }
+
+        public Application()
+        {
+        }
+
+        public void SetFields(ApplicationDto applicationDto)
+        {
             this.Id = applicationDto.Id;
             this.UserId = applicationDto.UserId;
             this.Name = applicationDto.Name;
             this.SecretKey = applicationDto.SecretKey;
             this.HomepageUrl = applicationDto.HomepageUrl;
             this.CallbackUrl = applicationDto.CallbackUrl;
-        }
-
-        public Application()
-        {
         }
 
         public ApplicationDto ToDto()

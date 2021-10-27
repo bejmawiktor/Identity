@@ -7,14 +7,19 @@ namespace Identity.Persistence.MSSQL.DataModels
         public string Id { get; set; }
         public string Description { get; set; }
 
-        public Resource(ResourceDto roleDto)
+        public Resource(ResourceDto resourceDto)
         {
-            this.Id = roleDto.Id;
-            this.Description = roleDto.Description;
+            this.SetFields(resourceDto);
         }
 
         public Resource()
         {
+        }
+
+        public void SetFields(ResourceDto resourceDto)
+        {
+            this.Id = resourceDto.Id;
+            this.Description = resourceDto.Description;
         }
 
         public ResourceDto ToDto()

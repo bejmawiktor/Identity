@@ -11,6 +11,11 @@ namespace Identity.Persistence.MSSQL.DataModels
 
         public Permission(PermissionDto permissionDto)
         {
+            this.SetFields(permissionDto);
+        }
+
+        public void SetFields(PermissionDto permissionDto)
+        {
             this.ResourceId = permissionDto.Id.ResourceId;
             this.Name = permissionDto.Id.Name;
             this.Description = permissionDto.Description;

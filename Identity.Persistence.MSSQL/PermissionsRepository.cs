@@ -27,7 +27,8 @@ namespace Identity.Persistence.MSSQL
 
         public Task<PermissionDto> GetAsync((string ResourceId, string Name) id)
             => this.Context.Permissions
-                .FirstOrDefaultAsync(r => r.Name == id.Name && r.ResourceId == id.ResourceId)
+                .FindAsync(new object[] { id.Name, id.ResourceId })
+                .AsTask()
                 .ContinueWith(r => r.Result?.ToDto());
 
         public Task<IEnumerable<PermissionDto>> GetAsync(Pagination pagination = null)
@@ -40,44 +41,31 @@ namespace Identity.Persistence.MSSQL
 
         public Task RemoveAsync(PermissionDto permission)
         {
-            return Task.Run(() => this.SetDeletedState(permission))
+            return Task.Run(() => this.Remove(permission))
                 .ContinueWith((t) => _ = this.Context.SaveChangesAsync().Result);
         }
 
-        private void SetDeletedState(PermissionDto permission)
+        private void Remove(PermissionDto permission)
         {
-            var local = this.Context.Set<Permission>()
-                .Local
-                .FirstOrDefault(entry => entry.Name == permission.Id.Name
-                    && entry.ResourceId == permission.Id.ResourceId);
+            var dataModel = this.Context
+                .Find<Permission>(new object[] { permission.Id.Name, permission.Id.ResourceId });
 
-            if(local != null)
-            {
-                this.Context.Entry(local).State = EntityState.Detached;
-            }
-
-            this.Context.Entry(new Permission(permission)).State = EntityState.Deleted;
+            this.Context.Remove(dataModel);
         }
 
         public Task UpdateAsync(PermissionDto permission)
         {
-            return Task.Run(() => this.SetModifiedState(permission))
+            return Task.Run(() => this.Update(permission))
                 .ContinueWith((t) => _ = this.Context.SaveChangesAsync().Result);
         }
 
-        private void SetModifiedState(PermissionDto permission)
+        private void Update(PermissionDto permission)
         {
-            var local = this.Context.Set<Permission>()
-                .Local
-                .FirstOrDefault(entry => entry.Name == permission.Id.Name
-                    && entry.ResourceId == permission.Id.ResourceId);
+            var dataModel = this.Context
+                .Find<Permission>(new object[] { permission.Id.Name, permission.Id.ResourceId });
+            dataModel.SetFields(permission);
 
-            if(local != null)
-            {
-                this.Context.Entry(local).State = EntityState.Detached;
-            }
-
-            this.Context.Entry(new Permission(permission)).State = EntityState.Modified;
+            this.Context.Update(dataModel);
         }
     }
 }

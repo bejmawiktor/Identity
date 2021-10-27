@@ -14,6 +14,15 @@ namespace Identity.Persistence.MSSQL.DataModels
 
         public Role(RoleDto roleDto)
         {
+            this.SetFields(roleDto);
+        }
+
+        public Role()
+        {
+        }
+
+        public void SetFields(RoleDto roleDto)
+        {
             this.Id = roleDto.Id;
             this.Name = roleDto.Name;
             this.Description = roleDto.Description;
@@ -25,10 +34,6 @@ namespace Identity.Persistence.MSSQL.DataModels
                     RoleId = roleDto.Id,
                     Role = this
                 }).ToList();
-        }
-
-        public Role()
-        {
         }
 
         public RoleDto ToDto()

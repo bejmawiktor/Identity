@@ -29,7 +29,8 @@ namespace Identity.Persistence.MSSQL
 
         public Task<ApplicationDto> GetAsync(Guid id)
             => this.Context.Applications
-                .FirstOrDefaultAsync(r => r.Id == id)
+                .FindAsync(new object[] { id })
+                .AsTask()
                 .ContinueWith(r => r.Result?.ToDto());
 
         public Task<IEnumerable<ApplicationDto>> GetAsync(Pagination pagination = null)
@@ -42,42 +43,31 @@ namespace Identity.Persistence.MSSQL
 
         public Task RemoveAsync(ApplicationDto application)
         {
-            return Task.Run(() => this.SetDeletedState(application))
+            return Task.Run(() => this.Remove(application))
                 .ContinueWith((t) => _ = this.Context.SaveChangesAsync().Result);
         }
 
-        private void SetDeletedState(ApplicationDto application)
+        private void Remove(ApplicationDto application)
         {
-            var local = this.Context.Set<Application>()
-                .Local
-                .FirstOrDefault(entry => entry.Id == application.Id);
+            var dataModel = this.Context
+                .Find<Application>(new object[] { application.Id });
 
-            if(local != null)
-            {
-                this.Context.Entry(local).State = EntityState.Detached;
-            }
-
-            this.Context.Entry(new Application(application)).State = EntityState.Deleted;
+            this.Context.Remove(dataModel);
         }
 
         public Task UpdateAsync(ApplicationDto application)
         {
-            return Task.Run(() => this.SetModifiedState(application))
+            return Task.Run(() => this.Update(application))
                 .ContinueWith((t) => _ = this.Context.SaveChangesAsync().Result);
         }
 
-        private void SetModifiedState(ApplicationDto application)
+        private void Update(ApplicationDto application)
         {
-            var local = this.Context.Set<Application>()
-                .Local
-                .FirstOrDefault(entry => entry.Id == application.Id);
+            var dataModel = this.Context
+                .Find<Application>(new object[] { application.Id });
+            dataModel.SetFields(application);
 
-            if(local != null)
-            {
-                this.Context.Entry(local).State = EntityState.Detached;
-            }
-
-            this.Context.Entry(new Application(application)).State = EntityState.Modified;
+            this.Context.Update(dataModel);
         }
     }
 }

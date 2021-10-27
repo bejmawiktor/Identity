@@ -21,6 +21,21 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         }
 
         [Test]
+        public void TestSetFields_WhenDtoGiven_ThenMembersAreSet()
+        {
+            var permission = new Permission();
+
+            permission.SetFields(new PermissionDto("MyResource", "MyPermission", "My permission description."));
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(permission.ResourceId, Is.EqualTo("MyResource"));
+                Assert.That(permission.Name, Is.EqualTo("MyPermission"));
+                Assert.That(permission.Description, Is.EqualTo("My permission description."));
+            });
+        }
+
+        [Test]
         public void TestToDto_WhenConvertingToDto_ThenPermissionDtoIsReturned()
         {
             var permission = new Permission

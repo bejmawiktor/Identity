@@ -28,7 +28,8 @@ namespace Identity.Persistence.MSSQL
 
         public Task<UserDto> GetAsync(Guid id)
             => this.Context.Users
-                .FirstOrDefaultAsync(r => r.Id == id)
+                .FindAsync(new object[] { id })
+                .AsTask()
                 .ContinueWith(r => r.Result?.ToDto());
 
         public Task<IEnumerable<UserDto>> GetAsync(Pagination pagination = null)
@@ -41,42 +42,31 @@ namespace Identity.Persistence.MSSQL
 
         public Task RemoveAsync(UserDto user)
         {
-            return Task.Run(() => this.SetDeletedState(user))
+            return Task.Run(() => this.Remove(user))
                 .ContinueWith((t) => _ = this.Context.SaveChangesAsync().Result);
         }
 
-        private void SetDeletedState(UserDto user)
+        private void Remove(UserDto user)
         {
-            var local = this.Context.Set<User>()
-                .Local
-                .FirstOrDefault(entry => entry.Id == user.Id);
+            var dataModel = this.Context
+                .Find<User>(new object[] { user.Id });
 
-            if (local != null)
-            {
-                this.Context.Entry(local).State = EntityState.Detached;
-            }
-
-            this.Context.Entry(new User(user)).State = EntityState.Deleted;
+            this.Context.Remove(dataModel);
         }
 
-        public Task UpdateAsync(UserDto entity)
+        public Task UpdateAsync(UserDto user)
         {
-            return Task.Run(() => this.SetModifiedState(entity))
+            return Task.Run(() => this.Update(user))
                 .ContinueWith((t) => _ = this.Context.SaveChangesAsync().Result);
         }
 
-        private void SetModifiedState(UserDto user)
+        private void Update(UserDto user)
         {
-            var local = this.Context.Set<User>()
-                .Local
-                .FirstOrDefault(entry => entry.Id == user.Id);
+            var dataModel = this.Context
+                .Find<User>(new object[] { user.Id });
+            dataModel.SetFields(user);
 
-            if (local != null)
-            {
-                this.Context.Entry(local).State = EntityState.Detached;
-            }
-
-            this.Context.Entry(new User(user)).State = EntityState.Modified;
+            this.Context.Update(dataModel);
         }
 
         public Task<UserDto> GetAsync(string emailAddress)

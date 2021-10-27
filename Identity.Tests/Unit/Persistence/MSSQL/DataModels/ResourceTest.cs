@@ -20,6 +20,20 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         }
 
         [Test]
+        public void TestSetFields_WhenDtoGiven_ThenMembersAreSet()
+        {
+            var resource = new Resource();
+
+            resource.SetFields(new ResourceDto("MyResource", "My resource description."));
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(resource.Id, Is.EqualTo("MyResource"));
+                Assert.That(resource.Description, Is.EqualTo("My resource description."));
+            });
+        }
+
+        [Test]
         public void TestToDto_WhenConvertingToDto_ThenResourceDtoIsReturned()
         {
             var resource = new Resource

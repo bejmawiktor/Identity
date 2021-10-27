@@ -34,6 +34,29 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         }
 
         [Test]
+        public void TestSetFields_WhenDtoGiven_ThenMembersAreSet()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId);
+            DateTime now = DateTime.Now;
+            var authorizationCode = new AuthorizationCode();
+
+            authorizationCode.SetFields(new AuthorizationCodeDto(
+                authorizationCodeId.Code,
+                authorizationCodeId.ApplicationId.ToGuid(),
+                now,
+                true));
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(authorizationCode.Code, Is.EqualTo(authorizationCodeId.Code));
+                Assert.That(authorizationCode.ApplicationId, Is.EqualTo(applicationId.ToGuid()));
+                Assert.That(authorizationCode.ExpiresAt, Is.EqualTo(now));
+                Assert.That(authorizationCode.Used, Is.True);
+            });
+        }
+
+        [Test]
         public void TestToDto_WhenConvertingToDto_ThenAuthorizationCodeDtoIsReturned()
         {
             ApplicationId applicationId = ApplicationId.Generate();

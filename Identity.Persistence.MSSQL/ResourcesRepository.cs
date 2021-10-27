@@ -27,7 +27,8 @@ namespace Identity.Persistence.MSSQL
 
         public Task<ResourceDto> GetAsync(string id)
             => this.Context.Resources
-                .FirstOrDefaultAsync(r => r.Id == id)
+                .FindAsync(new object[] { id })
+                .AsTask()
                 .ContinueWith(r => r.Result?.ToDto());
 
         public Task<IEnumerable<ResourceDto>> GetAsync(Pagination pagination = null)
@@ -40,42 +41,31 @@ namespace Identity.Persistence.MSSQL
 
         public Task RemoveAsync(ResourceDto resource)
         {
-            return Task.Run(() => this.SetDeletedState(resource))
+            return Task.Run(() => this.Remove(resource))
                 .ContinueWith((t) => _ = this.Context.SaveChangesAsync().Result);
         }
 
-        private void SetDeletedState(ResourceDto resource)
+        private void Remove(ResourceDto resource)
         {
-            var local = this.Context.Set<Resource>()
-               .Local
-               .FirstOrDefault(entry => entry.Id == resource.Id);
+            var dataModel = this.Context
+                .Find<Resource>(new object[] { resource.Id });
 
-            if(local != null)
-            {
-                this.Context.Entry(local).State = EntityState.Detached;
-            }
-
-            this.Context.Entry(new Resource(resource)).State = EntityState.Deleted;
+            this.Context.Remove(dataModel);
         }
 
         public Task UpdateAsync(ResourceDto resource)
         {
-            return Task.Run(() => this.SetModifiedState(resource))
+            return Task.Run(() => this.Update(resource))
                 .ContinueWith((t) => _ = this.Context.SaveChangesAsync().Result);
         }
 
-        private void SetModifiedState(ResourceDto resource)
+        private void Update(ResourceDto resource)
         {
-            var local = this.Context.Set<Resource>()
-                .Local
-                .FirstOrDefault(entry => entry.Id == resource.Id);
+            var dataModel = this.Context
+                .Find<Resource>(new object[] { resource.Id });
+            dataModel.SetFields(resource);
 
-            if(local != null)
-            {
-                this.Context.Entry(local).State = EntityState.Detached;
-            }
-
-            this.Context.Entry(new Resource(resource)).State = EntityState.Modified;
+            this.Context.Update(dataModel);
         }
     }
 }

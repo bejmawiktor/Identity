@@ -36,6 +36,31 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         }
 
         [Test]
+        public void TestSetFields_WhenDtoGiven_ThenMembersAreSet()
+        {
+            var applicationId = Guid.NewGuid();
+            var userId = Guid.NewGuid();
+            var application = new Application();
+
+            application.SetFields(new ApplicationDto(
+                id: applicationId,
+                userId: userId,
+                name: "MyApp",
+                secretKey: SecretKey,
+                homepageUrl: "http://www.example.com",
+                callbackUrl: "http://www.example.com/1"));
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(application.Id, Is.EqualTo(applicationId));
+                Assert.That(application.UserId, Is.EqualTo(userId));
+                Assert.That(application.Name, Is.EqualTo("MyApp"));
+                Assert.That(application.HomepageUrl, Is.EqualTo("http://www.example.com"));
+                Assert.That(application.CallbackUrl, Is.EqualTo("http://www.example.com/1"));
+            });
+        }
+
+        [Test]
         public void TestToDto_WhenConvertingToDto_ThenApplicationDtoIsReturned()
         {
             var applicationId = Guid.NewGuid();

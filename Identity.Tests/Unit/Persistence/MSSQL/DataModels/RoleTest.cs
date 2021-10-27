@@ -41,6 +41,40 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         }
 
         [Test]
+        public void TestSetFields_WhenDtoGiven_ThenMembersAreSet()
+        {
+            var roleId = Guid.NewGuid();
+            var role = new Role();
+
+            role.SetFields(
+                new RoleDto(
+                    id: roleId,
+                    name: "MyRole",
+                    description: "My role description.",
+                    permissions: new (string ResourceId, string Name)[]
+                    {
+                       ("MyResource", "MyPermission")
+                    }));
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(role.Id, Is.EqualTo(roleId));
+                Assert.That(role.Name, Is.EqualTo("MyRole"));
+                Assert.That(role.Description, Is.EqualTo("My role description."));
+                Assert.That(role.Permissions, Is.EqualTo(new RolePermission[]
+                {
+                    new RolePermission()
+                    {
+                        RoleId = roleId,
+                        Role = role,
+                        PermissionResourceId = "MyResource",
+                        PermissionName = "MyPermission"
+                    }
+                }));
+            });
+        }
+
+        [Test]
         public void TestToDto_WhenConvertingToDto_ThenRoleDtoIsReturned()
         {
             var roleId = Guid.NewGuid();

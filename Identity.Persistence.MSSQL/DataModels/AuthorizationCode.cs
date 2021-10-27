@@ -12,6 +12,11 @@ namespace Identity.Persistence.MSSQL.DataModels
 
         public AuthorizationCode(AuthorizationCodeDto authorizationCode)
         {
+            this.SetFields(authorizationCode);
+        }
+
+        public void SetFields(AuthorizationCodeDto authorizationCode)
+        {
             this.Code = authorizationCode.Code;
             this.ApplicationId = authorizationCode.ApplicationId;
             this.ExpiresAt = authorizationCode.ExpiresAt;

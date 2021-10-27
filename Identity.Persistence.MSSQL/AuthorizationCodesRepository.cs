@@ -1,7 +1,5 @@
 ﻿using DDD.Domain.Persistence;
 using Identity.Application;
-using Identity.Persistence.MSSQL.DataModels;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +28,8 @@ namespace Identity.Persistence.MSSQL
 
         public Task<AuthorizationCodeDto> GetAsync((Guid ApplicationId, string Code) id)
             => this.Context.AuthorizationCodes
-                .FirstOrDefaultAsync(r => r.Code == id.Code && r.ApplicationId == id.ApplicationId)
+                .FindAsync(new object[]{ id.Code, id.ApplicationId })
+                .AsTask()
                 .ContinueWith(r => r.Result?.ToDto());
 
         public Task<IEnumerable<AuthorizationCodeDto>> GetAsync(Pagination pagination = null)
@@ -43,44 +42,31 @@ namespace Identity.Persistence.MSSQL
 
         public Task UpdateAsync(AuthorizationCodeDto authorizationCode)
         {
-            return Task.Run(() => this.SetModifiedState(authorizationCode))
+            return Task.Run(() => this.Update(authorizationCode))
                 .ContinueWith((t) => _ = this.Context.SaveChangesAsync().Result);
         }
 
-        private void SetModifiedState(AuthorizationCodeDto authorizationCode)
+        private void Update(AuthorizationCodeDto authorizationCode)
         {
-            var local = this.Context.Set<AuthorizationCode>()
-                .Local
-                .FirstOrDefault(entry => entry.Code == authorizationCode.Code 
-                    && entry.ApplicationId == authorizationCode.ApplicationId);
+            var dataModel = this.Context
+                .Find<AuthorizationCode>(new object[] { authorizationCode.Code, authorizationCode.ApplicationId });
+            dataModel.SetFields(authorizationCode);
 
-            if (local != null)
-            {
-                this.Context.Entry(local).State = EntityState.Detached;
-            }
-
-            this.Context.Entry(new AuthorizationCode(authorizationCode)).State = EntityState.Modified;
+            this.Context.Update(dataModel);
         }
 
         public Task RemoveAsync(AuthorizationCodeDto authorizationCode)
         {
-            return Task.Run(() => this.SetDeletedState(authorizationCode))
+            return Task.Run(() => this.Remove(authorizationCode))
                 .ContinueWith((t) => _ = this.Context.SaveChangesAsync().Result);
         }
 
-        private void SetDeletedState(AuthorizationCodeDto authorizationCode)
+        private void Remove(AuthorizationCodeDto authorizationCode)
         {
-            var local = this.Context.Set<AuthorizationCode>()
-                .Local
-                .FirstOrDefault(entry => entry.Code == authorizationCode.Code
-                    && entry.ApplicationId == authorizationCode.ApplicationId);
+            var dataModel = this.Context
+                .Find<AuthorizationCode>(new object[] { authorizationCode.Code, authorizationCode.ApplicationId });
 
-            if (local != null)
-            {
-                this.Context.Entry(local).State = EntityState.Detached;
-            }
-
-            this.Context.Entry(new AuthorizationCode(authorizationCode)).State = EntityState.Deleted;
+            this.Context.Remove(dataModel);
         }
     }
 }
