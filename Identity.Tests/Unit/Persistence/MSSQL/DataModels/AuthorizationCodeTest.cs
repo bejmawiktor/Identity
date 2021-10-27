@@ -1,7 +1,7 @@
-﻿using NUnit.Framework;
-using System;
+﻿using Identity.Application;
 using Identity.Persistence.MSSQL.DataModels;
-using Identity.Application;
+using NUnit.Framework;
+using System;
 
 namespace Identity.Tests.Unit.Persistence.MSSQL
 {
@@ -19,9 +19,9 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             DateTime now = DateTime.Now;
             var authorizationCode = new AuthorizationCode(
                 new AuthorizationCodeDto(
-                    authorizationCodeId.Code, 
+                    authorizationCodeId.Code,
                     authorizationCodeId.ApplicationId.ToGuid(),
-                    now, 
+                    now,
                     true));
 
             Assert.Multiple(() =>

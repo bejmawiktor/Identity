@@ -26,7 +26,7 @@ namespace Identity.Tests.Unit.Domain
             HashedPassword hashedPassword = HashedPassword.Hash(password);
             var emailAddress = new EmailAddress("example@example.com");
             User user = User.Create(
-                email: emailAddress, 
+                email: emailAddress,
                 password: hashedPassword);
             var usersRepositoryMock = new Mock<IUsersRepository>();
             usersRepositoryMock.Setup(u => u.GetAsync(emailAddress)).Returns(Task.FromResult(user));

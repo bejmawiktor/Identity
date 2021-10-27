@@ -9,7 +9,7 @@ namespace Identity.Application
     {
         public AuthorizationCodeDto ToDto(AuthorizationCode authorizationCode)
         {
-            if (authorizationCode == null)
+            if(authorizationCode == null)
             {
                 throw new ArgumentNullException(nameof(authorizationCode));
             }

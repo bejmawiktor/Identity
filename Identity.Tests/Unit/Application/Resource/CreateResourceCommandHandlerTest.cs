@@ -134,7 +134,7 @@ namespace Identity.Tests.Unit.Application
 
             UnauthorizedAccessException exception = Assert.ThrowsAsync<UnauthorizedAccessException>(
                 async () => await createResourceCommandHandler.HandleAsync(createResourceCommand));
-            
+
             Assert.That(exception, Is.InstanceOf<UnauthorizedAccessException>()
                 .And.Message
                 .EqualTo("User isn't authorized to create resource."));

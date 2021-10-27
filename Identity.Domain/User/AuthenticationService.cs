@@ -16,7 +16,7 @@ namespace Identity.Domain
         {
             User user = await this.UsersRepository.GetAsync(emailAddress);
 
-            if (user == null)
+            if(user == null)
             {
                 return null;
             }

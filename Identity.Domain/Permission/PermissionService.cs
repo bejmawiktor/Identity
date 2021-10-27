@@ -21,7 +21,7 @@ namespace Identity.Domain
 
         public async Task CreatePermission(ResourceId resourceId, string name, string description)
         {
-            using (var eventsScope = new EventsScope())
+            using(var eventsScope = new EventsScope())
             {
                 Resource resource = await this.ResourcesRepository.GetAsync(resourceId);
 

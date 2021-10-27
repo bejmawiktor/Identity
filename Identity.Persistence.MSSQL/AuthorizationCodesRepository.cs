@@ -28,7 +28,7 @@ namespace Identity.Persistence.MSSQL
 
         public Task<AuthorizationCodeDto> GetAsync((Guid ApplicationId, string Code) id)
             => this.Context.AuthorizationCodes
-                .FindAsync(new object[]{ id.Code, id.ApplicationId })
+                .FindAsync(new object[] { id.Code, id.ApplicationId })
                 .AsTask()
                 .ContinueWith(r => r.Result?.ToDto());
 

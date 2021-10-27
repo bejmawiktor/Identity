@@ -40,7 +40,7 @@ namespace Identity.Application
 
         private async Task ValidateUserIsAuthorized(CreateResourceCommand command)
         {
-            if (!await this.AuthorizationService.CheckUserAccess(new UserId(command.UserId), Permissions.CreateResource.Id))
+            if(!await this.AuthorizationService.CheckUserAccess(new UserId(command.UserId), Permissions.CreateResource.Id))
             {
                 throw new UnauthorizedAccessException("User isn't authorized to create resource.");
             }

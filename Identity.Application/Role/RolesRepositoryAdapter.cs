@@ -5,7 +5,7 @@ using System;
 namespace Identity.Application
 {
     using IAsyncRolesRepositoryAdapter = IAsyncRepositoryAdapter<RoleDto, Guid, IRolesRepository, RoleDtoConverter, Role, RoleId>;
-    
+
     internal class RolesRepositoryAdapter : IAsyncRolesRepositoryAdapter, Domain.IRolesRepository
     {
         public IRolesRepository RolesRepository { get; }

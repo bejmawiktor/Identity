@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Identity.Application
 {
     using IAsyncUsersRepositoryAdapter = IAsyncRepositoryAdapter<UserDto, Guid, IUsersRepository, UserDtoConverter, User, UserId>;
-    
+
     internal class UsersRepositoryAdapter : IAsyncUsersRepositoryAdapter, Domain.IUsersRepository
     {
         public IUsersRepository UsersRepository { get; }
