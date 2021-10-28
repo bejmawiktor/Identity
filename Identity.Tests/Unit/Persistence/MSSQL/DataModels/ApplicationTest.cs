@@ -11,7 +11,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         private static readonly string SecretKey = Identity.Domain.SecretKey.Generate().ToString();
 
         [Test]
-        public void TestConstructing_WhenDtoGiven_ThenMembersAreSet()
+        public void TestConstructor_WhenDtoGiven_ThenMembersAreSet()
         {
             var applicationId = Guid.NewGuid();
             var userId = Guid.NewGuid();

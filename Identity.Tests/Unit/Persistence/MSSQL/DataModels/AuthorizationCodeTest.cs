@@ -12,7 +12,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
     public class AuthorizationCodeTest
     {
         [Test]
-        public void TestConstructing_WhenDtoGiven_ThenMembersAreSet()
+        public void TestConstructor_WhenDtoGiven_ThenMembersAreSet()
         {
             ApplicationId applicationId = ApplicationId.Generate();
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId);

@@ -8,7 +8,7 @@ namespace Identity.Tests.Unit.Domain
     public class PasswordTest
     {
         [Test]
-        public void TestConstructing_WhenNullValueGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullValueGiven_ThenArgumentNullExceptionIsThrown()
         {
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -18,7 +18,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenEmptyValueGiven_ThenArgumentExceptionIsThrown()
+        public void TestConstructor_WhenEmptyValueGiven_ThenArgumentExceptionIsThrown()
         {
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()
@@ -33,7 +33,7 @@ namespace Identity.Tests.Unit.Domain
         [TestCase("1abc")]
         [TestCase("1abcd")]
         [TestCase("1abcde")]
-        public void TestConstructing_WhenValueIsShorterThan7Characters_ThenArgumentExceptionIsThrown(string value)
+        public void TestConstructor_WhenValueIsShorterThan7Characters_ThenArgumentExceptionIsThrown(string value)
         {
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()
@@ -43,7 +43,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenValueGiven_ThenToStringReturnsSameValue()
+        public void TestConstructor_WhenValueGiven_ThenToStringReturnsSameValue()
         {
             var password = new Password("asdgasdgasgd");
 

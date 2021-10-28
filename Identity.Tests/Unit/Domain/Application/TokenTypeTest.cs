@@ -8,59 +8,59 @@ namespace Identity.Tests.Unit.Domain
     public class TokenTypeTest
     {
         [Test]
-        public void TestConstructing_WhenDefaultConstructorUsed_ThenNameIsSetToAccess()
+        public void TestConstructor_WhenDefaultConstructorUsed_ThenNameIsSetToAccess()
         {
-            var token = new TokenType();
+            TokenType tokenType = new TokenType();
 
-            Assert.That(token.Name, Is.EqualTo("Access"));
+            Assert.That(tokenType.Name, Is.EqualTo("Access"));
         }
 
         [Test]
         public void TestAccess_WhenAccessTypeUsed_ThenNameIsSetToAccess()
         {
-            var token = TokenType.Access;
+            TokenType tokenType = TokenType.Access;
 
-            Assert.That(token.Name, Is.EqualTo("Access"));
+            Assert.That(tokenType.Name, Is.EqualTo("Access"));
         }
 
         [Test]
         public void TestRefresh_WhenRefreshTypeUsed_ThenNameIsSetToRefresh()
         {
-            var token = TokenType.Refresh;
+            TokenType tokenType = TokenType.Refresh;
 
-            Assert.That(token.Name, Is.EqualTo("Refresh"));
+            Assert.That(tokenType.Name, Is.EqualTo("Refresh"));
         }
 
         [Test]
         public void TestGenerateExpirationDate_WhenAccessTokenGiven_ThenTokenExpiresOneDayAfterGeneration()
         {
-            var token = TokenType.Access;
+            var tokenType = TokenType.Access;
 
-            Assert.That(token.GenerateExpirationDate(), Is.EqualTo(DateTime.Now.AddDays(1)).Within(1).Hours);
+            Assert.That(tokenType.GenerateExpirationDate(), Is.EqualTo(DateTime.Now.AddDays(1)).Within(1).Hours);
         }
 
         [Test]
         public void TestGenerateExpirationDate_WhenRefreshTokenGiven_ThenTokenExpiresOneYearAfterGeneration()
         {
-            var token = TokenType.Refresh;
+            var tokenType = TokenType.Refresh;
 
-            Assert.That(token.GenerateExpirationDate(), Is.EqualTo(DateTime.Now.AddYears(1)).Within(1).Hours);
+            Assert.That(tokenType.GenerateExpirationDate(), Is.EqualTo(DateTime.Now.AddYears(1)).Within(1).Hours);
         }
 
         [Test]
         public void TestFromName_WhenAccesshNameGiven_ThenRefreshTokenIsReturned()
         {
-            TokenType token = TokenType.FromName("Access");
+            TokenType tokenType = TokenType.FromName("Access");
 
-            Assert.That(token, Is.EqualTo(TokenType.Access));
+            Assert.That(tokenType, Is.EqualTo(TokenType.Access));
         }
 
         [Test]
         public void TestFromName_WhenRefreshNameGiven_ThenRefreshTokenIsReturned()
         {
-            TokenType token = TokenType.FromName("Refresh");
+            TokenType tokenType = TokenType.FromName("Refresh");
 
-            Assert.That(token, Is.EqualTo(TokenType.Refresh));
+            Assert.That(tokenType, Is.EqualTo(TokenType.Refresh));
         }
 
         [TestCase("")]

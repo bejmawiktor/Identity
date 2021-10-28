@@ -11,7 +11,7 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestToDto_WhenRoleGiven_ThenRoleDtoIsReturned()
         {
-            var password = HashedPassword.Hash(new Password("MyPassword"));
+            HashedPassword password = HashedPassword.Hash(new Password("MyPassword"));
             var roleId = new RoleId(Guid.NewGuid());
             var role = new Role(
                 id: roleId,
@@ -22,7 +22,6 @@ namespace Identity.Tests.Unit.Application
                     new PermissionId(new ResourceId("MyResource"), "MyPermission"),
                     new PermissionId(new ResourceId("MyResource2"), "MyPermission2")
                 });
-
             var roleDtoConverter = new RoleDtoConverter();
 
             RoleDto roleDto = roleDtoConverter.ToDto(role);

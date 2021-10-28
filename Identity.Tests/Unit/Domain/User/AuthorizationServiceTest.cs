@@ -12,7 +12,7 @@ namespace Identity.Tests.Unit.Domain
         private static readonly HashedPassword TestPassword = HashedPassword.Hash(new Password("MyPassword"));
 
         [Test]
-        public void TestConstructing_WhenUsersRepositoryGiven_ThenUsersRepositoryIsSet()
+        public void TestConstructor_WhenUsersRepositoryGiven_ThenUsersRepositoryIsSet()
         {
             var usersRepositoryMock = new Mock<IUsersRepository>();
             var rolesRepositoryMock = new Mock<IRolesRepository>();
@@ -25,7 +25,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenNullUsersRepositoryGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullUsersRepositoryGiven_ThenArgumentNullExceptionIsThrown()
         {
             var rolesRepositoryMock = new Mock<IRolesRepository>();
 
@@ -37,7 +37,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenResourcesRepositoryGiven_ThenResourcesRepositoryIsSet()
+        public void TestConstructor_WhenResourcesRepositoryGiven_ThenResourcesRepositoryIsSet()
         {
             var usersRepositoryMock = new Mock<IUsersRepository>();
             var rolesRepositoryMock = new Mock<IRolesRepository>();
@@ -50,7 +50,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenNullResourcesRepositoryGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullResourcesRepositoryGiven_ThenArgumentNullExceptionIsThrown()
         {
             var usersRepositoryMock = new Mock<IUsersRepository>();
 
@@ -107,7 +107,7 @@ namespace Identity.Tests.Unit.Domain
             var rolesRepositoryMock = new Mock<IRolesRepository>();
             IUsersRepository usersRepository = usersRepositoryMock.Object;
             IRolesRepository rolesRepository = rolesRepositoryMock.Object;
-            var userId = UserId.Generate();
+            UserId userId = UserId.Generate();
             var authorizationService = new AuthorizationService(usersRepository, rolesRepository);
 
             UserNotFoundException exception = Assert.ThrowsAsync<UserNotFoundException>(
@@ -125,8 +125,8 @@ namespace Identity.Tests.Unit.Domain
         {
             var usersRepositoryMock = new Mock<IUsersRepository>();
             var rolesRepositoryMock = new Mock<IRolesRepository>();
-            var permittedRoleId = RoleId.Generate();
-            var notPermittedRoleId = RoleId.Generate();
+            RoleId permittedRoleId = RoleId.Generate();
+            RoleId notPermittedRoleId = RoleId.Generate();
             var user = new User(
                 id: UserId.Generate(),
                 email: new EmailAddress("example@example.com"),
@@ -162,7 +162,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public async Task TestCheckUserAccess_WhenUserPermittedBySinglePermissionGiven_ThenTrueIsReturned()
+        public async Task TestCheckUserAccess_WhenUserPermittedBySinglePermission_ThenTrueIsReturned()
         {
             var usersRepositoryMock = new Mock<IUsersRepository>();
             var rolesRepositoryMock = new Mock<IRolesRepository>();
@@ -175,7 +175,7 @@ namespace Identity.Tests.Unit.Domain
                 {
                     permissionId,
                     new PermissionId(new ResourceId("MyResource"), "MyPermission2")
-        });
+                });
             usersRepositoryMock.Setup(u => u.GetAsync(It.IsAny<UserId>())).Returns(Task.FromResult(user));
             IUsersRepository usersRepository = usersRepositoryMock.Object;
             IRolesRepository rolesRepository = rolesRepositoryMock.Object;
@@ -187,7 +187,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public async Task TestCheckUserAccess_WhenUserPermittedFromRoleAndSinglePermissionGiven_ThenTrueIsReturned()
+        public async Task TestCheckUserAccess_WhenUserPermittedFromRoleAndSinglePermission_ThenTrueIsReturned()
         {
             var usersRepositoryMock = new Mock<IUsersRepository>();
             var rolesRepositoryMock = new Mock<IRolesRepository>();
@@ -224,7 +224,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public async Task TestCheckUserAccess_WhenUserIsntPermittedFromRoleAndSinglePermissionGiven_ThenFalseIsReturned()
+        public async Task TestCheckUserAccess_WhenUserIsntPermittedFromRoleAndSinglePermission_ThenFalseIsReturned()
         {
             var usersRepositoryMock = new Mock<IUsersRepository>();
             var rolesRepositoryMock = new Mock<IRolesRepository>();

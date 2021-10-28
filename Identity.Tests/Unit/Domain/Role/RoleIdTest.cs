@@ -8,7 +8,7 @@ namespace Identity.Tests.Unit.Domain
     public class RoleIdTest
     {
         [Test]
-        public void TestConstructing_WhenEmptyGuidGiven_ThenArgumentExceptionIsThrown()
+        public void TestConstructor_WhenEmptyGuidGiven_ThenArgumentExceptionIsThrown()
         {
             Assert.Throws(
               Is.InstanceOf<ArgumentException>()
@@ -20,7 +20,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestToGuid_WhenConvertingToGuid_ThenGuidIsReturned()
         {
-            var guid = Guid.NewGuid();
+            Guid guid = Guid.NewGuid();
             var roleId = new RoleId(guid);
 
             Assert.That(roleId.ToGuid(), Is.EqualTo(guid));
@@ -29,7 +29,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestGenerate_WhenGeneretingRoleId_ThenNewRoleIdIsReturned()
         {
-            var roleId = RoleId.Generate();
+            RoleId roleId = RoleId.Generate();
 
             Assert.That(roleId, Is.Not.Null);
         }

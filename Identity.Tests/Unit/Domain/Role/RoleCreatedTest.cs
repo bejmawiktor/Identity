@@ -7,9 +7,9 @@ namespace Identity.Tests.Unit.Domain
     public class RoleCreatedTest
     {
         [Test]
-        public void TestConstruction_WhenRoleIdGiven_ThenRoleIdIsSet()
+        public void TestConstructor_WhenRoleIdGiven_ThenRoleIdIsSet()
         {
-            var roleId = RoleId.Generate();
+            RoleId roleId = RoleId.Generate();
 
             var roleCreated = new RoleCreated(
                 roleId: roleId,
@@ -20,9 +20,9 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenRoleNameGiven_ThenRoleNameIsSet()
+        public void TestConstructor_WhenRoleNameGiven_ThenRoleNameIsSet()
         {
-            var roleId = RoleId.Generate();
+            RoleId roleId = RoleId.Generate();
 
             var roleCreated = new RoleCreated(
                 roleId: roleId,
@@ -33,9 +33,9 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenRoleDescriptionGiven_ThenRoleDescriptionIsSet()
+        public void TestConstructor_WhenRoleDescriptionGiven_ThenRoleDescriptionIsSet()
         {
-            var roleId = RoleId.Generate();
+            RoleId roleId = RoleId.Generate();
 
             var roleCreated = new RoleCreated(
                 roleId: roleId,

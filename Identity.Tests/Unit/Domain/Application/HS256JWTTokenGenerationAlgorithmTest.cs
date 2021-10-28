@@ -29,7 +29,6 @@ namespace Identity.Tests.Unit.Domain
         public void TestEncode_WhenTokenInformationGiven_ThenNotNullTokenIsReturned()
         {
             var algorithm = new HS256JWTTokenGenerationAlgorithm();
-            UserId userId = UserId.Generate();
             ApplicationId applicationId = ApplicationId.Generate();
             var tokenInformation = new TokenInformation(applicationId, TokenType.Refresh);
 
@@ -42,7 +41,6 @@ namespace Identity.Tests.Unit.Domain
         public void TestEncode_WhenTokenInformationGiven_ThenNotEmptyTokenIsReturned()
         {
             var algorithm = new HS256JWTTokenGenerationAlgorithm();
-            UserId userId = UserId.Generate();
             ApplicationId applicationId = ApplicationId.Generate();
             var tokenInformation = new TokenInformation(applicationId, TokenType.Refresh);
 
@@ -55,7 +53,7 @@ namespace Identity.Tests.Unit.Domain
         public void TestEncode_WhenGeneratingTokenWithDifferentTokenInformation_ThenTokensAreDifferent()
         {
             var algorithm = new HS256JWTTokenGenerationAlgorithm();
-            var expirationDate = DateTime.Now;
+            DateTime expirationDate = DateTime.Now;
             ApplicationId firstApplicationId = ApplicationId.Generate();
             ApplicationId secondApplicationId = ApplicationId.Generate();
             var firstTokenInformation = new TokenInformation(
@@ -127,7 +125,7 @@ namespace Identity.Tests.Unit.Domain
         [TestCase("")]
         public void TestValidate_WhenTokenWithInvalidTokenTypeGiven_ThenInvalidTokenExceptionIsThrown(string tokenType)
         {
-            var userId = UserId.Generate();
+            UserId userId = UserId.Generate();
             var claims = new Claim[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
@@ -147,7 +145,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestValidate_WhenTokenWithoutTokenTypeGiven_ThenInvalidTokenExceptionIsThrown()
         {
-            var userId = UserId.Generate();
+            UserId userId = UserId.Generate();
             var claims = new Claim[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
@@ -186,9 +184,9 @@ namespace Identity.Tests.Unit.Domain
 
         [TestCase("asfasfg")]
         [TestCase("")]
-        public void TestValidate_WhenWrongAudienceTokenGiven_ThenInvalidTokenExceptionIsThrown(string audience)
+        public void TestValidate_WhenWrongAudienceGiven_ThenInvalidTokenExceptionIsThrown(string audience)
         {
-            var userId = new UserId(Guid.NewGuid());
+            UserId userId = new UserId(Guid.NewGuid());
             var claims = new Claim[] { new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()) };
             var algorithm = new HS256JWTTokenGenerationAlgorithm();
 
@@ -203,9 +201,9 @@ namespace Identity.Tests.Unit.Domain
 
         [TestCase("asfasfg")]
         [TestCase("")]
-        public void TestValidate_WhenWrongIssuerTokenGiven_ThenInvalidTokenExceptionIsThrown(string issuer)
+        public void TestValidate_WhenWrongIssuerGiven_ThenInvalidTokenExceptionIsThrown(string issuer)
         {
-            var userId = new UserId(Guid.NewGuid());
+            UserId userId = new UserId(Guid.NewGuid());
             var claims = new Claim[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
@@ -225,7 +223,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestValidate_WhenTokenWithoutExpirationDateGiven_ThenInvalidTokenExceptionIsThrown()
         {
-            var userId = new UserId(Guid.NewGuid());
+            UserId userId = new UserId(Guid.NewGuid());
             var claims = new Claim[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),

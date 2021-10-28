@@ -7,10 +7,10 @@ namespace Identity.Tests.Unit.Domain
     public class UserRoleAssumedTest
     {
         [Test]
-        public void TestConstruction_WhenUserIdGiven_ThenUserIdIsSet()
+        public void TestConstructor_WhenUserIdGiven_ThenUserIdIsSet()
         {
-            var userId = UserId.Generate();
-            var assumedRoleId = RoleId.Generate();
+            UserId userId = UserId.Generate();
+            RoleId assumedRoleId = RoleId.Generate();
 
             var userRoleAssumed = new UserRoleAssumed(
                 userId: userId,
@@ -20,10 +20,10 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenAssumedRoleIdGiven_ThenAssumedRoleIdIsSet()
+        public void TestConstructor_WhenAssumedRoleIdGiven_ThenAssumedRoleIdIsSet()
         {
-            var userId = UserId.Generate();
-            var assumedRoleId = RoleId.Generate();
+            UserId userId = UserId.Generate();
+            RoleId assumedRoleId = RoleId.Generate();
 
             var userRoleAssumed = new UserRoleAssumed(
                 userId: userId,

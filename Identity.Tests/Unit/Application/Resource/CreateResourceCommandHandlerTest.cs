@@ -111,7 +111,7 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestHandleAsync_WhenUserIsNotAuthorizedToCreateResource_ThenUnauthorizedAccessExceptionIsThrown()
         {
-            var userId = Guid.NewGuid();
+            Guid userId = Guid.NewGuid();
             var user = new UserDto(
                 id: userId,
                 email: "example@example.com",

@@ -12,7 +12,7 @@ namespace Identity.Tests.Unit.Domain
         [TestCase("just\"not\"right@example.com")]
         [TestCase("this is\"not\\allowed@example.com")]
         [TestCase("this\\ still\\\"notallowed@example.com")]
-        public void TestConstructing_WhenIncorrectAddressGiven_ThenArgumentExceptionIsThrown(string address)
+        public void TestConstructor_WhenIncorrectAddressGiven_ThenArgumentExceptionIsThrown(string address)
         {
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()
@@ -22,7 +22,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenEmptyAddressGiven_ThenArgumentExceptionIsThrown()
+        public void TestConstructor_WhenEmptyAddressGiven_ThenArgumentExceptionIsThrown()
         {
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()
@@ -32,7 +32,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenNullAddressGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullAddressGiven_ThenArgumentNullExceptionIsThrown()
         {
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()
@@ -49,7 +49,7 @@ namespace Identity.Tests.Unit.Domain
         [TestCase("___A___@example.com")]
         [TestCase("firstname-lastname@example.com")]
         [TestCase("email@123.123.123.123")]
-        public void TestConstructing_WhenCorrectAddressGiven_ThenAddressIsSet(string address)
+        public void TestConstructor_WhenCorrectAddressGiven_ThenAddressIsSet(string address)
         {
             var email = new EmailAddress(address);
 

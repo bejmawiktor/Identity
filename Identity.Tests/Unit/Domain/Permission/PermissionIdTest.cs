@@ -8,7 +8,7 @@ namespace Identity.Tests.Unit.Domain
     public class PermissionIdTest
     {
         [Test]
-        public void TestConstructing_WhenEmptyNameGiven_ThenArgumentExceptionIsThrown()
+        public void TestConstructor_WhenEmptyNameGiven_ThenArgumentExceptionIsThrown()
         {
             Assert.Throws(
               Is.InstanceOf<ArgumentException>()
@@ -18,7 +18,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenNullResourceIdGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullResourceIdGiven_ThenArgumentNullExceptionIsThrown()
         {
             Assert.Throws(
               Is.InstanceOf<ArgumentNullException>()
@@ -28,7 +28,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenNullNameGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullNameGiven_ThenArgumentNullExceptionIsThrown()
         {
             Assert.Throws(
               Is.InstanceOf<ArgumentNullException>()
@@ -38,7 +38,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenCorrectNameGiven_ThenNameIsSet()
+        public void TestConstructor_WhenCorrectNameGiven_ThenNameIsSet()
         {
             var permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
 
@@ -46,7 +46,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenCorrectResourceIdGiven_ThenResourceIdIsSet()
+        public void TestConstructor_WhenCorrectResourceIdGiven_ThenResourceIdIsSet()
         {
             var permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
 
@@ -58,7 +58,7 @@ namespace Identity.Tests.Unit.Domain
         [TestCase("$%^MyPermission!@#")]
         [TestCase("My permission 1")]
         [TestCase("My permission 1 !@")]
-        public void TestConstructing_WhenIncorrectNameGiven_ThenArgumentExceptionIsThrown(string name)
+        public void TestConstructor_WhenIncorrectNameGiven_ThenArgumentExceptionIsThrown(string name)
         {
             Assert.Throws(
               Is.InstanceOf<ArgumentException>()

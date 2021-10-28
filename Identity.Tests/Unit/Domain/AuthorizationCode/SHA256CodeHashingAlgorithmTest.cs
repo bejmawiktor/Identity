@@ -45,7 +45,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestHash_WhenMultipleTimesSameCodeIsEncrypted_ThenReturnedHashedCodesAreSame()
         {
-            var code = Code.Generate();
+            Code code = Code.Generate();
             var sha256CodeHashingAlgorithm = new SHA256CodeHashingAlgorithm();
 
             byte[] firstHashedCode = sha256CodeHashingAlgorithm.Hash(code);
@@ -57,8 +57,8 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestHash_WhenDifferentCodesIsEncrypted_ThenReturnedHashedCodesAreDifferent()
         {
-            var firstCode = Code.Generate();
-            var secondCode = Code.Generate();
+            Code firstCode = Code.Generate();
+            Code secondCode = Code.Generate();
             var sha256CodeHashingAlgorithm = new SHA256CodeHashingAlgorithm();
 
             byte[] firstHashedCode = sha256CodeHashingAlgorithm.Hash(firstCode);

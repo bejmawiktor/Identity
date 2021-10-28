@@ -45,7 +45,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestEncrypt_WhenMultipleTimesSameSecretKeyIsEncrypted_ThenReturnedEncryptedSecretKeysAreDifferent()
         {
-            var secretKey = SecretKey.Generate();
+            SecretKey secretKey = SecretKey.Generate();
             var aesSecretKeyEncriptionAlgorithm = new AESSecretKeyEncryptionAlgorithm();
 
             byte[] firstEncryptedSecretKey = aesSecretKeyEncriptionAlgorithm.Encrypt(secretKey);
@@ -81,7 +81,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestDecrypt_WhenEncryptedSecretKeyGiven_ThenSecretKeyIsReturned()
         {
-            var secretKey = SecretKey.Generate();
+            SecretKey secretKey = SecretKey.Generate();
             var aesSecretKeyEncriptionAlgorithm = new AESSecretKeyEncryptionAlgorithm();
             byte[] encryptedSecretKey = aesSecretKeyEncriptionAlgorithm.Encrypt(secretKey);
 

@@ -9,9 +9,9 @@ namespace Identity.Tests.Unit.Domain
     public class AuthorizationCodeTest
     {
         [Test]
-        public void TestConstruction_WhenExpiresAtGiven_ThenExpiresAtIsSet()
+        public void TestConstructor_WhenExpiresAtGiven_ThenExpiresAtIsSet()
         {
-            var now = DateTime.Now;
+            DateTime now = DateTime.Now;
             var authorizationCode = new AuthorizationCode(
                 id: AuthorizationCodeId.Generate(ApplicationId.Generate()),
                 expiresAt: now,
@@ -21,9 +21,9 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenUsedGiven_ThenUsedIsSet()
+        public void TestConstructor_WhenUsedGiven_ThenUsedIsSet()
         {
-            var now = DateTime.Now;
+            DateTime now = DateTime.Now;
             var authorizationCode = new AuthorizationCode(
                 id: AuthorizationCodeId.Generate(ApplicationId.Generate()),
                 expiresAt: now,
@@ -33,7 +33,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenOnlyIdGiven_ThenUsedIsSetToFalse()
+        public void TestConstructor_WhenOnlyIdGiven_ThenUsedIsSetToFalse()
         {
             var authorizationCode = new AuthorizationCode(
                 id: AuthorizationCodeId.Generate(ApplicationId.Generate()));
@@ -42,7 +42,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenOnlyIdGiven_ThenExpiresAtIsSetTo60SecondsAfterNow()
+        public void TestConstructor_WhenOnlyIdGiven_ThenExpiresAtIsSetTo60SecondsAfterNow()
         {
             var authorizationCode = new AuthorizationCode(
                 id: AuthorizationCodeId.Generate(ApplicationId.Generate()));

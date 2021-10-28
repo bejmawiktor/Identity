@@ -20,7 +20,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestHash_WhenPasswordGiven_ThenHashedPasswordIsReturned()
         {
-            var hashedPassword = PasswordHasher.Hash(new Password("MySecretPassword"));
+            HashedPassword hashedPassword = PasswordHasher.Hash(new Password("MySecretPassword"));
 
             Assert.That(hashedPassword, Is.Not.Null);
         }
@@ -50,7 +50,7 @@ namespace Identity.Tests.Unit.Domain
         [TestCase("!2#Asdfg;'p*&")]
         public void TestVerify_WhenCorrectPasswordGiven_ThenSuccessIsReturned(string verifiedPassword)
         {
-            var hashedPassword = PasswordHasher.Hash(new Password(verifiedPassword));
+            HashedPassword hashedPassword = PasswordHasher.Hash(new Password(verifiedPassword));
 
             PasswordVerificationResult result = PasswordHasher.Verify(hashedPassword, new Password(verifiedPassword));
 

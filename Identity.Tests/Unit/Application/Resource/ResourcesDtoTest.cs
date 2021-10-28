@@ -8,7 +8,7 @@ namespace Identity.Tests.Unit.Application
     public class ResourcesDtoTest
     {
         [Test]
-        public void TestConstructing_WhenIdGiven_ThenIdIsSet()
+        public void TestConstructor_WhenIdGiven_ThenIdIsSet()
         {
             var resourceDto = new ResourceDto("MyResource", "My resource description.");
 
@@ -16,7 +16,7 @@ namespace Identity.Tests.Unit.Application
         }
 
         [Test]
-        public void TestConstructing_WhenDescriptionGiven_ThenDescriptionIsSet()
+        public void TestConstructor_WhenDescriptionGiven_ThenDescriptionIsSet()
         {
             var resourceDto = new ResourceDto("MyResource", "My resource description.");
 
@@ -56,7 +56,7 @@ namespace Identity.Tests.Unit.Application
         }
 
         [Test]
-        public void TestGetHashCode_WhenTwoIdenticalResourcesDtosGiven_ThenSameHashCodesIsReturned()
+        public void TestGetHashCode_WhenTwoIdenticalResourcesDtosGiven_ThenSameHashCodesAreReturned()
         {
             var leftResourceDto = new ResourceDto("MyResource", "My resource description.");
             var rightResourceDto = new ResourceDto("MyResource", "My resource description.");
@@ -65,7 +65,7 @@ namespace Identity.Tests.Unit.Application
         }
 
         [Test]
-        public void TestGetHashCode_WhenTwoDifferentResourcesDtosGiven_ThenDifferentHashCodesIsReturned()
+        public void TestGetHashCode_WhenTwoDifferentResourcesDtosGiven_ThenDifferentHashCodesAreReturned()
         {
             var leftResourceDto = new ResourceDto("MyResource", "My resource description.");
             var rightResourceDto = new ResourceDto("MyResource2", "My resource description 2.");

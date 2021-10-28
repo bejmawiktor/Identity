@@ -11,7 +11,7 @@ namespace Identity.Tests.Unit.Domain
         private static readonly HashedCode TestCode = HashedCode.Hash(Code.Generate());
 
         [Test]
-        public void TestConstructing_WhenNullCodeGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullCodeGiven_ThenArgumentNullExceptionIsThrown()
         {
             Assert.Throws(
               Is.InstanceOf<ArgumentNullException>()
@@ -21,7 +21,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenNullApplicationIdGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullApplicationIdGiven_ThenArgumentNullExceptionIsThrown()
         {
             Assert.Throws(
               Is.InstanceOf<ArgumentNullException>()
@@ -31,7 +31,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenCodeGiven_ThenCodeIsSet()
+        public void TestConstructor_WhenCodeGiven_ThenCodeIsSet()
         {
             var authorizationCodeId = new AuthorizationCodeId(TestCode, ApplicationId.Generate());
 

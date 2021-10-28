@@ -91,7 +91,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public async Task TestAddAsync_WhenUserGiven_ThenUserIsStored()
         {
-            var userId = Guid.NewGuid();
+            Guid userId = Guid.NewGuid();
             var roles = new Guid[]
             {
                 Guid.NewGuid(),
@@ -128,7 +128,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public async Task TestUpdateAsync_WhenUserGiven_ThenUserIsUpdated()
         {
-            var userId = Guid.NewGuid();
+            Guid userId = Guid.NewGuid();
             var roles = new Guid[]
             {
                 Guid.NewGuid(),
@@ -181,7 +181,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public async Task TestRemoveAsync_WhenUserGiven_ThenUserIsRemoved()
         {
-            var userId = Guid.NewGuid();
+            Guid userId = Guid.NewGuid();
             var roles = new Guid[]
             {
                 Guid.NewGuid(),
@@ -209,7 +209,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public async Task TestGetAsync_WhenUserIdGiven_ThenUserIsReturned()
         {
-            var userId = Guid.NewGuid();
+            Guid userId = Guid.NewGuid();
             var roles = new Guid[]
             {
                 Guid.NewGuid(),
@@ -249,7 +249,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public async Task TestGetAsync_WhenEmailAddressGiven_ThenUserIsReturned()
         {
-            var userId = Guid.NewGuid();
+            Guid userId = Guid.NewGuid();
             var roles = new Guid[]
             {
                 Guid.NewGuid(),

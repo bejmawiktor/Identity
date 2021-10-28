@@ -8,7 +8,7 @@ namespace Identity.Tests.Unit.Application
     public class CreateResourceCommandTest
     {
         [Test]
-        public void TestConstructing_WhenResourceIdGiven_ThenResourceIdIsSet()
+        public void TestConstructor_WhenResourceIdGiven_ThenResourceIdIsSet()
         {
             var createResourceCommand = new CreateResourceCommand(
                 resourceId: "MyResource",
@@ -19,7 +19,7 @@ namespace Identity.Tests.Unit.Application
         }
 
         [Test]
-        public void TestConstructing_WhenResourceDescriptionGiven_ThenResourceDescriptionIsSet()
+        public void TestConstructor_WhenResourceDescriptionGiven_ThenResourceDescriptionIsSet()
         {
             var createResourceCommand = new CreateResourceCommand(
                 resourceId: "MyResource",
@@ -30,7 +30,7 @@ namespace Identity.Tests.Unit.Application
         }
 
         [Test]
-        public void TestConstructing_WhenUserIdGiven_ThenUserIdIsSet()
+        public void TestConstructor_WhenUserIdGiven_ThenUserIdIsSet()
         {
             var userId = Guid.NewGuid();
             var createResourceCommand = new CreateResourceCommand(

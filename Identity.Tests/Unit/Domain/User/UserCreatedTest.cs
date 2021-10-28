@@ -7,9 +7,9 @@ namespace Identity.Tests.Unit.Domain
     public class UserCreatedTest
     {
         [Test]
-        public void TestConstruction_WhenUserIdGiven_ThenUserIdIsSet()
+        public void TestConstructor_WhenUserIdGiven_ThenUserIdIsSet()
         {
-            var userId = UserId.Generate();
+            UserId userId = UserId.Generate();
 
             var userCreatedEvent = new UserCreated(
                 userId: userId,
@@ -19,9 +19,9 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenUserEmailGiven_ThenUserEmailIsSet()
+        public void TestConstructor_WhenUserEmailGiven_ThenUserEmailIsSet()
         {
-            var userId = UserId.Generate();
+            UserId userId = UserId.Generate();
 
             var userCreatedEvent = new UserCreated(
                 userId: userId,

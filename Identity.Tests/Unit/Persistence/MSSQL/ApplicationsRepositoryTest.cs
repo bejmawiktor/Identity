@@ -108,8 +108,8 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public async Task TestAddAsync_WhenApplicationGiven_ThenApplicationIsStored()
         {
-            var applicationId = Guid.NewGuid();
-            var userId = Guid.NewGuid();
+            Guid applicationId = Guid.NewGuid();
+            Guid userId = Guid.NewGuid();
             var applicationDto = new ApplicationDto(
                 id: applicationId,
                 userId: userId,
@@ -136,8 +136,8 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public async Task TestUpdateAsync_WhenApplicationGiven_ThenApplicationIsUpdated()
         {
-            var applicationId = Guid.NewGuid();
-            var userId = Guid.NewGuid();
+            Guid applicationId = Guid.NewGuid();
+            Guid userId = Guid.NewGuid();
             var applicationDto = new ApplicationDto(
                 id: applicationId,
                 userId: userId,
@@ -172,7 +172,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public async Task TestRemoveAsync_WhenApplicationGiven_ThenApplicationIsRemoved()
         {
-            var applicationId = Guid.NewGuid();
+            Guid applicationId = Guid.NewGuid();
             var applicationDto = new ApplicationDto(
                 id: applicationId,
                 userId: Guid.NewGuid(),
@@ -193,7 +193,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public async Task TestGetAsync_WhenApplicationIdGiven_ThenApplicationIsReturned()
         {
-            var applicationId = Guid.NewGuid();
+            Guid applicationId = Guid.NewGuid();
             var applicationDto = new ApplicationDto(
                 id: applicationId,
                 userId: Guid.NewGuid(),

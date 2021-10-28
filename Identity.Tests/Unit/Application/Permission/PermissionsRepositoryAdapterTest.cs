@@ -10,7 +10,7 @@ namespace Identity.Tests.Unit.Application
     public class PermissionsRepositoryAdapterTest
     {
         [Test]
-        public void TestConstructing_WhenNullPermissionsRepositoryGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullPermissionsRepositoryGiven_ThenArgumentNullExceptionIsThrown()
         {
             Assert.Throws(
                Is.InstanceOf<ArgumentNullException>()
@@ -20,7 +20,7 @@ namespace Identity.Tests.Unit.Application
         }
 
         [Test]
-        public void TestConstructing_WhenPermissionsRepositoryGiven_ThenPermissionsRepositoryIsSet()
+        public void TestConstructor_WhenPermissionsRepositoryGiven_ThenPermissionsRepositoryIsSet()
         {
             var permissionsRepositoryMock = new Mock<IPermissionsRepository>();
             IPermissionsRepository permissionsRepository = permissionsRepositoryMock.Object;

@@ -7,7 +7,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
     public class PermissionTest
     {
         [Test]
-        public void TestConstructing_WhenDtoGiven_ThenMembersAreSet()
+        public void TestConstructor_WhenDtoGiven_ThenMembersAreSet()
         {
             var permission = new Permission(
                 new PermissionDto("MyResource", "MyPermission", "My permission description."));

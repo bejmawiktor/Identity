@@ -11,7 +11,7 @@ namespace Identity.Tests.Unit.Domain
     public class PermissionServiceTest
     {
         [Test]
-        public void TestConstructing_WhenPermissionsRepositoryGiven_ThenResourcesRepositoryIsSet()
+        public void TestConstructor_WhenPermissionsRepositoryGiven_ThenResourcesRepositoryIsSet()
         {
             var resourcesRepositoryMock = new Mock<IResourcesRepository>();
             var permissionsRepositoryMock = new Mock<IPermissionsRepository>();
@@ -25,7 +25,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenNullPermissionsRepositoryGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullPermissionsRepositoryGiven_ThenArgumentNullExceptionIsThrown()
         {
             var resourcesRepositoryMock = new Mock<IResourcesRepository>();
             var permissionsRepositoryMock = new Mock<IPermissionsRepository>();
@@ -40,7 +40,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenResourcesRepositoryGiven_ThenResourcesRepositoryIsSet()
+        public void TestConstructor_WhenResourcesRepositoryGiven_ThenResourcesRepositoryIsSet()
         {
             var resourcesRepositoryMock = new Mock<IResourcesRepository>();
             var permissionsRepositoryMock = new Mock<IPermissionsRepository>();
@@ -54,7 +54,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenNullResourcesRepositoryGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullResourcesRepositoryGiven_ThenArgumentNullExceptionIsThrown()
         {
             var resourcesRepositoryMock = new Mock<IResourcesRepository>();
             var permissionsRepositoryMock = new Mock<IPermissionsRepository>();

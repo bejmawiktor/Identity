@@ -12,7 +12,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
     public class UserTest
     {
         [Test]
-        public void TestConstructing_WhenDtoGiven_ThenMembersAreSet()
+        public void TestConstructor_WhenDtoGiven_ThenMembersAreSet()
         {
             var roles = new Guid[]
             {
@@ -24,8 +24,8 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 ("MyResource", "MyPermission"),
                 ("MyResource2", "MyPermission2")
             };
-            var userId = Guid.NewGuid();
-            var hashedPassword = HashedPassword.Hash(new Password("MyPassword"));
+            Guid userId = Guid.NewGuid();
+            HashedPassword hashedPassword = HashedPassword.Hash(new Password("MyPassword"));
             var userDto = new Identity.Application.UserDto(
                 userId,
                 "example@example.com",
@@ -89,8 +89,8 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 ("MyResource", "MyPermission"),
                 ("MyResource2", "MyPermission2")
             };
-            var userId = Guid.NewGuid();
-            var hashedPassword = HashedPassword.Hash(new Password("MyPassword"));
+            Guid userId = Guid.NewGuid();
+            HashedPassword hashedPassword = HashedPassword.Hash(new Password("MyPassword"));
             var userDto = new Identity.Application.UserDto(
                 userId,
                 "example@example.com",
@@ -154,8 +154,8 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 ("MyResource", "MyPermission"),
                 ("MyResource2", "MyPermission2")
             };
-            var userId = Guid.NewGuid();
-            var hashedPassword = HashedPassword.Hash(new Password("MyPassword"));
+            Guid userId = Guid.NewGuid();
+            HashedPassword hashedPassword = HashedPassword.Hash(new Password("MyPassword"));
             var user = new User()
             {
                 Id = userId,

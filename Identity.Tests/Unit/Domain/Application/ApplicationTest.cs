@@ -13,7 +13,7 @@ namespace Identity.Tests.Unit.Domain
         private static EncryptedSecretKey TestSecretKey = EncryptedSecretKey.Encrypt(SecretKey.Generate());
 
         [Test]
-        public void TestConstruction_WhenUserIdGiven_ThenUserIdIsSet()
+        public void TestConstructor_WhenUserIdGiven_ThenUserIdIsSet()
         {
             ApplicationId applicationId = ApplicationId.Generate();
             UserId userId = UserId.Generate();
@@ -30,7 +30,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenNullUserIdGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullUserIdGiven_ThenArgumentNullExceptionIsThrown()
         {
             ApplicationId applicationId = ApplicationId.Generate();
 
@@ -48,7 +48,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenNameGiven_ThenNameIsSet()
+        public void TestConstructor_WhenNameGiven_ThenNameIsSet()
         {
             ApplicationId applicationId = ApplicationId.Generate();
             UserId userId = UserId.Generate();
@@ -65,7 +65,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenNullNameGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullNameGiven_ThenArgumentNullExceptionIsThrown()
         {
             ApplicationId applicationId = ApplicationId.Generate();
             UserId userId = UserId.Generate();
@@ -84,7 +84,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenEmptyNameGiven_ThenArgumentExceptionIsThrown()
+        public void TestConstructor_WhenEmptyNameGiven_ThenArgumentExceptionIsThrown()
         {
             ApplicationId applicationId = ApplicationId.Generate();
             UserId userId = UserId.Generate();
@@ -103,7 +103,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenHomepageUrlGiven_ThenHomepageUrlIsSet()
+        public void TestConstructor_WhenHomepageUrlGiven_ThenHomepageUrlIsSet()
         {
             ApplicationId applicationId = ApplicationId.Generate();
             UserId userId = UserId.Generate();
@@ -120,7 +120,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenNullHomepageUrlGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullHomepageUrlGiven_ThenArgumentNullExceptionIsThrown()
         {
             ApplicationId applicationId = ApplicationId.Generate();
             UserId userId = UserId.Generate();
@@ -139,7 +139,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenSecretKeyGiven_ThenSecretKeyIsSet()
+        public void TestConstructor_WhenSecretKeyGiven_ThenSecretKeyIsSet()
         {
             ApplicationId applicationId = ApplicationId.Generate();
             UserId userId = UserId.Generate();
@@ -156,7 +156,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenNullSecretKeyGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullSecretKeyGiven_ThenArgumentNullExceptionIsThrown()
         {
             ApplicationId applicationId = ApplicationId.Generate();
             UserId userId = UserId.Generate();
@@ -175,7 +175,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenCallbackUrlGiven_ThenCallbackUrlIsSet()
+        public void TestConstructor_WhenCallbackUrlGiven_ThenCallbackUrlIsSet()
         {
             ApplicationId applicationId = ApplicationId.Generate();
             UserId userId = UserId.Generate();
@@ -192,7 +192,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenNullCallbackUrlGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullCallbackUrlGiven_ThenArgumentNullExceptionIsThrown()
         {
             ApplicationId applicationId = ApplicationId.Generate();
             UserId userId = UserId.Generate();
@@ -213,7 +213,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestDecryptSecretKey_WhenDecrypting_ThenSecretKeyIsReturned()
         {
-            var secretKey = SecretKey.Generate();
+            SecretKey secretKey = SecretKey.Generate();
             EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
             ApplicationId applicationId = ApplicationId.Generate();
             UserId userId = UserId.Generate();
@@ -234,7 +234,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestRegenerateSecretKey_WhenRegenerating_ThenSecretKeyIsDifferentThanPrevious()
         {
-            var secretKey = SecretKey.Generate();
+            SecretKey secretKey = SecretKey.Generate();
             EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
             ApplicationId applicationId = ApplicationId.Generate();
             UserId userId = UserId.Generate();
@@ -254,7 +254,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestRegenerateSecretKey_WhenRegenerating_ThenNewSecretKeyIsNotNull()
         {
-            var secretKey = SecretKey.Generate();
+            SecretKey secretKey = SecretKey.Generate();
             EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
             ApplicationId applicationId = ApplicationId.Generate();
             UserId userId = UserId.Generate();
@@ -274,7 +274,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestGenerateTokens_WhenGenerating_ThenTokenPairIsReturnedWithUserId()
         {
-            var secretKey = SecretKey.Generate();
+            SecretKey secretKey = SecretKey.Generate();
             EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
             ApplicationId applicationId = ApplicationId.Generate();
             UserId userId = UserId.Generate();
@@ -298,7 +298,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestRefreshTokens_WhenRefreshing_ThenTokenPairIsReturnedWithApplicationId()
         {
-            var secretKey = SecretKey.Generate();
+            SecretKey secretKey = SecretKey.Generate();
             EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
             ApplicationId applicationId = ApplicationId.Generate();
             UserId userId = UserId.Generate();
@@ -309,7 +309,7 @@ namespace Identity.Tests.Unit.Domain
                 secretKey: encryptedSecretKey,
                 homepageUrl: new Url("https://www.example.com"),
                 callbackUrl: new Url("https://www.example.com/1"));
-            var refreshToken = Token.GenerateRefreshToken(applicationId);
+            Token refreshToken = Token.GenerateRefreshToken(applicationId);
 
             TokenPair tokens = application.RefreshTokens(refreshToken);
 
@@ -323,7 +323,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestRefreshTokens_WhenRefreshing_ThenTokenPairIsReturnedWithRefreshTokenExpirationDateSameAsPreviousRefreshTokenGiven()
         {
-            var secretKey = SecretKey.Generate();
+            SecretKey secretKey = SecretKey.Generate();
             EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
             ApplicationId applicationId = ApplicationId.Generate();
             UserId userId = UserId.Generate();
@@ -334,8 +334,8 @@ namespace Identity.Tests.Unit.Domain
                 secretKey: encryptedSecretKey,
                 homepageUrl: new Url("https://www.example.com"),
                 callbackUrl: new Url("https://www.example.com/1"));
-            var dateTime = DateTime.Now.AddDays(1);
-            var refreshToken = Token.GenerateRefreshToken(applicationId, dateTime);
+            DateTime dateTime = DateTime.Now.AddDays(1);
+            Token refreshToken = Token.GenerateRefreshToken(applicationId, dateTime);
 
             TokenPair tokens = application.RefreshTokens(refreshToken);
 
@@ -345,7 +345,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestRefreshTokens_WhenWrongApplicationIdRefreshTokenGiven_ThenInvalidTokenExceptionIsThrown()
         {
-            var secretKey = SecretKey.Generate();
+            SecretKey secretKey = SecretKey.Generate();
             EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
             ApplicationId applicationId = ApplicationId.Generate();
             ApplicationId wrongApplicationId = ApplicationId.Generate();
@@ -357,7 +357,7 @@ namespace Identity.Tests.Unit.Domain
                 secretKey: encryptedSecretKey,
                 homepageUrl: new Url("https://www.example.com"),
                 callbackUrl: new Url("https://www.example.com/1"));
-            var refreshToken = Token.GenerateRefreshToken(wrongApplicationId);
+            Token refreshToken = Token.GenerateRefreshToken(wrongApplicationId);
 
             Assert.Throws(
                 Is.InstanceOf<InvalidTokenException>()
@@ -369,8 +369,8 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestRefreshTokens_WhenRefreshTokenWithFailedVerificationGiven_ThenInvalidTokenExceptionIsThrown()
         {
-            var dateTime = DateTime.Now.AddDays(-1);
-            var secretKey = SecretKey.Generate();
+            DateTime dateTime = DateTime.Now.AddDays(-1);
+            SecretKey secretKey = SecretKey.Generate();
             EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
             ApplicationId applicationId = ApplicationId.Generate();
             UserId userId = UserId.Generate();
@@ -382,7 +382,7 @@ namespace Identity.Tests.Unit.Domain
                 homepageUrl: new Url("https://www.example.com"),
                 callbackUrl: new Url("https://www.example.com/1"));
 
-            var refreshToken = Token.GenerateRefreshToken(applicationId, dateTime);
+            Token refreshToken = Token.GenerateRefreshToken(applicationId, dateTime);
 
             Assert.Throws(
                 Is.InstanceOf<InvalidTokenException>(),
@@ -392,7 +392,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestGenerateAuthorizationCode_WhenGenerating_ThenAuthorizationCodeIsReturnedWithApplicationId()
         {
-            var secretKey = SecretKey.Generate();
+            SecretKey secretKey = SecretKey.Generate();
             EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
             ApplicationId applicationId = ApplicationId.Generate();
             UserId userId = UserId.Generate();

@@ -7,9 +7,9 @@ namespace Identity.Tests.Unit.Domain
     public class UserPermissionObtainedTest
     {
         [Test]
-        public void TestConstruction_WhenUserIdGiven_ThenUserIdIsSet()
+        public void TestConstructor_WhenUserIdGiven_ThenUserIdIsSet()
         {
-            var userId = UserId.Generate();
+            UserId userId = UserId.Generate();
             var obtainedPermissionId = new PermissionId(new ResourceId("MyResource"), "Permission");
 
             var userCreatedEvent = new UserPermissionObtained(
@@ -20,9 +20,9 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenObtainedPermissionIdGiven_ThenObtainedPermissionIdIsSet()
+        public void TestConstructor_WhenObtainedPermissionIdGiven_ThenObtainedPermissionIdIsSet()
         {
-            var userId = UserId.Generate();
+            UserId userId = UserId.Generate();
             var obtainedPermissionId = new PermissionId(new ResourceId("MyResource"), "Permission");
 
             var userCreatedEvent = new UserPermissionObtained(

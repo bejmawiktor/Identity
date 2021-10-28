@@ -22,7 +22,7 @@ namespace Identity.Tests.Unit.Application
                 used: true);
             var authorizationCodeDtoConverter = new AuthorizationCodeDtoConverter();
 
-            var authorizationCodeDto = authorizationCodeDtoConverter.ToDto(authorizationCode);
+            AuthorizationCodeDto authorizationCodeDto = authorizationCodeDtoConverter.ToDto(authorizationCode);
 
             Assert.Multiple(() =>
             {

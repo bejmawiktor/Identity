@@ -9,7 +9,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestCreate_WhenOneGiven_ThenPbkdf2HashingAlgorithmIsReturned()
         {
-            var passwordHashingAlgorithm = PasswordHashingAlgorithmFactory.Create(1);
+            IPasswordHashingAlgorithm passwordHashingAlgorithm = PasswordHashingAlgorithmFactory.Create(1);
 
             Assert.That(passwordHashingAlgorithm, Is.TypeOf<Pbkdf2HashingAlgorithm>());
         }

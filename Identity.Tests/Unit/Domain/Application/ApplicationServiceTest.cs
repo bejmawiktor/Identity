@@ -14,7 +14,7 @@ namespace Identity.Tests.Unit.Domain
         private static readonly HashedPassword TestPassword = HashedPassword.Hash(new Password("MyPassword"));
 
         [Test]
-        public void TestConstructing_WhenApplicationsRepositoryGiven_ThenApplicationsRepositoryIsSet()
+        public void TestConstructor_WhenApplicationsRepositoryGiven_ThenApplicationsRepositoryIsSet()
         {
             var usersRepositoryMock = new Mock<IUsersRepository>();
             var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
@@ -28,7 +28,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenNullApplicationsRepositoryGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullApplicationsRepositoryGiven_ThenArgumentNullExceptionIsThrown()
         {
             var usersRepositoryMock = new Mock<IUsersRepository>();
             var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
@@ -43,7 +43,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenUsersRepositoryGiven_ThenUsersRepositoryIsSet()
+        public void TestConstructor_WhenUsersRepositoryGiven_ThenUsersRepositoryIsSet()
         {
             var usersRepositoryMock = new Mock<IUsersRepository>();
             var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
@@ -57,7 +57,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenNullUsersRepositoryGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullUsersRepositoryGiven_ThenArgumentNullExceptionIsThrown()
         {
             var usersRepositoryMock = new Mock<IUsersRepository>();
             var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
@@ -74,7 +74,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public async Task TestCreateApplicationAsync_WhenNoExceptionsThrown_ThenApplicationIsPersisted()
         {
-            var userId = UserId.Generate();
+            UserId userId = UserId.Generate();
             var user = new User(
                 id: userId,
                 email: new EmailAddress("example@example.com"),
@@ -106,7 +106,7 @@ namespace Identity.Tests.Unit.Domain
                 .Setup(e => e.Dispatch(It.IsAny<IEvent>()))
                 .Callback((IEvent p) => applicationCreated = p as ApplicationCreated);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
-            var userId = UserId.Generate();
+            UserId userId = UserId.Generate();
             var user = new User(
                 id: userId,
                 email: new EmailAddress("example@example.com"),
@@ -144,7 +144,7 @@ namespace Identity.Tests.Unit.Domain
                 .Setup(e => e.Dispatch(It.IsAny<IEvent>()))
                 .Callback((IEvent p) => applicationCreated = p as ApplicationCreated);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
-            var userId = UserId.Generate();
+            UserId userId = UserId.Generate();
             var user = new User(
                 id: userId,
                 email: new EmailAddress("example@example.com"),
@@ -185,7 +185,7 @@ namespace Identity.Tests.Unit.Domain
                 .Setup(e => e.Dispatch(It.IsAny<IEvent>()))
                 .Callback((IEvent p) => applicationCreated = p as ApplicationCreated);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
-            var userId = UserId.Generate();
+            UserId userId = UserId.Generate();
             var user = new User(
                 id: userId,
                 email: new EmailAddress("example@example.com"),
@@ -223,7 +223,7 @@ namespace Identity.Tests.Unit.Domain
                 .Setup(e => e.Dispatch(It.IsAny<IEvent>()))
                 .Callback((IEvent p) => applicationCreated = p as ApplicationCreated);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
-            var userId = UserId.Generate();
+            UserId userId = UserId.Generate();
             var user = new User(
                 id: userId,
                 email: new EmailAddress("example@example.com"),

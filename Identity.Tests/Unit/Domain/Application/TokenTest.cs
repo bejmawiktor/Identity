@@ -10,11 +10,11 @@ namespace Identity.Tests.Unit.Domain
     public class TokenTest
     {
         [Test]
-        public void TestConstruction_WhenTokenValueGiven_ThenValueIsSet()
+        public void TestConstructor_WhenTokenValueGiven_ThenValueIsSet()
         {
             ApplicationId applicationId = ApplicationId.Generate();
             var tokenInformation = new TokenInformation(applicationId, TokenType.Refresh);
-            var tokenValue = Token.TokenGenerationAlgorithm.Encode(tokenInformation);
+            string tokenValue = Token.TokenGenerationAlgorithm.Encode(tokenInformation);
 
             var token = new Token(tokenValue);
 
@@ -22,11 +22,11 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenTokenValueGiven_ThenApplicationIdIsSet()
+        public void TestConstructor_WhenTokenValueGiven_ThenApplicationIdIsSet()
         {
             ApplicationId applicationId = ApplicationId.Generate();
             var tokenInformation = new TokenInformation(applicationId, TokenType.Refresh);
-            var tokenValue = Token.TokenGenerationAlgorithm.Encode(tokenInformation);
+            string tokenValue = Token.TokenGenerationAlgorithm.Encode(tokenInformation);
 
             var token = new Token(tokenValue);
 
@@ -34,11 +34,11 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenTokenValueGiven_ThenTypeIsSet()
+        public void TestConstructor_WhenTokenValueGiven_ThenTypeIsSet()
         {
             ApplicationId applicationId = ApplicationId.Generate();
             var tokenInformation = new TokenInformation(applicationId, TokenType.Refresh);
-            var tokenValue = Token.TokenGenerationAlgorithm.Encode(tokenInformation);
+            string tokenValue = Token.TokenGenerationAlgorithm.Encode(tokenInformation);
 
             var token = new Token(tokenValue);
 
@@ -46,12 +46,12 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenTokenValueGiven_ThenExpiresAtIsSet()
+        public void TestConstructor_WhenTokenValueGiven_ThenExpiresAtIsSet()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            var expirationDate = DateTime.Now.AddDays(1);
+            DateTime expirationDate = DateTime.Now.AddDays(1);
             var tokenInformation = new TokenInformation(applicationId, TokenType.Refresh, expirationDate);
-            var tokenValue = Token.TokenGenerationAlgorithm.Encode(tokenInformation);
+            string tokenValue = Token.TokenGenerationAlgorithm.Encode(tokenInformation);
 
             var token = new Token(tokenValue);
 
@@ -59,7 +59,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenNullValueGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullValueGiven_ThenArgumentNullExceptionIsThrown()
         {
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -69,7 +69,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenEmptyValueGiven_ThenArgumentExceptionIsThrown()
+        public void TestConstructor_WhenEmptyValueGiven_ThenArgumentExceptionIsThrown()
         {
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()
@@ -81,7 +81,7 @@ namespace Identity.Tests.Unit.Domain
         [TestCase("a")]
         [TestCase("asfdgsg")]
         [TestCase("agggggg")]
-        public void TestConstruction_WhenInvalidValueGiven_ThenInvalidTokenExceptionIsThrown(string token)
+        public void TestConstructor_WhenInvalidValueGiven_ThenInvalidTokenExceptionIsThrown(string token)
         {
             Assert.Throws(
                 Is.InstanceOf<InvalidTokenException>(),
@@ -91,7 +91,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestGenerateAccessToken_WhenGenerated_ThenTokenIsReturned()
         {
-            var applicationId = ApplicationId.Generate();
+            ApplicationId applicationId = ApplicationId.Generate();
 
             Token token = Token.GenerateAccessToken(applicationId);
 
@@ -116,8 +116,8 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestGenerateRefreshToken_WhenGenerated_ThenTokenIsReturned()
         {
-            var applicationId = ApplicationId.Generate();
-            var expiresAt = DateTime.Now;
+            ApplicationId applicationId = ApplicationId.Generate();
+            DateTime expiresAt = DateTime.Now;
 
             Token token = Token.GenerateRefreshToken(applicationId, expiresAt);
 
@@ -132,7 +132,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestGenerateRefreshToken_WhenNullApplicationIdGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var expiresAt = DateTime.Now;
+            DateTime expiresAt = DateTime.Now;
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()

@@ -9,7 +9,7 @@ namespace Identity.Tests.Unit.Application
     public class RolesRepositoryAdapterTest
     {
         [Test]
-        public void TestConstructing_WhenNullRolesRepositoryGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullRolesRepositoryGiven_ThenArgumentNullExceptionIsThrown()
         {
             Assert.Throws(
                Is.InstanceOf<ArgumentNullException>()
@@ -19,7 +19,7 @@ namespace Identity.Tests.Unit.Application
         }
 
         [Test]
-        public void TestConstructing_WhenRolesRepositoryGiven_ThenRolesRepositoryIsSet()
+        public void TestConstructor_WhenRolesRepositoryGiven_ThenRolesRepositoryIsSet()
         {
             var rolesRepositoryMock = new Mock<IRolesRepository>();
             IRolesRepository rolesRepository = rolesRepositoryMock.Object;

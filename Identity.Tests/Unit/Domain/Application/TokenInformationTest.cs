@@ -10,10 +10,9 @@ namespace Identity.Tests.Unit.Domain
     public class TokenInformationTest
     {
         [Test]
-        public void TestConstructing_WhenApplicationIdGiven_ThenApplicationIdIsSet()
+        public void TestConstructor_WhenApplicationIdGiven_ThenApplicationIdIsSet()
         {
-            var userId = UserId.Generate();
-            var applicationId = ApplicationId.Generate();
+            ApplicationId applicationId = ApplicationId.Generate();
             var tokenInformation = new TokenInformation(
                 applicationId: applicationId,
                 tokenType: TokenType.Access);
@@ -22,10 +21,9 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenTokenTypeGiven_ThenTokenTypeIsSet()
+        public void TestConstructor_WhenTokenTypeGiven_ThenTokenTypeIsSet()
         {
-            var userId = UserId.Generate();
-            var applicationId = ApplicationId.Generate();
+            ApplicationId applicationId = ApplicationId.Generate();
             var tokenInformation = new TokenInformation(
                 applicationId: applicationId,
                 tokenType: TokenType.Access);
@@ -34,11 +32,10 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenExpirationDateGiven_ThenExpirationDateIsSet()
+        public void TestConstructor_WhenExpirationDateGiven_ThenExpirationDateIsSet()
         {
-            var userId = UserId.Generate();
-            var applicationId = ApplicationId.Generate();
-            var now = DateTime.Now;
+            ApplicationId applicationId = ApplicationId.Generate();
+            DateTime now = DateTime.Now;
             var tokenInformation = new TokenInformation(
                 applicationId: applicationId,
                 tokenType: TokenType.Access,
@@ -48,11 +45,10 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenExpirationDateNotGiven_ThenExpirationDateIsGeneratedFromTokenType()
+        public void TestConstructor_WhenExpirationDateNotGiven_ThenExpirationDateIsGeneratedFromTokenType()
         {
-            var userId = UserId.Generate();
-            var applicationId = ApplicationId.Generate();
-            var now = DateTime.Now;
+            ApplicationId applicationId = ApplicationId.Generate();
+            DateTime now = DateTime.Now;
             var tokenInformation = new TokenInformation(
                 applicationId: applicationId,
                 tokenType: TokenType.Refresh,

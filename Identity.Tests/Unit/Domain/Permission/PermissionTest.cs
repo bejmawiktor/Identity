@@ -8,7 +8,7 @@ namespace Identity.Tests.Unit.Domain
     public class PermissionTest
     {
         [Test]
-        public void TestConstruction_WhenDescriptionGiven_ThenDescriptionIsSet()
+        public void TestConstructor_WhenDescriptionGiven_ThenDescriptionIsSet()
         {
             var permission = new Permission(
                 id: new PermissionId(
@@ -20,7 +20,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenEmptyDescriptionGiven_ThenArgumentExceptionIsThrown()
+        public void TestConstructor_WhenEmptyDescriptionGiven_ThenArgumentExceptionIsThrown()
         {
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()
@@ -34,7 +34,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenNullDescriptionGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullDescriptionGiven_ThenArgumentNullExceptionIsThrown()
         {
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()

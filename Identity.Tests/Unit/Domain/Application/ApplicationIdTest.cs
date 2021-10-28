@@ -9,7 +9,7 @@ namespace Identity.Tests.Unit.Domain
     public class ApplicationIdTest
     {
         [Test]
-        public void TestConstructing_WhenEmptyGuidGiven_ThenArgumentExceptionIsThrown()
+        public void TestConstructor_WhenEmptyGuidGiven_ThenArgumentExceptionIsThrown()
         {
             Assert.Throws(
               Is.InstanceOf<ArgumentException>()
@@ -21,16 +21,16 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestToGuid_WhenConvertingToGuid_ThenGuidIsReturned()
         {
-            var guid = Guid.NewGuid();
-            var applicationId = new ApplicationId(guid);
+            Guid guid = Guid.NewGuid();
+            ApplicationId applicationId = new ApplicationId(guid);
 
             Assert.That(applicationId.ToGuid(), Is.EqualTo(guid));
         }
 
         [Test]
-        public void TestGenerate_WhenGeneretingRoleId_ThenNewRoleIdIsReturned()
+        public void TestGenerate_WhenGeneratingApplicationId_ThenNewApplicationIdIsReturned()
         {
-            var applicationId = ApplicationId.Generate();
+            ApplicationId applicationId = ApplicationId.Generate();
 
             Assert.That(applicationId, Is.Not.Null);
         }
@@ -39,7 +39,7 @@ namespace Identity.Tests.Unit.Domain
         public void TestToString_WhenConvertingToString_ThenGuidStringIsReturned()
         {
             var guid = Guid.NewGuid();
-            var applicationId = new ApplicationId(guid);
+            ApplicationId applicationId = new ApplicationId(guid);
 
             string applicationIdString = applicationId.ToString();
 

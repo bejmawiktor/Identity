@@ -11,7 +11,7 @@ namespace Identity.Tests.Unit.Application
     public class AuthorizationCodeDtoTest
     {
         [Test]
-        public void TestConstructing_WhenCodeGiven_ThenCodeIsSet()
+        public void TestConstructor_WhenCodeGiven_ThenCodeIsSet()
         {
             ApplicationId applicationId = ApplicationId.Generate();
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId);
@@ -25,7 +25,7 @@ namespace Identity.Tests.Unit.Application
         }
 
         [Test]
-        public void TestConstructing_WhenApplicationIdGiven_ThenApplicationIdIsSet()
+        public void TestConstructor_WhenApplicationIdGiven_ThenApplicationIdIsSet()
         {
             ApplicationId applicationId = ApplicationId.Generate();
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId);
@@ -39,7 +39,7 @@ namespace Identity.Tests.Unit.Application
         }
 
         [Test]
-        public void TestConstructing_WhenExpiresAtGiven_ThenExpiresAtIsSet()
+        public void TestConstructor_WhenExpiresAtGiven_ThenExpiresAtIsSet()
         {
             DateTime expiresAt = DateTime.Now;
             ApplicationId applicationId = ApplicationId.Generate();
@@ -54,7 +54,7 @@ namespace Identity.Tests.Unit.Application
         }
 
         [Test]
-        public void TestConstructing_WhenUsedGiven_ThenUsedIsSet()
+        public void TestConstructor_WhenUsedGiven_ThenUsedIsSet()
         {
             DateTime expiresAt = DateTime.Now;
             ApplicationId applicationId = ApplicationId.Generate();

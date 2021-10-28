@@ -10,7 +10,7 @@ namespace Identity.Tests.Unit.Domain
         private static readonly HashedPassword TestPassword = HashedPassword.Hash(new Password("MyPassword"));
 
         [Test]
-        public void TestConstructing_WhenNullStringHashedPasswordGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullStringHashedPasswordGiven_ThenArgumentNullExceptionIsThrown()
         {
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -20,7 +20,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenEmptyStringHashedPasswordGiven_ThenArgumentExceptionIsThrown()
+        public void TestConstructor_WhenEmptyStringHashedPasswordGiven_ThenArgumentExceptionIsThrown()
         {
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()
@@ -30,7 +30,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenNullBytesHashedPasswordGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullBytesHashedPasswordGiven_ThenArgumentNullExceptionIsThrown()
         {
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -40,7 +40,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenBase64HashedStringGiven_ThenToStringReturnsBased64HashedString()
+        public void TestConstructor_WhenBase64HashedStringGiven_ThenToStringReturnsBased64HashedString()
         {
             string base64HashedPassword = HashedPasswordTest.TestPassword.ToString();
             var password = new HashedPassword(base64HashedPassword);
@@ -49,7 +49,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenHashedPasswordBytesGiven_ThenToByteArrayReturnsSameByteArray()
+        public void TestConstructor_WhenHashedPasswordBytesGiven_ThenToByteArrayReturnsSameByteArray()
         {
             byte[] hashedPassowrdBytes = HashedPasswordTest.TestPassword.ToByteArray();
             var password = new HashedPassword(hashedPassowrdBytes);
@@ -58,25 +58,25 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestToString_WhenConvertingToString_ThenStringIsReturned()
+        public void TestToString_WhenConvertingToString_ThenNotEmptyStringIsReturned()
         {
-            var password = HashedPasswordTest.TestPassword;
+            HashedPassword password = HashedPasswordTest.TestPassword;
 
             Assert.That(password.ToString(), Is.Not.Empty);
         }
 
         [Test]
-        public void TestToByteArray_WhenConvertingToByteArray_ThenByteArrayIsReturned()
+        public void TestToByteArray_WhenConvertingToByteArray_ThenNotEmptyByteArrayIsReturned()
         {
-            var password = HashedPasswordTest.TestPassword;
+            HashedPassword password = HashedPasswordTest.TestPassword;
 
             Assert.That(password.ToByteArray(), Is.Not.Empty);
         }
 
         [Test]
-        public void TestHash_WhenStringGiven_ThenPasswordIsReturned()
+        public void TestHash_WhenStringGiven_ThenHashedPasswordIsReturned()
         {
-            var password = HashedPasswordTest.TestPassword;
+            HashedPassword password = HashedPassword.Hash(new Password("MyPassword"));
 
             Assert.That(password, Is.TypeOf<HashedPassword>());
         }
@@ -97,7 +97,7 @@ namespace Identity.Tests.Unit.Domain
         public void TestVerify_WhenCorrectPasswordGiven_ThenSuccessIsReturned(string verifiedPassword)
         {
             var password = new Password(verifiedPassword);
-            var hashedPassword = HashedPassword.Hash(password);
+            HashedPassword hashedPassword = HashedPassword.Hash(password);
 
             PasswordVerificationResult result = hashedPassword.Verify(password);
 
@@ -109,7 +109,7 @@ namespace Identity.Tests.Unit.Domain
         [TestCase("!2#Asdfg;'p*&", "!2#Asdfg'p*&")]
         public void TestVerify_WhenIncorrectPasswordGiven_ThenFailedIsReturned(string verifiedPassword, string incorrectPassword)
         {
-            var password = HashedPassword.Hash(new Password(verifiedPassword));
+            HashedPassword password = HashedPassword.Hash(new Password(verifiedPassword));
 
             PasswordVerificationResult result = password.Verify(new Password(incorrectPassword));
 

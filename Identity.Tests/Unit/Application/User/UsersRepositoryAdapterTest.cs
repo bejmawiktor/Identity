@@ -15,7 +15,7 @@ namespace Identity.Tests.Unit.Application
         private readonly HashedPassword HashedPassword = HashedPassword.Hash(new Password("examplepassword"));
 
         [Test]
-        public void TestConstructing_WhenNullUsersRepositoryGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullUsersRepositoryGiven_ThenArgumentNullExceptionIsThrown()
         {
             Assert.Throws(
                Is.InstanceOf<ArgumentNullException>()
@@ -25,7 +25,7 @@ namespace Identity.Tests.Unit.Application
         }
 
         [Test]
-        public void TestConstructing_WhenUsersRepositoryGiven_ThenUsersRepositoryIsSet()
+        public void TestConstructor_WhenUsersRepositoryGiven_ThenUsersRepositoryIsSet()
         {
             var usersRepositoryMock = new Mock<IUsersRepository>();
             IUsersRepository usersRepository = usersRepositoryMock.Object;

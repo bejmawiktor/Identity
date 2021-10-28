@@ -7,7 +7,7 @@ namespace Identity.Tests.Unit.Domain
     public class ResourceCreatedTest
     {
         [Test]
-        public void TestConstruction_WhenResourceIdGiven_ThenResourceIdIsSet()
+        public void TestConstructor_WhenResourceIdGiven_ThenResourceIdIsSet()
         {
             var resourceCreated = new ResourceCreated(
                 resourceId: new ResourceId("TestResource"),
@@ -17,7 +17,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenResourceDescriptionGiven_ThenResourceDescriptionIsSet()
+        public void TestConstructor_WhenResourceDescriptionGiven_ThenResourceDescriptionIsSet()
         {
             var resourceCreated = new ResourceCreated(
                 resourceId: new ResourceId("TestResource"),

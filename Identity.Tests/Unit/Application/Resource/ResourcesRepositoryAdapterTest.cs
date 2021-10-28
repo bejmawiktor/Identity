@@ -10,7 +10,7 @@ namespace Identity.Tests.Unit.Application
     public class ResourcesRepositoryAdapterTest
     {
         [Test]
-        public void TestConstructing_WhenNullResourcesRepositoryGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullResourcesRepositoryGiven_ThenArgumentNullExceptionIsThrown()
         {
             Assert.Throws(
                Is.InstanceOf<ArgumentNullException>()
@@ -20,7 +20,7 @@ namespace Identity.Tests.Unit.Application
         }
 
         [Test]
-        public void TestConstructing_WhenResourcesRepositoryGiven_ThenResourcesRepositoryIsSet()
+        public void TestConstructor_WhenResourcesRepositoryGiven_ThenResourcesRepositoryIsSet()
         {
             var resourcesRepositoryMock = new Mock<IResourcesRepository>();
             IResourcesRepository resourcesRepository = resourcesRepositoryMock.Object;

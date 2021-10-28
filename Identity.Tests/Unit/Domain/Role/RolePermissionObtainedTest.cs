@@ -7,9 +7,9 @@ namespace Identity.Tests.Unit.Domain
     public class RolePermissionObtainedTest
     {
         [Test]
-        public void TestConstruction_WhenRoleIdGiven_ThenRoleIdIsSet()
+        public void TestConstructor_WhenRoleIdGiven_ThenRoleIdIsSet()
         {
-            var roleId = RoleId.Generate();
+            RoleId roleId = RoleId.Generate();
             var obtainedPermissionId = new PermissionId(new ResourceId("MyResource"), "Permission");
 
             var roleCreated = new RolePermissionObtained(
@@ -20,9 +20,9 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenObtainedPermissionIdGiven_ThenObtainedPermissionIdIsSet()
+        public void TestConstructor_WhenObtainedPermissionIdGiven_ThenObtainedPermissionIdIsSet()
         {
-            var roleId = RoleId.Generate();
+            RoleId roleId = RoleId.Generate();
             var obtainedPermissionId = new PermissionId(new ResourceId("MyResource"), "Permission");
 
             var roleCreated = new RolePermissionObtained(

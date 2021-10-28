@@ -9,9 +9,9 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestCreate_WhenOneGiven_ThenAESSecretKeyEncryptionAlgorithmIsReturned()
         {
-            var passwordHashingAlgorithm = SecretKeyEncryptionAlgorithmFactory.Create(1);
+            ISecretKeyEncryptionAlgorithm secretKeyEncryptionAlgorithm = SecretKeyEncryptionAlgorithmFactory.Create(1);
 
-            Assert.That(passwordHashingAlgorithm, Is.TypeOf<AESSecretKeyEncryptionAlgorithm>());
+            Assert.That(secretKeyEncryptionAlgorithm, Is.TypeOf<AESSecretKeyEncryptionAlgorithm>());
         }
 
         [Test]

@@ -16,10 +16,10 @@ namespace Identity.Tests.Unit.Application
             .ToString();
 
         [Test]
-        public void TestConstructing_WhenIdGiven_ThenIdIsSet()
+        public void TestConstructor_WhenIdGiven_ThenIdIsSet()
         {
-            var applicationId = Guid.NewGuid();
-            var userId = Guid.NewGuid();
+            Guid applicationId = Guid.NewGuid();
+            Guid userId = Guid.NewGuid();
             var applicationDto = new ApplicationDto(
                 id: applicationId,
                 userId: userId,
@@ -32,10 +32,10 @@ namespace Identity.Tests.Unit.Application
         }
 
         [Test]
-        public void TestConstructing_WhenUserIdGiven_ThenUserIdIsSet()
+        public void TestConstructor_WhenUserIdGiven_ThenUserIdIsSet()
         {
-            var applicationId = Guid.NewGuid();
-            var userId = Guid.NewGuid();
+            Guid applicationId = Guid.NewGuid();
+            Guid userId = Guid.NewGuid();
             var applicationDto = new ApplicationDto(
                 id: applicationId,
                 userId: userId,
@@ -48,10 +48,10 @@ namespace Identity.Tests.Unit.Application
         }
 
         [Test]
-        public void TestConstructing_WhenNameGiven_ThenNameIsSet()
+        public void TestConstructor_WhenNameGiven_ThenNameIsSet()
         {
-            var applicationId = Guid.NewGuid();
-            var userId = Guid.NewGuid();
+            Guid applicationId = Guid.NewGuid();
+            Guid userId = Guid.NewGuid();
             var applicationDto = new ApplicationDto(
                 id: applicationId,
                 userId: userId,
@@ -64,10 +64,10 @@ namespace Identity.Tests.Unit.Application
         }
 
         [Test]
-        public void TestConstructing_WhenSecretKeyGiven_ThenSecretKeyIsSet()
+        public void TestConstructor_WhenSecretKeyGiven_ThenSecretKeyIsSet()
         {
-            var applicationId = Guid.NewGuid();
-            var userId = Guid.NewGuid();
+            Guid applicationId = Guid.NewGuid();
+            Guid userId = Guid.NewGuid();
             var applicationDto = new ApplicationDto(
                 id: applicationId,
                 userId: userId,
@@ -80,10 +80,10 @@ namespace Identity.Tests.Unit.Application
         }
 
         [Test]
-        public void TestConstructing_WhenHomepageUrlGiven_ThenHomepageUrlIsSet()
+        public void TestConstructor_WhenHomepageUrlGiven_ThenHomepageUrlIsSet()
         {
-            var applicationId = Guid.NewGuid();
-            var userId = Guid.NewGuid();
+            Guid applicationId = Guid.NewGuid();
+            Guid userId = Guid.NewGuid();
             var applicationDto = new ApplicationDto(
                 id: applicationId,
                 userId: userId,
@@ -96,10 +96,10 @@ namespace Identity.Tests.Unit.Application
         }
 
         [Test]
-        public void TestConstructing_WhenCallbackUrlGiven_ThenCallbackUrlIsSet()
+        public void TestConstructor_WhenCallbackUrlGiven_ThenCallbackUrlIsSet()
         {
-            var applicationId = Guid.NewGuid();
-            var userId = Guid.NewGuid();
+            Guid applicationId = Guid.NewGuid();
+            Guid userId = Guid.NewGuid();
             var applicationDto = new ApplicationDto(
                 id: applicationId,
                 userId: userId,
@@ -114,8 +114,8 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestToApplication_WhenConvertingToApplication_ThenApplicationIsReturned()
         {
-            var applicationId = Guid.NewGuid();
-            var userId = Guid.NewGuid();
+            Guid applicationId = Guid.NewGuid();
+            Guid userId = Guid.NewGuid();
             var applicationDto = new ApplicationDto(
                 id: applicationId,
                 userId: userId,
@@ -140,8 +140,8 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestEquals_WhenTwoIdentitcalApplicationsDtosGiven_ThenTrueIsReturned()
         {
-            var applicationId = Guid.NewGuid();
-            var userId = Guid.NewGuid();
+            Guid applicationId = Guid.NewGuid();
+            Guid userId = Guid.NewGuid();
             var leftApplicationDto = new ApplicationDto(
                 id: applicationId,
                 userId: userId,
@@ -163,10 +163,10 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestEquals_WhenTwoDifferentApplicationsDtosGiven_ThenFalseIsReturned()
         {
-            var firstApplicationId = Guid.NewGuid();
-            var firstUserId = Guid.NewGuid();
-            var secondApplicationId = Guid.NewGuid();
-            var secondUserId = Guid.NewGuid();
+            Guid firstApplicationId = Guid.NewGuid();
+            Guid firstUserId = Guid.NewGuid();
+            Guid secondApplicationId = Guid.NewGuid();
+            Guid secondUserId = Guid.NewGuid();
             var leftApplicationDto = new ApplicationDto(
                 id: firstApplicationId,
                 userId: firstUserId,
@@ -188,8 +188,8 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestGetHashCode_WhenTwoIdenticalApplicationsDtosGiven_ThenSameHashCodesIsReturned()
         {
-            var applicationId = Guid.NewGuid();
-            var userId = Guid.NewGuid();
+            Guid applicationId = Guid.NewGuid();
+            Guid userId = Guid.NewGuid();
             var leftApplicationDto = new ApplicationDto(
                 id: applicationId,
                 userId: userId,
@@ -211,10 +211,10 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestGetHashCode_WhenTwoDifferentApplicationsDtosGiven_ThenDifferentHashCodesIsReturned()
         {
-            var firstApplicationId = Guid.NewGuid();
-            var firstUserId = Guid.NewGuid();
-            var secondApplicationId = Guid.NewGuid();
-            var secondUserId = Guid.NewGuid();
+            Guid firstApplicationId = Guid.NewGuid();
+            Guid firstUserId = Guid.NewGuid();
+            Guid secondApplicationId = Guid.NewGuid();
+            Guid secondUserId = Guid.NewGuid();
             var leftApplicationDto = new ApplicationDto(
                 id: firstApplicationId,
                 userId: firstUserId,

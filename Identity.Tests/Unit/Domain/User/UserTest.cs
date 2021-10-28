@@ -14,7 +14,7 @@ namespace Identity.Tests.Unit.Domain
         private static HashedPassword TestPassword = HashedPassword.Hash(new Password("MyPassword"));
 
         [Test]
-        public void TestConstructing_WhenEmailGiven_ThenEmailIsSet()
+        public void TestConstructor_WhenEmailGiven_ThenEmailIsSet()
         {
             var user = new User(
                 id: UserId.Generate(),
@@ -25,7 +25,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenNullEmailGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullEmailGiven_ThenArgumentNullExceptionIsThrown()
         {
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -38,7 +38,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenPasswordGiven_ThenPasswordIsSet()
+        public void TestConstructor_WhenPasswordGiven_ThenPasswordIsSet()
         {
             var user = new User(
                 id: UserId.Generate(),
@@ -49,7 +49,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenNullPasswordGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullPasswordGiven_ThenArgumentNullExceptionIsThrown()
         {
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -62,7 +62,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenRolesGiven_ThenRolesIsSet()
+        public void TestConstructor_WhenRolesGiven_ThenRolesIsSet()
         {
             var roles = new RoleId[]
             {
@@ -79,7 +79,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenRolesNotGiven_ThenRolesAreEmpty()
+        public void TestConstructor_WhenRolesNotGiven_ThenRolesAreEmpty()
         {
             var user = new User(
                 id: UserId.Generate(),
@@ -127,7 +127,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestEmailSet_WhenNullEmailGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var userId = UserId.Generate();
+            UserId userId = UserId.Generate();
             var user = new User(
                 id: userId,
                 email: new EmailAddress("myemail@example.com"),
@@ -143,7 +143,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestEmailSet_WhenEmailGiven_ThenEmailIsSet()
         {
-            var userId = UserId.Generate();
+            UserId userId = UserId.Generate();
             var user = new User(
                 id: userId,
                 email: new EmailAddress("myemail@example.com"),
@@ -157,7 +157,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestPasswordSet_WhenNullPasswordGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var userId = UserId.Generate();
+            UserId userId = UserId.Generate();
             var user = new User(
                 id: userId,
                 email: new EmailAddress("myemail@example.com"),
@@ -173,8 +173,8 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestPasswordSet_WhenPasswordGiven_ThenPasswordIsSet()
         {
-            var newPassword = HashedPassword.Hash(new Password("MyPassword2"));
-            var userId = UserId.Generate();
+            HashedPassword newPassword = HashedPassword.Hash(new Password("MyPassword2"));
+            UserId userId = UserId.Generate();
             var user = new User(
                 id: userId,
                 email: new EmailAddress("myemail@example.com"),
@@ -212,7 +212,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestObtainPermission_WhenPermissionGiven_ThenUserHasPermission()
         {
-            var permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
+            PermissionId permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
 
             User user = User.Create(
                 email: new EmailAddress("myemail@example.com"),
@@ -227,13 +227,12 @@ namespace Identity.Tests.Unit.Domain
         public void TestRevokePermission_WhenRovekingPermission_ThenUserPermissionRevokedIsNotified()
         {
             UserPermissionRevoked userPermissionRevokedEvent = null;
-            var permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
+            PermissionId permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
             var eventDispatcherMock = new Mock<IEventDispatcher>();
             eventDispatcherMock
                 .Setup(e => e.Dispatch(It.IsAny<UserPermissionRevoked>()))
                 .Callback((UserPermissionRevoked p) => userPermissionRevokedEvent = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
-
             User user = User.Create(
                 email: new EmailAddress("myemail@example.com"),
                 password: UserTest.TestPassword);
@@ -252,7 +251,6 @@ namespace Identity.Tests.Unit.Domain
         public void TestRevokePermission_WhenPermissionIdGiven_ThenPermissionIsRevoked()
         {
             var permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
-
             User user = User.Create(
                 email: new EmailAddress("myemail@example.com"),
                 password: UserTest.TestPassword);
@@ -280,12 +278,11 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestHasRole_WhenUserHasRole_ThenTrueIsReturned()
         {
-            var roleId = RoleId.Generate();
+            RoleId roleId = RoleId.Generate();
             var roles = new RoleId[]
             {
                 roleId
             };
-
             User user = new User(
                 id: UserId.Generate(),
                 email: new EmailAddress("email@example.com"),
@@ -300,8 +297,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestHasRole_WhenUserHasntRole_ThenFalseIsReturned()
         {
-            var roleId = RoleId.Generate();
-
+            RoleId roleId = RoleId.Generate();
             User user = new User(
                 id: UserId.Generate(),
                 email: new EmailAddress("email@example.com"),
@@ -328,9 +324,9 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestAssumeRole_WhenHolderWasRoleWasAlreadyAssumeed_ThenInvalidOperationIsThrown()
+        public void TestAssumeRole_WhenHolderWasRoleWasAlreadyAssumed_ThenInvalidOperationIsThrown()
         {
-            var roleId = RoleId.Generate();
+            RoleId roleId = RoleId.Generate();
             var roles = new RoleId[]
             {
                 roleId
@@ -352,8 +348,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestAssumeRole_WhenRoleGiven_ThenUserHasRole()
         {
-            var roleId = RoleId.Generate();
-
+            RoleId roleId = RoleId.Generate();
             var user = new User(
                 id: UserId.Generate(),
                 email: new EmailAddress("email@example.com"),
@@ -373,8 +368,7 @@ namespace Identity.Tests.Unit.Domain
                 .Setup(e => e.Dispatch(It.IsAny<UserRoleAssumed>()))
                 .Callback((UserRoleAssumed p) => userRoleAssumed = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
-            var roleId = RoleId.Generate();
-
+            RoleId roleId = RoleId.Generate();
             var user = new User(
                 id: UserId.Generate(),
                 email: new EmailAddress("email@example.com"),
@@ -407,7 +401,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestRevokeRole_WhenUserRoleWasAlreadyRevoked_ThenInvalidOperationIsThrown()
         {
-            var roleId = RoleId.Generate();
+            RoleId roleId = RoleId.Generate();
 
             User user = new User(
                 id: UserId.Generate(),
@@ -424,8 +418,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestRevokeRole_WhenRoleIdGiven_ThenUserRoleIsRevoked()
         {
-            var roleId = RoleId.Generate();
-
+            RoleId roleId = RoleId.Generate();
             var user = new User(
                 id: UserId.Generate(),
                 email: new EmailAddress("email@example.com"),
@@ -446,7 +439,7 @@ namespace Identity.Tests.Unit.Domain
                 .Setup(e => e.Dispatch(It.IsAny<UserRoleRevoked>()))
                 .Callback((UserRoleRevoked p) => userRoleRevoked = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
-            var roleId = RoleId.Generate();
+            RoleId roleId = RoleId.Generate();
 
             var user = new User(
                 id: UserId.Generate(),

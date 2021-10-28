@@ -11,7 +11,8 @@ namespace Identity.Tests.Unit.Application
     [TestFixture]
     public class ApplicationDtoConverterTest
     {
-        private static readonly EncryptedSecretKey EncryptedSecretKey = EncryptedSecretKey.Encrypt(Identity.Domain.SecretKey.Generate());
+        private static readonly EncryptedSecretKey EncryptedSecretKey 
+            = EncryptedSecretKey.Encrypt(Identity.Domain.SecretKey.Generate());
 
         [Test]
         public void TestToDto_WhenApplicationGiven_ThenApplicationDtoIsReturned()
@@ -27,7 +28,7 @@ namespace Identity.Tests.Unit.Application
                 callbackUrl: new Url("https://www.example.com/1"));
             var applicationDtoConverter = new ApplicationDtoConverter();
 
-            var applicationDto = applicationDtoConverter.ToDto(application);
+            ApplicationDto applicationDto = applicationDtoConverter.ToDto(application);
 
             Assert.Multiple(() =>
             {

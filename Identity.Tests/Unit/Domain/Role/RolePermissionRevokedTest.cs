@@ -7,9 +7,9 @@ namespace Identity.Tests.Unit.Domain
     public class RolePermissionRevokedTest
     {
         [Test]
-        public void TestConstruction_WhenRoleIdGiven_ThenRoleIdIsSet()
+        public void TestConstructor_WhenRoleIdGiven_ThenRoleIdIsSet()
         {
-            var roleId = RoleId.Generate();
+            RoleId roleId = RoleId.Generate();
             var revokedPermissionId = new PermissionId(new ResourceId("MyResource"), "Permission");
 
             var rolePermissionRevoked = new RolePermissionRevoked(
@@ -20,9 +20,9 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenRevokedPermissionIdGiven_ThenRevokedPermissionIdIsSet()
+        public void TestConstructor_WhenRevokedPermissionIdGiven_ThenRevokedPermissionIdIsSet()
         {
-            var roleId = RoleId.Generate();
+            RoleId roleId = RoleId.Generate();
             var revokedPermissionId = new PermissionId(new ResourceId("MyResource"), "Permission");
 
             var rolePermissionRevoked = new RolePermissionRevoked(

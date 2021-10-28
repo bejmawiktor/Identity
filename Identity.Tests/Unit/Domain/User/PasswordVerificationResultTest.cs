@@ -17,7 +17,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestDefault_WhenGettingDefault_ThenFailedIsReturned()
         {
-            var passwordVerificationResult = PasswordVerificationResult.Default;
+            PasswordVerificationResult passwordVerificationResult = PasswordVerificationResult.Default;
 
             Assert.That(passwordVerificationResult, Is.EqualTo(PasswordVerificationResult.Failed));
         }
@@ -25,7 +25,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestToString_WhenSuccessIsUsed_ThenSuccessStringIsReturned()
         {
-            var passwordVerificationResult = PasswordVerificationResult.Success;
+            PasswordVerificationResult passwordVerificationResult = PasswordVerificationResult.Success;
 
             Assert.That(passwordVerificationResult.ToString(), Is.EqualTo(nameof(PasswordVerificationResult.Success)));
         }
@@ -33,7 +33,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestToString_WhenFailedIsUsed_ThenFailedStringIsReturned()
         {
-            var passwordVerificationResult = PasswordVerificationResult.Failed;
+            PasswordVerificationResult passwordVerificationResult = PasswordVerificationResult.Failed;
 
             Assert.That(passwordVerificationResult.ToString(), Is.EqualTo(nameof(PasswordVerificationResult.Failed)));
         }

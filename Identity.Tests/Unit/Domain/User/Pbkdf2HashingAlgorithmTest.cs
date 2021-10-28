@@ -103,7 +103,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestValidate_WhenHashedPasswordWithLenngthOtherThan48Given_ThenArgumentExceptionIsThrown([Range(0, 100, 10)] int hashedPasswordLength)
+        public void TestValidate_WhenHashedPasswordWithLengthOtherThan48Given_ThenArgumentExceptionIsThrown([Range(0, 100, 10)] int hashedPasswordLength)
         {
             var pbkdf2PasswordHashingAlgorithm = new Pbkdf2HashingAlgorithm();
 
@@ -118,7 +118,7 @@ namespace Identity.Tests.Unit.Domain
         public void TestValidate_WhenCorrectHashedPasswordGiven_ThenNoExceptionIsThrown()
         {
             var pbkdf2PasswordHashingAlgorithm = new Pbkdf2HashingAlgorithm();
-            var hashedPassword = pbkdf2PasswordHashingAlgorithm.Hash(new Password("MySecretPassword"));
+            byte[] hashedPassword = pbkdf2PasswordHashingAlgorithm.Hash(new Password("MySecretPassword"));
 
             Assert.DoesNotThrow(
                 () => pbkdf2PasswordHashingAlgorithm.Validate(hashedPassword));

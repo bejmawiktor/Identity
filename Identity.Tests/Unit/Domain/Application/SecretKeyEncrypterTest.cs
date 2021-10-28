@@ -19,8 +19,8 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestEncrypt_WhenSecretKeyGiven_ThenEncryptedSecretKeyIsReturned()
         {
-            var secretKey = SecretKey.Generate();
-            var encryptedSecretKey = SecretKeyEncrypter.Encrypt(secretKey);
+            SecretKey secretKey = SecretKey.Generate();
+            EncryptedSecretKey encryptedSecretKey = SecretKeyEncrypter.Encrypt(secretKey);
 
             Assert.That(encryptedSecretKey, Is.Not.Null);
         }
@@ -28,7 +28,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestEncrypt_WhenMultipleTimesSameSecretKeyIsEncrypted_ThenReturnedEncryptedSecretKeysAreDifferent()
         {
-            var secretKey = SecretKey.Generate();
+            SecretKey secretKey = SecretKey.Generate();
 
             EncryptedSecretKey firstEncryptedSecretKey = SecretKeyEncrypter.Encrypt(secretKey);
             EncryptedSecretKey secondEncryptedSecretKey = SecretKeyEncrypter.Encrypt(secretKey);
@@ -49,10 +49,10 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestDecrypt_WhenEncryptedSecretKeyGiven_ThenSecretKeySameAsSourceSecretKeyIsReturned()
         {
-            var secretKey = SecretKey.Generate();
+            SecretKey secretKey = SecretKey.Generate();
             EncryptedSecretKey encryptedSecretKey = SecretKeyEncrypter.Encrypt(secretKey);
 
-            var decryptedSecretKey = SecretKeyEncrypter.Decrypt(encryptedSecretKey);
+            SecretKey decryptedSecretKey = SecretKeyEncrypter.Decrypt(encryptedSecretKey);
 
             Assert.That(decryptedSecretKey, Is.EqualTo(secretKey));
         }
@@ -60,7 +60,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestDecrypt_WhenEncryptedKeysWhereCreatedFromOneSecretKey_ThenSameSecretKeysAreReturned()
         {
-            var secretKey = SecretKey.Generate();
+            SecretKey secretKey = SecretKey.Generate();
             EncryptedSecretKey firstEncryptedSecretKey = SecretKeyEncrypter.Encrypt(secretKey);
             EncryptedSecretKey secondEncryptedSecretKey = SecretKeyEncrypter.Encrypt(secretKey);
 
@@ -93,7 +93,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestValidate_WhenCorrectHashedPasswordGiven_ThenNoExceptionIsThrown()
         {
-            var encryptedSecretKey = SecretKeyEncrypter.Encrypt(SecretKey.Generate());
+            EncryptedSecretKey encryptedSecretKey = SecretKeyEncrypter.Encrypt(SecretKey.Generate());
 
             Assert.DoesNotThrow(
                 () => SecretKeyEncrypter.Validate(encryptedSecretKey.ToByteArray()));

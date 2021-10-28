@@ -8,7 +8,7 @@ namespace Identity.Tests.Unit.Domain
     public class CodeTest
     {
         [Test]
-        public void TestConstructing_WhenEmptyCodeGiven_ThenArgumentExceptionIsThrown()
+        public void TestConstructor_WhenEmptyCodeGiven_ThenArgumentExceptionIsThrown()
         {
             Assert.Throws(
               Is.InstanceOf<ArgumentException>()
@@ -18,7 +18,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenNullCodeGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullCodeGiven_ThenArgumentNullExceptionIsThrown()
         {
             Assert.Throws(
               Is.InstanceOf<ArgumentNullException>()
@@ -33,7 +33,7 @@ namespace Identity.Tests.Unit.Domain
         [TestCase("afgdsgsdhtrhrthfhtrhasdasdsadaa")]
         [TestCase("afgdsgsdhtrhrthfhtrhasdasdsadfasfasfasfasfsagasgadgsdgsdhfgjhfjfdghjdf")]
         [TestCase("afgdsgsdhtrhrthfhtrhasdasdsadaa12")]
-        public void TestConstructing_WhenIncorrectLengthCodeGiven_ThenArgumentExceptionIsThrown(string codeValue)
+        public void TestConstructor_WhenIncorrectLengthCodeGiven_ThenArgumentExceptionIsThrown(string codeValue)
         {
             Assert.Throws(
               Is.InstanceOf<ArgumentException>()
@@ -47,7 +47,7 @@ namespace Identity.Tests.Unit.Domain
         [TestCase("G1cDt0VeYFUvB5xnfslRoYEs2QLuE7wQ")]
         [TestCase("0b0gidi8UuqxWBwk0py9do7hiC3w15wb")]
         [TestCase("X659biBIpIH2z37eJMR6qV63hpVUOupA")]
-        public void TestConstructing_WhenCorrectLengthCodeGiven_ThenCodeIsSet(string codeValue)
+        public void TestConstructor_WhenCorrectLengthCodeGiven_ThenCodeIsSet(string codeValue)
         {
             var code = new Code(codeValue);
 
@@ -55,7 +55,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestGenerate_WhenGenerated_ThenNotNullAuthorizationCodeIdCodeIsReturned()
+        public void TestGenerate_WhenGenerated_ThenNotNullCodeIsReturned()
         {
             Code code = Code.Generate();
 
@@ -63,7 +63,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestGenerate_WhenGenerated_ThenNotEmptyAuthorizationCodeIdCodeIsReturned()
+        public void TestGenerate_WhenGenerated_ThenNotEmptyCodeIsReturned()
         {
             Code code = Code.Generate();
 
@@ -71,7 +71,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestGenerate_WhenMultipleGenerated_ThenKeysHaveDifferentValues()
+        public void TestGenerate_WhenMultipleGenerated_ThenCodesHaveDifferentValues()
         {
             Code firstCode = Code.Generate();
             Code secondCode = Code.Generate();

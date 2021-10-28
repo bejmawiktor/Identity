@@ -7,9 +7,9 @@ namespace Identity.Tests.Unit.Domain
     public class ApplicationCreatedTest
     {
         [Test]
-        public void TestConstructing_WhenApplicationIdGiven_ThenApplicationIdIsSet()
+        public void TestConstructor_WhenApplicationIdGiven_ThenApplicationIdIsSet()
         {
-            var userId = UserId.Generate();
+            UserId userId = UserId.Generate();
             var applicationId = ApplicationId.Generate();
             var applicationCreated = new ApplicationCreated(
                 applicationId: applicationId,
@@ -22,9 +22,9 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenApplicationNameGiven_ThenApplicationNameIsSet()
+        public void TestConstructor_WhenApplicationNameGiven_ThenApplicationNameIsSet()
         {
-            var userId = UserId.Generate();
+            UserId userId = UserId.Generate();
             var applicationCreated = new ApplicationCreated(
                 applicationId: ApplicationId.Generate(),
                 applicationName: "MyApp",
@@ -36,9 +36,9 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenApplicationUserIdGiven_ThenApplicationUserIdIsSet()
+        public void TestConstructor_WhenApplicationUserIdGiven_ThenApplicationUserIdIsSet()
         {
-            var userId = UserId.Generate();
+            UserId userId = UserId.Generate();
             var applicationCreated = new ApplicationCreated(
                 applicationId: ApplicationId.Generate(),
                 applicationName: "MyApp",
@@ -50,9 +50,9 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenApplicationHomepageUrlGiven_ThenApplicationHomepageUrlIsSet()
+        public void TestConstructor_WhenApplicationHomepageUrlGiven_ThenApplicationHomepageUrlIsSet()
         {
-            var userId = UserId.Generate();
+            UserId userId = UserId.Generate();
             var applicationCreated = new ApplicationCreated(
                 applicationId: ApplicationId.Generate(),
                 applicationName: "MyApp",
@@ -64,9 +64,9 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenApplicationCallbackUrlGiven_ThenApplicationCallbackUrlIsSet()
+        public void TestConstructor_WhenApplicationCallbackUrlGiven_ThenApplicationCallbackUrlIsSet()
         {
-            var userId = UserId.Generate();
+            UserId userId = UserId.Generate();
             var applicationCreated = new ApplicationCreated(
                 applicationId: ApplicationId.Generate(),
                 applicationName: "MyApp",

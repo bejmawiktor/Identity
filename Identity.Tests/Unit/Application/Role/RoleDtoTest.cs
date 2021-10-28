@@ -10,9 +10,9 @@ namespace Identity.Tests.Unit.Application
     public class RoleDtoTest
     {
         [Test]
-        public void TestConstructing_WhenIdGiven_ThenIdIsSet()
+        public void TestConstructor_WhenIdGiven_ThenIdIsSet()
         {
-            var id = Guid.NewGuid();
+            Guid id = Guid.NewGuid();
             var roleDto = new RoleDto(
                 id: id,
                 name: "MyRole",
@@ -22,9 +22,9 @@ namespace Identity.Tests.Unit.Application
         }
 
         [Test]
-        public void TestConstructing_WhenNameGiven_ThenNameIsSet()
+        public void TestConstructor_WhenNameGiven_ThenNameIsSet()
         {
-            var id = Guid.NewGuid();
+            Guid id = Guid.NewGuid();
             var roleDto = new RoleDto(
                 id: id,
                 name: "MyRole",
@@ -34,9 +34,9 @@ namespace Identity.Tests.Unit.Application
         }
 
         [Test]
-        public void TestConstructing_WhenDescriptionGiven_ThenDescriptionIsSet()
+        public void TestConstructor_WhenDescriptionGiven_ThenDescriptionIsSet()
         {
-            var id = Guid.NewGuid();
+            Guid id = Guid.NewGuid();
             var roleDto = new RoleDto(
                 id: id,
                 name: "MyRole",
@@ -46,9 +46,9 @@ namespace Identity.Tests.Unit.Application
         }
 
         [Test]
-        public void TestConstructing_WhenPermissionsGiven_ThenPermissionsIsSet()
+        public void TestConstructor_WhenPermissionsGiven_ThenPermissionsAreSet()
         {
-            var id = Guid.NewGuid();
+            Guid id = Guid.NewGuid();
             var roleDto = new RoleDto(
                 id: id,
                 name: "MyRole",
@@ -65,9 +65,9 @@ namespace Identity.Tests.Unit.Application
         }
 
         [Test]
-        public void TestConstructing_WhenNullPermissionsGiven_ThenEmptyPermissionsIsSet()
+        public void TestConstructor_WhenNullPermissionsGiven_ThenEmptyPermissionsIsSet()
         {
-            var id = Guid.NewGuid();
+            Guid id = Guid.NewGuid();
             var roleDto = new RoleDto(
                 id: id,
                 name: "MyRole",
@@ -80,7 +80,7 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestToRole_WhenConvertingToRole_ThenRoleIsReturned()
         {
-            var id = Guid.NewGuid();
+            Guid id = Guid.NewGuid();
             var roleDto = new RoleDto(
                 id: id,
                 name: "MyRole",
@@ -109,7 +109,7 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestEquals_WhenTwoIdentitcalRolesDtosGiven_ThenTrueIsReturned()
         {
-            var id = Guid.NewGuid();
+            Guid id = Guid.NewGuid();
             var leftRoleDto = new RoleDto(
                 id: id,
                 name: "MyRole",
@@ -135,7 +135,7 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestEquals_WhenTwoDifferentRolesDtosGiven_ThenFalseIsReturned()
         {
-            var id = Guid.NewGuid();
+            Guid id = Guid.NewGuid();
             var leftRoleDto = new RoleDto(
                 id: id,
                 name: "MyRole",
@@ -158,9 +158,9 @@ namespace Identity.Tests.Unit.Application
         }
 
         [Test]
-        public void TestGetHashCode_WhenTwoIdenticalRolesDtosGiven_ThenSameHashCodesIsReturned()
+        public void TestGetHashCode_WhenTwoIdenticalRolesDtosGiven_ThenSameHashCodesAreReturned()
         {
-            var id = Guid.NewGuid();
+            Guid id = Guid.NewGuid();
             var leftRoleDto = new RoleDto(
                 id: id,
                 name: "MyRole",
@@ -184,9 +184,9 @@ namespace Identity.Tests.Unit.Application
         }
 
         [Test]
-        public void TestGetHashCode_WhenTwoDifferentRolesDtosGiven_ThenDifferentHashCodesIsReturned()
+        public void TestGetHashCode_WhenTwoDifferentRolesDtosGiven_ThenDifferentHashCodesAreReturned()
         {
-            var id = Guid.NewGuid();
+            Guid id = Guid.NewGuid();
             var leftRoleDto = new RoleDto(
                 id: id,
                 name: "MyRole",

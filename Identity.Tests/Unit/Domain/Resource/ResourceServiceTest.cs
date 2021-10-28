@@ -11,10 +11,10 @@ namespace Identity.Tests.Unit.Domain
     public class ResourceServiceTest
     {
         [Test]
-        public void TestConstructing_WhenResourcesRepositoryGiven_ThenResourcesRepositoryIsSet()
+        public void TestConstructor_WhenResourcesRepositoryGiven_ThenResourcesRepositoryIsSet()
         {
             var repositoryMock = new Mock<IResourcesRepository>();
-            var repository = repositoryMock.Object;
+            IResourcesRepository repository = repositoryMock.Object;
 
             var resourceService = new ResourceService(repository);
 
@@ -22,7 +22,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenNullResourcesRepositoryGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullResourcesRepositoryGiven_ThenArgumentNullExceptionIsThrown()
         {
             Assert.Throws(
                Is.InstanceOf<ArgumentNullException>()

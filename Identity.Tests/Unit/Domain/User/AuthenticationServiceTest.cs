@@ -10,7 +10,7 @@ namespace Identity.Tests.Unit.Domain
     public class AuthenticationServiceTest
     {
         [Test]
-        public void TestConstructing_WhenNullUserRepositoryGiven_ThenArgumentNullIsThrown()
+        public void TestConstructor_WhenNullUserRepositoryGiven_ThenArgumentNullIsThrown()
         {
             Assert.Throws(
                Is.InstanceOf<ArgumentNullException>()

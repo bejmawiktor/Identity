@@ -10,7 +10,7 @@ namespace Identity.Tests.Unit.Domain
     public class ResourceTest
     {
         [Test]
-        public void TestConstruction_WhenDescriptionGiven_ThenDescriptionIsSet()
+        public void TestConstructor_WhenDescriptionGiven_ThenDescriptionIsSet()
         {
             var resource = new Resource(
                 id: new ResourceId("TestResource"),
@@ -20,7 +20,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenEmptyDescriptionGiven_ThenArgumentExceptionIsThrown()
+        public void TestConstructor_WhenEmptyDescriptionGiven_ThenArgumentExceptionIsThrown()
         {
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()
@@ -32,7 +32,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenNullDescriptionGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullDescriptionGiven_ThenArgumentNullExceptionIsThrown()
         {
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -51,7 +51,7 @@ namespace Identity.Tests.Unit.Domain
                 id: resourceId,
                 description: "Test resource description");
 
-            var permission = resource.CreatePermission(
+            Permission permission = resource.CreatePermission(
                 name: "AddPermission",
                 description: "Allows users to add something.");
 
@@ -78,7 +78,7 @@ namespace Identity.Tests.Unit.Domain
                 id: resourceId,
                 description: "Test resource description");
 
-            var permission = resource.CreatePermission(
+            Permission permission = resource.CreatePermission(
                 name: "AddPermission",
                 description: "Allows users to add something.");
 
@@ -92,7 +92,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestCreate_WhenCreatingResource_ThenNewResourceIsReturned()
         {
-            var resource = Resource.Create(
+            Resource resource = Resource.Create(
                 name: "MyResource",
                 description: "My resource description.");
 
@@ -113,7 +113,7 @@ namespace Identity.Tests.Unit.Domain
                 .Callback((ResourceCreated p) => resourceCreated = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
 
-            var resource = Resource.Create(
+            Resource resource = Resource.Create(
                 name: "MyResource",
                 description: "My resource description.");
 

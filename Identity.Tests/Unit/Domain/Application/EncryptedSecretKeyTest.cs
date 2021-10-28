@@ -10,7 +10,7 @@ namespace Identity.Tests.Unit.Domain
         private static readonly EncryptedSecretKey TestSecretKey = SecretKeyEncrypter.Encrypt(SecretKey.Generate());
 
         [Test]
-        public void TestConstructing_WhenNullEncryptedSecretKeyGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullEncryptedSecretKeyGiven_ThenArgumentNullExceptionIsThrown()
         {
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -20,7 +20,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenEmptyEncryptedSecretKeyGiven_ThenArgumentExceptionIsThrown()
+        public void TestConstructor_WhenEmptyEncryptedSecretKeyGiven_ThenArgumentExceptionIsThrown()
         {
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()
@@ -30,7 +30,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenNullBytesEncryptedSecretKeyGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullBytesEncryptedSecretKeyGiven_ThenArgumentNullExceptionIsThrown()
         {
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -40,7 +40,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenBase64HashedStringGiven_ThenToStringReturnsBased64HashedString()
+        public void TestConstructor_WhenBase64HashedStringGiven_ThenToStringReturnsBased64HashedString()
         {
             string base64EncryptedSecretKey = EncryptedSecretKeyTest.TestSecretKey.ToString();
             var encryptedSecretKey = new EncryptedSecretKey(base64EncryptedSecretKey);
@@ -49,7 +49,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenEncryptedSecretKeyBytesGiven_ThenToByteArrayReturnsSameByteArray()
+        public void TestConstructor_WhenEncryptedSecretKeyBytesGiven_ThenToByteArrayReturnsSameByteArray()
         {
             byte[] encryptedSecretKeyBytes = EncryptedSecretKeyTest.TestSecretKey.ToByteArray();
             var encryptedSecretKey = new EncryptedSecretKey(encryptedSecretKeyBytes);
@@ -58,7 +58,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestEncrypt_WhenSecretKeyGiven_ThenPasswordIsReturned()
+        public void TestEncrypt_WhenSecretKeyGiven_ThenEncryptedSecretKeyIsReturned()
         {
             EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(SecretKey.Generate());
 
@@ -78,7 +78,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestDecrypt_WhenDecrypting_ThenSecretKeyIsReturned()
         {
-            var secretKey = SecretKey.Generate();
+            SecretKey secretKey = SecretKey.Generate();
             EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
 
             var decryptedSecretKey = encryptedSecretKey.Decrypt();

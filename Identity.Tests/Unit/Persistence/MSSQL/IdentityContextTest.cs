@@ -8,7 +8,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
     public class IdentityContextTest
     {
         [Test]
-        public void TestConstructing_WhenNullConnectionStringGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullConnectionStringGiven_ThenArgumentNullExceptionIsThrown()
         {
             var identityContext = new IdentityContext("TestConnectionString");
 

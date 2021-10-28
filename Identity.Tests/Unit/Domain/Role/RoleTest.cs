@@ -172,7 +172,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestCreate_WhenCreatingRole_ThenNewRoleIsReturned()
         {
-            var role = Role.Create(
+            Role role = Role.Create(
                 name: "MyRole",
                 description: "My role description.");
 
@@ -195,7 +195,7 @@ namespace Identity.Tests.Unit.Domain
                 .Callback((RoleCreated p) => roleCreated = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
 
-            var role = Role.Create(
+            Role role = Role.Create(
                 name: "MyRole",
                 description: "My role description.");
 
@@ -234,7 +234,7 @@ namespace Identity.Tests.Unit.Domain
         public void TestObtainPermission_WhenPermissionGiven_ThenRoleHasPermission()
         {
             var permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
-            var role = Role.Create(
+            Role role = Role.Create(
                 name: "MyRole",
                 description: "My role description.");
 
@@ -253,7 +253,7 @@ namespace Identity.Tests.Unit.Domain
                 .Setup(e => e.Dispatch(It.IsAny<RolePermissionRevoked>()))
                 .Callback((RolePermissionRevoked p) => rolePermissionRevoked = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
-            var role = Role.Create(
+            Role role = Role.Create(
                 name: "MyRole",
                 description: "My role description.");
             role.ObtainPermission(permissionId);
@@ -271,7 +271,7 @@ namespace Identity.Tests.Unit.Domain
         public void TestRevokePermission_WhenPermissionIdGiven_ThenPermissionIsRevoked()
         {
             var permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
-            var role = Role.Create(
+            Role role = Role.Create(
                 name: "MyRole",
                 description: "My role description.");
             role.ObtainPermission(permissionId);

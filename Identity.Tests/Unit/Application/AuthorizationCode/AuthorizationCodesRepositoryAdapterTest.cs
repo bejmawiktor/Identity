@@ -8,7 +8,7 @@ namespace Identity.Tests.Unit.Application
     public class AuthorizationCodesRepositoryAdapterTest
     {
         [Test]
-        public void TestConstructing_WhenNullAuthorizationCodesRepositoryGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullAuthorizationCodesRepositoryGiven_ThenArgumentNullExceptionIsThrown()
         {
             Assert.Throws(
                Is.InstanceOf<ArgumentNullException>()
@@ -18,7 +18,7 @@ namespace Identity.Tests.Unit.Application
         }
 
         [Test]
-        public void TestConstructing_WhenAuthorizationCodesRepositoryGiven_ThenAuthorizationCodesRepositoryIsSet()
+        public void TestConstructor_WhenAuthorizationCodesRepositoryGiven_ThenAuthorizationCodesRepositoryIsSet()
         {
             var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
             IAuthorizationCodesRepository authorizationCodesRepository = authorizationCodesRepositoryMock.Object;

@@ -8,7 +8,7 @@ namespace Identity.Tests.Unit.Domain
     public class ResourceIdTest
     {
         [Test]
-        public void TestConstructing_WhenEmptyNameGiven_ThenArgumentExceptionIsThrown()
+        public void TestConstructor_WhenEmptyNameGiven_ThenArgumentExceptionIsThrown()
         {
             Assert.Throws(
               Is.InstanceOf<ArgumentException>()
@@ -22,7 +22,7 @@ namespace Identity.Tests.Unit.Domain
         [TestCase("$%^MyResource!@#")]
         [TestCase("My resource 1")]
         [TestCase("My resource 1 !@")]
-        public void TestConstructing_WhenIncorrectNameGiven_ThenArgumentExceptionIsThrown(string name)
+        public void TestConstructor_WhenIncorrectNameGiven_ThenArgumentExceptionIsThrown(string name)
         {
             Assert.Throws(
               Is.InstanceOf<ArgumentException>()
@@ -35,7 +35,7 @@ namespace Identity.Tests.Unit.Domain
         [TestCase("example1resource")]
         [TestCase("GetProducts")]
         [TestCase("asdghxcbnm123456890asdggh")]
-        public void TestConstructing_WhenCorrectNameGiven_ThenNameIsSet(string name)
+        public void TestConstructor_WhenCorrectNameGiven_ThenNameIsSet(string name)
         {
             var resourceId = new ResourceId(name);
 

@@ -10,11 +10,11 @@ namespace Identity.Tests.Unit.Domain
     public class TokenPairTest
     {
         [Test]
-        public void TestConstruction_WhenAccessTokenGiven_ThenAccessTokenIsSet()
+        public void TestConstructor_WhenAccessTokenGiven_ThenAccessTokenIsSet()
         {
-            var applicationId = ApplicationId.Generate();
-            var accessToken = Token.GenerateAccessToken(applicationId);
-            var refreshToken = Token.GenerateRefreshToken(applicationId);
+            ApplicationId applicationId = ApplicationId.Generate();
+            Token accessToken = Token.GenerateAccessToken(applicationId);
+            Token refreshToken = Token.GenerateRefreshToken(applicationId);
             var tokenPair = new TokenPair(
                 accessToken: accessToken,
                 refreshToken: refreshToken);
@@ -23,11 +23,11 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenRefreshTokenGiven_ThenRefreshTokenIsSet()
+        public void TestConstructor_WhenRefreshTokenGiven_ThenRefreshTokenIsSet()
         {
-            var applicationId = ApplicationId.Generate();
-            var accessToken = Token.GenerateAccessToken(applicationId);
-            var refreshToken = Token.GenerateRefreshToken(applicationId);
+            ApplicationId applicationId = ApplicationId.Generate();
+            Token accessToken = Token.GenerateAccessToken(applicationId);
+            Token refreshToken = Token.GenerateRefreshToken(applicationId);
             var tokenPair = new TokenPair(
                 accessToken: accessToken,
                 refreshToken: refreshToken);
@@ -36,10 +36,10 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenRefreshTokenGivenInAccessTokenPlace_ThenArgumentExceptionIsThrown()
+        public void TestConstructor_WhenRefreshTokenGivenInAccessTokenPlace_ThenArgumentExceptionIsThrown()
         {
-            var applicationId = ApplicationId.Generate();
-            var refreshToken = Token.GenerateRefreshToken(applicationId);
+            ApplicationId applicationId = ApplicationId.Generate();
+            Token refreshToken = Token.GenerateRefreshToken(applicationId);
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()
@@ -51,10 +51,10 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenAccessTokenGivenInRefreshTokenPlace_ThenArgumentExceptionIsThrown()
+        public void TestConstructor_WhenAccessTokenGivenInRefreshTokenPlace_ThenArgumentExceptionIsThrown()
         {
-            var applicationId = ApplicationId.Generate();
-            var accessToken = Token.GenerateAccessToken(applicationId);
+            ApplicationId applicationId = ApplicationId.Generate();
+            Token accessToken = Token.GenerateAccessToken(applicationId);
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()
@@ -66,10 +66,10 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenNullAccessTokenGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullAccessTokenGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var applicationId = ApplicationId.Generate();
-            var refreshToken = Token.GenerateRefreshToken(applicationId);
+            ApplicationId applicationId = ApplicationId.Generate();
+            Token refreshToken = Token.GenerateRefreshToken(applicationId);
 
             Assert.Throws(
                Is.InstanceOf<ArgumentNullException>()
@@ -81,10 +81,10 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenNullRefreshTokenGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullRefreshTokenGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var applicationId = ApplicationId.Generate();
-            var accessToken = Token.GenerateAccessToken(applicationId);
+            ApplicationId applicationId = ApplicationId.Generate();
+            Token accessToken = Token.GenerateAccessToken(applicationId);
 
             Assert.Throws(
                Is.InstanceOf<ArgumentNullException>()

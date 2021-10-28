@@ -10,7 +10,7 @@ namespace Identity.Tests.Unit.Domain
         private static readonly HashedCode TestCode = new HashedCode(new SHA256CodeHashingAlgorithm().Hash(Code.Generate()));
 
         [Test]
-        public void TestConstructing_WhenNullHashedCodeGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullHashedCodeGiven_ThenArgumentNullExceptionIsThrown()
         {
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -20,7 +20,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenEmptyHashedCodeGiven_ThenArgumentExceptionIsThrown()
+        public void TestConstructor_WhenEmptyHashedCodeGiven_ThenArgumentExceptionIsThrown()
         {
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()
@@ -30,7 +30,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenNullBytesHashedCodeGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullBytesHashedCodeGiven_ThenArgumentNullExceptionIsThrown()
         {
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -40,7 +40,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenBase64HashedStringGiven_ThenToStringReturnsBased64HashedString()
+        public void TestConstructor_WhenBase64HashedStringGiven_ThenToStringReturnsBased64HashedString()
         {
             string base64HashedCode = HashedCodeTest.TestCode.ToString();
             var hashedCode = new HashedCode(base64HashedCode);
@@ -49,7 +49,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstructing_WhenHashedCodeBytesGiven_ThenToByteArrayReturnsSameByteArray()
+        public void TestConstructor_WhenHashedCodeBytesGiven_ThenToByteArrayReturnsSameByteArray()
         {
             byte[] hashedCodeBytes = HashedCodeTest.TestCode.ToByteArray();
             var hashedCode = new HashedCode(hashedCodeBytes);
@@ -70,8 +70,8 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestHash_WhenCodeGiven_ThenHashedCodeIsReturned()
         {
-            var code = Code.Generate();
-            var hashedCode = HashedCode.Hash(code);
+            Code code = Code.Generate();
+            HashedCode hashedCode = HashedCode.Hash(code);
 
             Assert.That(hashedCode, Is.Not.Null);
         }
@@ -79,7 +79,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestHash_WhenMultipleTimesSameCodeIsHashed_ThenReturnedHashedCodesAreSame()
         {
-            var code = Code.Generate();
+            Code code = Code.Generate();
 
             HashedCode firstHashedCode = HashedCode.Hash(code);
             HashedCode secondHashedCode = HashedCode.Hash(code);
@@ -90,8 +90,8 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestHash_WhenDifferentCodesAreHashed_ThenReturnedHashedCodesAreDifferent()
         {
-            var firstCode = Code.Generate();
-            var secondCode = Code.Generate();
+            Code firstCode = Code.Generate();
+            Code secondCode = Code.Generate();
 
             HashedCode firstHashedCode = HashedCode.Hash(firstCode);
             HashedCode secondHashedCode = HashedCode.Hash(secondCode);

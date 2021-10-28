@@ -7,7 +7,7 @@ namespace Identity.Tests.Unit.Application
     public class PermissionDtoTest
     {
         [Test]
-        public void TestConstructing_WhenIdGiven_ThenIdIsSet()
+        public void TestConstructor_WhenIdGiven_ThenIdIsSet()
         {
             var permissionDto = new PermissionDto("MyResource", "MyPermission", "My permission description.");
 
@@ -15,7 +15,7 @@ namespace Identity.Tests.Unit.Application
         }
 
         [Test]
-        public void TestConstructing_WhenResourceIdGiven_ThenResourceIdIsSet()
+        public void TestConstructor_WhenResourceIdGiven_ThenResourceIdIsSet()
         {
             var permissionDto = new PermissionDto("MyResource", "MyPermission", "My permission description.");
 
@@ -23,7 +23,7 @@ namespace Identity.Tests.Unit.Application
         }
 
         [Test]
-        public void TestConstructing_WhenDescriptionGiven_ThenDescriptionIsSet()
+        public void TestConstructor_WhenDescriptionGiven_ThenDescriptionIsSet()
         {
             var permissionDto = new PermissionDto("MyResource", "MyPermission", "My permission description.");
 

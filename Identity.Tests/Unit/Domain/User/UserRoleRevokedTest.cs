@@ -7,10 +7,10 @@ namespace Identity.Tests.Unit.Domain
     public class UserRoleRevokedTest
     {
         [Test]
-        public void TestConstruction_WhenUserIdGiven_ThenUserIdIsSet()
+        public void TestConstructor_WhenUserIdGiven_ThenUserIdIsSet()
         {
-            var userId = UserId.Generate();
-            var revokedRoleId = RoleId.Generate();
+            UserId userId = UserId.Generate();
+            RoleId revokedRoleId = RoleId.Generate();
 
             var userRoleRevoked = new UserRoleRevoked(
                 userId: userId,
@@ -20,10 +20,10 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenRevokedRoleIdGiven_ThenRevokedRoleIdIsSet()
+        public void TestConstructor_WhenRevokedRoleIdGiven_ThenRevokedRoleIdIsSet()
         {
-            var userId = UserId.Generate();
-            var revokedRoleId = RoleId.Generate();
+            UserId userId = UserId.Generate();
+            RoleId revokedRoleId = RoleId.Generate();
 
             var userRoleRevoked = new UserRoleRevoked(
                 userId: userId,

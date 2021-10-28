@@ -7,7 +7,7 @@ namespace Identity.Tests.Unit.Domain
     public class PermissionCreatedTest
     {
         [Test]
-        public void TestConstruction_WhenPermissionIdGiven_ThenPermissionIdIsSet()
+        public void TestConstructor_WhenPermissionIdGiven_ThenPermissionIdIsSet()
         {
             var permissionId = new PermissionId(new ResourceId("TestResource"), "MyPermission");
             var permissionCreated = new PermissionCreated(
@@ -18,7 +18,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestConstruction_WhenDescriptionGiven_ThenDescriptionIsSet()
+        public void TestConstructor_WhenDescriptionGiven_ThenDescriptionIsSet()
         {
             var permissionCreated = new PermissionCreated(
                 permissionId: new PermissionId(new ResourceId("TestResource"), "MyPermission"),

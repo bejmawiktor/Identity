@@ -7,7 +7,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
     public class ResourceTest
     {
         [Test]
-        public void TestConstructing_WhenDtoGiven_ThenMembersAreSet()
+        public void TestConstructor_WhenDtoGiven_ThenMembersAreSet()
         {
             var resource = new Resource(
                 new ResourceDto("MyResource", "My resource description."));
