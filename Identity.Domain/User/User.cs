@@ -138,6 +138,13 @@ namespace Identity.Domain
         public Application CreateApplication(string name, Url homepageUrl, Url callbackUrl)
         {
             var applicationId = ApplicationId.Generate();
+            var application = new Application(
+                id: applicationId,
+                userId: this.Id,
+                name: name,
+                secretKey: EncryptedSecretKey.Encrypt(SecretKey.Generate()),
+                homepageUrl: homepageUrl,
+                callbackUrl: callbackUrl);
 
             EventManager.Instance.Notify(new ApplicationCreated(
                 applicationId: applicationId,
@@ -146,13 +153,7 @@ namespace Identity.Domain
                 applicationHomepageUrl: homepageUrl,
                 applicationCallbackUrl: callbackUrl));
 
-            return new Application(
-                id: applicationId,
-                userId: this.Id,
-                name: name,
-                secretKey: EncryptedSecretKey.Encrypt(SecretKey.Generate()),
-                homepageUrl: homepageUrl,
-                callbackUrl: callbackUrl);
+            return application;
         }
     }
 }
