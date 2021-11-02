@@ -120,7 +120,17 @@ namespace Identity.Persistence.MSSQL
                 a.Property(p => p.ApplicationId).HasColumnType("UNIQUEIDENTIFIER");
                 a.Property(p => p.ExpiresAt);
                 a.Property(p => p.Used);
+                a.HasMany(u => u.Permissions).WithOne(p => p.AuthorizationCode).HasForeignKey(p => new {p.Code, p.ApplicationId});
                 a.ToTable("AuthorizationCodes");
+            });
+            modelBuilder.Entity<AuthorizationCodePermission>(u =>
+            {
+                u.HasKey(p => new { p.PermissionName, p.PermissionResourceId, p.ApplicationId, p.Code });
+                u.Property(u => u.PermissionName);
+                u.Property(u => u.PermissionResourceId);
+                u.Property(u => u.ApplicationId).HasColumnType("UNIQUEIDENTIFIER");
+                u.Property(u => u.Code);
+                u.ToTable("AuthorizationCodesPermissions");
             });
         }
 

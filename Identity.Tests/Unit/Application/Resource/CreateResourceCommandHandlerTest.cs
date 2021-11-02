@@ -16,32 +16,42 @@ namespace Identity.Tests.Unit.Application
         public void TestConstructor_WhenResourcesRepositoryGiven_ThenResourcesRepositoryIsSet()
         {
             var resourcesRepositoryMock = new Mock<IResourcesRepository>();
-            var usersRepositoryMock = new Mock<IUsersRepository>();
-            var rolesRepositoryMock = new Mock<IRolesRepository>();
             IResourcesRepository resourcesRepository = resourcesRepositoryMock.Object;
-            IUsersRepository usersRepository = usersRepositoryMock.Object;
-            IRolesRepository rolesRepository = rolesRepositoryMock.Object;
-            var createResourceCommandHandler = new CreateResourceCommandHandler(
-                resourcesRepository,
-                usersRepository,
-                rolesRepository);
+
+            CreateResourceCommandHandler createResourceCommandHandler = this.GetCreateResourceCommandHandler(resourcesRepository);
 
             Assert.That(createResourceCommandHandler.ResourcesRepository, Is.EqualTo(resourcesRepository));
+        }
+
+        private CreateResourceCommandHandler GetCreateResourceCommandHandler(
+            IResourcesRepository resourcesRepository = null,
+            IUsersRepository usersRepository = null,
+            IRolesRepository rolesRepository = null,
+            IApplicationsRepository applicationsRepository = null,
+            IAuthorizationCodesRepository authorizationCodesRepository = null)
+        {
+            var resourcesRepositoryMock = new Mock<IResourcesRepository>();
+            var usersRepositoryMock = new Mock<IUsersRepository>();
+            var rolesRepositoryMock = new Mock<IRolesRepository>();
+            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
+
+            return new CreateResourceCommandHandler(
+                resourcesRepository ?? resourcesRepositoryMock.Object,
+                usersRepository ?? usersRepositoryMock.Object,
+                rolesRepository ?? rolesRepositoryMock.Object,
+                applicationsRepository ?? applicationsRepositoryMock.Object,
+                authorizationCodesRepository ?? authorizationCodesRepositoryMock.Object);
         }
 
         [Test]
         public void TestConstructor_WhenUsersRepositoryGiven_ThenUsersRepositoryIsSet()
         {
-            var resourcesRepositoryMock = new Mock<IResourcesRepository>();
             var usersRepositoryMock = new Mock<IUsersRepository>();
-            var rolesRepositoryMock = new Mock<IRolesRepository>();
-            IResourcesRepository resourcesRepository = resourcesRepositoryMock.Object;
             IUsersRepository usersRepository = usersRepositoryMock.Object;
-            IRolesRepository rolesRepository = rolesRepositoryMock.Object;
-            var createResourceCommandHandler = new CreateResourceCommandHandler(
-                resourcesRepository,
-                usersRepository,
-                rolesRepository);
+
+            CreateResourceCommandHandler createResourceCommandHandler = this.GetCreateResourceCommandHandler(
+                usersRepository: usersRepository);
 
             Assert.That(createResourceCommandHandler.UsersRepository, Is.EqualTo(usersRepository));
         }
@@ -49,18 +59,37 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestConstructor_WhenRolesRepositoryGiven_ThenRolesRepositoryIsSet()
         {
-            var resourcesRepositoryMock = new Mock<IResourcesRepository>();
-            var usersRepositoryMock = new Mock<IUsersRepository>();
             var rolesRepositoryMock = new Mock<IRolesRepository>();
-            IResourcesRepository resourcesRepository = resourcesRepositoryMock.Object;
-            IUsersRepository usersRepository = usersRepositoryMock.Object;
             IRolesRepository rolesRepository = rolesRepositoryMock.Object;
-            var createResourceCommandHandler = new CreateResourceCommandHandler(
-                resourcesRepository,
-                usersRepository,
-                rolesRepository);
+
+            CreateResourceCommandHandler createResourceCommandHandler = this.GetCreateResourceCommandHandler(
+                rolesRepository: rolesRepository);
 
             Assert.That(createResourceCommandHandler.RolesRepository, Is.EqualTo(rolesRepository));
+        }
+
+        [Test]
+        public void TestConstructor_WhenApplicationsRepositoryGiven_ThenApplicationsRepositoryIsSet()
+        {
+            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+
+            CreateResourceCommandHandler createResourceCommandHandler = this.GetCreateResourceCommandHandler(
+                applicationsRepository: applicationsRepository);
+
+            Assert.That(createResourceCommandHandler.ApplicationsRepository, Is.EqualTo(applicationsRepository));
+        }
+
+        [Test]
+        public void TestConstructor_WhenAuthorizationCodesRepositoryGiven_ThenAuthorizationCodesRepositoryIsSet()
+        {
+            var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
+            IAuthorizationCodesRepository authorizationCodesRepository = authorizationCodesRepositoryMock.Object;
+
+            CreateResourceCommandHandler createResourceCommandHandler = this.GetCreateResourceCommandHandler(
+                authorizationCodesRepository: authorizationCodesRepository);
+
+            Assert.That(createResourceCommandHandler.AuthorizationCodesRepository, Is.EqualTo(authorizationCodesRepository));
         }
 
         [Test]
@@ -68,14 +97,23 @@ namespace Identity.Tests.Unit.Application
         {
             var usersRepositoryMock = new Mock<IUsersRepository>();
             var rolesRepositoryMock = new Mock<IRolesRepository>();
+            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
             IUsersRepository usersRepository = usersRepositoryMock.Object;
             IRolesRepository rolesRepository = rolesRepositoryMock.Object;
+            IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+            IAuthorizationCodesRepository authorizationCodesRepository = authorizationCodesRepositoryMock.Object;
 
             Assert.Throws(
                Is.InstanceOf<ArgumentNullException>()
                    .And.Property(nameof(ArgumentNullException.ParamName))
                    .EqualTo("resourcesRepository"),
-               () => new CreateResourceCommandHandler(null, usersRepository, rolesRepository));
+               () => new CreateResourceCommandHandler(
+                   null, 
+                   usersRepository, 
+                   rolesRepository, 
+                   applicationsRepository, 
+                   authorizationCodesRepository));
         }
 
         [Test]
@@ -83,14 +121,23 @@ namespace Identity.Tests.Unit.Application
         {
             var resourcesRepositoryMock = new Mock<IResourcesRepository>();
             var rolesRepositoryMock = new Mock<IRolesRepository>();
+            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
             IResourcesRepository resourcesRepository = resourcesRepositoryMock.Object;
             IRolesRepository rolesRepository = rolesRepositoryMock.Object;
+            IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+            IAuthorizationCodesRepository authorizationCodesRepository = authorizationCodesRepositoryMock.Object;
 
             Assert.Throws(
                Is.InstanceOf<ArgumentNullException>()
                    .And.Property(nameof(ArgumentNullException.ParamName))
                    .EqualTo("usersRepository"),
-               () => new CreateResourceCommandHandler(resourcesRepository, null, rolesRepository));
+               () => new CreateResourceCommandHandler(
+                   resourcesRepository, 
+                   null, 
+                   rolesRepository, 
+                   applicationsRepository, 
+                   authorizationCodesRepository));
         }
 
         [Test]
@@ -98,14 +145,71 @@ namespace Identity.Tests.Unit.Application
         {
             var resourcesRepositoryMock = new Mock<IResourcesRepository>();
             var usersRepositoryMock = new Mock<IUsersRepository>();
+            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
             IResourcesRepository resourcesRepository = resourcesRepositoryMock.Object;
             IUsersRepository usersRepository = usersRepositoryMock.Object;
+            IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+            IAuthorizationCodesRepository authorizationCodesRepository = authorizationCodesRepositoryMock.Object;
 
             Assert.Throws(
                Is.InstanceOf<ArgumentNullException>()
                    .And.Property(nameof(ArgumentNullException.ParamName))
                    .EqualTo("rolesRepository"),
-               () => new CreateResourceCommandHandler(resourcesRepository, usersRepository, null));
+               () => new CreateResourceCommandHandler(
+                   resourcesRepository, 
+                   usersRepository, 
+                   null, 
+                   applicationsRepository, 
+                   authorizationCodesRepository));
+        }
+
+        [Test]
+        public void TestConstructor_WhenNullApplicationsRepositoryGiven_ThenArgumentNullExceptionIsThrown()
+        {
+            var resourcesRepositoryMock = new Mock<IResourcesRepository>();
+            var usersRepositoryMock = new Mock<IUsersRepository>();
+            var rolesRepositoryMock = new Mock<IRolesRepository>();
+            var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
+            IResourcesRepository resourcesRepository = resourcesRepositoryMock.Object;
+            IRolesRepository rolesRepository = rolesRepositoryMock.Object;
+            IUsersRepository usersRepository = usersRepositoryMock.Object;
+            IAuthorizationCodesRepository authorizationCodesRepository = authorizationCodesRepositoryMock.Object;
+
+            Assert.Throws(
+               Is.InstanceOf<ArgumentNullException>()
+                   .And.Property(nameof(ArgumentNullException.ParamName))
+                   .EqualTo("applicationsRepository"),
+               () => new CreateResourceCommandHandler(
+                   resourcesRepository, 
+                   usersRepository, 
+                   rolesRepository, 
+                   null, 
+                   authorizationCodesRepository));
+        }
+
+        [Test]
+        public void TestConstructor_WhenNullAuthorizationCodesRepositoryGiven_ThenArgumentNullExceptionIsThrown()
+        {
+            var resourcesRepositoryMock = new Mock<IResourcesRepository>();
+            var usersRepositoryMock = new Mock<IUsersRepository>();
+            var rolesRepositoryMock = new Mock<IRolesRepository>();
+            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            IResourcesRepository resourcesRepository = resourcesRepositoryMock.Object;
+            IRolesRepository rolesRepository = rolesRepositoryMock.Object;
+            IUsersRepository usersRepository = usersRepositoryMock.Object;
+            IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+
+            Assert.Throws(
+               Is.InstanceOf<ArgumentNullException>()
+                   .And.Property(nameof(ArgumentNullException.ParamName))
+                   .EqualTo("authorizationCodesRepository"),
+               () => new CreateResourceCommandHandler(
+                   resourcesRepository,
+                   usersRepository,
+                   rolesRepository,
+                   applicationsRepository,
+                   null));
         }
 
         [Test]
@@ -116,17 +220,11 @@ namespace Identity.Tests.Unit.Application
                 id: userId,
                 email: "example@example.com",
                 hashedPassword: Identity.Domain.HashedPassword.Hash(new Password("MyPassword")).ToString());
-            var resourcesRepositoryMock = new Mock<IResourcesRepository>();
             var usersRepositoryMock = new Mock<IUsersRepository>();
-            var rolesRepositoryMock = new Mock<IRolesRepository>();
             usersRepositoryMock.Setup(u => u.GetAsync(It.IsAny<Guid>())).Returns(Task.FromResult(user));
-            IResourcesRepository resourcesRepository = resourcesRepositoryMock.Object;
             IUsersRepository usersRepository = usersRepositoryMock.Object;
-            IRolesRepository rolesRepository = rolesRepositoryMock.Object;
-            var createResourceCommandHandler = new CreateResourceCommandHandler(
-                resourcesRepository,
-                usersRepository,
-                rolesRepository);
+            CreateResourceCommandHandler createResourceCommandHandler = this.GetCreateResourceCommandHandler(
+                usersRepository: usersRepository);
             var createResourceCommand = new CreateResourceCommand(
                 "MyResource",
                 "My resource description.",

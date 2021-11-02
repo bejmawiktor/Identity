@@ -10,6 +10,12 @@ namespace Identity.Tests.Unit.Application
     [TestFixture]
     public class AuthorizationCodeDtoTest
     {
+        private static readonly (string ResourceId, string Name)[] TestPermissions = new (string ResourceId, string Name)[]
+        {
+            ("MyResource1", "Add"),
+            ("MyResource2", "Add")
+        };
+
         [Test]
         public void TestConstructor_WhenCodeGiven_ThenCodeIsSet()
         {
@@ -19,7 +25,8 @@ namespace Identity.Tests.Unit.Application
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
                 expiresAt: DateTime.Now,
-                used: true);
+                used: true,
+                permissions: TestPermissions);
 
             Assert.That(authorizationCodeDto.Code, Is.EqualTo(authorizationCodeId.Code.ToString()));
         }
@@ -33,7 +40,8 @@ namespace Identity.Tests.Unit.Application
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
                 expiresAt: DateTime.Now,
-                used: true);
+                used: true,
+                permissions: TestPermissions);
 
             Assert.That(authorizationCodeDto.ApplicationId, Is.EqualTo(applicationId.ToGuid()));
         }
@@ -48,7 +56,8 @@ namespace Identity.Tests.Unit.Application
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
                 expiresAt: expiresAt,
-                used: true);
+                used: true,
+                permissions: TestPermissions);
 
             Assert.That(authorizationCodeDto.ExpiresAt, Is.EqualTo(expiresAt));
         }
@@ -63,9 +72,26 @@ namespace Identity.Tests.Unit.Application
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
                 expiresAt: expiresAt,
-                used: true);
+                used: true,
+                permissions: TestPermissions);
 
             Assert.That(authorizationCodeDto.Used, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestConstructor_WhenPermissionsGiven_ThenPermissionsAreSet()
+        {
+            DateTime expiresAt = DateTime.Now;
+            ApplicationId applicationId = ApplicationId.Generate();
+            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId);
+            var authorizationCodeDto = new AuthorizationCodeDto(
+                code: authorizationCodeId.Code.ToString(),
+                applicationId: applicationId.ToGuid(),
+                expiresAt: expiresAt,
+                used: true,
+                permissions: TestPermissions);
+
+            Assert.That(authorizationCodeDto.Permissions, Is.EqualTo(TestPermissions));
         }
 
         [Test]
@@ -78,12 +104,14 @@ namespace Identity.Tests.Unit.Application
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
                 expiresAt: expiresAt,
-                used: true);
+                used: true,
+                permissions: TestPermissions);
             var secondAuthorizationCodeDto = new AuthorizationCodeDto(
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
                 expiresAt: expiresAt,
-                used: true);
+                used: true,
+                permissions: TestPermissions);
 
             Assert.That(firstAuthorizationCodeDto.Equals(secondAuthorizationCodeDto), Is.True);
         }
@@ -98,12 +126,17 @@ namespace Identity.Tests.Unit.Application
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
                 expiresAt: expiresAt,
-                used: true);
+                used: true,
+                permissions: TestPermissions);
             var secondAuthorizationCodeDto = new AuthorizationCodeDto(
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
                 expiresAt: expiresAt,
-                used: false);
+                used: false,
+                permissions: new (string ResourceId, string Name)[]
+                {
+                    ("MyResource1", "Add")
+                });
 
             Assert.That(firstAuthorizationCodeDto.Equals(secondAuthorizationCodeDto), Is.False);
         }
@@ -118,12 +151,14 @@ namespace Identity.Tests.Unit.Application
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
                 expiresAt: expiresAt,
-                used: true);
+                used: true,
+                permissions: TestPermissions);
             var secondAuthorizationCodeDto = new AuthorizationCodeDto(
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
                 expiresAt: expiresAt,
-                used: true);
+                used: true,
+                permissions: TestPermissions);
 
             Assert.That(firstAuthorizationCodeDto.GetHashCode(), Is.EqualTo(secondAuthorizationCodeDto.GetHashCode()));
         }
@@ -138,12 +173,14 @@ namespace Identity.Tests.Unit.Application
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
                 expiresAt: expiresAt,
-                used: true);
+                used: true,
+                permissions: TestPermissions);
             var secondAuthorizationCodeDto = new AuthorizationCodeDto(
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
                 expiresAt: expiresAt,
-                used: false);
+                used: false,
+                permissions: TestPermissions);
 
             Assert.That(firstAuthorizationCodeDto.GetHashCode(), Is.Not.EqualTo(secondAuthorizationCodeDto.GetHashCode()));
         }
@@ -158,7 +195,8 @@ namespace Identity.Tests.Unit.Application
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: authorizationCodeId.ApplicationId.ToGuid(),
                 expiresAt: expiresAt,
-                used: true);
+                used: true,
+                permissions: TestPermissions);
 
             AuthorizationCode authorizationCode = authorizationCodeDto.ToAuthorizationCode();
 
@@ -168,6 +206,11 @@ namespace Identity.Tests.Unit.Application
                 Assert.That(authorizationCode.Id.ApplicationId, Is.EqualTo(applicationId));
                 Assert.That(authorizationCode.ExpiresAt, Is.EqualTo(expiresAt));
                 Assert.That(authorizationCode.Used, Is.True);
+                Assert.That(authorizationCode.Permissions, Is.EquivalentTo(new PermissionId[]
+                {
+                    new PermissionId(new ResourceId("MyResource1"), "Add"),
+                    new PermissionId(new ResourceId("MyResource2"), "Add")
+                }));
             });
         }
     }

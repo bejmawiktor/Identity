@@ -1,6 +1,8 @@
 ﻿using DDD.Application.Model;
 using Identity.Domain;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Identity.Application
 {
@@ -12,17 +14,20 @@ namespace Identity.Application
         public Guid ApplicationId { get; set; }
         public DateTime ExpiresAt { get; set; }
         public bool Used { get; set; }
+        public IEnumerable<(string ResourceId, string Name)> Permissions { get; set; }
 
         public AuthorizationCodeDto(
             string code,
             Guid applicationId,
             DateTime expiresAt,
-            bool used)
+            bool used,
+            IEnumerable<(string ResourceId, string Name)> permissions)
         {
             this.Code = code;
             this.ApplicationId = applicationId;
             this.ExpiresAt = expiresAt;
             this.Used = used;
+            this.Permissions = permissions;
         }
 
         AuthorizationCode IDomainObjectDto<AuthorizationCode>.ToDomainObject()
@@ -32,7 +37,14 @@ namespace Identity.Application
             => new AuthorizationCode(
                 new AuthorizationCodeId(new HashedCode(this.Code), new ApplicationId(this.ApplicationId)),
                 this.ExpiresAt,
-                this.Used);
+                this.Used,
+                this.ConvertPermissions());
+
+        private IEnumerable<PermissionId> ConvertPermissions()
+           => this.Permissions.Select(p => this.CreatePermissionId(p));
+
+        private PermissionId CreatePermissionId((string ResourceId, string Name) permissionIdTuple)
+            => new PermissionId(new ResourceId(permissionIdTuple.ResourceId), permissionIdTuple.Name);
 
         public override bool Equals(object obj)
         {
@@ -40,12 +52,28 @@ namespace Identity.Application
                 && this.Code == dto.Code
                 && this.ApplicationId.Equals(dto.ApplicationId)
                 && this.ExpiresAt == dto.ExpiresAt
-                && this.Used == dto.Used;
+                && this.Used == dto.Used
+                && this.Permissions.SequenceEqual(dto.Permissions);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(this.Code, this.ApplicationId, this.ExpiresAt, this.Used);
+            unchecked
+            {
+                int hash = 17;
+
+                hash = hash * 23 + this.Code.GetHashCode();
+                hash = hash * 23 + this.ApplicationId.GetHashCode();
+                hash = hash * 23 + this.ExpiresAt.GetHashCode();
+                hash = hash * 23 + this.Used.GetHashCode();
+
+                foreach(var permission in this.Permissions)
+                {
+                    hash = hash * 23 + permission.GetHashCode();
+                }
+
+                return hash;
+            }
         }
     }
 }

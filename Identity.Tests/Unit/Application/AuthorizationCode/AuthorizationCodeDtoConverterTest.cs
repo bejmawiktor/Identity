@@ -19,7 +19,12 @@ namespace Identity.Tests.Unit.Application
             var authorizationCode = new AuthorizationCode(
                 id: authorizationCodeId,
                 expiresAt: expiresAt,
-                used: true);
+                used: true,
+                permissions: new PermissionId[] 
+                {
+                    new PermissionId(new ResourceId("MyResource1"), "Add"),
+                    new PermissionId(new ResourceId("MyResource2"), "Add")
+                });
             var authorizationCodeDtoConverter = new AuthorizationCodeDtoConverter();
 
             AuthorizationCodeDto authorizationCodeDto = authorizationCodeDtoConverter.ToDto(authorizationCode);
@@ -30,6 +35,11 @@ namespace Identity.Tests.Unit.Application
                 Assert.That(authorizationCodeDto.Code, Is.EqualTo(authorizationCodeId.Code.ToString()));
                 Assert.That(authorizationCodeDto.ExpiresAt, Is.EqualTo(expiresAt));
                 Assert.That(authorizationCodeDto.Used, Is.True);
+                Assert.That(authorizationCodeDto.Permissions, Is.EquivalentTo(new (string ResourceId, string Name)[]
+                {
+                    ("MyResource1", "Add"),
+                    ("MyResource2", "Add")
+                }));
             });
         }
 

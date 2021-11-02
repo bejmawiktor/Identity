@@ -16,6 +16,11 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
     public class AuthorizationCodesRepositoryTest : DatabaseTestBase
     {
         private static ApplicationId ApplicationId = ApplicationId.Generate();
+        private static readonly (string ResourceId, string Name)[] TestPermissions = new (string ResourceId, string Name)[]
+        {
+            ("MyResource1", "Add"),
+            ("MyResource2", "Add")
+        };
 
         private static readonly AuthorizationCodeDto[] AuthorizationCodesTestData = new AuthorizationCodeDto[]
         {
@@ -23,32 +28,32 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 code: AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId).Code.ToString(),
                 applicationId: ApplicationId.ToGuid(),
                 expiresAt: DateTime.Now,
-                used: true
-            ),
+                used: true,
+                permissions: TestPermissions),
             new AuthorizationCodeDto(
                 code: AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId).Code.ToString(),
                 applicationId: ApplicationId.ToGuid(),
                 expiresAt: DateTime.Now,
-                used: true
-            ),
+                used: true,
+                permissions: TestPermissions),
             new AuthorizationCodeDto(
                 code: AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId).Code.ToString(),
                 applicationId: ApplicationId.ToGuid(),
                 expiresAt: DateTime.Now,
-                used: false
-            ),
+                used: false,
+                permissions: TestPermissions),
             new AuthorizationCodeDto(
                 code: AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId).Code.ToString(),
                 applicationId: ApplicationId.ToGuid(),
                 expiresAt: DateTime.Now,
-                used: true
-            ),
+                used: true,
+                permissions: TestPermissions),
             new AuthorizationCodeDto(
                 code: AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId).Code.ToString(),
                 applicationId: ApplicationId.ToGuid(),
                 expiresAt: DateTime.Now,
-                used: false
-            )
+                used: false,
+                permissions: TestPermissions)
         };
 
         public static IEnumerable<TestCaseData> PaginatedAsyncGetTestData
@@ -108,7 +113,8 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: authorizationCodeId.ApplicationId.ToGuid(),
                 expiresAt: now,
-                used: true);
+                used: true,
+                permissions: TestPermissions);
             var authorizationCodesRepository = new AuthorizationCodesRepository(this.IdentityContext);
 
             await authorizationCodesRepository.AddAsync(authorizationCodeDto);
@@ -133,14 +139,19 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: authorizationCodeId.ApplicationId.ToGuid(),
                 expiresAt: now,
-                used: false);
+                used: false,
+                permissions: TestPermissions);
             var authorizationCodesRepository = new AuthorizationCodesRepository(this.IdentityContext);
             await authorizationCodesRepository.AddAsync(authorizationCodeDto);
             authorizationCodeDto = new AuthorizationCodeDto(
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: authorizationCodeId.ApplicationId.ToGuid(),
                 expiresAt: now,
-                used: true);
+                used: true,
+                permissions: new (string ResourceId, string Name)[]
+                {
+                    ("MyResource1", "Add")
+                });
 
             await authorizationCodesRepository.UpdateAsync(authorizationCodeDto);
 
@@ -164,7 +175,8 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: authorizationCodeId.ApplicationId.ToGuid(),
                 expiresAt: now,
-                used: false);
+                used: false,
+                permissions: TestPermissions);
             var authorizationCodesRepository = new AuthorizationCodesRepository(this.IdentityContext);
             await authorizationCodesRepository.AddAsync(authorizationCodeDto);
 
@@ -184,7 +196,8 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: authorizationCodeId.ApplicationId.ToGuid(),
                 expiresAt: now,
-                used: false);
+                used: false,
+                permissions: TestPermissions);
             var authorizationCodesRepository = new AuthorizationCodesRepository(this.IdentityContext);
             await authorizationCodesRepository.AddAsync(authorizationCodeDto);
 

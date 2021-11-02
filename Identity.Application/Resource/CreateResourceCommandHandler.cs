@@ -10,13 +10,17 @@ namespace Identity.Application
         public IUsersRepository UsersRepository { get; }
         public IResourcesRepository ResourcesRepository { get; }
         public IRolesRepository RolesRepository { get; }
+        public IApplicationsRepository ApplicationsRepository { get; }
+        public IAuthorizationCodesRepository AuthorizationCodesRepository { get; }
         private ResourceService ResourceService { get; }
         private AuthorizationService AuthorizationService { get; }
 
         public CreateResourceCommandHandler(
             IResourcesRepository resourcesRepository,
             IUsersRepository usersRepository,
-            IRolesRepository rolesRepository)
+            IRolesRepository rolesRepository,
+            IApplicationsRepository applicationsRepository,
+            IAuthorizationCodesRepository authorizationCodesRepository)
         {
             this.ResourcesRepository = resourcesRepository
                 ?? throw new ArgumentNullException(nameof(resourcesRepository));
@@ -26,9 +30,15 @@ namespace Identity.Application
                 ?? throw new ArgumentNullException(nameof(rolesRepository));
             this.ResourceService = new ResourceService(
                 new ResourcesRepositoryAdapter(resourcesRepository));
+            this.ApplicationsRepository = applicationsRepository
+                ?? throw new ArgumentNullException(nameof(applicationsRepository));
+            this.AuthorizationCodesRepository = authorizationCodesRepository 
+                ?? throw new ArgumentNullException(nameof(authorizationCodesRepository));
             this.AuthorizationService = new AuthorizationService(
                 new UsersRepositoryAdapter(this.UsersRepository),
-                new RolesRepositoryAdapter(this.RolesRepository));
+                new RolesRepositoryAdapter(this.RolesRepository),
+                new ApplicationsRepositoryAdapter(this.ApplicationsRepository),
+                new AuthorizationCodesRepositoryAdapter(this.AuthorizationCodesRepository));
         }
 
         public async Task HandleAsync(CreateResourceCommand command)

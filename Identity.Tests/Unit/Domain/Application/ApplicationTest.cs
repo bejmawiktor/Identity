@@ -390,12 +390,17 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestGenerateAuthorizationCode_WhenGenerating_ThenAuthorizationCodeIsReturnedWithApplicationId()
+        public void TestCreateAuthorizationCode_WhenCreating_ThenAuthorizationCodeIsReturned()
         {
             SecretKey secretKey = SecretKey.Generate();
             EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
             ApplicationId applicationId = ApplicationId.Generate();
             UserId userId = UserId.Generate();
+            var code = Code.Generate();
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource1"), "Add")
+            };
             var application = new Application(
                 id: applicationId,
                 userId: userId,
@@ -404,9 +409,13 @@ namespace Identity.Tests.Unit.Domain
                 homepageUrl: new Url("https://www.example.com"),
                 callbackUrl: new Url("https://www.example.com/1"));
 
-            AuthorizationCode authorizationCode = application.GenerateAuthorizationCode();
+            AuthorizationCode authorizationCode = application.CreateAuthorizationCode(code, permissions);
 
-            Assert.That(authorizationCode.Id.ApplicationId, Is.EqualTo(applicationId));
+            Assert.Multiple(() =>
+            {
+                Assert.That(authorizationCode.Id.ApplicationId, Is.EqualTo(applicationId));
+                Assert.That(authorizationCode.Permissions, Is.EqualTo(permissions));
+            });
         }
     }
 }

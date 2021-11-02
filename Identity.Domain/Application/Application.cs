@@ -1,5 +1,6 @@
 ﻿using DDD.Domain.Model;
 using System;
+using System.Collections.Generic;
 
 namespace Identity.Domain
 {
@@ -101,8 +102,9 @@ namespace Identity.Domain
                 refreshToken: Token.GenerateRefreshToken(this.Id, refreshToken.ExpiresAt));
         }
 
-        public AuthorizationCode GenerateAuthorizationCode()
+        public AuthorizationCode CreateAuthorizationCode(Code code, IEnumerable<PermissionId> permissions)
             => new AuthorizationCode(
-                id: AuthorizationCodeId.Generate(this.Id));
+                id: new AuthorizationCodeId(HashedCode.Hash(code), this.Id),
+                permissions: permissions);
     }
 }
