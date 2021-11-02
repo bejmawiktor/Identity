@@ -225,9 +225,9 @@ namespace Identity.Tests.Unit.Domain
                    .And.Property(nameof(ArgumentNullException.ParamName))
                    .EqualTo("usersRepository"),
                () => new AuthorizationService(
-                   null, 
-                   rolesRepositoryMock.Object, 
-                   applicationsRepositoryMock.Object, 
+                   null,
+                   rolesRepositoryMock.Object,
+                   applicationsRepositoryMock.Object,
                    authorizationCodesRepositoryMock.Object));
         }
 
@@ -264,9 +264,9 @@ namespace Identity.Tests.Unit.Domain
                    .And.Property(nameof(ArgumentNullException.ParamName))
                    .EqualTo("rolesRepository"),
                () => new AuthorizationService(
-                   usersRepositoryMock.Object, 
-                   null, 
-                   applicationsRepositoryMock.Object, 
+                   usersRepositoryMock.Object,
+                   null,
+                   applicationsRepositoryMock.Object,
                    authorizationCodesRepositoryMock.Object));
         }
 
@@ -303,9 +303,9 @@ namespace Identity.Tests.Unit.Domain
                    .And.Property(nameof(ArgumentNullException.ParamName))
                    .EqualTo("applicationsRepository"),
                () => new AuthorizationService(
-                   usersRepositoryMock.Object, 
-                   rolesRepositoryMock.Object, 
-                   null, 
+                   usersRepositoryMock.Object,
+                   rolesRepositoryMock.Object,
+                   null,
                    authorizationCodesRepositoryMock.Object));
         }
 
@@ -610,7 +610,7 @@ namespace Identity.Tests.Unit.Domain
 
             ApplicationNotFoundException exception = Assert.ThrowsAsync<ApplicationNotFoundException>(
                 async () => await authorizationService.GenerateAuthorizationCode(
-                    applicationId, 
+                    applicationId,
                     new Url("http://example.com"),
                     permissions));
 
@@ -628,8 +628,8 @@ namespace Identity.Tests.Unit.Domain
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult(new Application(
-                    ApplicationId.Generate(), 
-                    UserId.Generate(), 
+                    ApplicationId.Generate(),
+                    UserId.Generate(),
                     "MyApp1",
                     EncryptedSecretKey.Encrypt(SecretKey.Generate()),
                     new Url("http://example.com"),
@@ -736,14 +736,14 @@ namespace Identity.Tests.Unit.Domain
 
         [TestCaseSource(nameof(IncorrectPermissionsTestData))]
         public void TestGenerateAuthorizationCode_WhenGivenPermissionsAreIncompatibleWithUserPermissions_ThenArgumentExceptionIsThrown(
-            PermissionId[] userPermissions, 
+            PermissionId[] userPermissions,
             PermissionId[] rolePermissions,
             PermissionId[] requestedPermissions)
         {
             RoleId roleId = RoleId.Generate();
             Role role = new Role(roleId, "MyRole", "My role description.", rolePermissions);
-            IEnumerable<RoleId> roles = rolePermissions.Count() == 0 
-                ? Enumerable.Empty<RoleId>() 
+            IEnumerable<RoleId> roles = rolePermissions.Count() == 0
+                ? Enumerable.Empty<RoleId>()
                 : new RoleId[] { roleId };
             var user = new User(
                 UserId.Generate(),
@@ -776,9 +776,9 @@ namespace Identity.Tests.Unit.Domain
             IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
             IAuthorizationCodesRepository authorizationCodesRepository = authorizationCodesRepositoryMock.Object;
             var authorizationService = new AuthorizationService(
-                usersRepository, 
-                rolesRepository, 
-                applicationsRepository, 
+                usersRepository,
+                rolesRepository,
+                applicationsRepository,
                 authorizationCodesRepository);
             var applicationId = ApplicationId.Generate();
 
@@ -835,8 +835,8 @@ namespace Identity.Tests.Unit.Domain
             IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
             IAuthorizationCodesRepository authorizationCodesRepository = authorizationCodesRepositoryMock.Object;
             var authorizationService = new AuthorizationService(
-                usersRepository, 
-                rolesRepository, 
+                usersRepository,
+                rolesRepository,
                 applicationsRepository,
                 authorizationCodesRepository);
             var applicationId = ApplicationId.Generate();

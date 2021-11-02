@@ -41,9 +41,9 @@ namespace Identity.Persistence.MSSQL.DataModels
 
         public AuthorizationCodeDto ToDto()
             => new AuthorizationCodeDto(
-                this.Code, 
-                this.ApplicationId, 
-                this.ExpiresAt, 
+                this.Code,
+                this.ApplicationId,
+                this.ExpiresAt,
                 this.Used,
                 this.Permissions.Select(p => (p.PermissionResourceId, p.PermissionName)));
     }

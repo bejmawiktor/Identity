@@ -32,7 +32,7 @@ namespace Identity.Application
                 new ResourcesRepositoryAdapter(resourcesRepository));
             this.ApplicationsRepository = applicationsRepository
                 ?? throw new ArgumentNullException(nameof(applicationsRepository));
-            this.AuthorizationCodesRepository = authorizationCodesRepository 
+            this.AuthorizationCodesRepository = authorizationCodesRepository
                 ?? throw new ArgumentNullException(nameof(authorizationCodesRepository));
             this.AuthorizationService = new AuthorizationService(
                 new UsersRepositoryAdapter(this.UsersRepository),

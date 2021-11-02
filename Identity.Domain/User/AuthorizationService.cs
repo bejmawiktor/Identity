@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Identity.Domain
 {
@@ -18,11 +18,11 @@ namespace Identity.Domain
             IApplicationsRepository applicationsRepository,
             IAuthorizationCodesRepository authorizationCodesRepository)
         {
-            this.UsersRepository = usersRepository 
+            this.UsersRepository = usersRepository
                 ?? throw new ArgumentNullException(nameof(usersRepository));
-            this.RolesRepository = rolesRepository 
+            this.RolesRepository = rolesRepository
                 ?? throw new ArgumentNullException(nameof(rolesRepository));
-            this.ApplicationsRepository = applicationsRepository 
+            this.ApplicationsRepository = applicationsRepository
                 ?? throw new ArgumentNullException(nameof(applicationsRepository));
             this.AuthorizationCodesRepository = authorizationCodesRepository
                 ?? throw new ArgumentNullException(nameof(authorizationCodesRepository));

@@ -27,7 +27,7 @@ namespace Identity.Domain
 
         internal static AuthorizationCodeId Generate(ApplicationId applicationId)
             => new AuthorizationCodeId(
-                HashedCode.Hash(Domain.Code.Generate()), 
+                HashedCode.Hash(Domain.Code.Generate()),
                 applicationId);
     }
 }

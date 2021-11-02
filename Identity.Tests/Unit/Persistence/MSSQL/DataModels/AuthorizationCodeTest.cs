@@ -2,7 +2,6 @@
 using Identity.Persistence.MSSQL.DataModels;
 using NUnit.Framework;
 using System;
-using System.Linq;
 
 namespace Identity.Tests.Unit.Persistence.MSSQL
 {
@@ -124,7 +123,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 Assert.That(authorizationCodeDto.Code, Is.EqualTo(authorizationCodeId.Code.ToString()));
                 Assert.That(authorizationCodeDto.ApplicationId, Is.EqualTo(applicationId.ToGuid()));
                 Assert.That(authorizationCodeDto.ExpiresAt, Is.EqualTo(now));
-                Assert.That(authorizationCodeDto.Used, Is.True); 
+                Assert.That(authorizationCodeDto.Used, Is.True);
                 Assert.That(authorizationCode.Permissions, Is.EquivalentTo(new AuthorizationCodePermission[]
                 {
                     new AuthorizationCodePermission()

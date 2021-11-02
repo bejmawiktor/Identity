@@ -11,7 +11,7 @@ namespace Identity.Tests.Unit.Application
     [TestFixture]
     public class ApplicationDtoConverterTest
     {
-        private static readonly EncryptedSecretKey EncryptedSecretKey 
+        private static readonly EncryptedSecretKey EncryptedSecretKey
             = EncryptedSecretKey.Encrypt(Identity.Domain.SecretKey.Generate());
 
         [Test]

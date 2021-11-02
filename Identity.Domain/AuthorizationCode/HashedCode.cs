@@ -7,7 +7,7 @@ namespace Identity.Domain
 {
     public class HashedCode : ValueObject
     {
-        private static readonly ICodeHashingAlgorithm CodeHashingAlgorithm 
+        private static readonly ICodeHashingAlgorithm CodeHashingAlgorithm
             = new SHA256CodeHashingAlgorithm();
 
         private IEnumerable<byte> HashedValue { get; }
@@ -21,12 +21,12 @@ namespace Identity.Domain
 
         private void ValidateHashedCode(string base64HashedCode)
         {
-            if (base64HashedCode == null)
+            if(base64HashedCode == null)
             {
                 throw new ArgumentNullException(nameof(base64HashedCode));
             }
 
-            if (base64HashedCode.Length == 0)
+            if(base64HashedCode.Length == 0)
             {
                 throw new ArgumentException("Hashed code can't be empty.");
             }
@@ -43,7 +43,7 @@ namespace Identity.Domain
 
         private void ValidateHashedCode(byte[] hashedCode)
         {
-            if (hashedCode == null)
+            if(hashedCode == null)
             {
                 throw new ArgumentNullException(nameof(hashedCode));
             }
@@ -53,7 +53,7 @@ namespace Identity.Domain
 
         protected override IEnumerable<object> GetEqualityMembers()
         {
-            foreach (var encryptedValue in this.HashedValue)
+            foreach(var encryptedValue in this.HashedValue)
             {
                 yield return encryptedValue;
             }
@@ -61,7 +61,7 @@ namespace Identity.Domain
 
         public static HashedCode Hash(Code code)
         {
-            if (code == null)
+            if(code == null)
             {
                 throw new ArgumentNullException(nameof(code));
             }

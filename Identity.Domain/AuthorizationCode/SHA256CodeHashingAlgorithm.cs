@@ -7,7 +7,7 @@ namespace Identity.Domain
     internal class SHA256CodeHashingAlgorithm : ICodeHashingAlgorithm
     {
         private static readonly int HashLength = 32;
-        
+
         public byte[] Hash(Code code)
         {
             if(code == null)
@@ -17,7 +17,7 @@ namespace Identity.Domain
 
             byte[] hashedCodeBytes = null;
 
-            using (SHA256 sha256Hash = SHA256.Create())
+            using(SHA256 sha256Hash = SHA256.Create())
             {
                 byte[] sourceBytes = Encoding.UTF8.GetBytes(code.ToString());
 

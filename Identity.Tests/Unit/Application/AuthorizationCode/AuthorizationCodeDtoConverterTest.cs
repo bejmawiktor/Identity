@@ -20,7 +20,7 @@ namespace Identity.Tests.Unit.Application
                 id: authorizationCodeId,
                 expiresAt: expiresAt,
                 used: true,
-                permissions: new PermissionId[] 
+                permissions: new PermissionId[]
                 {
                     new PermissionId(new ResourceId("MyResource1"), "Add"),
                     new PermissionId(new ResourceId("MyResource2"), "Add")

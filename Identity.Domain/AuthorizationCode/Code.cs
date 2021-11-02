@@ -8,7 +8,7 @@ namespace Identity.Domain
 {
     public class Code : ValueObject
     {
-        private static int Length => 32; 
+        private static int Length => 32;
         private static readonly char[] CharacterSet
              = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".ToCharArray();
 

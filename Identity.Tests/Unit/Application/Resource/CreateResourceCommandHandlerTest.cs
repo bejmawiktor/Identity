@@ -109,10 +109,10 @@ namespace Identity.Tests.Unit.Application
                    .And.Property(nameof(ArgumentNullException.ParamName))
                    .EqualTo("resourcesRepository"),
                () => new CreateResourceCommandHandler(
-                   null, 
-                   usersRepository, 
-                   rolesRepository, 
-                   applicationsRepository, 
+                   null,
+                   usersRepository,
+                   rolesRepository,
+                   applicationsRepository,
                    authorizationCodesRepository));
         }
 
@@ -133,10 +133,10 @@ namespace Identity.Tests.Unit.Application
                    .And.Property(nameof(ArgumentNullException.ParamName))
                    .EqualTo("usersRepository"),
                () => new CreateResourceCommandHandler(
-                   resourcesRepository, 
-                   null, 
-                   rolesRepository, 
-                   applicationsRepository, 
+                   resourcesRepository,
+                   null,
+                   rolesRepository,
+                   applicationsRepository,
                    authorizationCodesRepository));
         }
 
@@ -157,10 +157,10 @@ namespace Identity.Tests.Unit.Application
                    .And.Property(nameof(ArgumentNullException.ParamName))
                    .EqualTo("rolesRepository"),
                () => new CreateResourceCommandHandler(
-                   resourcesRepository, 
-                   usersRepository, 
-                   null, 
-                   applicationsRepository, 
+                   resourcesRepository,
+                   usersRepository,
+                   null,
+                   applicationsRepository,
                    authorizationCodesRepository));
         }
 
@@ -181,10 +181,10 @@ namespace Identity.Tests.Unit.Application
                    .And.Property(nameof(ArgumentNullException.ParamName))
                    .EqualTo("applicationsRepository"),
                () => new CreateResourceCommandHandler(
-                   resourcesRepository, 
-                   usersRepository, 
-                   rolesRepository, 
-                   null, 
+                   resourcesRepository,
+                   usersRepository,
+                   rolesRepository,
+                   null,
                    authorizationCodesRepository));
         }
 
