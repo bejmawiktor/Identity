@@ -155,16 +155,16 @@ namespace Identity.Domain
         }
 
         public async Task<TokenPair> GenerateTokens(
-            ApplicationId applicationId, 
-            SecretKey secretKey, 
-            Url callbackUrl, 
+            ApplicationId applicationId,
+            SecretKey secretKey,
+            Url callbackUrl,
             Code code)
         {
             this.ValidateGenerateTokensParameters(applicationId, secretKey, callbackUrl, code);
 
             Application application = await this.ApplicationsRepository.GetAsync(applicationId);
 
-            if (application == null)
+            if(application == null)
             {
                 throw new ApplicationNotFoundException(applicationId);
             }
@@ -181,7 +181,7 @@ namespace Identity.Domain
 
             var authorizationCodeId = new AuthorizationCodeId(HashedCode.Hash(code), applicationId);
             AuthorizationCode authorizationCode = await this.AuthorizationCodesRepository.GetAsync(authorizationCodeId);
-            
+
             if(authorizationCode == null)
             {
                 throw new AuthorizationCodeNotFoundException();
@@ -197,9 +197,9 @@ namespace Identity.Domain
         }
 
         private void ValidateGenerateTokensParameters(
-            ApplicationId applicationId, 
-            SecretKey secretKey, 
-            Url callbackUrl, 
+            ApplicationId applicationId,
+            SecretKey secretKey,
+            Url callbackUrl,
             Code code)
         {
             if(applicationId == null)

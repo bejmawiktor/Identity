@@ -473,7 +473,7 @@ namespace Identity.Tests.Unit.Domain
             IUsersRepository usersRepository = usersRepositoryMock.Object;
             IRolesRepository rolesRepository = rolesRepositoryMock.Object;
             AuthorizationService authorizationService = this.GetAuthorizationService(
-                usersRepository: usersRepository, 
+                usersRepository: usersRepository,
                 rolesRepository: rolesRepository);
 
             bool userIsPermitted = await authorizationService.CheckUserAccess(user.Id, permissionId);
@@ -689,8 +689,8 @@ namespace Identity.Tests.Unit.Domain
             IRolesRepository rolesRepository = rolesRepositoryMock.Object;
             IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
             AuthorizationService authorizationService = this.GetAuthorizationService(
-                usersRepository: usersRepository, 
-                rolesRepository: rolesRepository, 
+                usersRepository: usersRepository,
+                rolesRepository: rolesRepository,
                 applicationsRepository: applicationsRepository);
 
             ArgumentException exception = Assert.ThrowsAsync<ArgumentException>(
@@ -1163,9 +1163,9 @@ namespace Identity.Tests.Unit.Domain
                 authorizationCodesRepository: authorizationCodesRepository);
 
             TokenPair tokenPair = await authorizationService.GenerateTokens(
-                applicationId, 
-                secretKey, 
-                new Url("http://example.com/1"), 
+                applicationId,
+                secretKey,
+                new Url("http://example.com/1"),
                 code);
 
             Assert.That(authorizationCode.Used, Is.True);

@@ -5,7 +5,7 @@ namespace Identity.Domain
 {
     public class AuthorizationCodeNotFoundException : Exception
     {
-        public AuthorizationCodeNotFoundException() 
+        public AuthorizationCodeNotFoundException()
         : base("Authorization code not found.")
         {
         }

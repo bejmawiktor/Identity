@@ -208,9 +208,9 @@ namespace Identity.Tests.Unit.Domain
                 id: AuthorizationCodeId.Generate(ApplicationId.Generate(), out _),
                 used: true,
                 expiresAt: DateTime.Now,
-                permissions: new PermissionId[] 
-                { 
-                    new PermissionId(new ResourceId("MyResource"), "Add") 
+                permissions: new PermissionId[]
+                {
+                    new PermissionId(new ResourceId("MyResource"), "Add")
                 });
 
             Assert.Throws(
