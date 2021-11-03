@@ -30,15 +30,7 @@ namespace Identity.Domain
 
         public async Task<bool> CheckUserAccess(UserId userId, PermissionId permissionId)
         {
-            if(userId == null)
-            {
-                throw new ArgumentNullException(nameof(userId));
-            }
-
-            if(permissionId == null)
-            {
-                throw new ArgumentNullException(nameof(permissionId));
-            }
+            this.ValidateCheckUserParameters(userId, permissionId);
 
             User user = await this.UsersRepository.GetAsync(userId);
 
@@ -65,20 +57,25 @@ namespace Identity.Domain
             return false;
         }
 
+        private void ValidateCheckUserParameters(UserId userId, PermissionId permissionId)
+        {
+            if(userId == null)
+            {
+                throw new ArgumentNullException(nameof(userId));
+            }
+
+            if(permissionId == null)
+            {
+                throw new ArgumentNullException(nameof(permissionId));
+            }
+        }
+
         public async Task<Code> GenerateAuthorizationCode(
             ApplicationId applicationId,
             Url callbackUrl,
             IEnumerable<PermissionId> permissions)
         {
-            if(permissions == null)
-            {
-                throw new ArgumentNullException(nameof(permissions));
-            }
-
-            if(!permissions.Any())
-            {
-                throw new ArgumentException("Permissions can't be empty.");
-            }
+            this.ValidateGenerateAuthorizationCodeParameters(applicationId, callbackUrl, permissions);
 
             Application application = await this.ApplicationsRepository.GetAsync(applicationId);
 
@@ -104,6 +101,32 @@ namespace Identity.Domain
             await this.AuthorizationCodesRepository.AddAsync(authorizationCode);
 
             return code;
+        }
+
+        private void ValidateGenerateAuthorizationCodeParameters(
+            ApplicationId applicationId,
+            Url callbackUrl,
+            IEnumerable<PermissionId> permissions)
+        {
+            if(applicationId == null)
+            {
+                throw new ArgumentNullException(nameof(applicationId));
+            }
+
+            if(callbackUrl == null)
+            {
+                throw new ArgumentNullException(nameof(callbackUrl));
+            }
+
+            if(permissions == null)
+            {
+                throw new ArgumentNullException(nameof(permissions));
+            }
+
+            if(!permissions.Any())
+            {
+                throw new ArgumentException("Permissions can't be empty.");
+            }
         }
 
         private async Task<bool> ComparePermissions(UserId userId, IEnumerable<PermissionId> requestedPermissions)
@@ -133,7 +156,11 @@ namespace Identity.Domain
             return true;
         }
 
-        public async Task<TokenPair> GenerateTokens(ApplicationId applicationId, SecretKey secretKey, Url callbackUrl, Code code)
+        public async Task<TokenPair> GenerateTokens(
+            ApplicationId applicationId, 
+            SecretKey secretKey, 
+            Url callbackUrl, 
+            Code code)
         {
             this.ValidateGenerateTokensParameters(applicationId, secretKey, callbackUrl, code);
 
@@ -160,11 +187,6 @@ namespace Identity.Domain
             if(authorizationCode == null)
             {
                 throw new AuthorizationCodeNotFoundException();
-            }
-
-            if(authorizationCode.ExpiresAt < DateTime.Now)
-            {
-                throw new InvalidOperationException("Authorization code has expired.");
             }
 
             authorizationCode.Use();

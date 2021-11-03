@@ -155,6 +155,25 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
+        public void TestUse_WhenAuthorizationCodeExpired_ThenInvalidOperationIsThrown()
+        {
+            var authorizationCode = new AuthorizationCode(
+                id: AuthorizationCodeId.Generate(ApplicationId.Generate()),
+                used: false,
+                expiresAt: DateTime.Now.AddMinutes(-2),
+                permissions: new PermissionId[]
+                {
+                    new PermissionId(new ResourceId("MyResource"), "Add")
+                });
+
+            Assert.Throws(
+                Is.InstanceOf<InvalidOperationException>()
+                    .And.Message
+                    .EqualTo("Authorization code has expired."),
+                () => authorizationCode.Use());
+        }
+
+        [Test]
         public void TestUse_WhenAuthorizationCodeWasPreviouslyUsed_ThenInvalidOperationIsThrown()
         {
             var authorizationCode = new AuthorizationCode(
@@ -186,6 +205,36 @@ namespace Identity.Tests.Unit.Domain
             authorizationCode.Use();
 
             Assert.That(authorizationCode.Used, Is.True);
+        }
+
+        [Test]
+        public void TestExpired_WhenExpiresAtElapsed_ThenTrueIsReturned()
+        {
+            var authorizationCode = new AuthorizationCode(
+                id: AuthorizationCodeId.Generate(ApplicationId.Generate()),
+                expiresAt: DateTime.Now.AddMinutes(-1),
+                used: false,
+                permissions: new PermissionId[]
+                {
+                    new PermissionId(new ResourceId("MyResource"), "Add")
+                });
+
+            Assert.That(authorizationCode.Expired, Is.True);
+        }
+
+        [Test]
+        public void TestExpired_WhenExpiresAtNotElapsed_ThenFalseIsReturned()
+        {
+            var authorizationCode = new AuthorizationCode(
+                id: AuthorizationCodeId.Generate(ApplicationId.Generate()),
+                expiresAt: DateTime.Now.AddMinutes(1),
+                used: false,
+                permissions: new PermissionId[]
+                {
+                    new PermissionId(new ResourceId("MyResource"), "Add")
+                });
+
+            Assert.That(authorizationCode.Expired, Is.False);
         }
     }
 }

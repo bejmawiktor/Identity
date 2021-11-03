@@ -303,7 +303,8 @@ namespace Identity.Tests.Unit.Domain
             var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
             IAuthorizationCodesRepository authorizationCodesRepository = authorizationCodesRepositoryMock.Object;
 
-            AuthorizationService authorizationService = this.GetAuthorizationService(authorizationCodesRepository: authorizationCodesRepository);
+            AuthorizationService authorizationService = this.GetAuthorizationService(
+                authorizationCodesRepository: authorizationCodesRepository);
 
             Assert.That(authorizationService.AuthorizationCodesRepository, Is.EqualTo(authorizationCodesRepository));
         }
@@ -497,6 +498,41 @@ namespace Identity.Tests.Unit.Domain
             bool userIsPermitted = await authorizationService.CheckUserAccess(user.Id, permissionId);
 
             Assert.That(userIsPermitted, Is.False);
+        }
+
+        [Test]
+        public void TestGenerateAuthorizationCode_WhenNullApplicationIdGiven_ThenArgumentNullExceptionIsThrown()
+        {
+            var permissions = new PermissionId[] { new PermissionId(new ResourceId("MyResource"), "Add") };
+            AuthorizationService authorizationService = this.GetAuthorizationService();
+
+            ArgumentNullException exception = Assert.ThrowsAsync<ArgumentNullException>(
+                async () => await authorizationService.GenerateAuthorizationCode(
+                    null,
+                    new Url("http://example1.com"),
+                    permissions));
+
+            Assert.That(exception, Is.InstanceOf<ArgumentNullException>()
+                .And.Property(nameof(ArgumentNullException.ParamName))
+                .EqualTo("applicationId"));
+        }
+
+        [Test]
+        public void TestGenerateAuthorizationCode_WhenNullCallbackUrlGiven_ThenArgumentNullExceptionIsThrown()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            var permissions = new PermissionId[] { new PermissionId(new ResourceId("MyResource"), "Add") };
+            AuthorizationService authorizationService = this.GetAuthorizationService();
+
+            ArgumentNullException exception = Assert.ThrowsAsync<ArgumentNullException>(
+                async () => await authorizationService.GenerateAuthorizationCode(
+                    applicationId,
+                    null,
+                    permissions));
+
+            Assert.That(exception, Is.InstanceOf<ArgumentNullException>()
+                .And.Property(nameof(ArgumentNullException.ParamName))
+                .EqualTo("callbackUrl"));
         }
 
         [Test]

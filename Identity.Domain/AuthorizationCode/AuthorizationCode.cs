@@ -10,6 +10,7 @@ namespace Identity.Domain
         public DateTime ExpiresAt { get; }
         public bool Used { get; private set; }
         public IEnumerable<PermissionId> Permissions { get; }
+        public bool Expired => this.ExpiresAt < DateTime.Now;
         private int SecondsToExpire => 60;
 
         public AuthorizationCode(
@@ -44,6 +45,11 @@ namespace Identity.Domain
             if(this.Used)
             {
                 throw new InvalidOperationException("Authorization code was used.");
+            }
+
+            if(this.Expired)
+            {
+                throw new InvalidOperationException("Authorization code has expired.");
             }
 
             this.Used = true;
