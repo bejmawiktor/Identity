@@ -41,7 +41,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestGenerate_WhenGenerated_ThenNotNullAuthorizationCodeIdCodeIsReturned()
         {
-            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(ApplicationId.Generate());
+            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(ApplicationId.Generate(), out _);
 
             Assert.That(authorizationCodeId.Code, Is.Not.Null);
         }
@@ -49,10 +49,18 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestGenerate_WhenMultipleGenerated_ThenKeysHaveDifferentValues()
         {
-            AuthorizationCodeId firstAuthorizationCodeId = AuthorizationCodeId.Generate(ApplicationId.Generate());
-            AuthorizationCodeId secondAuthorizationCodeId = AuthorizationCodeId.Generate(ApplicationId.Generate());
+            AuthorizationCodeId firstAuthorizationCodeId = AuthorizationCodeId.Generate(ApplicationId.Generate(), out _);
+            AuthorizationCodeId secondAuthorizationCodeId = AuthorizationCodeId.Generate(ApplicationId.Generate(), out _);
 
             Assert.That(firstAuthorizationCodeId.Code, Is.Not.EqualTo(secondAuthorizationCodeId.Code));
+        }
+
+        [Test]
+        public void TestGenerate_WhenGenerated_ThenCodeIsSet()
+        {
+            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(ApplicationId.Generate(), out Code code);
+
+            Assert.That(code, Is.Not.Null);
         }
     }
 }

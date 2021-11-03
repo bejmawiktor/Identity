@@ -20,7 +20,7 @@ namespace Identity.Tests.Unit.Application
         public void TestConstructor_WhenCodeGiven_ThenCodeIsSet()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId);
+            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId, out _);
             var authorizationCodeDto = new AuthorizationCodeDto(
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
@@ -35,7 +35,7 @@ namespace Identity.Tests.Unit.Application
         public void TestConstructor_WhenApplicationIdGiven_ThenApplicationIdIsSet()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId);
+            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId, out _);
             var authorizationCodeDto = new AuthorizationCodeDto(
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
@@ -51,7 +51,7 @@ namespace Identity.Tests.Unit.Application
         {
             DateTime expiresAt = DateTime.Now;
             ApplicationId applicationId = ApplicationId.Generate();
-            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId);
+            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId, out _);
             var authorizationCodeDto = new AuthorizationCodeDto(
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
@@ -67,7 +67,7 @@ namespace Identity.Tests.Unit.Application
         {
             DateTime expiresAt = DateTime.Now;
             ApplicationId applicationId = ApplicationId.Generate();
-            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId);
+            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId, out _);
             var authorizationCodeDto = new AuthorizationCodeDto(
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
@@ -83,7 +83,7 @@ namespace Identity.Tests.Unit.Application
         {
             DateTime expiresAt = DateTime.Now;
             ApplicationId applicationId = ApplicationId.Generate();
-            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId);
+            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId, out _);
             var authorizationCodeDto = new AuthorizationCodeDto(
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
@@ -99,7 +99,7 @@ namespace Identity.Tests.Unit.Application
         {
             DateTime expiresAt = DateTime.Now;
             ApplicationId applicationId = ApplicationId.Generate();
-            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId);
+            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId, out _);
             var firstAuthorizationCodeDto = new AuthorizationCodeDto(
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
@@ -121,7 +121,7 @@ namespace Identity.Tests.Unit.Application
         {
             DateTime expiresAt = DateTime.Now;
             ApplicationId applicationId = ApplicationId.Generate();
-            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId);
+            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId, out _);
             var firstAuthorizationCodeDto = new AuthorizationCodeDto(
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
@@ -146,7 +146,7 @@ namespace Identity.Tests.Unit.Application
         {
             DateTime expiresAt = DateTime.Now;
             ApplicationId applicationId = ApplicationId.Generate();
-            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId);
+            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId, out _);
             var firstAuthorizationCodeDto = new AuthorizationCodeDto(
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
@@ -168,7 +168,7 @@ namespace Identity.Tests.Unit.Application
         {
             DateTime expiresAt = DateTime.Now;
             ApplicationId applicationId = ApplicationId.Generate();
-            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId);
+            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId, out _);
             var firstAuthorizationCodeDto = new AuthorizationCodeDto(
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: applicationId.ToGuid(),
@@ -190,7 +190,7 @@ namespace Identity.Tests.Unit.Application
         {
             DateTime expiresAt = DateTime.Now;
             ApplicationId applicationId = ApplicationId.Generate();
-            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId);
+            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId, out _);
             var authorizationCodeDto = new AuthorizationCodeDto(
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: authorizationCodeId.ApplicationId.ToGuid(),

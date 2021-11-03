@@ -102,9 +102,7 @@ namespace Identity.Domain
                 refreshToken: Token.GenerateRefreshToken(this.Id, refreshToken.ExpiresAt));
         }
 
-        public AuthorizationCode CreateAuthorizationCode(Code code, IEnumerable<PermissionId> permissions)
-            => new AuthorizationCode(
-                id: new AuthorizationCodeId(HashedCode.Hash(code), this.Id),
-                permissions: permissions);
+        public AuthorizationCode CreateAuthorizationCode(IEnumerable<PermissionId> permissions, out Code code)
+            => AuthorizationCode.Create(this.Id, permissions, out code);
     }
 }

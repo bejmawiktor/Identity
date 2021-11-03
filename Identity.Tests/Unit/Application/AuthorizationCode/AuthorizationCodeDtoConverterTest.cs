@@ -15,7 +15,7 @@ namespace Identity.Tests.Unit.Application
         {
             DateTime expiresAt = DateTime.Now;
             ApplicationId applicationId = ApplicationId.Generate();
-            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId);
+            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId, out _);
             var authorizationCode = new AuthorizationCode(
                 id: authorizationCodeId,
                 expiresAt: expiresAt,
@@ -59,7 +59,7 @@ namespace Identity.Tests.Unit.Application
         public void TestToDtoIdentifier_WhenAuthorizationCodeIdGiven_ThenDtoIdentifierIsReturned()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId);
+            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId, out _);
             var authorizationCodeDtoConverter = new AuthorizationCodeDtoConverter();
 
             (Guid ApplicationId, string Code) authorizationCodeDtoId = authorizationCodeDtoConverter.ToDtoIdentifier(authorizationCodeId);

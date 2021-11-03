@@ -40,6 +40,18 @@ namespace Identity.Domain
             }
         }
 
+        internal AuthorizationCode(
+            AuthorizationCodeId id,
+            IEnumerable<PermissionId> permissions)
+        : base(id)
+        {
+            this.ValidateMembers(permissions);
+
+            this.ExpiresAt = DateTime.Now.AddSeconds(this.SecondsToExpire);
+            this.Used = false;
+            this.Permissions = permissions;
+        }
+
         public void Use()
         {
             if(this.Used)
@@ -55,16 +67,14 @@ namespace Identity.Domain
             this.Used = true;
         }
 
-        internal AuthorizationCode(
-            AuthorizationCodeId id,
-            IEnumerable<PermissionId> permissions)
-        : base(id)
+        internal static AuthorizationCode Create(
+            ApplicationId applicationId,
+            IEnumerable<PermissionId> permissions,
+            out Code code)
         {
-            this.ValidateMembers(permissions);
-
-            this.ExpiresAt = DateTime.Now.AddSeconds(this.SecondsToExpire);
-            this.Used = false;
-            this.Permissions = permissions;
+            return new AuthorizationCode(
+                AuthorizationCodeId.Generate(applicationId, out code),
+                permissions);
         }
     }
 }

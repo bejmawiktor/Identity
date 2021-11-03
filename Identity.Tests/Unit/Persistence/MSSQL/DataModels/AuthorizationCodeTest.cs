@@ -21,7 +21,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         public void TestConstructor_WhenDtoGiven_ThenMembersAreSet()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId);
+            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId, out _);
             DateTime now = DateTime.Now;
             var authorizationCode = new AuthorizationCode(
                 new AuthorizationCodeDto(
@@ -63,7 +63,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         public void TestSetFields_WhenDtoGiven_ThenMembersAreSet()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId);
+            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId, out _);
             DateTime now = DateTime.Now;
             var authorizationCode = new AuthorizationCode();
 
@@ -106,7 +106,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         public void TestToDto_WhenConvertingToDto_ThenAuthorizationCodeDtoIsReturned()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId);
+            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId, out _);
             DateTime now = DateTime.Now;
             var authorizationCode = new AuthorizationCode(
                 new AuthorizationCodeDto(

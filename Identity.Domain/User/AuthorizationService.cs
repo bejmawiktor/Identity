@@ -94,9 +94,7 @@ namespace Identity.Domain
                 throw new ArgumentException("One or more permissions are incorrect for given application.");
             }
 
-            Code code = Code.Generate();
-
-            AuthorizationCode authorizationCode = application.CreateAuthorizationCode(code, permissions);
+            AuthorizationCode authorizationCode = application.CreateAuthorizationCode(permissions, out Code code);
 
             await this.AuthorizationCodesRepository.AddAsync(authorizationCode);
 

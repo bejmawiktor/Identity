@@ -396,7 +396,6 @@ namespace Identity.Tests.Unit.Domain
             EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
             ApplicationId applicationId = ApplicationId.Generate();
             UserId userId = UserId.Generate();
-            var code = Code.Generate();
             var permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource1"), "Add")
@@ -409,12 +408,14 @@ namespace Identity.Tests.Unit.Domain
                 homepageUrl: new Url("https://www.example.com"),
                 callbackUrl: new Url("https://www.example.com/1"));
 
-            AuthorizationCode authorizationCode = application.CreateAuthorizationCode(code, permissions);
+            AuthorizationCode authorizationCode = application.CreateAuthorizationCode(permissions, out Code code);
 
             Assert.Multiple(() =>
             {
                 Assert.That(authorizationCode.Id.ApplicationId, Is.EqualTo(applicationId));
                 Assert.That(authorizationCode.Permissions, Is.EqualTo(permissions));
+                Assert.That(authorizationCode.Used, Is.False);
+                Assert.That(code, Is.Not.Null);
             });
         }
     }

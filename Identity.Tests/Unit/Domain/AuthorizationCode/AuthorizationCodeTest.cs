@@ -18,7 +18,7 @@ namespace Identity.Tests.Unit.Domain
             };
             DateTime now = DateTime.Now;
             var authorizationCode = new AuthorizationCode(
-                id: AuthorizationCodeId.Generate(ApplicationId.Generate()),
+                id: AuthorizationCodeId.Generate(ApplicationId.Generate(), out _),
                 expiresAt: now,
                 used: true,
                 permissions: permissions);
@@ -35,7 +35,7 @@ namespace Identity.Tests.Unit.Domain
             };
             DateTime now = DateTime.Now;
             var authorizationCode = new AuthorizationCode(
-                id: AuthorizationCodeId.Generate(ApplicationId.Generate()),
+                id: AuthorizationCodeId.Generate(ApplicationId.Generate(), out _),
                 expiresAt: now,
                 used: true,
                 permissions: permissions);
@@ -51,7 +51,7 @@ namespace Identity.Tests.Unit.Domain
                 new PermissionId(new ResourceId("MyResource"), "Add")
             };
             var authorizationCode = new AuthorizationCode(
-                id: AuthorizationCodeId.Generate(ApplicationId.Generate()),
+                id: AuthorizationCodeId.Generate(ApplicationId.Generate(), out _),
                 permissions: permissions);
 
             Assert.That(authorizationCode.Used, Is.False);
@@ -65,7 +65,7 @@ namespace Identity.Tests.Unit.Domain
                 new PermissionId(new ResourceId("MyResource"), "Add")
             };
             var authorizationCode = new AuthorizationCode(
-                id: AuthorizationCodeId.Generate(ApplicationId.Generate()),
+                id: AuthorizationCodeId.Generate(ApplicationId.Generate(), out _),
                 permissions: permissions);
 
             Assert.That(authorizationCode.ExpiresAt, Is.EqualTo(DateTime.Now.AddSeconds(60)).Within(5).Seconds);
@@ -80,7 +80,7 @@ namespace Identity.Tests.Unit.Domain
             };
             DateTime now = DateTime.Now;
             var authorizationCode = new AuthorizationCode(
-                id: AuthorizationCodeId.Generate(ApplicationId.Generate()),
+                id: AuthorizationCodeId.Generate(ApplicationId.Generate(), out _),
                 expiresAt: now,
                 used: true,
                 permissions: permissions);
@@ -96,7 +96,7 @@ namespace Identity.Tests.Unit.Domain
                     .And.Property(nameof(ArgumentNullException.ParamName))
                     .EqualTo("permissions"),
                 () => new AuthorizationCode(
-                    id: AuthorizationCodeId.Generate(ApplicationId.Generate()),
+                    id: AuthorizationCodeId.Generate(ApplicationId.Generate(), out _),
                     expiresAt: DateTime.Now,
                     used: true,
                     permissions: null));
@@ -110,7 +110,7 @@ namespace Identity.Tests.Unit.Domain
                     .And.Message
                     .EqualTo("Can't create authorization code without permissions."),
                 () => new AuthorizationCode(
-                    id: AuthorizationCodeId.Generate(ApplicationId.Generate()),
+                    id: AuthorizationCodeId.Generate(ApplicationId.Generate(), out _),
                     expiresAt: DateTime.Now,
                     used: true,
                     permissions: Enumerable.Empty<PermissionId>()));
@@ -124,7 +124,7 @@ namespace Identity.Tests.Unit.Domain
                 new PermissionId(new ResourceId("MyResource"), "Add")
             };
             var authorizationCode = new AuthorizationCode(
-                id: AuthorizationCodeId.Generate(ApplicationId.Generate()),
+                id: AuthorizationCodeId.Generate(ApplicationId.Generate(), out _),
                 permissions: permissions);
 
             Assert.That(authorizationCode.Permissions, Is.EquivalentTo(permissions));
@@ -138,7 +138,7 @@ namespace Identity.Tests.Unit.Domain
                     .And.Property(nameof(ArgumentNullException.ParamName))
                     .EqualTo("permissions"),
                 () => new AuthorizationCode(
-                    id: AuthorizationCodeId.Generate(ApplicationId.Generate()),
+                    id: AuthorizationCodeId.Generate(ApplicationId.Generate(), out _),
                     permissions: null));
         }
 
@@ -150,15 +150,43 @@ namespace Identity.Tests.Unit.Domain
                     .And.Message
                     .EqualTo("Can't create authorization code without permissions."),
                 () => new AuthorizationCode(
-                    id: AuthorizationCodeId.Generate(ApplicationId.Generate()),
+                    id: AuthorizationCodeId.Generate(ApplicationId.Generate(), out _),
                     permissions: Enumerable.Empty<PermissionId>()));
+        }
+
+        [Test]
+        public void TestCreate_WhenCreating_ThenAuthorizationCodeIsReturned()
+        {
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource"), "Add")
+            };
+            var authorizationCode = AuthorizationCode.Create(ApplicationId.Generate(), permissions, out _);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(authorizationCode.Id, Is.Not.Null);
+                Assert.That(authorizationCode.Permissions, Is.EquivalentTo(permissions));
+            });
+        }
+
+        [Test]
+        public void TestCreate_WhenCreating_ThenCodeIsReturned()
+        {
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource"), "Add")
+            };
+            AuthorizationCode authorizationCode = AuthorizationCode.Create(ApplicationId.Generate(), permissions, out Code code);
+
+            Assert.That(code, Is.Not.Null);
         }
 
         [Test]
         public void TestUse_WhenAuthorizationCodeExpired_ThenInvalidOperationIsThrown()
         {
             var authorizationCode = new AuthorizationCode(
-                id: AuthorizationCodeId.Generate(ApplicationId.Generate()),
+                id: AuthorizationCodeId.Generate(ApplicationId.Generate(), out _),
                 used: false,
                 expiresAt: DateTime.Now.AddMinutes(-2),
                 permissions: new PermissionId[]
@@ -177,7 +205,7 @@ namespace Identity.Tests.Unit.Domain
         public void TestUse_WhenAuthorizationCodeWasPreviouslyUsed_ThenInvalidOperationIsThrown()
         {
             var authorizationCode = new AuthorizationCode(
-                id: AuthorizationCodeId.Generate(ApplicationId.Generate()),
+                id: AuthorizationCodeId.Generate(ApplicationId.Generate(), out _),
                 used: true,
                 expiresAt: DateTime.Now,
                 permissions: new PermissionId[] 
@@ -196,7 +224,7 @@ namespace Identity.Tests.Unit.Domain
         public void TestUse_WhenUse_ThenUsedIsTrue()
         {
             var authorizationCode = new AuthorizationCode(
-                id: AuthorizationCodeId.Generate(ApplicationId.Generate()),
+                id: AuthorizationCodeId.Generate(ApplicationId.Generate(), out _),
                 permissions: new PermissionId[]
                 {
                     new PermissionId(new ResourceId("MyResource"), "Add")
@@ -211,7 +239,7 @@ namespace Identity.Tests.Unit.Domain
         public void TestExpired_WhenExpiresAtElapsed_ThenTrueIsReturned()
         {
             var authorizationCode = new AuthorizationCode(
-                id: AuthorizationCodeId.Generate(ApplicationId.Generate()),
+                id: AuthorizationCodeId.Generate(ApplicationId.Generate(), out _),
                 expiresAt: DateTime.Now.AddMinutes(-1),
                 used: false,
                 permissions: new PermissionId[]
@@ -226,7 +254,7 @@ namespace Identity.Tests.Unit.Domain
         public void TestExpired_WhenExpiresAtNotElapsed_ThenFalseIsReturned()
         {
             var authorizationCode = new AuthorizationCode(
-                id: AuthorizationCodeId.Generate(ApplicationId.Generate()),
+                id: AuthorizationCodeId.Generate(ApplicationId.Generate(), out _),
                 expiresAt: DateTime.Now.AddMinutes(1),
                 used: false,
                 permissions: new PermissionId[]

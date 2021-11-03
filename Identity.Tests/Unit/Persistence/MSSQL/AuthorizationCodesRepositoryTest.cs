@@ -25,31 +25,31 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         private static readonly AuthorizationCodeDto[] AuthorizationCodesTestData = new AuthorizationCodeDto[]
         {
             new AuthorizationCodeDto(
-                code: AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId).Code.ToString(),
+                code: AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId, out Code code).Code.ToString(),
                 applicationId: ApplicationId.ToGuid(),
                 expiresAt: DateTime.Now,
                 used: true,
                 permissions: TestPermissions),
             new AuthorizationCodeDto(
-                code: AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId).Code.ToString(),
+                code: AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId, out Code code2).Code.ToString(),
                 applicationId: ApplicationId.ToGuid(),
                 expiresAt: DateTime.Now,
                 used: true,
                 permissions: TestPermissions),
             new AuthorizationCodeDto(
-                code: AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId).Code.ToString(),
+                code: AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId, out Code code3).Code.ToString(),
                 applicationId: ApplicationId.ToGuid(),
                 expiresAt: DateTime.Now,
                 used: false,
                 permissions: TestPermissions),
             new AuthorizationCodeDto(
-                code: AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId).Code.ToString(),
+                code: AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId, out Code code4).Code.ToString(),
                 applicationId: ApplicationId.ToGuid(),
                 expiresAt: DateTime.Now,
                 used: true,
                 permissions: TestPermissions),
             new AuthorizationCodeDto(
-                code: AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId).Code.ToString(),
+                code: AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId, out Code code5).Code.ToString(),
                 applicationId: ApplicationId.ToGuid(),
                 expiresAt: DateTime.Now,
                 used: false,
@@ -107,7 +107,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public async Task TestAddAsync_WhenAuthorizationCodeGiven_ThenAuthorizationCodeIsStored()
         {
-            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId);
+            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId, out _);
             DateTime now = DateTime.Now;
             var authorizationCodeDto = new AuthorizationCodeDto(
                 code: authorizationCodeId.Code.ToString(),
@@ -133,7 +133,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public async Task TestUpdateAsync_WhenAuthorizationCodeGiven_ThenAuthorizationCodeIsUpdated()
         {
-            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId);
+            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId, out _);
             DateTime now = DateTime.Now;
             var authorizationCodeDto = new AuthorizationCodeDto(
                 code: authorizationCodeId.Code.ToString(),
@@ -169,7 +169,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public async Task TestRemoveAsync_WhenAuthorizationCodeGiven_ThenAuthorizationCodeIsRemoved()
         {
-            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId);
+            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId, out _);
             DateTime now = DateTime.Now;
             var authorizationCodeDto = new AuthorizationCodeDto(
                 code: authorizationCodeId.Code.ToString(),
@@ -190,7 +190,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public async Task TestGetAsync_WhenAuthorizationCodeIdGiven_ThenAuthorizationCodeIsReturned()
         {
-            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId);
+            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId, out _);
             DateTime now = DateTime.Now;
             var authorizationCodeDto = new AuthorizationCodeDto(
                 code: authorizationCodeId.Code.ToString(),
