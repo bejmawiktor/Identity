@@ -500,7 +500,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestGenerateAuthorizationCode_WhenApplicationWasNotFoundInRepository_ThenUnknownApplicationExceptionIsThrown()
+        public void TestGenerateAuthorizationCode_WhenApplicationWasNotFoundInRepository_ThenApplicationNotFoundExceptionIsThrown()
         {
             ApplicationId applicationId = ApplicationId.Generate();
             var permissions = new PermissionId[] { new PermissionId(new ResourceId("MyResource"), "Add") };
@@ -723,6 +723,417 @@ namespace Identity.Tests.Unit.Domain
 
             Assert.That(authorizationCode, Is.Not.Null);
             authorizationCodesRepositoryMock.Verify(r => r.AddAsync(It.IsAny<AuthorizationCode>()), Times.Once);
+        }
+
+        [Test]
+        public void TestGenerateTokens_WhenNullApplicationIdGiven_ThenArgumentNullExceptionIsThrown()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            applicationsRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
+                .Returns(Task.FromResult((Application)null));
+            IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+            AuthorizationService authorizationService = this.GetAuthorizationService(
+                applicationsRepository: applicationsRepository);
+
+            ArgumentNullException exception = Assert.ThrowsAsync<ArgumentNullException>(
+                async () => await authorizationService.GenerateTokens(null, SecretKey.Generate(), new Url("http://example.com/1"), Code.Generate()));
+
+            Assert.That(exception, Is.InstanceOf<ArgumentNullException>()
+                .And.Property(nameof(ArgumentNullException.ParamName))
+                .EqualTo("applicationId"));
+        }
+
+        [Test]
+        public void TestGenerateTokens_WhenApplicationWasNotFoundInRepository_ThenApplicationNotFoundExceptionIsThrown()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            applicationsRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
+                .Returns(Task.FromResult((Application)null));
+            IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+            AuthorizationService authorizationService = this.GetAuthorizationService(
+                applicationsRepository: applicationsRepository);
+
+            ApplicationNotFoundException exception = Assert.ThrowsAsync<ApplicationNotFoundException>(
+                async () => await authorizationService.GenerateTokens(applicationId, SecretKey.Generate(), new Url("http://example.com/1"), Code.Generate()));
+
+            Assert.That(exception, Is.InstanceOf<ApplicationNotFoundException>()
+                .And.Message
+                .EqualTo($"Application {applicationId} not found."));
+        }
+
+        [Test]
+        public void TestGenerateTokens_WhenNullSecretKeyGiven_ThenArgumentNullExceptionIsThrown()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            SecretKey secretKey = SecretKey.Generate();
+            var application = new Application(
+                ApplicationId.Generate(),
+                UserId.Generate(),
+                "MyApp1",
+                EncryptedSecretKey.Encrypt(secretKey),
+                new Url("http://example.com"),
+                new Url("http://example.com/1"));
+            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            applicationsRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
+                .Returns(Task.FromResult(application));
+            IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+            AuthorizationService authorizationService = this.GetAuthorizationService(
+                applicationsRepository: applicationsRepository);
+
+            ArgumentNullException exception = Assert.ThrowsAsync<ArgumentNullException>(
+                async () => await authorizationService.GenerateTokens(applicationId, null, new Url("http://example.com/1"), Code.Generate()));
+
+            Assert.That(exception, Is.InstanceOf<ArgumentNullException>()
+                .And.Property(nameof(ArgumentNullException.ParamName))
+                .EqualTo("secretKey"));
+        }
+
+        [Test]
+        public void TestGenerateTokens_WhenWrongSecretKeyGiven_ThenArgumentExceptionIsThrown()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            var application = new Application(
+                ApplicationId.Generate(),
+                UserId.Generate(),
+                "MyApp1",
+                EncryptedSecretKey.Encrypt(SecretKey.Generate()),
+                new Url("http://example.com"),
+                new Url("http://example.com/1"));
+            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            applicationsRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
+                .Returns(Task.FromResult((Application)application));
+            var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
+            authorizationCodesRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<AuthorizationCodeId>()))
+                .Returns(Task.FromResult((AuthorizationCode)null));
+            IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+            IAuthorizationCodesRepository authorizationCodesRepository = authorizationCodesRepositoryMock.Object;
+            AuthorizationService authorizationService = this.GetAuthorizationService(
+                applicationsRepository: applicationsRepository,
+                authorizationCodesRepository: authorizationCodesRepository);
+
+            ArgumentException exception = Assert.ThrowsAsync<ArgumentException>(
+                async () => await authorizationService.GenerateTokens(applicationId, SecretKey.Generate(), new Url("http://example.com/1"), Code.Generate()));
+
+            Assert.That(exception, Is.InstanceOf<ArgumentException>()
+                .And.Message
+                .EqualTo("Wrong secret key given."));
+        }
+
+
+        [Test]
+        public void TestGenerateTokens_WhenNullCallbackUrlGiven_ThenArgumentNullExceptionIsThrown()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            SecretKey secretKey = SecretKey.Generate();
+            Code code = Code.Generate();
+            var application = new Application(
+                ApplicationId.Generate(),
+                UserId.Generate(),
+                "MyApp1",
+                EncryptedSecretKey.Encrypt(secretKey),
+                new Url("http://example.com"),
+                new Url("http://example.com/1"));
+            var authorizationCode = new AuthorizationCode(
+                id: new AuthorizationCodeId(HashedCode.Hash(code), application.Id),
+                permissions: new PermissionId[]
+                {
+                    new PermissionId(new ResourceId("MyResource"), "Add")
+                });
+            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            applicationsRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
+                .Returns(Task.FromResult((Application)application));
+            var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
+            authorizationCodesRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<AuthorizationCodeId>()))
+                .Returns(Task.FromResult(authorizationCode));
+            IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+            IAuthorizationCodesRepository authorizationCodesRepository = authorizationCodesRepositoryMock.Object;
+            AuthorizationService authorizationService = this.GetAuthorizationService(
+                applicationsRepository: applicationsRepository,
+                authorizationCodesRepository: authorizationCodesRepository);
+
+            ArgumentNullException exception = Assert.ThrowsAsync<ArgumentNullException>(
+                async () => await authorizationService.GenerateTokens(applicationId, secretKey, null, Code.Generate()));
+
+            Assert.That(exception, Is.InstanceOf<ArgumentNullException>()
+                .And.Property(nameof(ArgumentNullException.ParamName))
+                .EqualTo("callbackUrl"));
+        }
+
+        [Test]
+        public void TestGenerateTokens_WhenApplicationCallbackUrlIsNotSameAsRequested_ThenArgumentExceptionIsThrown()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            SecretKey secretKey = SecretKey.Generate();
+            Code code = Code.Generate();
+            var application = new Application(
+                ApplicationId.Generate(),
+                UserId.Generate(),
+                "MyApp1",
+                EncryptedSecretKey.Encrypt(secretKey),
+                new Url("http://example.com"),
+                new Url("http://example.com/1"));
+            var authorizationCode = new AuthorizationCode(
+                id: new AuthorizationCodeId(HashedCode.Hash(code), application.Id),
+                permissions: new PermissionId[]
+                {
+                    new PermissionId(new ResourceId("MyResource"), "Add")
+                });
+            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            applicationsRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
+                .Returns(Task.FromResult(application));
+            var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
+            authorizationCodesRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<AuthorizationCodeId>()))
+                .Returns(Task.FromResult(authorizationCode));
+            IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+            IAuthorizationCodesRepository authorizationCodesRepository = authorizationCodesRepositoryMock.Object;
+            AuthorizationService authorizationService = this.GetAuthorizationService(
+                applicationsRepository: applicationsRepository,
+                authorizationCodesRepository: authorizationCodesRepository);
+
+            ArgumentException exception = Assert.ThrowsAsync<ArgumentException>(
+                async () => await authorizationService.GenerateTokens(applicationId, secretKey, new Url("http://example.com/2"), Code.Generate()));
+
+            Assert.That(exception, Is.InstanceOf<ArgumentException>()
+                .And.Message
+                .EqualTo("Wrong callback url given."));
+        }
+
+        [Test]
+        public void TestGenerateTokens_WhenNullCodeGiven_ThenArgumentNullExceptionIsThrown()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            SecretKey secretKey = SecretKey.Generate();
+            var application = new Application(
+                ApplicationId.Generate(),
+                UserId.Generate(),
+                "MyApp1",
+                EncryptedSecretKey.Encrypt(secretKey),
+                new Url("http://example.com"),
+                new Url("http://example.com/1"));
+            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            applicationsRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
+                .Returns(Task.FromResult(application));
+            IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+            AuthorizationService authorizationService = this.GetAuthorizationService(
+                applicationsRepository: applicationsRepository);
+
+            ArgumentNullException exception = Assert.ThrowsAsync<ArgumentNullException>(
+                async () => await authorizationService.GenerateTokens(applicationId, secretKey, new Url("http://example.com/1"), null));
+
+            Assert.That(exception, Is.InstanceOf<ArgumentNullException>()
+                .And.Property(nameof(ArgumentNullException.ParamName))
+                .EqualTo("code"));
+        }
+
+        [Test]
+        public void TestGenerateTokens_WhenAuthorizationCodeWasNotFoundInRepository_ThenAuthorizationCodeNotFoundExceptionIsThrown()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            SecretKey secretKey = SecretKey.Generate();
+            var application = new Application(
+                ApplicationId.Generate(),
+                UserId.Generate(),
+                "MyApp1",
+                EncryptedSecretKey.Encrypt(secretKey),
+                new Url("http://example.com"),
+                new Url("http://example.com/1"));
+            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            applicationsRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
+                .Returns(Task.FromResult((Application)application));
+            var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
+            authorizationCodesRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<AuthorizationCodeId>()))
+                .Returns(Task.FromResult((AuthorizationCode)null));
+            IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+            IAuthorizationCodesRepository authorizationCodesRepository = authorizationCodesRepositoryMock.Object;
+            AuthorizationService authorizationService = this.GetAuthorizationService(
+                applicationsRepository: applicationsRepository,
+                authorizationCodesRepository: authorizationCodesRepository);
+
+            AuthorizationCodeNotFoundException exception = Assert.ThrowsAsync<AuthorizationCodeNotFoundException>(
+                async () => await authorizationService.GenerateTokens(applicationId, secretKey, new Url("http://example.com/1"), Code.Generate()));
+
+            Assert.That(exception, Is.InstanceOf<AuthorizationCodeNotFoundException>());
+        }
+
+        [Test]
+        public void TestGenerateTokens_WhenAuthorizationCodeExpired_ThenInvalidOperationIsThrown()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            SecretKey secretKey = SecretKey.Generate();
+            Code code = Code.Generate();
+            var application = new Application(
+                ApplicationId.Generate(),
+                UserId.Generate(),
+                "MyApp1",
+                EncryptedSecretKey.Encrypt(secretKey),
+                new Url("http://example.com"),
+                new Url("http://example.com/1"));
+            var authorizationCode = new AuthorizationCode(
+                id: new AuthorizationCodeId(HashedCode.Hash(code), application.Id),
+                DateTime.Now.AddMinutes(-2),
+                false,
+                permissions: new PermissionId[]
+                {
+                    new PermissionId(new ResourceId("MyResource"), "Add")
+                });
+            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            applicationsRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
+                .Returns(Task.FromResult(application));
+            var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
+            authorizationCodesRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<AuthorizationCodeId>()))
+                .Returns(Task.FromResult(authorizationCode));
+            IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+            IAuthorizationCodesRepository authorizationCodesRepository = authorizationCodesRepositoryMock.Object;
+            AuthorizationService authorizationService = this.GetAuthorizationService(
+                applicationsRepository: applicationsRepository,
+                authorizationCodesRepository: authorizationCodesRepository);
+
+            InvalidOperationException exception = Assert.ThrowsAsync<InvalidOperationException>(
+                async () => await authorizationService.GenerateTokens(applicationId, secretKey, new Url("http://example.com/1"), code));
+
+            Assert.That(exception, Is.InstanceOf<InvalidOperationException>()
+                .And.Message
+                .EqualTo("Authorization code has expired."));
+        }
+
+        [Test]
+        public void TestGenerateTokens_WhenAuthorizationCodeWasUsed_ThenInvalidOperationIsThrown()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            SecretKey secretKey = SecretKey.Generate();
+            Code code = Code.Generate();
+            var application = new Application(
+                ApplicationId.Generate(),
+                UserId.Generate(),
+                "MyApp1",
+                EncryptedSecretKey.Encrypt(secretKey),
+                new Url("http://example.com"),
+                new Url("http://example.com/1"));
+            var authorizationCode = new AuthorizationCode(
+                id: new AuthorizationCodeId(HashedCode.Hash(code), application.Id),
+                DateTime.Now.AddMinutes(2),
+                true,
+                permissions: new PermissionId[]
+                {
+                    new PermissionId(new ResourceId("MyResource"), "Add")
+                });
+            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            applicationsRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
+                .Returns(Task.FromResult(application));
+            var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
+            authorizationCodesRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<AuthorizationCodeId>()))
+                .Returns(Task.FromResult(authorizationCode));
+            IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+            IAuthorizationCodesRepository authorizationCodesRepository = authorizationCodesRepositoryMock.Object;
+            AuthorizationService authorizationService = this.GetAuthorizationService(
+                applicationsRepository: applicationsRepository,
+                authorizationCodesRepository: authorizationCodesRepository);
+
+            InvalidOperationException exception = Assert.ThrowsAsync<InvalidOperationException>(
+                async () => await authorizationService.GenerateTokens(applicationId, secretKey, new Url("http://example.com/1"), code));
+
+            Assert.That(exception, Is.InstanceOf<InvalidOperationException>()
+                .And.Message
+                .EqualTo("Authorization code was used."));
+        }
+
+        [Test]
+        public async Task TestGenerateTokens_WhenGenerating_ThenTokenPairIsReturned()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            SecretKey secretKey = SecretKey.Generate();
+            Code code = Code.Generate();
+            var application = new Application(
+                ApplicationId.Generate(),
+                UserId.Generate(),
+                "MyApp1",
+                EncryptedSecretKey.Encrypt(secretKey),
+                new Url("http://example.com"),
+                new Url("http://example.com/1"));
+            var authorizationCode = new AuthorizationCode(
+                id: new AuthorizationCodeId(HashedCode.Hash(code), application.Id),
+                permissions: new PermissionId[]
+                {
+                    new PermissionId(new ResourceId("MyResource"), "Add")
+                });
+            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            applicationsRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
+                .Returns(Task.FromResult(application));
+            var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
+            authorizationCodesRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<AuthorizationCodeId>()))
+                .Returns(Task.FromResult(authorizationCode));
+            IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+            IAuthorizationCodesRepository authorizationCodesRepository = authorizationCodesRepositoryMock.Object;
+            AuthorizationService authorizationService = this.GetAuthorizationService(
+                applicationsRepository: applicationsRepository,
+                authorizationCodesRepository: authorizationCodesRepository);
+
+            TokenPair tokenPair = await authorizationService.GenerateTokens(applicationId, secretKey, new Url("http://example.com/1"), code);
+
+            Assert.That(tokenPair, Is.Not.Null);
+        }
+
+        [Test]
+        public async Task TestGenerateTokens_WhenGenerating_ThenAuthorizationCodeIsMarkedAsUsedAndStored()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            SecretKey secretKey = SecretKey.Generate();
+            Code code = Code.Generate();
+            var application = new Application(
+                ApplicationId.Generate(),
+                UserId.Generate(),
+                "MyApp1",
+                EncryptedSecretKey.Encrypt(secretKey),
+                new Url("http://example.com"),
+                new Url("http://example.com/1"));
+            var authorizationCode = new AuthorizationCode(
+                id: new AuthorizationCodeId(HashedCode.Hash(code), application.Id),
+                permissions: new PermissionId[]
+                {
+                    new PermissionId(new ResourceId("MyResource"), "Add")
+                });
+            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            applicationsRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
+                .Returns(Task.FromResult(application));
+            var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
+            authorizationCodesRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<AuthorizationCodeId>()))
+                .Returns(Task.FromResult(authorizationCode));
+            IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+            IAuthorizationCodesRepository authorizationCodesRepository = authorizationCodesRepositoryMock.Object;
+            AuthorizationService authorizationService = this.GetAuthorizationService(
+                applicationsRepository: applicationsRepository,
+                authorizationCodesRepository: authorizationCodesRepository);
+
+            TokenPair tokenPair = await authorizationService.GenerateTokens(
+                applicationId, 
+                secretKey, 
+                new Url("http://example.com/1"), 
+                code);
+
+            Assert.That(authorizationCode.Used, Is.True);
+            authorizationCodesRepositoryMock.Verify(a => a.UpdateAsync(It.IsAny<AuthorizationCode>()), Times.Once());
         }
     }
 }

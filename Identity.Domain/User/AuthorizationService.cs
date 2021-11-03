@@ -132,5 +132,75 @@ namespace Identity.Domain
 
             return true;
         }
+
+        public async Task<TokenPair> GenerateTokens(ApplicationId applicationId, SecretKey secretKey, Url callbackUrl, Code code)
+        {
+            this.ValidateGenerateTokensParameters(applicationId, secretKey, callbackUrl, code);
+
+            Application application = await this.ApplicationsRepository.GetAsync(applicationId);
+
+            if (application == null)
+            {
+                throw new ApplicationNotFoundException(applicationId);
+            }
+
+            if(application.SecretKey.Decrypt() != secretKey)
+            {
+                throw new ArgumentException("Wrong secret key given.");
+            }
+
+            if(application.CallbackUrl != callbackUrl)
+            {
+                throw new ArgumentException("Wrong callback url given.");
+            }
+
+            var authorizationCodeId = new AuthorizationCodeId(HashedCode.Hash(code), applicationId);
+            AuthorizationCode authorizationCode = await this.AuthorizationCodesRepository.GetAsync(authorizationCodeId);
+            
+            if(authorizationCode == null)
+            {
+                throw new AuthorizationCodeNotFoundException();
+            }
+
+            if(authorizationCode.ExpiresAt < DateTime.Now)
+            {
+                throw new InvalidOperationException("Authorization code has expired.");
+            }
+
+            authorizationCode.Use();
+
+            TokenPair tokens = application.GenerateTokens();
+
+            await this.AuthorizationCodesRepository.UpdateAsync(authorizationCode);
+
+            return tokens;
+        }
+
+        private void ValidateGenerateTokensParameters(
+            ApplicationId applicationId, 
+            SecretKey secretKey, 
+            Url callbackUrl, 
+            Code code)
+        {
+            if(applicationId == null)
+            {
+                throw new ArgumentNullException(nameof(applicationId));
+            }
+
+            if(code == null)
+            {
+                throw new ArgumentNullException(nameof(code));
+            }
+
+            if(secretKey == null)
+            {
+                throw new ArgumentNullException(nameof(secretKey));
+            }
+
+            if(callbackUrl == null)
+            {
+                throw new ArgumentNullException(nameof(callbackUrl));
+            }
+        }
     }
 }
