@@ -8,7 +8,7 @@ namespace Identity.Domain
     public class AuthorizationCode : AggregateRoot<AuthorizationCodeId>
     {
         public DateTime ExpiresAt { get; }
-        public bool Used { get; }
+        public bool Used { get; private set; }
         public IEnumerable<PermissionId> Permissions { get; }
         private int SecondsToExpire => 60;
 
@@ -37,6 +37,16 @@ namespace Identity.Domain
             {
                 throw new ArgumentException("Can't create authorization code without permissions.");
             }
+        }
+
+        public void Use()
+        {
+            if(this.Used)
+            {
+                throw new InvalidOperationException("Authorization code was used.");
+            }
+
+            this.Used = true;
         }
 
         internal AuthorizationCode(

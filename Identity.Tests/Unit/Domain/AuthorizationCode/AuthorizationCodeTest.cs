@@ -153,5 +153,39 @@ namespace Identity.Tests.Unit.Domain
                     id: AuthorizationCodeId.Generate(ApplicationId.Generate()),
                     permissions: Enumerable.Empty<PermissionId>()));
         }
+
+        [Test]
+        public void TestUse_WhenAuthorizationCodeWasPreviouslyUsed_ThenInvalidOperationIsThrown()
+        {
+            var authorizationCode = new AuthorizationCode(
+                id: AuthorizationCodeId.Generate(ApplicationId.Generate()),
+                used: true,
+                expiresAt: DateTime.Now,
+                permissions: new PermissionId[] 
+                { 
+                    new PermissionId(new ResourceId("MyResource"), "Add") 
+                });
+
+            Assert.Throws(
+                Is.InstanceOf<InvalidOperationException>()
+                    .And.Message
+                    .EqualTo("Authorization code was used."),
+                () => authorizationCode.Use());
+        }
+
+        [Test]
+        public void TestUse_WhenUse_ThenUsedIsTrue()
+        {
+            var authorizationCode = new AuthorizationCode(
+                id: AuthorizationCodeId.Generate(ApplicationId.Generate()),
+                permissions: new PermissionId[]
+                {
+                    new PermissionId(new ResourceId("MyResource"), "Add")
+                });
+
+            authorizationCode.Use();
+
+            Assert.That(authorizationCode.Used, Is.True);
+        }
     }
 }
