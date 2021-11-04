@@ -41,7 +41,7 @@ namespace Identity.Domain
         }
 
         internal static Token GenerateAccessToken(
-            ApplicationId applicationId, 
+            ApplicationId applicationId,
             IEnumerable<PermissionId> permissions)
         {
             if(applicationId == null)
@@ -61,8 +61,8 @@ namespace Identity.Domain
         }
 
         internal static Token GenerateRefreshToken(
-            ApplicationId applicationId, 
-            IEnumerable<PermissionId> permissions, 
+            ApplicationId applicationId,
+            IEnumerable<PermissionId> permissions,
             DateTime? expiresAt = null)
         {
             if(applicationId == null)

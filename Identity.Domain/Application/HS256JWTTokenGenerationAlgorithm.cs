@@ -52,7 +52,7 @@ namespace Identity.Domain
         {
             var permissionsText = new StringBuilder();
 
-            foreach (PermissionId permission in permissions)
+            foreach(PermissionId permission in permissions)
             {
                 permissionsText.Append(permission.ToString());
                 permissionsText.Append(" ");
@@ -113,7 +113,6 @@ namespace Identity.Domain
                 .FirstOrDefault(x => x.Type == this.PermissionsClaimName)?
                 .Value;
         }
-
 
         private bool TryGetValidJwtSecurityToken(string token, out JwtSecurityToken jwtSecurityToken)
         {

@@ -16,6 +16,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
     public class AuthorizationCodesRepositoryTest : DatabaseTestBase
     {
         private static ApplicationId ApplicationId = ApplicationId.Generate();
+
         private static readonly (string ResourceId, string Name)[] TestPermissions = new (string ResourceId, string Name)[]
         {
             ("MyResource1", "Add"),

@@ -12,7 +12,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestConstructor_WhenTokenValueGiven_ThenValueIsSet()
         {
-            ApplicationId applicationId = ApplicationId.Generate(); 
+            ApplicationId applicationId = ApplicationId.Generate();
             var permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),

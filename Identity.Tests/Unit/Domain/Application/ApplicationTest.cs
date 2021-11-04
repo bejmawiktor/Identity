@@ -225,7 +225,6 @@ namespace Identity.Tests.Unit.Domain
                 homepageUrl: new Url("https://www.example.com"),
                 callbackUrl: new Url("https://www.example.com/1"));
 
-
             var decryptedSecretKey = application.DecryptSecretKey();
 
             Assert.That(decryptedSecretKey, Is.EqualTo(secretKey));

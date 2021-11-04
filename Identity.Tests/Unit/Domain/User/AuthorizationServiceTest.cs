@@ -90,6 +90,7 @@ namespace Identity.Tests.Unit.Domain
                 }).SetName($"{nameof(TestGenerateAuthorizationCode_WhenGivenPermissionsAreIncompatibleWithUserPermissions_ThenArgumentExceptionIsThrown)}(4)");
             }
         }
+
         public static IEnumerable<TestCaseData> CorrectPermissionsTestData
         {
             get
@@ -861,7 +862,6 @@ namespace Identity.Tests.Unit.Domain
                 .And.Message
                 .EqualTo("Wrong secret key given."));
         }
-
 
         [Test]
         public void TestGenerateTokens_WhenNullCallbackUrlGiven_ThenArgumentNullExceptionIsThrown()
