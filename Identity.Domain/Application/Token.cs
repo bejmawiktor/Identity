@@ -15,6 +15,7 @@ namespace Identity.Domain
         public ApplicationId ApplicationId => this.TokenInformation.ApplicationId;
         public TokenType Type => this.TokenInformation.TokenType;
         public DateTime ExpiresAt => this.TokenInformation.ExpirationDate;
+        public IReadOnlyCollection<PermissionId> Permissions => this.TokenInformation.Permissions;
 
         public Token(string value)
         {
@@ -39,28 +40,45 @@ namespace Identity.Domain
             TokenGenerationAlgorithm.Validate(value);
         }
 
-        internal static Token GenerateAccessToken(ApplicationId applicationId)
+        internal static Token GenerateAccessToken(
+            ApplicationId applicationId, 
+            IEnumerable<PermissionId> permissions)
         {
             if(applicationId == null)
             {
                 throw new ArgumentNullException(nameof(applicationId));
             }
 
+            if(permissions == null)
+            {
+                throw new ArgumentNullException(nameof(permissions));
+            }
+
             return new Token(TokenGenerationAlgorithm.Encode(new TokenInformation(
                 applicationId: applicationId,
-                tokenType: TokenType.Access)));
+                tokenType: TokenType.Access,
+                permissions: permissions)));
         }
 
-        internal static Token GenerateRefreshToken(ApplicationId applicationId, DateTime? expiresAt = null)
+        internal static Token GenerateRefreshToken(
+            ApplicationId applicationId, 
+            IEnumerable<PermissionId> permissions, 
+            DateTime? expiresAt = null)
         {
             if(applicationId == null)
             {
                 throw new ArgumentNullException(nameof(applicationId));
+            }
+
+            if(permissions == null)
+            {
+                throw new ArgumentNullException(nameof(permissions));
             }
 
             return new Token(TokenGenerationAlgorithm.Encode(new TokenInformation(
                 applicationId: applicationId,
                 tokenType: TokenType.Refresh,
+                permissions: permissions,
                 expirationDate: expiresAt)));
         }
 

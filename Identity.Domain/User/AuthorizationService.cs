@@ -189,7 +189,7 @@ namespace Identity.Domain
 
             authorizationCode.Use();
 
-            TokenPair tokens = application.GenerateTokens();
+            TokenPair tokens = application.GenerateTokens(authorizationCode.Permissions);
 
             await this.AuthorizationCodesRepository.UpdateAsync(authorizationCode);
 

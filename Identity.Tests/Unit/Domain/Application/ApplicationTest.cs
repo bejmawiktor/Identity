@@ -272,12 +272,17 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestGenerateTokens_WhenGenerating_ThenTokenPairIsReturnedWithUserId()
+        public void TestGenerateTokens_WhenGenerating_ThenTokenPairIsReturnedWithApplicationIdAndPermissions()
         {
             SecretKey secretKey = SecretKey.Generate();
             EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
             ApplicationId applicationId = ApplicationId.Generate();
             UserId userId = UserId.Generate();
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource"), "Add"),
+                new PermissionId(new ResourceId("MyResource"), "Remove")
+            };
             var application = new Application(
                 id: applicationId,
                 userId: userId,
@@ -286,18 +291,24 @@ namespace Identity.Tests.Unit.Domain
                 homepageUrl: new Url("https://www.example.com"),
                 callbackUrl: new Url("https://www.example.com/1"));
 
-            TokenPair tokens = application.GenerateTokens();
+            TokenPair tokens = application.GenerateTokens(permissions);
 
             Assert.Multiple(() =>
             {
                 Assert.That(tokens.AccessToken.ApplicationId, Is.EqualTo(applicationId));
                 Assert.That(tokens.RefreshToken.ApplicationId, Is.EqualTo(applicationId));
+                Assert.That(tokens.AccessToken.Permissions, Is.EquivalentTo(permissions));
+                Assert.That(tokens.RefreshToken.Permissions, Is.EquivalentTo(permissions));
             });
         }
 
         [Test]
         public void TestRefreshTokens_WhenRefreshing_ThenTokenPairIsReturnedWithApplicationId()
         {
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource1"), "Add")
+            };
             SecretKey secretKey = SecretKey.Generate();
             EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
             ApplicationId applicationId = ApplicationId.Generate();
@@ -309,7 +320,7 @@ namespace Identity.Tests.Unit.Domain
                 secretKey: encryptedSecretKey,
                 homepageUrl: new Url("https://www.example.com"),
                 callbackUrl: new Url("https://www.example.com/1"));
-            Token refreshToken = Token.GenerateRefreshToken(applicationId);
+            Token refreshToken = Token.GenerateRefreshToken(applicationId, permissions);
 
             TokenPair tokens = application.RefreshTokens(refreshToken);
 
@@ -317,12 +328,18 @@ namespace Identity.Tests.Unit.Domain
             {
                 Assert.That(tokens.AccessToken.ApplicationId, Is.EqualTo(applicationId));
                 Assert.That(tokens.RefreshToken.ApplicationId, Is.EqualTo(applicationId));
+                Assert.That(tokens.AccessToken.Permissions, Is.EquivalentTo(permissions));
+                Assert.That(tokens.RefreshToken.Permissions, Is.EquivalentTo(permissions));
             });
         }
 
         [Test]
         public void TestRefreshTokens_WhenRefreshing_ThenTokenPairIsReturnedWithRefreshTokenExpirationDateSameAsPreviousRefreshTokenGiven()
         {
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource1"), "Add")
+            };
             SecretKey secretKey = SecretKey.Generate();
             EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
             ApplicationId applicationId = ApplicationId.Generate();
@@ -335,7 +352,7 @@ namespace Identity.Tests.Unit.Domain
                 homepageUrl: new Url("https://www.example.com"),
                 callbackUrl: new Url("https://www.example.com/1"));
             DateTime dateTime = DateTime.Now.AddDays(1);
-            Token refreshToken = Token.GenerateRefreshToken(applicationId, dateTime);
+            Token refreshToken = Token.GenerateRefreshToken(applicationId, permissions, dateTime);
 
             TokenPair tokens = application.RefreshTokens(refreshToken);
 
@@ -345,6 +362,10 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestRefreshTokens_WhenWrongApplicationIdRefreshTokenGiven_ThenInvalidTokenExceptionIsThrown()
         {
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource1"), "Add")
+            };
             SecretKey secretKey = SecretKey.Generate();
             EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
             ApplicationId applicationId = ApplicationId.Generate();
@@ -357,7 +378,7 @@ namespace Identity.Tests.Unit.Domain
                 secretKey: encryptedSecretKey,
                 homepageUrl: new Url("https://www.example.com"),
                 callbackUrl: new Url("https://www.example.com/1"));
-            Token refreshToken = Token.GenerateRefreshToken(wrongApplicationId);
+            Token refreshToken = Token.GenerateRefreshToken(wrongApplicationId, permissions);
 
             Assert.Throws(
                 Is.InstanceOf<InvalidTokenException>()
@@ -369,6 +390,10 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestRefreshTokens_WhenRefreshTokenWithFailedVerificationGiven_ThenInvalidTokenExceptionIsThrown()
         {
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource1"), "Add")
+            };
             DateTime dateTime = DateTime.Now.AddDays(-1);
             SecretKey secretKey = SecretKey.Generate();
             EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
@@ -382,7 +407,7 @@ namespace Identity.Tests.Unit.Domain
                 homepageUrl: new Url("https://www.example.com"),
                 callbackUrl: new Url("https://www.example.com/1"));
 
-            Token refreshToken = Token.GenerateRefreshToken(applicationId, dateTime);
+            Token refreshToken = Token.GenerateRefreshToken(applicationId, permissions, dateTime);
 
             Assert.Throws(
                 Is.InstanceOf<InvalidTokenException>(),

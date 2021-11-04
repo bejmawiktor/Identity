@@ -13,9 +13,15 @@ namespace Identity.Tests.Unit.Domain
         public void TestConstructor_WhenApplicationIdGiven_ThenApplicationIdIsSet()
         {
             ApplicationId applicationId = ApplicationId.Generate();
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource"), "Add"),
+                new PermissionId(new ResourceId("MyResource"), "Remove")
+            };
             var tokenInformation = new TokenInformation(
                 applicationId: applicationId,
-                tokenType: TokenType.Access);
+                tokenType: TokenType.Access,
+                permissions: permissions);
 
             Assert.That(tokenInformation.ApplicationId, Is.EqualTo(applicationId));
         }
@@ -24,11 +30,34 @@ namespace Identity.Tests.Unit.Domain
         public void TestConstructor_WhenTokenTypeGiven_ThenTokenTypeIsSet()
         {
             ApplicationId applicationId = ApplicationId.Generate();
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource"), "Add"),
+                new PermissionId(new ResourceId("MyResource"), "Remove")
+            };
             var tokenInformation = new TokenInformation(
                 applicationId: applicationId,
-                tokenType: TokenType.Access);
+                tokenType: TokenType.Access,
+                permissions: permissions);
 
             Assert.That(tokenInformation.TokenType, Is.EqualTo(TokenType.Access));
+        }
+
+        [Test]
+        public void TestConstructor_WhenPermissionsGiven_ThenPermissionsAreSet()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource"), "Add"),
+                new PermissionId(new ResourceId("MyResource"), "Remove")
+            };
+            var tokenInformation = new TokenInformation(
+                applicationId: applicationId,
+                tokenType: TokenType.Access,
+                permissions: permissions);
+
+            Assert.That(tokenInformation.Permissions, Is.EquivalentTo(permissions));
         }
 
         [Test]
@@ -36,10 +65,16 @@ namespace Identity.Tests.Unit.Domain
         {
             ApplicationId applicationId = ApplicationId.Generate();
             DateTime now = DateTime.Now;
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource"), "Add"),
+                new PermissionId(new ResourceId("MyResource"), "Remove")
+            };
             var tokenInformation = new TokenInformation(
                 applicationId: applicationId,
                 tokenType: TokenType.Access,
-                expirationDate: now);
+                expirationDate: now,
+                permissions: permissions);
 
             Assert.That(tokenInformation.ExpirationDate, Is.EqualTo(now));
         }
@@ -49,9 +84,15 @@ namespace Identity.Tests.Unit.Domain
         {
             ApplicationId applicationId = ApplicationId.Generate();
             DateTime now = DateTime.Now;
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource"), "Add"),
+                new PermissionId(new ResourceId("MyResource"), "Remove")
+            };
             var tokenInformation = new TokenInformation(
                 applicationId: applicationId,
                 tokenType: TokenType.Refresh,
+                permissions: permissions,
                 expirationDate: now);
 
             Assert.That(

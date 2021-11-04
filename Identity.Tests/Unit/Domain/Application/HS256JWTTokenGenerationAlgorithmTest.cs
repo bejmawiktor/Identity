@@ -30,7 +30,12 @@ namespace Identity.Tests.Unit.Domain
         {
             var algorithm = new HS256JWTTokenGenerationAlgorithm();
             ApplicationId applicationId = ApplicationId.Generate();
-            var tokenInformation = new TokenInformation(applicationId, TokenType.Refresh);
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource"), "Add"),
+                new PermissionId(new ResourceId("MyResource"), "Remove")
+            };
+            var tokenInformation = new TokenInformation(applicationId, TokenType.Refresh, permissions);
 
             string token = algorithm.Encode(tokenInformation);
 
@@ -42,7 +47,12 @@ namespace Identity.Tests.Unit.Domain
         {
             var algorithm = new HS256JWTTokenGenerationAlgorithm();
             ApplicationId applicationId = ApplicationId.Generate();
-            var tokenInformation = new TokenInformation(applicationId, TokenType.Refresh);
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource"), "Add"),
+                new PermissionId(new ResourceId("MyResource"), "Remove")
+            };
+            var tokenInformation = new TokenInformation(applicationId, TokenType.Refresh, permissions);
 
             string token = algorithm.Encode(tokenInformation);
 
@@ -56,13 +66,20 @@ namespace Identity.Tests.Unit.Domain
             DateTime expirationDate = DateTime.Now;
             ApplicationId firstApplicationId = ApplicationId.Generate();
             ApplicationId secondApplicationId = ApplicationId.Generate();
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource"), "Add"),
+                new PermissionId(new ResourceId("MyResource"), "Remove")
+            };
             var firstTokenInformation = new TokenInformation(
                 firstApplicationId,
                 TokenType.Refresh,
+                permissions,
                 expirationDate);
             var secondTokenInformation = new TokenInformation(
                 secondApplicationId,
                 TokenType.Refresh,
+                permissions,
                 expirationDate);
 
             string firstToken = algorithm.Encode(firstTokenInformation);
@@ -88,12 +105,13 @@ namespace Identity.Tests.Unit.Domain
 
         [TestCase("asfasfg")]
         [TestCase("")]
-        public void TestValidate_WhenTokenWithInvalidUserIdGiven_ThenInvalidTokenExceptionIsThrown(string userId)
+        public void TestValidate_WhenTokenWithInvalidApplicationIdGiven_ThenInvalidTokenExceptionIsThrown(string applicationId)
         {
             var claims = new Claim[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, userId),
-                new Claim("tokenType", TokenType.Access)
+                new Claim(JwtRegisteredClaimNames.Sub, applicationId),
+                new Claim("tokenType", TokenType.Access),
+                new Claim("permissions", "MyResource.Add MyResource.Remove MyResource2.Update")
             };
             var algorithm = new HS256JWTTokenGenerationAlgorithm();
 
@@ -109,7 +127,55 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestValidate_WhenTokenWithoutApplicationIdGiven_ThenInvalidTokenExceptionIsThrown()
         {
-            var claims = new Claim[] { new Claim("tokenType", TokenType.Access) };
+            var claims = new Claim[]
+            {
+                new Claim("tokenType", TokenType.Access),
+                new Claim("permissions", "MyResource.Add MyResource.Remove MyResource2.Update")
+            };
+            var algorithm = new HS256JWTTokenGenerationAlgorithm();
+
+            string token = this.EncodeTestJWTToken(expiresAt: DateTime.Now, claims: claims);
+
+            Assert.Throws(
+                Is.InstanceOf<InvalidTokenException>()
+                    .And.Message
+                    .EqualTo("Invalid token given."),
+                () => algorithm.Validate(token));
+        }
+
+        [Test]
+        public void TestValidate_WhenTokenWithoutPermissionsGiven_ThenInvalidTokenExceptionIsThrown()
+        {
+            var claims = new Claim[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, ApplicationId.Generate().ToString()),
+                new Claim("tokenType", TokenType.Access)
+            };
+            var algorithm = new HS256JWTTokenGenerationAlgorithm();
+
+            string token = this.EncodeTestJWTToken(expiresAt: DateTime.Now, claims: claims);
+
+            Assert.Throws(
+                Is.InstanceOf<InvalidTokenException>()
+                    .And.Message
+                    .EqualTo("Invalid token given."),
+                () => algorithm.Validate(token));
+        }
+
+        [TestCase("MyResource.12321.123123")]
+        [TestCase("MyResource12321")]
+        [TestCase("MyResource.12321 asdasdasd")]
+        [TestCase("")]
+        [TestCase("MyResource12321 MyResource12321.add")]
+        [TestCase("MyResource12321.add,MyResource12321.add")]
+        public void TestValidate_WhenTokenWithIncorrectPermissionsGiven_ThenInvalidTokenExceptionIsThrown(string permissions)
+        {
+            var claims = new Claim[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, ApplicationId.Generate().ToString()),
+                new Claim("tokenType", TokenType.Access),
+                new Claim("permissions", permissions)
+            };
             var algorithm = new HS256JWTTokenGenerationAlgorithm();
 
             string token = this.EncodeTestJWTToken(expiresAt: DateTime.Now, claims: claims);
@@ -125,11 +191,12 @@ namespace Identity.Tests.Unit.Domain
         [TestCase("")]
         public void TestValidate_WhenTokenWithInvalidTokenTypeGiven_ThenInvalidTokenExceptionIsThrown(string tokenType)
         {
-            UserId userId = UserId.Generate();
+            ApplicationId applicationId = ApplicationId.Generate();
             var claims = new Claim[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
-                new Claim("tokenType", tokenType)
+                new Claim(JwtRegisteredClaimNames.Sub, applicationId.ToString()),
+                new Claim("tokenType", tokenType),
+                new Claim("permissions", "MyResource.Add MyResource.Remove MyResource2.Update")
             };
             var algorithm = new HS256JWTTokenGenerationAlgorithm();
 
@@ -145,10 +212,11 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestValidate_WhenTokenWithoutTokenTypeGiven_ThenInvalidTokenExceptionIsThrown()
         {
-            UserId userId = UserId.Generate();
+            ApplicationId applicationId = ApplicationId.Generate();
             var claims = new Claim[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
+                new Claim(JwtRegisteredClaimNames.Sub, applicationId.ToString()),
+                new Claim("permissions", "MyResource.Add MyResource.Remove MyResource2.Update")
             };
             var algorithm = new HS256JWTTokenGenerationAlgorithm();
 
@@ -186,8 +254,13 @@ namespace Identity.Tests.Unit.Domain
         [TestCase("")]
         public void TestValidate_WhenWrongAudienceGiven_ThenInvalidTokenExceptionIsThrown(string audience)
         {
-            UserId userId = new UserId(Guid.NewGuid());
-            var claims = new Claim[] { new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()) };
+            ApplicationId applicationId = new ApplicationId(Guid.NewGuid());
+            var claims = new Claim[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, applicationId.ToString()),
+                new Claim("tokenType", TokenType.Access.ToString()),
+                new Claim("permissions", "MyResource.Add MyResource.Remove MyResource2.Update")
+            };
             var algorithm = new HS256JWTTokenGenerationAlgorithm();
 
             string token = this.EncodeTestJWTToken(expiresAt: DateTime.Now, audience: audience, claims: claims);
@@ -203,11 +276,12 @@ namespace Identity.Tests.Unit.Domain
         [TestCase("")]
         public void TestValidate_WhenWrongIssuerGiven_ThenInvalidTokenExceptionIsThrown(string issuer)
         {
-            UserId userId = new UserId(Guid.NewGuid());
+            ApplicationId applicationId = new ApplicationId(Guid.NewGuid());
             var claims = new Claim[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
-                new Claim("tokenType", TokenType.Refresh.ToString())
+                new Claim(JwtRegisteredClaimNames.Sub, applicationId.ToString()),
+                new Claim("tokenType", TokenType.Access.ToString()),
+                new Claim("permissions", "MyResource.Add MyResource.Remove MyResource2.Update")
             };
             var algorithm = new HS256JWTTokenGenerationAlgorithm();
 
@@ -223,11 +297,12 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestValidate_WhenTokenWithoutExpirationDateGiven_ThenInvalidTokenExceptionIsThrown()
         {
-            UserId userId = new UserId(Guid.NewGuid());
+            ApplicationId applicationId = new ApplicationId(Guid.NewGuid());
             var claims = new Claim[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
-                new Claim("tokenType", TokenType.Refresh.ToString())
+                new Claim(JwtRegisteredClaimNames.Sub, applicationId.ToString()),
+                new Claim("tokenType", TokenType.Access.ToString()),
+                new Claim("permissions", "MyResource.Add MyResource.Remove MyResource2.Update")
             };
             var algorithm = new HS256JWTTokenGenerationAlgorithm();
 
@@ -244,9 +319,13 @@ namespace Identity.Tests.Unit.Domain
         public void TestEncode_WhenValidTokenGiven_ThenNoExceptionIsThrown()
         {
             var algorithm = new HS256JWTTokenGenerationAlgorithm();
-            UserId userId = UserId.Generate();
             ApplicationId applicationId = ApplicationId.Generate();
-            var tokenInformation = new TokenInformation(applicationId, TokenType.Refresh);
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource"), "Add"),
+                new PermissionId(new ResourceId("MyResource"), "Remove")
+            };
+            var tokenInformation = new TokenInformation(applicationId, TokenType.Refresh, permissions);
 
             string token = algorithm.Encode(tokenInformation);
 
@@ -272,9 +351,14 @@ namespace Identity.Tests.Unit.Domain
         public void TestDecode_WhenValidTokenGiven_ThenTokenInforamtionIsReturned()
         {
             var algorithm = new HS256JWTTokenGenerationAlgorithm();
-            UserId userId = UserId.Generate();
             ApplicationId applicationId = ApplicationId.Generate();
-            var tokenInformation = new TokenInformation(applicationId, TokenType.Refresh);
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource"), "Add"),
+                new PermissionId(new ResourceId("MyResource"), "Remove"),
+                new PermissionId(new ResourceId("MyResource2"), "Remove")
+            };
+            var tokenInformation = new TokenInformation(applicationId, TokenType.Refresh, permissions);
             string token = algorithm.Encode(tokenInformation);
 
             TokenInformation result = algorithm.Decode(token);
@@ -283,6 +367,7 @@ namespace Identity.Tests.Unit.Domain
             {
                 Assert.That(result.ApplicationId, Is.EqualTo(applicationId));
                 Assert.That(result.TokenType, Is.EqualTo(TokenType.Refresh));
+                Assert.That(result.Permissions, Is.EquivalentTo(permissions));
                 Assert.That(result.ExpirationDate, Is.EqualTo(TokenType.Refresh.GenerateExpirationDate()).Within(1).Hours);
             });
         }

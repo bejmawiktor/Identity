@@ -76,14 +76,14 @@ namespace Identity.Domain
             this.SecretKey = EncryptedSecretKey.Encrypt(Domain.SecretKey.Generate());
         }
 
-        public TokenPair GenerateTokens()
+        internal TokenPair GenerateTokens(IEnumerable<PermissionId> permissions)
         {
             return new TokenPair(
-                accessToken: Token.GenerateAccessToken(this.Id),
-                refreshToken: Token.GenerateRefreshToken(this.Id));
+                accessToken: Token.GenerateAccessToken(this.Id, permissions),
+                refreshToken: Token.GenerateRefreshToken(this.Id, permissions));
         }
 
-        public TokenPair RefreshTokens(Token refreshToken)
+        internal TokenPair RefreshTokens(Token refreshToken)
         {
             if(refreshToken.ApplicationId != this.Id)
             {
@@ -98,11 +98,11 @@ namespace Identity.Domain
             }
 
             return new TokenPair(
-                accessToken: Token.GenerateAccessToken(this.Id),
-                refreshToken: Token.GenerateRefreshToken(this.Id, refreshToken.ExpiresAt));
+                accessToken: Token.GenerateAccessToken(this.Id, refreshToken.Permissions),
+                refreshToken: Token.GenerateRefreshToken(this.Id, refreshToken.Permissions, refreshToken.ExpiresAt));
         }
 
-        public AuthorizationCode CreateAuthorizationCode(IEnumerable<PermissionId> permissions, out Code code)
+        internal AuthorizationCode CreateAuthorizationCode(IEnumerable<PermissionId> permissions, out Code code)
             => AuthorizationCode.Create(this.Id, permissions, out code);
     }
 }

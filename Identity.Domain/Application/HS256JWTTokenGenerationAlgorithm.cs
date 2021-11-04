@@ -1,5 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -15,6 +16,7 @@ namespace Identity.Domain
         internal static readonly string SecurityAlgorithm = SecurityAlgorithms.HmacSha256;
 
         private string TokenTypeClaimName => "tokenType";
+        private string PermissionsClaimName => "permissions";
 
         public HS256JWTTokenGenerationAlgorithm()
         {
@@ -32,7 +34,8 @@ namespace Identity.Domain
             var claims = new Claim[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, tokenInformation.ApplicationId.ToString()),
-                new Claim(this.TokenTypeClaimName, tokenInformation.TokenType.Name)
+                new Claim(this.TokenTypeClaimName, tokenInformation.TokenType.Name),
+                new Claim(this.PermissionsClaimName, this.ConvertPermissionsToPermissionsText(tokenInformation.Permissions))
             };
             var token = new JwtSecurityToken(
                 issuer: Issuer,
@@ -45,6 +48,19 @@ namespace Identity.Domain
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        private string ConvertPermissionsToPermissionsText(IEnumerable<PermissionId> permissions)
+        {
+            var permissionsText = new StringBuilder();
+
+            foreach (PermissionId permission in permissions)
+            {
+                permissionsText.Append(permission.ToString());
+                permissionsText.Append(" ");
+            }
+
+            return permissionsText.ToString().TrimEnd(' ');
+        }
+
         public TokenInformation Decode(string token)
         {
             if(!this.TryGetValidJwtSecurityToken(token, out JwtSecurityToken jwtSecurityToken))
@@ -55,8 +71,49 @@ namespace Identity.Domain
             return new TokenInformation(
                 applicationId: this.ExtractApplicationId(jwtSecurityToken),
                 tokenType: this.ExtractTokenType(jwtSecurityToken),
+                permissions: this.ExtractPermissions(jwtSecurityToken),
                 expirationDate: this.ExtractExpirationDate(jwtSecurityToken));
         }
+
+        private IEnumerable<PermissionId> ExtractPermissions(JwtSecurityToken jwtSecurityToken)
+        {
+            string permissionsText = this.ExtractPermissionsText(jwtSecurityToken);
+
+            return this.ConvertPermissionsTextToPermissions(permissionsText);
+        }
+
+        private IEnumerable<PermissionId> ConvertPermissionsTextToPermissions(string permissionsText)
+        {
+            List<PermissionId> permissions = new List<PermissionId>();
+            string[] splitedPermissionsText = permissionsText.Split(' ');
+
+            if(splitedPermissionsText.Length == 0)
+            {
+                throw new ArgumentException("Wrong permissions given.");
+            }
+
+            foreach(var permission in splitedPermissionsText)
+            {
+                string[] permissionComponents = permission.Split('.');
+
+                if(permissionComponents.Length != 2)
+                {
+                    throw new ArgumentException("Wrong permissions given.");
+                }
+
+                permissions.Add(new PermissionId(new ResourceId(permissionComponents[0]), permissionComponents[1]));
+            }
+
+            return permissions;
+        }
+
+        private string ExtractPermissionsText(JwtSecurityToken jwtSecurityToken)
+        {
+            return jwtSecurityToken.Claims
+                .FirstOrDefault(x => x.Type == this.PermissionsClaimName)?
+                .Value;
+        }
+
 
         private bool TryGetValidJwtSecurityToken(string token, out JwtSecurityToken jwtSecurityToken)
         {
@@ -80,6 +137,11 @@ namespace Identity.Domain
                 return false;
             }
 
+            if(!jwtSecurityToken.Claims.Any(j => j.Type == this.PermissionsClaimName))
+            {
+                return false;
+            }
+
             try
             {
                 ApplicationId applicationId = this.ExtractApplicationId(jwtSecurityToken);
@@ -92,6 +154,15 @@ namespace Identity.Domain
             try
             {
                 var tokenType = this.ExtractTokenType(jwtSecurityToken);
+            }
+            catch
+            {
+                return false;
+            }
+
+            try
+            {
+                var permissions = this.ExtractPermissions(jwtSecurityToken);
             }
             catch
             {

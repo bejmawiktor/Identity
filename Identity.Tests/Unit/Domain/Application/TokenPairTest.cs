@@ -12,9 +12,14 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestConstructor_WhenAccessTokenGiven_ThenAccessTokenIsSet()
         {
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource"), "Add"),
+                new PermissionId(new ResourceId("MyResource"), "Remove")
+            };
             ApplicationId applicationId = ApplicationId.Generate();
-            Token accessToken = Token.GenerateAccessToken(applicationId);
-            Token refreshToken = Token.GenerateRefreshToken(applicationId);
+            Token accessToken = Token.GenerateAccessToken(applicationId, permissions);
+            Token refreshToken = Token.GenerateRefreshToken(applicationId, permissions);
             var tokenPair = new TokenPair(
                 accessToken: accessToken,
                 refreshToken: refreshToken);
@@ -25,9 +30,14 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestConstructor_WhenRefreshTokenGiven_ThenRefreshTokenIsSet()
         {
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource"), "Add"),
+                new PermissionId(new ResourceId("MyResource"), "Remove")
+            };
             ApplicationId applicationId = ApplicationId.Generate();
-            Token accessToken = Token.GenerateAccessToken(applicationId);
-            Token refreshToken = Token.GenerateRefreshToken(applicationId);
+            Token accessToken = Token.GenerateAccessToken(applicationId, permissions);
+            Token refreshToken = Token.GenerateRefreshToken(applicationId, permissions);
             var tokenPair = new TokenPair(
                 accessToken: accessToken,
                 refreshToken: refreshToken);
@@ -38,8 +48,13 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestConstructor_WhenRefreshTokenGivenInAccessTokenPlace_ThenArgumentExceptionIsThrown()
         {
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource"), "Add"),
+                new PermissionId(new ResourceId("MyResource"), "Remove")
+            };
             ApplicationId applicationId = ApplicationId.Generate();
-            Token refreshToken = Token.GenerateRefreshToken(applicationId);
+            Token refreshToken = Token.GenerateRefreshToken(applicationId, permissions);
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()
@@ -53,8 +68,13 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestConstructor_WhenAccessTokenGivenInRefreshTokenPlace_ThenArgumentExceptionIsThrown()
         {
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource"), "Add"),
+                new PermissionId(new ResourceId("MyResource"), "Remove")
+            };
             ApplicationId applicationId = ApplicationId.Generate();
-            Token accessToken = Token.GenerateAccessToken(applicationId);
+            Token accessToken = Token.GenerateAccessToken(applicationId, permissions);
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()
@@ -68,8 +88,13 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestConstructor_WhenNullAccessTokenGiven_ThenArgumentNullExceptionIsThrown()
         {
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource"), "Add"),
+                new PermissionId(new ResourceId("MyResource"), "Remove")
+            };
             ApplicationId applicationId = ApplicationId.Generate();
-            Token refreshToken = Token.GenerateRefreshToken(applicationId);
+            Token refreshToken = Token.GenerateRefreshToken(applicationId, permissions);
 
             Assert.Throws(
                Is.InstanceOf<ArgumentNullException>()
@@ -83,8 +108,13 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestConstructor_WhenNullRefreshTokenGiven_ThenArgumentNullExceptionIsThrown()
         {
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource"), "Add"),
+                new PermissionId(new ResourceId("MyResource"), "Remove")
+            };
             ApplicationId applicationId = ApplicationId.Generate();
-            Token accessToken = Token.GenerateAccessToken(applicationId);
+            Token accessToken = Token.GenerateAccessToken(applicationId, permissions);
 
             Assert.Throws(
                Is.InstanceOf<ArgumentNullException>()
