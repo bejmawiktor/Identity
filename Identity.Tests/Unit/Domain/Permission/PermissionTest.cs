@@ -10,13 +10,22 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestConstructor_WhenDescriptionGiven_ThenDescriptionIsSet()
         {
-            var permission = new Permission(
-                id: new PermissionId(
-                    resourceId: new ResourceId("MyResource"),
-                    name: "GrantPermission"),
+            Permission permission = this.GetPermission(
                 description: "It allows user to grant permission to other users.");
 
             Assert.That(permission.Description, Is.EqualTo("It allows user to grant permission to other users."));
+        }
+
+        private Permission GetPermission(
+            ResourceId resourceId = null, 
+            string name = null, 
+            string description = null)
+        {
+            return new Permission(
+                id: new PermissionId(
+                    resourceId: resourceId ?? new ResourceId("MyResource"),
+                    name: name ?? "GrantPermission"),
+                description: description ?? "It allows user to grant permission to other users.");
         }
 
         [Test]

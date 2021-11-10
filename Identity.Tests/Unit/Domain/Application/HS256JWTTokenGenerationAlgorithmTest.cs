@@ -25,17 +25,28 @@ namespace Identity.Tests.Unit.Domain
                 () => algorithm.Encode(null));
         }
 
-        [Test]
-        public void TestEncode_WhenTokenInformationGiven_ThenNotNullTokenIsReturned()
+        private TokenInformation GetTokenInformation(
+            ApplicationId applicationId = null, 
+            TokenType tokenType = null, 
+            PermissionId[] permissions = null)
         {
-            var algorithm = new HS256JWTTokenGenerationAlgorithm();
-            ApplicationId applicationId = ApplicationId.Generate();
-            var permissions = new PermissionId[]
+            var permissionsReplacement = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
-            var tokenInformation = new TokenInformation(applicationId, TokenType.Refresh, permissions);
+
+            return new TokenInformation(
+                applicationId ?? ApplicationId.Generate(),
+                tokenType ?? TokenType.Refresh,
+                permissions ?? permissionsReplacement);
+        }
+
+        [Test]
+        public void TestEncode_WhenTokenInformationGiven_ThenNotNullTokenIsReturned()
+        {
+            var algorithm = new HS256JWTTokenGenerationAlgorithm();
+            TokenInformation tokenInformation = this.GetTokenInformation();
 
             string token = algorithm.Encode(tokenInformation);
 
@@ -46,13 +57,7 @@ namespace Identity.Tests.Unit.Domain
         public void TestEncode_WhenTokenInformationGiven_ThenNotEmptyTokenIsReturned()
         {
             var algorithm = new HS256JWTTokenGenerationAlgorithm();
-            ApplicationId applicationId = ApplicationId.Generate();
-            var permissions = new PermissionId[]
-            {
-                new PermissionId(new ResourceId("MyResource"), "Add"),
-                new PermissionId(new ResourceId("MyResource"), "Remove")
-            };
-            var tokenInformation = new TokenInformation(applicationId, TokenType.Refresh, permissions);
+            TokenInformation tokenInformation = this.GetTokenInformation();
 
             string token = algorithm.Encode(tokenInformation);
 
@@ -63,24 +68,8 @@ namespace Identity.Tests.Unit.Domain
         public void TestEncode_WhenGeneratingTokenWithDifferentTokenInformation_ThenTokensAreDifferent()
         {
             var algorithm = new HS256JWTTokenGenerationAlgorithm();
-            DateTime expirationDate = DateTime.Now;
-            ApplicationId firstApplicationId = ApplicationId.Generate();
-            ApplicationId secondApplicationId = ApplicationId.Generate();
-            var permissions = new PermissionId[]
-            {
-                new PermissionId(new ResourceId("MyResource"), "Add"),
-                new PermissionId(new ResourceId("MyResource"), "Remove")
-            };
-            var firstTokenInformation = new TokenInformation(
-                firstApplicationId,
-                TokenType.Refresh,
-                permissions,
-                expirationDate);
-            var secondTokenInformation = new TokenInformation(
-                secondApplicationId,
-                TokenType.Refresh,
-                permissions,
-                expirationDate);
+            TokenInformation firstTokenInformation = this.GetTokenInformation();
+            TokenInformation secondTokenInformation = this.GetTokenInformation();
 
             string firstToken = algorithm.Encode(firstTokenInformation);
             string secondToken = algorithm.Encode(secondTokenInformation);
@@ -319,13 +308,7 @@ namespace Identity.Tests.Unit.Domain
         public void TestEncode_WhenValidTokenGiven_ThenNoExceptionIsThrown()
         {
             var algorithm = new HS256JWTTokenGenerationAlgorithm();
-            ApplicationId applicationId = ApplicationId.Generate();
-            var permissions = new PermissionId[]
-            {
-                new PermissionId(new ResourceId("MyResource"), "Add"),
-                new PermissionId(new ResourceId("MyResource"), "Remove")
-            };
-            var tokenInformation = new TokenInformation(applicationId, TokenType.Refresh, permissions);
+            TokenInformation tokenInformation = this.GetTokenInformation();
 
             string token = algorithm.Encode(tokenInformation);
 
@@ -358,7 +341,7 @@ namespace Identity.Tests.Unit.Domain
                 new PermissionId(new ResourceId("MyResource"), "Remove"),
                 new PermissionId(new ResourceId("MyResource2"), "Remove")
             };
-            var tokenInformation = new TokenInformation(applicationId, TokenType.Refresh, permissions);
+            TokenInformation tokenInformation = this.GetTokenInformation(applicationId, TokenType.Refresh, permissions);
             string token = algorithm.Encode(tokenInformation);
 
             TokenInformation result = algorithm.Decode(token);

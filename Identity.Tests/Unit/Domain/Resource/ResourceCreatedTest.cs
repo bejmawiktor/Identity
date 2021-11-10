@@ -9,18 +9,25 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestConstructor_WhenResourceIdGiven_ThenResourceIdIsSet()
         {
-            var resourceCreated = new ResourceCreated(
-                resourceId: new ResourceId("TestResource"),
-                resourceDescription: "Test resource description");
+            ResourceCreated resourceCreated = this.GetResourceCreated(
+                resourceId: new ResourceId("TestResource"));
 
             Assert.That(resourceCreated.ResourceId, Is.EqualTo(new ResourceId("TestResource")));
+        }
+
+        private ResourceCreated GetResourceCreated(
+            ResourceId resourceId = null, 
+            string resourceDescription = null)
+        {
+            return new ResourceCreated(
+                resourceId: resourceId ?? new ResourceId("TestResource"),
+                resourceDescription: resourceDescription ?? "Test resource description");
         }
 
         [Test]
         public void TestConstructor_WhenResourceDescriptionGiven_ThenResourceDescriptionIsSet()
         {
-            var resourceCreated = new ResourceCreated(
-                resourceId: new ResourceId("TestResource"),
+            ResourceCreated resourceCreated = this.GetResourceCreated(
                 resourceDescription: "Test resource description");
 
             Assert.That(resourceCreated.ResourceDescription, Is.EqualTo("Test resource description"));

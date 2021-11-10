@@ -1,6 +1,7 @@
 ﻿using Identity.Domain;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Identity.Tests.Unit.Domain
@@ -12,33 +13,34 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestConstructor_WhenExpiresAtGiven_ThenExpiresAtIsSet()
         {
-            var permissions = new PermissionId[]
+            DateTime now = DateTime.Now;
+            AuthorizationCode authorizationCode = this.GetAuthorizationCode(expiresAt: now);
+
+            Assert.That(authorizationCode.ExpiresAt, Is.EqualTo(now));
+        }
+
+        private AuthorizationCode GetAuthorizationCode(
+            AuthorizationCodeId authorizationCodeId = null, 
+            DateTime? expiresAt = null, 
+            bool? used = null, 
+            IEnumerable<PermissionId> permissions = null)
+        {
+            var permissionsReplacement = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add")
             };
-            DateTime now = DateTime.Now;
-            var authorizationCode = new AuthorizationCode(
-                id: AuthorizationCodeId.Generate(ApplicationId.Generate(), out _),
-                expiresAt: now,
-                used: true,
-                permissions: permissions);
 
-            Assert.That(authorizationCode.ExpiresAt, Is.EqualTo(now));
+            return new AuthorizationCode(
+                id: authorizationCodeId ?? AuthorizationCodeId.Generate(ApplicationId.Generate(), out _),
+                expiresAt: expiresAt ?? DateTime.Now,
+                used: used ?? false,
+                permissions: permissions ?? permissionsReplacement);
         }
 
         [Test]
         public void TestConstructor_WhenUsedGiven_ThenUsedIsSet()
         {
-            var permissions = new PermissionId[]
-            {
-                new PermissionId(new ResourceId("MyResource"), "Add")
-            };
-            DateTime now = DateTime.Now;
-            var authorizationCode = new AuthorizationCode(
-                id: AuthorizationCodeId.Generate(ApplicationId.Generate(), out _),
-                expiresAt: now,
-                used: true,
-                permissions: permissions);
+            AuthorizationCode authorizationCode = this.GetAuthorizationCode(used: true);
 
             Assert.That(authorizationCode.Used, Is.True);
         }
@@ -50,7 +52,7 @@ namespace Identity.Tests.Unit.Domain
             {
                 new PermissionId(new ResourceId("MyResource"), "Add")
             };
-            var authorizationCode = new AuthorizationCode(
+            AuthorizationCode authorizationCode = new AuthorizationCode(
                 id: AuthorizationCodeId.Generate(ApplicationId.Generate(), out _),
                 permissions: permissions);
 
@@ -64,7 +66,7 @@ namespace Identity.Tests.Unit.Domain
             {
                 new PermissionId(new ResourceId("MyResource"), "Add")
             };
-            var authorizationCode = new AuthorizationCode(
+            AuthorizationCode authorizationCode = new AuthorizationCode(
                 id: AuthorizationCodeId.Generate(ApplicationId.Generate(), out _),
                 permissions: permissions);
 
@@ -78,12 +80,7 @@ namespace Identity.Tests.Unit.Domain
             {
                 new PermissionId(new ResourceId("MyResource"), "Add")
             };
-            DateTime now = DateTime.Now;
-            var authorizationCode = new AuthorizationCode(
-                id: AuthorizationCodeId.Generate(ApplicationId.Generate(), out _),
-                expiresAt: now,
-                used: true,
-                permissions: permissions);
+            AuthorizationCode authorizationCode = this.GetAuthorizationCode(permissions: permissions);
 
             Assert.That(authorizationCode.Permissions, Is.EquivalentTo(permissions));
         }
@@ -123,7 +120,7 @@ namespace Identity.Tests.Unit.Domain
             {
                 new PermissionId(new ResourceId("MyResource"), "Add")
             };
-            var authorizationCode = new AuthorizationCode(
+            AuthorizationCode authorizationCode = new AuthorizationCode(
                 id: AuthorizationCodeId.Generate(ApplicationId.Generate(), out _),
                 permissions: permissions);
 
@@ -161,7 +158,7 @@ namespace Identity.Tests.Unit.Domain
             {
                 new PermissionId(new ResourceId("MyResource"), "Add")
             };
-            var authorizationCode = AuthorizationCode.Create(ApplicationId.Generate(), permissions, out _);
+            AuthorizationCode authorizationCode = AuthorizationCode.Create(ApplicationId.Generate(), permissions, out _);
 
             Assert.Multiple(() =>
             {
@@ -177,7 +174,8 @@ namespace Identity.Tests.Unit.Domain
             {
                 new PermissionId(new ResourceId("MyResource"), "Add")
             };
-            AuthorizationCode authorizationCode = AuthorizationCode.Create(ApplicationId.Generate(), permissions, out Code code);
+            
+            AuthorizationCode.Create(ApplicationId.Generate(), permissions, out Code code);
 
             Assert.That(code, Is.Not.Null);
         }
@@ -185,14 +183,9 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestUse_WhenAuthorizationCodeExpired_ThenInvalidOperationIsThrown()
         {
-            var authorizationCode = new AuthorizationCode(
-                id: AuthorizationCodeId.Generate(ApplicationId.Generate(), out _),
+            AuthorizationCode authorizationCode = this.GetAuthorizationCode(
                 used: false,
-                expiresAt: DateTime.Now.AddMinutes(-2),
-                permissions: new PermissionId[]
-                {
-                    new PermissionId(new ResourceId("MyResource"), "Add")
-                });
+                expiresAt: DateTime.Now.AddMinutes(-2));
 
             Assert.Throws(
                 Is.InstanceOf<InvalidOperationException>()
@@ -204,14 +197,8 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestUse_WhenAuthorizationCodeWasPreviouslyUsed_ThenInvalidOperationIsThrown()
         {
-            var authorizationCode = new AuthorizationCode(
-                id: AuthorizationCodeId.Generate(ApplicationId.Generate(), out _),
-                used: true,
-                expiresAt: DateTime.Now,
-                permissions: new PermissionId[]
-                {
-                    new PermissionId(new ResourceId("MyResource"), "Add")
-                });
+            AuthorizationCode authorizationCode = this.GetAuthorizationCode(
+                used: true);
 
             Assert.Throws(
                 Is.InstanceOf<InvalidOperationException>()
@@ -223,12 +210,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestUse_WhenUse_ThenUsedIsTrue()
         {
-            var authorizationCode = new AuthorizationCode(
-                id: AuthorizationCodeId.Generate(ApplicationId.Generate(), out _),
-                permissions: new PermissionId[]
-                {
-                    new PermissionId(new ResourceId("MyResource"), "Add")
-                });
+            AuthorizationCode authorizationCode = this.GetAuthorizationCode(expiresAt: DateTime.Now.AddDays(1));
 
             authorizationCode.Use();
 
@@ -238,14 +220,8 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestExpired_WhenExpiresAtElapsed_ThenTrueIsReturned()
         {
-            var authorizationCode = new AuthorizationCode(
-                id: AuthorizationCodeId.Generate(ApplicationId.Generate(), out _),
-                expiresAt: DateTime.Now.AddMinutes(-1),
-                used: false,
-                permissions: new PermissionId[]
-                {
-                    new PermissionId(new ResourceId("MyResource"), "Add")
-                });
+            AuthorizationCode authorizationCode = this.GetAuthorizationCode(
+                expiresAt: DateTime.Now.AddMinutes(-1));
 
             Assert.That(authorizationCode.Expired, Is.True);
         }
@@ -253,14 +229,8 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestExpired_WhenExpiresAtNotElapsed_ThenFalseIsReturned()
         {
-            var authorizationCode = new AuthorizationCode(
-                id: AuthorizationCodeId.Generate(ApplicationId.Generate(), out _),
-                expiresAt: DateTime.Now.AddMinutes(1),
-                used: false,
-                permissions: new PermissionId[]
-                {
-                    new PermissionId(new ResourceId("MyResource"), "Add")
-                });
+            AuthorizationCode authorizationCode = this.GetAuthorizationCode(
+                expiresAt: DateTime.Now.AddMinutes(1));
 
             Assert.That(authorizationCode.Expired, Is.False);
         }

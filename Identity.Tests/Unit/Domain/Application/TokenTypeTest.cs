@@ -34,17 +34,17 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestGenerateExpirationDate_WhenAccessTokenGiven_ThenTokenExpiresOneDayAfterGeneration()
         {
-            var tokenType = TokenType.Access;
+            TokenType tokenType = TokenType.Access;
 
-            Assert.That(tokenType.GenerateExpirationDate(), Is.EqualTo(DateTime.Now.AddDays(1)).Within(1).Hours);
+            Assert.That(tokenType.GenerateExpirationDate(), Is.EqualTo(DateTime.Now.AddDays(1)).Within(1).Minutes);
         }
 
         [Test]
         public void TestGenerateExpirationDate_WhenRefreshTokenGiven_ThenTokenExpiresOneYearAfterGeneration()
         {
-            var tokenType = TokenType.Refresh;
+            TokenType tokenType = TokenType.Refresh;
 
-            Assert.That(tokenType.GenerateExpirationDate(), Is.EqualTo(DateTime.Now.AddYears(1)).Within(1).Hours);
+            Assert.That(tokenType.GenerateExpirationDate(), Is.EqualTo(DateTime.Now.AddYears(1)).Within(1).Minutes);
         }
 
         [Test]

@@ -13,8 +13,8 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public void TestConstructor_WhenDtoGiven_ThenMembersAreSet()
         {
-            var applicationId = Guid.NewGuid();
-            var userId = Guid.NewGuid();
+            Guid applicationId = Guid.NewGuid();
+            Guid userId = Guid.NewGuid();
             var application = new Application(
                 new ApplicationDto(
                     id: applicationId,
@@ -37,8 +37,8 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public void TestSetFields_WhenDtoGiven_ThenMembersAreSet()
         {
-            var applicationId = Guid.NewGuid();
-            var userId = Guid.NewGuid();
+            Guid applicationId = Guid.NewGuid();
+            Guid userId = Guid.NewGuid();
             var application = new Application();
 
             application.SetFields(new ApplicationDto(
@@ -62,8 +62,8 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public void TestToDto_WhenConvertingToDto_ThenApplicationDtoIsReturned()
         {
-            var applicationId = Guid.NewGuid();
-            var userId = Guid.NewGuid();
+            Guid applicationId = Guid.NewGuid();
+            Guid userId = Guid.NewGuid();
             var application = new Application(
                 new ApplicationDto(
                     id: applicationId,

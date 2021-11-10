@@ -2,6 +2,8 @@
 using Identity.Tests.Unit.Domain.TestDoubles;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Identity.Tests.Unit.Domain
 {
@@ -16,15 +18,30 @@ namespace Identity.Tests.Unit.Domain
             {
                 addSomethingPermission
             };
-            var permissionHolder = new PermissionHolderStub(Guid.NewGuid(), permissions);
+            PermissionHolderStub permissionHolder = this.GetPermissionHolderStub(permissions: permissions);
 
             Assert.That(permissionHolder.Permissions, Is.EqualTo(permissions));
+        }
+
+        private PermissionHolderStub GetPermissionHolderStub(
+            Guid? id = null, 
+            IEnumerable<PermissionId> permissions = null)
+        {
+            var permissionsReplacement = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource"), "AddSomething")
+            };
+
+            return new PermissionHolderStub(
+                id ?? Guid.NewGuid(), 
+                permissions ?? permissionsReplacement);
         }
 
         [Test]
         public void TestConstructor_WhenPermissionsNotGiven_ThenPermissionsAreSetAsEmpty()
         {
-            var permissionHolder = new PermissionHolderStub(Guid.NewGuid());
+            PermissionHolderStub permissionHolder = this.GetPermissionHolderStub(
+                permissions: Enumerable.Empty<PermissionId>());
 
             Assert.That(permissionHolder.Permissions, Is.Empty);
         }
@@ -32,7 +49,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestIsPermitedTo_WhenNullPermissionIdGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var permissionHolder = new PermissionHolderStub(Guid.NewGuid());
+            PermissionHolderStub permissionHolder = this.GetPermissionHolderStub();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -49,7 +66,7 @@ namespace Identity.Tests.Unit.Domain
             {
                 addSomethingPermission
             };
-            var permissionHolder = new PermissionHolderStub(Guid.NewGuid(), permissions);
+            PermissionHolderStub permissionHolder = this.GetPermissionHolderStub(permissions: permissions);
 
             Assert.That(permissionHolder.IsPermittedTo(addSomethingPermission), Is.True);
         }
@@ -58,7 +75,8 @@ namespace Identity.Tests.Unit.Domain
         public void TestIsPermitedTo_WhenHolderHasntPermission_ThenFalseIsReturned()
         {
             var addSomethingPermission = new PermissionId(new ResourceId("MyResource"), "AddSomething");
-            var permissionHolder = new PermissionHolderStub(Guid.NewGuid());
+            PermissionHolderStub permissionHolder = this.GetPermissionHolderStub(
+                permissions: Enumerable.Empty<PermissionId>());
 
             Assert.That(permissionHolder.IsPermittedTo(addSomethingPermission), Is.False);
         }
@@ -66,7 +84,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestObtainPermission_WhenNullPermissionIdGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var permissionHolder = new PermissionHolderStub(Guid.NewGuid());
+            PermissionHolderStub permissionHolder = this.GetPermissionHolderStub();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -83,7 +101,7 @@ namespace Identity.Tests.Unit.Domain
             {
                 addSomethingPermission
             };
-            var permissionHolder = new PermissionHolderStub(Guid.NewGuid(), permissions);
+            PermissionHolderStub permissionHolder = this.GetPermissionHolderStub(permissions: permissions);
 
             Assert.Throws(
                 Is.InstanceOf<InvalidOperationException>()
@@ -96,7 +114,8 @@ namespace Identity.Tests.Unit.Domain
         public void TestObtainPermission_WhenPermissionGiven_ThenHolderHasPermission()
         {
             var addSomethingPermission = new PermissionId(new ResourceId("MyResource"), "AddSomething");
-            var permissionHolder = new PermissionHolderStub(Guid.NewGuid());
+            PermissionHolderStub permissionHolder = this.GetPermissionHolderStub(
+                permissions: Enumerable.Empty<PermissionId>());
 
             permissionHolder.ObtainPermission(addSomethingPermission);
 
@@ -106,7 +125,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestRevokePermission_WhenNullPermissionIdGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var permissionHolder = new PermissionHolderStub(Guid.NewGuid());
+            PermissionHolderStub permissionHolder = this.GetPermissionHolderStub();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -119,7 +138,8 @@ namespace Identity.Tests.Unit.Domain
         public void TestRevokePermission_WhenHolderHasntObtainedGivenPermission_ThenInvalidOperationIsThrown()
         {
             var addSomethingPermission = new PermissionId(new ResourceId("MyResource"), "AddSomething");
-            var permissionHolder = new PermissionHolderStub(Guid.NewGuid());
+            PermissionHolderStub permissionHolder = this.GetPermissionHolderStub(
+                permissions: Enumerable.Empty<PermissionId>());
 
             Assert.Throws(
                 Is.InstanceOf<InvalidOperationException>()
@@ -136,7 +156,7 @@ namespace Identity.Tests.Unit.Domain
             {
                 addSomethingPermission
             };
-            var permissionHolder = new PermissionHolderStub(Guid.NewGuid(), permissions);
+            PermissionHolderStub permissionHolder = this.GetPermissionHolderStub(permissions: permissions);
 
             permissionHolder.RevokePermission(addSomethingPermission);
 

@@ -15,18 +15,29 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestConstructor_WhenUserIdGiven_ThenUserIdIsSet()
         {
-            ApplicationId applicationId = ApplicationId.Generate();
             UserId userId = UserId.Generate();
 
-            var application = new Application(
-                id: applicationId,
-                userId: userId,
-                name: "MyApp",
-                secretKey: TestSecretKey,
-                homepageUrl: new Url("https://www.example.com"),
-                callbackUrl: new Url("https://www.example.com/1"));
+            Application application = this.GetApplication(
+                userId: userId);
 
             Assert.That(application.UserId, Is.EqualTo(userId));
+        }
+
+        private Application GetApplication(
+            ApplicationId applicationId = null, 
+            UserId userId = null, 
+            string name = null, 
+            EncryptedSecretKey secretKey = null, 
+            Url homepageUrl = null, 
+            Url callbackUrl = null)
+        {
+            return new Application(
+                id: applicationId ?? ApplicationId.Generate(),
+                userId: userId ?? UserId.Generate(),
+                name: name ?? "MyApp",
+                secretKey: secretKey ?? TestSecretKey,
+                homepageUrl: homepageUrl ?? new Url("https://www.example.com"),
+                callbackUrl: callbackUrl ?? new Url("https://www.example.com/1"));
         }
 
         [Test]
@@ -50,16 +61,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestConstructor_WhenNameGiven_ThenNameIsSet()
         {
-            ApplicationId applicationId = ApplicationId.Generate();
-            UserId userId = UserId.Generate();
-
-            var application = new Application(
-                id: applicationId,
-                userId: userId,
-                name: "MyApp",
-                secretKey: TestSecretKey,
-                homepageUrl: new Url("https://www.example.com"),
-                callbackUrl: new Url("https://www.example.com/1"));
+            Application application = this.GetApplication(name: "MyApp");
 
             Assert.That(application.Name, Is.EqualTo("MyApp"));
         }
@@ -105,16 +107,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestConstructor_WhenHomepageUrlGiven_ThenHomepageUrlIsSet()
         {
-            ApplicationId applicationId = ApplicationId.Generate();
-            UserId userId = UserId.Generate();
-
-            var application = new Application(
-                id: applicationId,
-                userId: userId,
-                name: "MyApp",
-                secretKey: TestSecretKey,
-                homepageUrl: new Url("https://www.example.com"),
-                callbackUrl: new Url("https://www.example.com/1"));
+            Application application = GetApplication(homepageUrl: new Url("https://www.example.com"));
 
             Assert.That(application.HomepageUrl, Is.EqualTo(new Url("https://www.example.com")));
         }
@@ -141,16 +134,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestConstructor_WhenSecretKeyGiven_ThenSecretKeyIsSet()
         {
-            ApplicationId applicationId = ApplicationId.Generate();
-            UserId userId = UserId.Generate();
-
-            var application = new Application(
-                id: applicationId,
-                userId: userId,
-                name: "MyApp",
-                secretKey: TestSecretKey,
-                homepageUrl: new Url("https://www.example.com"),
-                callbackUrl: new Url("https://www.example.com/1"));
+            Application application = this.GetApplication(secretKey: TestSecretKey);
 
             Assert.That(application.SecretKey, Is.EqualTo(TestSecretKey));
         }
@@ -177,16 +161,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestConstructor_WhenCallbackUrlGiven_ThenCallbackUrlIsSet()
         {
-            ApplicationId applicationId = ApplicationId.Generate();
-            UserId userId = UserId.Generate();
-
-            var application = new Application(
-                id: applicationId,
-                userId: userId,
-                name: "MyApp",
-                secretKey: TestSecretKey,
-                homepageUrl: new Url("https://www.example.com"),
-                callbackUrl: new Url("https://www.example.com/1"));
+            Application application = this.GetApplication(callbackUrl: new Url("https://www.example.com/1"));
 
             Assert.That(application.CallbackUrl, Is.EqualTo(new Url("https://www.example.com/1")));
         }
@@ -215,17 +190,9 @@ namespace Identity.Tests.Unit.Domain
         {
             SecretKey secretKey = SecretKey.Generate();
             EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
-            ApplicationId applicationId = ApplicationId.Generate();
-            UserId userId = UserId.Generate();
-            var application = new Application(
-                id: applicationId,
-                userId: userId,
-                name: "MyApp",
-                secretKey: encryptedSecretKey,
-                homepageUrl: new Url("https://www.example.com"),
-                callbackUrl: new Url("https://www.example.com/1"));
+            Application application = this.GetApplication(secretKey: encryptedSecretKey);
 
-            var decryptedSecretKey = application.DecryptSecretKey();
+            SecretKey decryptedSecretKey = application.DecryptSecretKey();
 
             Assert.That(decryptedSecretKey, Is.EqualTo(secretKey));
         }
@@ -235,15 +202,8 @@ namespace Identity.Tests.Unit.Domain
         {
             SecretKey secretKey = SecretKey.Generate();
             EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
-            ApplicationId applicationId = ApplicationId.Generate();
-            UserId userId = UserId.Generate();
-            var application = new Application(
-                id: applicationId,
-                userId: userId,
-                name: "MyApp",
-                secretKey: encryptedSecretKey,
-                homepageUrl: new Url("https://www.example.com"),
-                callbackUrl: new Url("https://www.example.com/1"));
+            Application application = this.GetApplication(
+                secretKey: encryptedSecretKey);
 
             application.RegenerateSecretKey();
 
@@ -255,15 +215,8 @@ namespace Identity.Tests.Unit.Domain
         {
             SecretKey secretKey = SecretKey.Generate();
             EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
-            ApplicationId applicationId = ApplicationId.Generate();
-            UserId userId = UserId.Generate();
-            var application = new Application(
-                id: applicationId,
-                userId: userId,
-                name: "MyApp",
-                secretKey: encryptedSecretKey,
-                homepageUrl: new Url("https://www.example.com"),
-                callbackUrl: new Url("https://www.example.com/1"));
+            Application application = this.GetApplication(
+                secretKey: encryptedSecretKey);
 
             application.RegenerateSecretKey();
 
@@ -273,22 +226,13 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestGenerateTokens_WhenGenerating_ThenTokenPairIsReturnedWithApplicationIdAndPermissions()
         {
-            SecretKey secretKey = SecretKey.Generate();
-            EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
             ApplicationId applicationId = ApplicationId.Generate();
-            UserId userId = UserId.Generate();
             var permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
-            var application = new Application(
-                id: applicationId,
-                userId: userId,
-                name: "MyApp",
-                secretKey: encryptedSecretKey,
-                homepageUrl: new Url("https://www.example.com"),
-                callbackUrl: new Url("https://www.example.com/1"));
+            Application application = this.GetApplication(applicationId);
 
             TokenPair tokens = application.GenerateTokens(permissions);
 
@@ -307,18 +251,9 @@ namespace Identity.Tests.Unit.Domain
             var permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource1"), "Add")
-            };
-            SecretKey secretKey = SecretKey.Generate();
-            EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
+            }; 
             ApplicationId applicationId = ApplicationId.Generate();
-            UserId userId = UserId.Generate();
-            var application = new Application(
-                id: applicationId,
-                userId: userId,
-                name: "MyApp",
-                secretKey: encryptedSecretKey,
-                homepageUrl: new Url("https://www.example.com"),
-                callbackUrl: new Url("https://www.example.com/1"));
+            Application application = this.GetApplication(applicationId);
             Token refreshToken = Token.GenerateRefreshToken(applicationId, permissions);
 
             TokenPair tokens = application.RefreshTokens(refreshToken);
@@ -339,23 +274,14 @@ namespace Identity.Tests.Unit.Domain
             {
                 new PermissionId(new ResourceId("MyResource1"), "Add")
             };
-            SecretKey secretKey = SecretKey.Generate();
-            EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
             ApplicationId applicationId = ApplicationId.Generate();
-            UserId userId = UserId.Generate();
-            var application = new Application(
-                id: applicationId,
-                userId: userId,
-                name: "MyApp",
-                secretKey: encryptedSecretKey,
-                homepageUrl: new Url("https://www.example.com"),
-                callbackUrl: new Url("https://www.example.com/1"));
-            DateTime dateTime = DateTime.Now.AddDays(1);
-            Token refreshToken = Token.GenerateRefreshToken(applicationId, permissions, dateTime);
+            Application application = this.GetApplication(applicationId);
+            DateTime expiresAt = DateTime.Now.AddDays(1);
+            Token refreshToken = Token.GenerateRefreshToken(applicationId, permissions, expiresAt);
 
             TokenPair tokens = application.RefreshTokens(refreshToken);
 
-            Assert.That(tokens.RefreshToken.ExpiresAt, Is.EqualTo(dateTime).Within(1).Seconds);
+            Assert.That(tokens.RefreshToken.ExpiresAt, Is.EqualTo(expiresAt).Within(1).Seconds);
         }
 
         [Test]
@@ -365,18 +291,9 @@ namespace Identity.Tests.Unit.Domain
             {
                 new PermissionId(new ResourceId("MyResource1"), "Add")
             };
-            SecretKey secretKey = SecretKey.Generate();
-            EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
             ApplicationId applicationId = ApplicationId.Generate();
             ApplicationId wrongApplicationId = ApplicationId.Generate();
-            UserId userId = UserId.Generate();
-            var application = new Application(
-                id: applicationId,
-                userId: userId,
-                name: "MyApp",
-                secretKey: encryptedSecretKey,
-                homepageUrl: new Url("https://www.example.com"),
-                callbackUrl: new Url("https://www.example.com/1"));
+            Application application = this.GetApplication(applicationId);
             Token refreshToken = Token.GenerateRefreshToken(wrongApplicationId, permissions);
 
             Assert.Throws(
@@ -393,20 +310,11 @@ namespace Identity.Tests.Unit.Domain
             {
                 new PermissionId(new ResourceId("MyResource1"), "Add")
             };
-            DateTime dateTime = DateTime.Now.AddDays(-1);
-            SecretKey secretKey = SecretKey.Generate();
-            EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
+            DateTime expiresAt = DateTime.Now.AddDays(-1);
             ApplicationId applicationId = ApplicationId.Generate();
-            UserId userId = UserId.Generate();
-            var application = new Application(
-                id: applicationId,
-                userId: userId,
-                name: "MyApp",
-                secretKey: encryptedSecretKey,
-                homepageUrl: new Url("https://www.example.com"),
-                callbackUrl: new Url("https://www.example.com/1"));
+            Application application = this.GetApplication(applicationId);
 
-            Token refreshToken = Token.GenerateRefreshToken(applicationId, permissions, dateTime);
+            Token refreshToken = Token.GenerateRefreshToken(applicationId, permissions, expiresAt);
 
             Assert.Throws(
                 Is.InstanceOf<InvalidTokenException>(),
@@ -416,21 +324,12 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestCreateAuthorizationCode_WhenCreating_ThenAuthorizationCodeIsReturned()
         {
-            SecretKey secretKey = SecretKey.Generate();
-            EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
             ApplicationId applicationId = ApplicationId.Generate();
-            UserId userId = UserId.Generate();
             var permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource1"), "Add")
             };
-            var application = new Application(
-                id: applicationId,
-                userId: userId,
-                name: "MyApp",
-                secretKey: encryptedSecretKey,
-                homepageUrl: new Url("https://www.example.com"),
-                callbackUrl: new Url("https://www.example.com/1"));
+            Application application = this.GetApplication(applicationId);
 
             AuthorizationCode authorizationCode = application.CreateAuthorizationCode(permissions, out Code code);
 

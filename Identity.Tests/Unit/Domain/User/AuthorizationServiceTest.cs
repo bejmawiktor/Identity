@@ -775,7 +775,11 @@ namespace Identity.Tests.Unit.Domain
                 applicationsRepository: applicationsRepository);
 
             ArgumentNullException exception = Assert.ThrowsAsync<ArgumentNullException>(
-                async () => await authorizationService.GenerateTokens(null, SecretKey.Generate(), new Url("http://example.com/1"), Code.Generate()));
+                async () => await authorizationService.GenerateTokens(
+                    null, 
+                    SecretKey.Generate(), 
+                    new Url("http://example.com/1"), 
+                    Code.Generate()));
 
             Assert.That(exception, Is.InstanceOf<ArgumentNullException>()
                 .And.Property(nameof(ArgumentNullException.ParamName))
@@ -795,7 +799,11 @@ namespace Identity.Tests.Unit.Domain
                 applicationsRepository: applicationsRepository);
 
             ApplicationNotFoundException exception = Assert.ThrowsAsync<ApplicationNotFoundException>(
-                async () => await authorizationService.GenerateTokens(applicationId, SecretKey.Generate(), new Url("http://example.com/1"), Code.Generate()));
+                async () => await authorizationService.GenerateTokens(
+                    applicationId, 
+                    SecretKey.Generate(), 
+                    new Url("http://example.com/1"), 
+                    Code.Generate()));
 
             Assert.That(exception, Is.InstanceOf<ApplicationNotFoundException>()
                 .And.Message
@@ -823,7 +831,11 @@ namespace Identity.Tests.Unit.Domain
                 applicationsRepository: applicationsRepository);
 
             ArgumentNullException exception = Assert.ThrowsAsync<ArgumentNullException>(
-                async () => await authorizationService.GenerateTokens(applicationId, null, new Url("http://example.com/1"), Code.Generate()));
+                async () => await authorizationService.GenerateTokens(
+                    applicationId, 
+                    null, 
+                    new Url("http://example.com/1"), 
+                    Code.Generate()));
 
             Assert.That(exception, Is.InstanceOf<ArgumentNullException>()
                 .And.Property(nameof(ArgumentNullException.ParamName))
@@ -856,7 +868,11 @@ namespace Identity.Tests.Unit.Domain
                 authorizationCodesRepository: authorizationCodesRepository);
 
             ArgumentException exception = Assert.ThrowsAsync<ArgumentException>(
-                async () => await authorizationService.GenerateTokens(applicationId, SecretKey.Generate(), new Url("http://example.com/1"), Code.Generate()));
+                async () => await authorizationService.GenerateTokens(
+                    applicationId, 
+                    SecretKey.Generate(), 
+                    new Url("http://example.com/1"), 
+                    Code.Generate()));
 
             Assert.That(exception, Is.InstanceOf<ArgumentException>()
                 .And.Message
@@ -897,7 +913,11 @@ namespace Identity.Tests.Unit.Domain
                 authorizationCodesRepository: authorizationCodesRepository);
 
             ArgumentNullException exception = Assert.ThrowsAsync<ArgumentNullException>(
-                async () => await authorizationService.GenerateTokens(applicationId, secretKey, null, Code.Generate()));
+                async () => await authorizationService.GenerateTokens(
+                    applicationId, 
+                    secretKey, 
+                    null, 
+                    Code.Generate()));
 
             Assert.That(exception, Is.InstanceOf<ArgumentNullException>()
                 .And.Property(nameof(ArgumentNullException.ParamName))
@@ -938,7 +958,11 @@ namespace Identity.Tests.Unit.Domain
                 authorizationCodesRepository: authorizationCodesRepository);
 
             ArgumentException exception = Assert.ThrowsAsync<ArgumentException>(
-                async () => await authorizationService.GenerateTokens(applicationId, secretKey, new Url("http://example.com/2"), Code.Generate()));
+                async () => await authorizationService.GenerateTokens(
+                    applicationId, 
+                    secretKey, 
+                    new Url("http://example.com/2"), 
+                    Code.Generate()));
 
             Assert.That(exception, Is.InstanceOf<ArgumentException>()
                 .And.Message
@@ -966,7 +990,11 @@ namespace Identity.Tests.Unit.Domain
                 applicationsRepository: applicationsRepository);
 
             ArgumentNullException exception = Assert.ThrowsAsync<ArgumentNullException>(
-                async () => await authorizationService.GenerateTokens(applicationId, secretKey, new Url("http://example.com/1"), null));
+                async () => await authorizationService.GenerateTokens(
+                    applicationId, 
+                    secretKey, 
+                    new Url("http://example.com/1"), 
+                    null));
 
             Assert.That(exception, Is.InstanceOf<ArgumentNullException>()
                 .And.Property(nameof(ArgumentNullException.ParamName))
@@ -1000,7 +1028,11 @@ namespace Identity.Tests.Unit.Domain
                 authorizationCodesRepository: authorizationCodesRepository);
 
             AuthorizationCodeNotFoundException exception = Assert.ThrowsAsync<AuthorizationCodeNotFoundException>(
-                async () => await authorizationService.GenerateTokens(applicationId, secretKey, new Url("http://example.com/1"), Code.Generate()));
+                async () => await authorizationService.GenerateTokens(
+                    applicationId, 
+                    secretKey, 
+                    new Url("http://example.com/1"), 
+                    Code.Generate()));
 
             Assert.That(exception, Is.InstanceOf<AuthorizationCodeNotFoundException>());
         }
@@ -1041,7 +1073,11 @@ namespace Identity.Tests.Unit.Domain
                 authorizationCodesRepository: authorizationCodesRepository);
 
             InvalidOperationException exception = Assert.ThrowsAsync<InvalidOperationException>(
-                async () => await authorizationService.GenerateTokens(applicationId, secretKey, new Url("http://example.com/1"), code));
+                async () => await authorizationService.GenerateTokens(
+                    applicationId, 
+                    secretKey, 
+                    new Url("http://example.com/1"), 
+                    code));
 
             Assert.That(exception, Is.InstanceOf<InvalidOperationException>()
                 .And.Message
@@ -1084,7 +1120,11 @@ namespace Identity.Tests.Unit.Domain
                 authorizationCodesRepository: authorizationCodesRepository);
 
             InvalidOperationException exception = Assert.ThrowsAsync<InvalidOperationException>(
-                async () => await authorizationService.GenerateTokens(applicationId, secretKey, new Url("http://example.com/1"), code));
+                async () => await authorizationService.GenerateTokens(
+                    applicationId, 
+                    secretKey, 
+                    new Url("http://example.com/1"), 
+                    code));
 
             Assert.That(exception, Is.InstanceOf<InvalidOperationException>()
                 .And.Message
@@ -1124,7 +1164,11 @@ namespace Identity.Tests.Unit.Domain
                 applicationsRepository: applicationsRepository,
                 authorizationCodesRepository: authorizationCodesRepository);
 
-            TokenPair tokenPair = await authorizationService.GenerateTokens(applicationId, secretKey, new Url("http://example.com/1"), code);
+            TokenPair tokenPair = await authorizationService.GenerateTokens(
+                applicationId, 
+                secretKey, 
+                new Url("http://example.com/1"), 
+                code);
 
             Assert.That(tokenPair, Is.Not.Null);
         }

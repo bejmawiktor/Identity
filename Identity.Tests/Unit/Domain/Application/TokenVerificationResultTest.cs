@@ -25,7 +25,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestDefault_WhenGettingDefault_ThenFailedIsReturned()
         {
-            var tokenVerificationResult = TokenVerificationResult.Default;
+            TokenVerificationResult tokenVerificationResult = TokenVerificationResult.Default;
 
             Assert.That(tokenVerificationResult, Is.EqualTo(TokenVerificationResult.Failed));
         }
@@ -33,7 +33,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestToString_WhenSuccessIsUsed_ThenSuccessStringIsReturned()
         {
-            var tokenVerificationResult = TokenVerificationResult.Success;
+            TokenVerificationResult tokenVerificationResult = TokenVerificationResult.Success;
 
             Assert.That(tokenVerificationResult.ToString(), Is.EqualTo(nameof(TokenVerificationResult.Success)));
         }
@@ -41,7 +41,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestToString_WhenFailedIsUsed_ThenFailedStringIsReturned()
         {
-            var tokenVerificationResult = TokenVerificationResult.Failed;
+            TokenVerificationResult tokenVerificationResult = TokenVerificationResult.Failed;
 
             Assert.That(tokenVerificationResult.ToString(), Is.EqualTo(nameof(TokenVerificationResult.Failed)));
         }
@@ -49,7 +49,8 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestWithMessage_WhenMessageGiven_ThenTokenVerificationResultWithSameValueAndNewMessageIsReturned()
         {
-            TokenVerificationResult tokenVerificationResultWithMessage = TokenVerificationResult.Failed.WithMessage("Test message.");
+            TokenVerificationResult tokenVerificationResultWithMessage = TokenVerificationResult.Failed
+                .WithMessage("Test message.");
 
             Assert.Multiple(() =>
             {

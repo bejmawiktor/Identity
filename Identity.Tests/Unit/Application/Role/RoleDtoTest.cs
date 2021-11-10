@@ -2,6 +2,7 @@
 using Identity.Domain;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Identity.Tests.Unit.Application
@@ -13,22 +14,32 @@ namespace Identity.Tests.Unit.Application
         public void TestConstructor_WhenIdGiven_ThenIdIsSet()
         {
             Guid id = Guid.NewGuid();
-            var roleDto = new RoleDto(
-                id: id,
-                name: "MyRole",
-                description: "My role description");
+            RoleDto roleDto = this.GetRoleDto(id: id);
 
             Assert.That(roleDto.Id, Is.EqualTo(id));
+        }
+
+        private RoleDto GetRoleDto(
+            Guid? id = null, 
+            string name = null, 
+            string description = null,
+            IEnumerable<(string ResourceId, string Name)> permissions = null)
+        {
+            return new RoleDto(
+                id: id ?? Guid.NewGuid(),
+                name: name ?? "MyRole",
+                description: description ?? "My role description",
+                permissions: permissions ?? new (string ResourceId, string Name)[]
+                {
+                    ("MyResource", "MyPermission"),
+                    ("MyResource2", "MyPermission2")
+                });
         }
 
         [Test]
         public void TestConstructor_WhenNameGiven_ThenNameIsSet()
         {
-            Guid id = Guid.NewGuid();
-            var roleDto = new RoleDto(
-                id: id,
-                name: "MyRole",
-                description: "My role description");
+            RoleDto roleDto = this.GetRoleDto(name: "MyRole");
 
             Assert.That(roleDto.Name, Is.EqualTo("MyRole"));
         }
@@ -36,11 +47,7 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestConstructor_WhenDescriptionGiven_ThenDescriptionIsSet()
         {
-            Guid id = Guid.NewGuid();
-            var roleDto = new RoleDto(
-                id: id,
-                name: "MyRole",
-                description: "My role description");
+            RoleDto roleDto = this.GetRoleDto(description: "My role description");
 
             Assert.That(roleDto.Description, Is.EqualTo("My role description"));
         }
@@ -48,27 +55,20 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestConstructor_WhenPermissionsGiven_ThenPermissionsAreSet()
         {
-            Guid id = Guid.NewGuid();
-            var roleDto = new RoleDto(
-                id: id,
-                name: "MyRole",
-                description: "My role description",
-                permissions: new (string ResourceId, string Name)[]
-                {
-                    ("MyResource", "MyPermission")
-                });
-
-            Assert.That(roleDto.Permissions, Is.EquivalentTo(new (string ResourceId, string Name)[]
+            var permissions = new (string ResourceId, string Name)[]
             {
                 ("MyResource", "MyPermission")
-            }));
+            };
+            RoleDto roleDto = this.GetRoleDto(permissions: permissions);
+
+            Assert.That(roleDto.Permissions, Is.EquivalentTo(permissions));
         }
 
         [Test]
         public void TestConstructor_WhenNullPermissionsGiven_ThenEmptyPermissionsIsSet()
         {
             Guid id = Guid.NewGuid();
-            var roleDto = new RoleDto(
+            RoleDto roleDto = new RoleDto(
                 id: id,
                 name: "MyRole",
                 description: "My role description",
@@ -81,7 +81,7 @@ namespace Identity.Tests.Unit.Application
         public void TestToRole_WhenConvertingToRole_ThenRoleIsReturned()
         {
             Guid id = Guid.NewGuid();
-            var roleDto = new RoleDto(
+            RoleDto roleDto = new RoleDto(
                 id: id,
                 name: "MyRole",
                 description: "My role description",
@@ -110,24 +110,8 @@ namespace Identity.Tests.Unit.Application
         public void TestEquals_WhenTwoIdentitcalRolesDtosGiven_ThenTrueIsReturned()
         {
             Guid id = Guid.NewGuid();
-            var leftRoleDto = new RoleDto(
-                id: id,
-                name: "MyRole",
-                description: "My role description",
-                permissions: new (string ResourceId, string Name)[]
-                {
-                    ("MyResource", "MyPermission"),
-                    ("MyResource2", "MyPermission2")
-                });
-            var rightRoleDto = new RoleDto(
-                id: id,
-                name: "MyRole",
-                description: "My role description",
-                permissions: new (string ResourceId, string Name)[]
-                {
-                    ("MyResource", "MyPermission"),
-                    ("MyResource2", "MyPermission2")
-                });
+            RoleDto leftRoleDto = this.GetRoleDto(id: id);
+            RoleDto rightRoleDto = this.GetRoleDto(id: id);
 
             Assert.That(leftRoleDto.Equals(rightRoleDto), Is.True);
         }
@@ -136,19 +120,15 @@ namespace Identity.Tests.Unit.Application
         public void TestEquals_WhenTwoDifferentRolesDtosGiven_ThenFalseIsReturned()
         {
             Guid id = Guid.NewGuid();
-            var leftRoleDto = new RoleDto(
+            RoleDto leftRoleDto = this.GetRoleDto(
                 id: id,
-                name: "MyRole",
-                description: "My role description",
                 permissions: new (string ResourceId, string Name)[]
                 {
                     ("MyResource", "MyPermission"),
                     ("MyResource2", "MyPermission2")
                 });
-            var rightRoleDto = new RoleDto(
+            RoleDto rightRoleDto = this.GetRoleDto(
                 id: id,
-                name: "MyRole2",
-                description: "My role description",
                 permissions: new (string ResourceId, string Name)[]
                 {
                     ("MyResource", "MyPermission"),
@@ -161,24 +141,8 @@ namespace Identity.Tests.Unit.Application
         public void TestGetHashCode_WhenTwoIdenticalRolesDtosGiven_ThenSameHashCodesAreReturned()
         {
             Guid id = Guid.NewGuid();
-            var leftRoleDto = new RoleDto(
-                id: id,
-                name: "MyRole",
-                description: "My role description",
-                permissions: new (string ResourceId, string Name)[]
-                {
-                    ("MyResource", "MyPermission"),
-                    ("MyResource2", "MyPermission2")
-                });
-            var rightRoleDto = new RoleDto(
-                id: id,
-                name: "MyRole",
-                description: "My role description",
-                permissions: new (string ResourceId, string Name)[]
-                {
-                    ("MyResource", "MyPermission"),
-                    ("MyResource2", "MyPermission2")
-                });
+            RoleDto leftRoleDto = this.GetRoleDto(id: id);
+            RoleDto rightRoleDto = this.GetRoleDto(id: id);
 
             Assert.That(leftRoleDto.GetHashCode(), Is.EqualTo(rightRoleDto.GetHashCode()));
         }
@@ -187,19 +151,15 @@ namespace Identity.Tests.Unit.Application
         public void TestGetHashCode_WhenTwoDifferentRolesDtosGiven_ThenDifferentHashCodesAreReturned()
         {
             Guid id = Guid.NewGuid();
-            var leftRoleDto = new RoleDto(
+            RoleDto leftRoleDto = this.GetRoleDto(
                 id: id,
-                name: "MyRole",
-                description: "My role description",
                 permissions: new (string ResourceId, string Name)[]
                 {
                     ("MyResource", "MyPermission"),
                     ("MyResource2", "MyPermission2")
                 });
-            var rightRoleDto = new RoleDto(
+            RoleDto rightRoleDto = this.GetRoleDto(
                 id: id,
-                name: "MyRole2",
-                description: "My role description",
                 permissions: new (string ResourceId, string Name)[]
                 {
                     ("MyResource", "MyPermission"),

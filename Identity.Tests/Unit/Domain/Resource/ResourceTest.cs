@@ -12,11 +12,19 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestConstructor_WhenDescriptionGiven_ThenDescriptionIsSet()
         {
-            var resource = new Resource(
-                id: new ResourceId("TestResource"),
+            Resource resource = this.GetResource(
                 description: "Test resource description");
 
             Assert.That(resource.Description, Is.EqualTo("Test resource description"));
+        }
+
+        private Resource GetResource(
+            ResourceId id = null, 
+            string description = null)
+        {
+            return new Resource(
+                id: id ?? new ResourceId("TestResource"),
+                description: description ?? "Test resource description");
         }
 
         [Test]
@@ -46,10 +54,8 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestCreatePermission_WhenCreating_ThenNewPermissionIsReturned()
         {
-            var resourceId = new ResourceId("TestResource");
-            var resource = new Resource(
-                id: resourceId,
-                description: "Test resource description");
+            ResourceId resourceId = new ResourceId("TestResource");
+            Resource resource = this.GetResource(resourceId);
 
             Permission permission = resource.CreatePermission(
                 name: "AddPermission",
@@ -74,9 +80,7 @@ namespace Identity.Tests.Unit.Domain
                 .Callback((PermissionCreated p) => permissionCreated = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             var resourceId = new ResourceId("TestResource");
-            var resource = new Resource(
-                id: resourceId,
-                description: "Test resource description");
+            Resource resource = this.GetResource(resourceId);
 
             Permission permission = resource.CreatePermission(
                 name: "AddPermission",

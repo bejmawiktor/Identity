@@ -58,7 +58,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestGenerate_WhenGenerated_ThenCodeIsSet()
         {
-            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(ApplicationId.Generate(), out Code code);
+            AuthorizationCodeId.Generate(ApplicationId.Generate(), out Code code);
 
             Assert.That(code, Is.Not.Null);
         }

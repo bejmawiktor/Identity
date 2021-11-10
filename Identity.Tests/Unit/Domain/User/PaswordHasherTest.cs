@@ -62,7 +62,7 @@ namespace Identity.Tests.Unit.Domain
         [TestCase("!2#Asdfg;'p*&", "!2#Asdfg'p*&")]
         public void TestVerify_WhenIncorrectPasswordGiven_ThenFailedIsReturned(string verifiedPassword, string incorrectPassword)
         {
-            var hashedPassword = PasswordHasher.Hash(new Password(verifiedPassword));
+            HashedPassword hashedPassword = PasswordHasher.Hash(new Password(verifiedPassword));
 
             PasswordVerificationResult result = PasswordHasher.Verify(hashedPassword, new Password(incorrectPassword));
 
@@ -92,7 +92,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestValidate_WhenCorrectHashedPasswordGiven_ThenNoExceptionIsThrown()
         {
-            var hashedPassword = PasswordHasher.Hash(new Password("MySecretPassword"));
+            HashedPassword hashedPassword = PasswordHasher.Hash(new Password("MySecretPassword"));
 
             Assert.DoesNotThrow(
                 () => PasswordHasher.Validate(hashedPassword.ToByteArray()));

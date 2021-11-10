@@ -10,24 +10,27 @@ namespace Identity.Tests.Unit.Domain
         public void TestConstructor_WhenUserIdGiven_ThenUserIdIsSet()
         {
             UserId userId = UserId.Generate();
-            RoleId assumedRoleId = RoleId.Generate();
 
-            var userRoleAssumed = new UserRoleAssumed(
-                userId: userId,
-                assumedRoleId: assumedRoleId);
+            UserRoleAssumed userRoleAssumed = this.GetUserRoleAssumed(userId);
 
             Assert.That(userRoleAssumed.UserId, Is.EqualTo(userId));
+        }
+
+        private UserRoleAssumed GetUserRoleAssumed(
+            UserId userId = null, 
+            RoleId assumedRoleId = null)
+        {
+            return new UserRoleAssumed(
+                userId: userId ?? UserId.Generate(),
+                assumedRoleId: assumedRoleId ?? RoleId.Generate());
         }
 
         [Test]
         public void TestConstructor_WhenAssumedRoleIdGiven_ThenAssumedRoleIdIsSet()
         {
-            UserId userId = UserId.Generate();
             RoleId assumedRoleId = RoleId.Generate();
 
-            var userRoleAssumed = new UserRoleAssumed(
-                userId: userId,
-                assumedRoleId: assumedRoleId);
+            UserRoleAssumed userRoleAssumed = this.GetUserRoleAssumed(assumedRoleId: assumedRoleId);
 
             Assert.That(userRoleAssumed.AssumedRoleId, Is.EqualTo(assumedRoleId));
         }

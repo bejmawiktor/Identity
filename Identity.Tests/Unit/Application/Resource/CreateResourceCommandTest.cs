@@ -10,21 +10,27 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestConstructor_WhenResourceIdGiven_ThenResourceIdIsSet()
         {
-            var createResourceCommand = new CreateResourceCommand(
-                resourceId: "MyResource",
-                resourceDescription: "Resource description.",
-                userId: Guid.NewGuid());
+            CreateResourceCommand createResourceCommand = this.GetCreateResourceCommand("MyResource");
 
             Assert.That(createResourceCommand.ResourceId, Is.EqualTo("MyResource"));
+        }
+
+        private CreateResourceCommand GetCreateResourceCommand(
+            string resourceId = null, 
+            string resourceDescription = null, 
+            Guid? userId = null)
+        {
+            return new CreateResourceCommand(
+                resourceId: resourceId ?? "MyResource",
+                resourceDescription: resourceDescription ?? "Resource description.",
+                userId: userId ?? Guid.NewGuid());
         }
 
         [Test]
         public void TestConstructor_WhenResourceDescriptionGiven_ThenResourceDescriptionIsSet()
         {
-            var createResourceCommand = new CreateResourceCommand(
-                resourceId: "MyResource",
-                resourceDescription: "Resource description.",
-                userId: Guid.NewGuid());
+            CreateResourceCommand createResourceCommand = this.GetCreateResourceCommand(
+                resourceDescription: "Resource description.");
 
             Assert.That(createResourceCommand.ResourceDescription, Is.EqualTo("Resource description."));
         }
@@ -33,10 +39,7 @@ namespace Identity.Tests.Unit.Application
         public void TestConstructor_WhenUserIdGiven_ThenUserIdIsSet()
         {
             var userId = Guid.NewGuid();
-            var createResourceCommand = new CreateResourceCommand(
-                resourceId: "MyResource",
-                resourceDescription: "Resource description.",
-                userId: userId);
+            CreateResourceCommand createResourceCommand = this.GetCreateResourceCommand(userId: userId);
 
             Assert.That(createResourceCommand.UserId, Is.EqualTo(userId));
         }

@@ -10,24 +10,27 @@ namespace Identity.Tests.Unit.Domain
         public void TestConstructor_WhenRoleIdGiven_ThenRoleIdIsSet()
         {
             RoleId roleId = RoleId.Generate();
-            var revokedPermissionId = new PermissionId(new ResourceId("MyResource"), "Permission");
 
-            var rolePermissionRevoked = new RolePermissionRevoked(
-                roleId: roleId,
-                revokedPermissionId: revokedPermissionId);
+            RolePermissionRevoked rolePermissionRevoked = this.GetRolePermissionRevoked(roleId);
 
             Assert.That(rolePermissionRevoked.RoleId, Is.EqualTo(roleId));
+        }
+
+        private RolePermissionRevoked GetRolePermissionRevoked(
+            RoleId roleId = null, 
+            PermissionId permissionId = null)
+        {
+            return new RolePermissionRevoked(
+                roleId: roleId ?? RoleId.Generate(),
+                revokedPermissionId: permissionId ?? new PermissionId(new ResourceId("MyResource"), "Permission"));
         }
 
         [Test]
         public void TestConstructor_WhenRevokedPermissionIdGiven_ThenRevokedPermissionIdIsSet()
         {
-            RoleId roleId = RoleId.Generate();
             var revokedPermissionId = new PermissionId(new ResourceId("MyResource"), "Permission");
 
-            var rolePermissionRevoked = new RolePermissionRevoked(
-                roleId: roleId,
-                revokedPermissionId: revokedPermissionId);
+            RolePermissionRevoked rolePermissionRevoked = this.GetRolePermissionRevoked(permissionId: revokedPermissionId);
 
             Assert.That(rolePermissionRevoked.RevokedPermissionId, Is.EqualTo(revokedPermissionId));
         }

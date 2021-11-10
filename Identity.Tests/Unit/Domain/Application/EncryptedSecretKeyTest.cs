@@ -81,7 +81,7 @@ namespace Identity.Tests.Unit.Domain
             SecretKey secretKey = SecretKey.Generate();
             EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
 
-            var decryptedSecretKey = encryptedSecretKey.Decrypt();
+            SecretKey decryptedSecretKey = encryptedSecretKey.Decrypt();
 
             Assert.That(decryptedSecretKey, Is.EqualTo(secretKey));
         }

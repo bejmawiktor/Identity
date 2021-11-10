@@ -2,6 +2,7 @@
 using Identity.Domain;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 
 namespace Identity.Tests.Unit.Application
 {
@@ -14,16 +15,38 @@ namespace Identity.Tests.Unit.Application
         public void TestConstructor_WhenIdGiven_ThenIdIsSet()
         {
             Guid userId = Guid.NewGuid();
-            var userDto = new UserDto(userId, "example@example.com", UserDtoTest.TestPassword.ToString());
+            UserDto userDto = this.GetUserDto(userId);
 
             Assert.That(userDto.Id, Is.EqualTo(userId));
+        }
+
+        private UserDto GetUserDto(
+            Guid? id = null,
+            string email = null,
+            string password = null,
+            IEnumerable<Guid> roles = null,
+            IEnumerable<(string ResourceId, string Name)> permissions = null)
+        {
+            return new UserDto(
+                id ?? Guid.NewGuid(),
+                email ?? "example@example.com",
+                password ?? UserDtoTest.TestPassword.ToString(),
+                roles ?? new Guid[]
+                {
+                    Guid.NewGuid(),
+                    Guid.NewGuid()
+                },
+                permissions ?? new (string ResourceId, string Name)[]
+                {
+                    ("MyResource", "MyPermission"),
+                    ("MyResource2", "MyPermission2")
+                });
         }
 
         [Test]
         public void TestConstructor_WhenEmailGiven_ThenEmailIsSet()
         {
-            Guid userId = Guid.NewGuid();
-            var userDto = new UserDto(userId, "example@example.com", UserDtoTest.TestPassword.ToString());
+            UserDto userDto = this.GetUserDto(email: "example@example.com");
 
             Assert.That(userDto.Email, Is.EqualTo("example@example.com"));
         }
@@ -31,8 +54,7 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestConstructor_WhenHashedPasswordGiven_ThenHashedPasswordIsSet()
         {
-            Guid userId = Guid.NewGuid();
-            var userDto = new UserDto(userId, "example@example.com", UserDtoTest.TestPassword.ToString());
+            UserDto userDto = this.GetUserDto(password: UserDtoTest.TestPassword.ToString());
 
             Assert.That(userDto.HashedPassword, Is.EqualTo(UserDtoTest.TestPassword.ToString()));
         }
@@ -45,8 +67,7 @@ namespace Identity.Tests.Unit.Application
                 Guid.NewGuid(),
                 Guid.NewGuid()
             };
-            Guid userId = Guid.NewGuid();
-            var userDto = new UserDto(userId, "example@example.com", UserDtoTest.TestPassword.ToString(), roles);
+            UserDto userDto = this.GetUserDto(roles: roles);
 
             Assert.That(userDto.Roles, Is.EqualTo(roles));
         }
@@ -55,7 +76,7 @@ namespace Identity.Tests.Unit.Application
         public void TestConstructor_WhenNullRolesGiven_ThenEmptyRolesAreSet()
         {
             Guid userId = Guid.NewGuid();
-            var userDto = new UserDto(userId, "example@example.com", UserDtoTest.TestPassword.ToString(), null);
+            UserDto userDto = new UserDto(userId, "example@example.com", UserDtoTest.TestPassword.ToString(), null);
 
             Assert.That(userDto.Roles, Is.Empty);
         }
@@ -68,8 +89,8 @@ namespace Identity.Tests.Unit.Application
                 ("MyResource", "MyPermission"),
                 ("MyResource2", "MyPermission2")
             };
-            Guid userId = Guid.NewGuid();
-            var userDto = new UserDto(userId, "example@example.com", UserDtoTest.TestPassword.ToString(), null, permissions);
+
+            UserDto userDto = this.GetUserDto(permissions: permissions);
 
             Assert.That(userDto.Permissions, Is.EqualTo(permissions));
         }
@@ -78,7 +99,7 @@ namespace Identity.Tests.Unit.Application
         public void TestConstructor_WhenNullPermissionsGiven_ThenPermissionsAreSet()
         {
             var userId = Guid.NewGuid();
-            var userDto = new UserDto(userId, "example@example.com", UserDtoTest.TestPassword.ToString(), null, null);
+            UserDto userDto = new UserDto(userId, "example@example.com", UserDtoTest.TestPassword.ToString(), null, null);
 
             Assert.That(userDto.Permissions, Is.Empty);
         }
@@ -97,7 +118,7 @@ namespace Identity.Tests.Unit.Application
                 ("MyResource2", "MyPermission2")
             };
             var userId = Guid.NewGuid();
-            var userDto = new UserDto(userId, "example@example.com", UserDtoTest.TestPassword.ToString(), roles, permissions);
+            UserDto userDto = new UserDto(userId, "example@example.com", UserDtoTest.TestPassword.ToString(), roles, permissions);
 
             User user = userDto.ToUser();
 
@@ -122,40 +143,18 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestEquals_WhenTwoIdentitcalUsersDtosGiven_ThenTrueIsReturned()
         {
-            var rolesLeft = new Guid[]
+            var roles = new Guid[]
             {
                 Guid.NewGuid(),
                 Guid.NewGuid()
             };
-            var rolesRight = new Guid[]
-            {
-                new Guid(rolesLeft[0].ToString()),
-                new Guid(rolesLeft[1].ToString())
-            };
-            var permissionsLeft = new (string ResourceId, string Name)[]
-            {
-                ("MyResource", "MyPermission"),
-                ("MyResource2", "MyPermission2")
-            };
-            var permissionsRight = new (string ResourceId, string Name)[]
-            {
-                ("MyResource", "MyPermission"),
-                ("MyResource2", "MyPermission2")
-            };
-            Guid userIdLeft = Guid.NewGuid();
-            Guid userIdRight = new Guid(userIdLeft.ToString());
-            var leftUserDto = new UserDto(
-                userIdLeft,
-                "example@example.com",
-                UserDtoTest.TestPassword.ToString(),
-                rolesLeft,
-                permissionsLeft);
-            var rightUserDto = new UserDto(
-                userIdRight,
-                "example@example.com",
-                UserDtoTest.TestPassword.ToString(),
-                rolesRight,
-                permissionsRight);
+            Guid userId = Guid.NewGuid();
+            UserDto leftUserDto = this.GetUserDto(
+                userId,
+                roles: roles);
+            UserDto rightUserDto = this.GetUserDto(
+                userId,
+                roles: roles);
 
             Assert.That(leftUserDto.Equals(rightUserDto), Is.True);
         }
@@ -185,13 +184,13 @@ namespace Identity.Tests.Unit.Application
             Guid userIdRight = Guid.NewGuid();
             HashedPassword hashedPasswordLeft = UserDtoTest.TestPassword;
             HashedPassword hashedPasswordRight = HashedPassword.Hash(new Password("MyPassword2"));
-            var leftUserDto = new UserDto(
+            UserDto leftUserDto = this.GetUserDto(
                 userIdLeft,
                 "example@example.com",
                 hashedPasswordLeft.ToString(),
                 rolesLeft,
                 permissionsLeft);
-            var rightUserDto = new UserDto(
+            UserDto rightUserDto = this.GetUserDto(
                 userIdRight,
                 "example2@example.com",
                 hashedPasswordRight.ToString(),
@@ -204,40 +203,18 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestGetHashCode_WhenTwoIdenticalUsersDtosGiven_ThenSameHashCodesAreReturned()
         {
-            var rolesLeft = new Guid[]
+            var roles = new Guid[]
             {
                 Guid.NewGuid(),
                 Guid.NewGuid()
             };
-            var rolesRight = new Guid[]
-            {
-                new Guid(rolesLeft[0].ToString()),
-                new Guid(rolesLeft[1].ToString())
-            };
-            var permissionsLeft = new (string ResourceId, string Name)[]
-            {
-                ("MyResource", "MyPermission"),
-                ("MyResource2", "MyPermission2")
-            };
-            var permissionsRight = new (string ResourceId, string Name)[]
-            {
-                ("MyResource", "MyPermission"),
-                ("MyResource2", "MyPermission2")
-            };
-            Guid userIdLeft = Guid.NewGuid();
-            Guid userIdRight = new Guid(userIdLeft.ToString());
-            var leftUserDto = new UserDto(
-                userIdLeft,
-                "example@example.com",
-                UserDtoTest.TestPassword.ToString(),
-                rolesLeft,
-                permissionsLeft);
-            var rightUserDto = new UserDto(
-                userIdRight,
-                "example@example.com",
-                UserDtoTest.TestPassword.ToString(),
-                rolesRight,
-                permissionsRight);
+            Guid userId = Guid.NewGuid();
+            var leftUserDto = this.GetUserDto(
+                userId,
+                roles: roles);
+            var rightUserDto = this.GetUserDto(
+                userId,
+                roles: roles);
 
             Assert.That(leftUserDto.GetHashCode(), Is.EqualTo(rightUserDto.GetHashCode()));
         }
@@ -267,13 +244,13 @@ namespace Identity.Tests.Unit.Application
             Guid userIdRight = Guid.NewGuid();
             HashedPassword hashedPasswordLeft = UserDtoTest.TestPassword;
             HashedPassword hashedPasswordRight = HashedPassword.Hash(new Password("MyPassword2"));
-            var leftUserDto = new UserDto(
+            UserDto leftUserDto = this.GetUserDto(
                 userIdLeft,
                 "example@example.com",
                 hashedPasswordLeft.ToString(),
                 rolesLeft,
                 permissionsLeft);
-            var rightUserDto = new UserDto(
+            UserDto rightUserDto = this.GetUserDto(
                 userIdRight,
                 "example2@example.com",
                 hashedPasswordRight.ToString(),

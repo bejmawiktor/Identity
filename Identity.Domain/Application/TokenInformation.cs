@@ -29,6 +29,11 @@ namespace Identity.Domain
             yield return this.ApplicationId;
             yield return this.TokenType;
             yield return this.ExpirationDate;
+
+            foreach(PermissionId permissionId in this.Permissions)
+            {
+                yield return permissionId;
+            }
         }
     }
 }

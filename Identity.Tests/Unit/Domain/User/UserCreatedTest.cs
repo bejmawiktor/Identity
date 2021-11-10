@@ -11,21 +11,24 @@ namespace Identity.Tests.Unit.Domain
         {
             UserId userId = UserId.Generate();
 
-            var userCreatedEvent = new UserCreated(
-                userId: userId,
-                userEmail: new EmailAddress("example@example.com"));
+            UserCreated userCreatedEvent = this.GetUserCreated(userId: userId);
 
             Assert.That(userCreatedEvent.UserId, Is.EqualTo(userId));
+        }
+
+        private UserCreated GetUserCreated(
+            UserId userId = null, 
+            EmailAddress userEmailAddress = null)
+        {
+            return new UserCreated(
+                userId: userId ?? UserId.Generate(),
+                userEmail: userEmailAddress ?? new EmailAddress("example@example.com"));
         }
 
         [Test]
         public void TestConstructor_WhenUserEmailGiven_ThenUserEmailIsSet()
         {
-            UserId userId = UserId.Generate();
-
-            var userCreatedEvent = new UserCreated(
-                userId: userId,
-                userEmail: new EmailAddress("example@example.com"));
+            UserCreated userCreatedEvent = this.GetUserCreated(userEmailAddress: new EmailAddress("example@example.com"));
 
             Assert.That(userCreatedEvent.UserEmail, Is.EqualTo(new EmailAddress("example@example.com")));
         }

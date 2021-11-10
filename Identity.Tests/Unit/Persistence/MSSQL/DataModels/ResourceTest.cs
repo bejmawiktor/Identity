@@ -36,7 +36,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public void TestToDto_WhenConvertingToDto_ThenResourceDtoIsReturned()
         {
-            var resource = new Resource
+            var resource = new Resource()
             {
                 Id = "MyResource",
                 Description = "My resource description."

@@ -10,18 +10,27 @@ namespace Identity.Tests.Unit.Domain
         public void TestConstructor_WhenPermissionIdGiven_ThenPermissionIdIsSet()
         {
             var permissionId = new PermissionId(new ResourceId("TestResource"), "MyPermission");
-            var permissionCreated = new PermissionCreated(
-                permissionId: permissionId,
-                permissionDescription: "Test permission description");
+            PermissionCreated permissionCreated = this.GetPermissionCreated(
+                permissionId: permissionId);
 
             Assert.That(permissionCreated.PermissionId, Is.EqualTo(permissionId));
+        }
+
+        private PermissionCreated GetPermissionCreated(
+            PermissionId permissionId = null, 
+            string permissionDescription = null)
+        {
+            var permissionIdReplacement = new PermissionId(new ResourceId("TestResource"), "MyPermission");
+
+            return new PermissionCreated(
+                permissionId: permissionId ?? permissionIdReplacement, 
+                permissionDescription: permissionDescription ?? "Test permission description");
         }
 
         [Test]
         public void TestConstructor_WhenDescriptionGiven_ThenDescriptionIsSet()
         {
-            var permissionCreated = new PermissionCreated(
-                permissionId: new PermissionId(new ResourceId("TestResource"), "MyPermission"),
+            PermissionCreated permissionCreated = this.GetPermissionCreated(
                 permissionDescription: "Test permission description");
 
             Assert.That(permissionCreated.PermissionDescription, Is.EqualTo("Test permission description"));

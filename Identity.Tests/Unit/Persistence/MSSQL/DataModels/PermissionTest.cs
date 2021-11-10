@@ -38,7 +38,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public void TestToDto_WhenConvertingToDto_ThenPermissionDtoIsReturned()
         {
-            var permission = new Permission
+            var permission = new Permission()
             {
                 ResourceId = "MyResource",
                 Name = "MyPermission",

@@ -10,26 +10,30 @@ namespace Identity.Tests.Unit.Domain
         public void TestConstructor_WhenUserIdGiven_ThenUserIdIsSet()
         {
             UserId userId = UserId.Generate();
-            var obtainedPermissionId = new PermissionId(new ResourceId("MyResource"), "Permission");
 
-            var userCreatedEvent = new UserPermissionObtained(
-                userId: userId,
-                obtainedPermissionId: obtainedPermissionId);
+            UserPermissionObtained userPermissionObtained = this.GetUserPermissionObtained(userId);
 
-            Assert.That(userCreatedEvent.UserId, Is.EqualTo(userId));
+            Assert.That(userPermissionObtained.UserId, Is.EqualTo(userId));
+        }
+
+        private UserPermissionObtained GetUserPermissionObtained(
+            UserId userId = null,
+            PermissionId obtainedPermissionId = null)
+        {
+            return new UserPermissionObtained(
+                userId ?? UserId.Generate(),
+                obtainedPermissionId ?? new PermissionId(new ResourceId("MyResource"), "Permission"));
         }
 
         [Test]
         public void TestConstructor_WhenObtainedPermissionIdGiven_ThenObtainedPermissionIdIsSet()
         {
-            UserId userId = UserId.Generate();
             var obtainedPermissionId = new PermissionId(new ResourceId("MyResource"), "Permission");
 
-            var userCreatedEvent = new UserPermissionObtained(
-                userId: userId,
+            UserPermissionObtained userPermissionObtained = this.GetUserPermissionObtained(
                 obtainedPermissionId: obtainedPermissionId);
 
-            Assert.That(userCreatedEvent.ObtainedPermissionId, Is.EqualTo(obtainedPermissionId));
+            Assert.That(userPermissionObtained.ObtainedPermissionId, Is.EqualTo(obtainedPermissionId));
         }
     }
 }

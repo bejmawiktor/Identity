@@ -11,23 +11,26 @@ namespace Identity.Tests.Unit.Domain
         {
             RoleId roleId = RoleId.Generate();
 
-            var roleCreated = new RoleCreated(
-                roleId: roleId,
-                roleName: "RoleName",
-                roleDescription: "Test role description");
+            RoleCreated roleCreated = this.GetRoleCreated(roleId);
 
             Assert.That(roleCreated.RoleId, Is.EqualTo(roleId));
+        }
+
+        private RoleCreated GetRoleCreated(
+            RoleId roleId = null, 
+            string roleName = null, 
+            string roleDescription = null)
+        {
+            return new RoleCreated(
+                roleId: roleId ?? RoleId.Generate(),
+                roleName: roleName ?? "RoleName",
+                roleDescription: roleDescription ?? "Test role description");
         }
 
         [Test]
         public void TestConstructor_WhenRoleNameGiven_ThenRoleNameIsSet()
         {
-            RoleId roleId = RoleId.Generate();
-
-            var roleCreated = new RoleCreated(
-                roleId: roleId,
-                roleName: "RoleName",
-                roleDescription: "Test role description");
+            RoleCreated roleCreated = this.GetRoleCreated(roleName: "RoleName");
 
             Assert.That(roleCreated.RoleName, Is.EqualTo("RoleName"));
         }
@@ -35,12 +38,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestConstructor_WhenRoleDescriptionGiven_ThenRoleDescriptionIsSet()
         {
-            RoleId roleId = RoleId.Generate();
-
-            var roleCreated = new RoleCreated(
-                roleId: roleId,
-                roleName: "RoleName",
-                roleDescription: "Test role description");
+            RoleCreated roleCreated = this.GetRoleCreated(roleDescription: "Test role description");
 
             Assert.That(roleCreated.RoleDescription, Is.EqualTo("Test role description"));
         }

@@ -7,17 +7,28 @@ namespace Identity.Tests.Unit.Application
     public class PermissionDtoTest
     {
         [Test]
-        public void TestConstructor_WhenIdGiven_ThenIdIsSet()
+        public void TestConstructor_WhenNameGiven_ThenIdIsSet()
         {
-            var permissionDto = new PermissionDto("MyResource", "MyPermission", "My permission description.");
+            PermissionDto permissionDto = this.GetPermissionDto(name: "MyPermission");
 
             Assert.That(permissionDto.Id.Name, Is.EqualTo("MyPermission"));
+        }
+
+        private PermissionDto GetPermissionDto(
+            string resourceId = null, 
+            string name = null, 
+            string description = null)
+        {
+            return new PermissionDto(
+                resourceId ?? "MyResource", 
+                name ?? "MyPermission", 
+                description ?? "My permission description.");
         }
 
         [Test]
         public void TestConstructor_WhenResourceIdGiven_ThenResourceIdIsSet()
         {
-            var permissionDto = new PermissionDto("MyResource", "MyPermission", "My permission description.");
+            PermissionDto permissionDto = this.GetPermissionDto(resourceId: "MyResource");
 
             Assert.That(permissionDto.Id.ResourceId, Is.EqualTo("MyResource"));
         }
@@ -25,7 +36,7 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestConstructor_WhenDescriptionGiven_ThenDescriptionIsSet()
         {
-            var permissionDto = new PermissionDto("MyResource", "MyPermission", "My permission description.");
+            PermissionDto permissionDto = this.GetPermissionDto(description: "My permission description.");
 
             Assert.That(permissionDto.Description, Is.EqualTo("My permission description."));
         }
@@ -33,7 +44,7 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestToPermission_WhenConvertingToPermission_ThenPermissionIsReturned()
         {
-            var permissionDto = new PermissionDto("MyResource", "MyPermission", "My permission description.");
+            PermissionDto permissionDto = new PermissionDto("MyResource", "MyPermission", "My permission description.");
 
             Permission permission = permissionDto.ToPermission();
 
@@ -47,8 +58,8 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestEquals_WhenTwoIdentitcalPermissionsDtosGiven_ThenTrueIsReturned()
         {
-            var leftPermissionDto = new PermissionDto("MyResource", "MyPermission", "My permission description.");
-            var rightPermissionDto = new PermissionDto("MyResource", "MyPermission", "My permission description.");
+            PermissionDto leftPermissionDto = this.GetPermissionDto();
+            PermissionDto rightPermissionDto = this.GetPermissionDto();
 
             Assert.That(leftPermissionDto.Equals(rightPermissionDto), Is.True);
         }
@@ -56,8 +67,8 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestEquals_WhenTwoDifferentPermissionsDtosGiven_ThenFalseIsReturned()
         {
-            var leftPermissionDto = new PermissionDto("MyResource", "MyPermission", "My permission description.");
-            var rightPermissionDto = new PermissionDto("MyResource2", "MyPermission2", "My permission description.");
+            PermissionDto leftPermissionDto = this.GetPermissionDto("MyResource", "MyPermission");
+            PermissionDto rightPermissionDto = this.GetPermissionDto("MyResource2", "MyPermission2");
 
             Assert.That(leftPermissionDto.Equals(rightPermissionDto), Is.False);
         }
@@ -65,8 +76,8 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestGetHashCode_WhenTwoIdenticalPermissionsDtosGiven_ThenSameHashCodesIsReturned()
         {
-            var leftPermissionDto = new PermissionDto("MyResource", "MyPermission", "My permission description.");
-            var rightPermissionDto = new PermissionDto("MyResource", "MyPermission", "My permission description.");
+            PermissionDto leftPermissionDto = this.GetPermissionDto();
+            PermissionDto rightPermissionDto = this.GetPermissionDto();
 
             Assert.That(leftPermissionDto.GetHashCode(), Is.EqualTo(rightPermissionDto.GetHashCode()));
         }
@@ -74,8 +85,8 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestGetHashCode_WhenTwoDifferentPermissionsDtosGiven_ThenDifferentHashCodesIsReturned()
         {
-            var leftPermissionDto = new PermissionDto("MyResource", "MyPermission", "My permission description.");
-            var rightPermissionDto = new PermissionDto("MyResource2", "MyPermission2", "My permission description.");
+            PermissionDto leftPermissionDto = this.GetPermissionDto("MyResource", "MyPermission");
+            PermissionDto rightPermissionDto = this.GetPermissionDto("MyResource2", "MyPermission2");
 
             Assert.That(leftPermissionDto.GetHashCode(), Is.Not.EqualTo(rightPermissionDto.GetHashCode()));
         }

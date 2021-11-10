@@ -82,7 +82,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestToString_WhenConverting_ThenValueIsReturned()
         {
-            var code = Code.Generate();
+            Code code = Code.Generate();
 
             Assert.That(code.ToString(), Is.EqualTo(code.Value));
         }

@@ -9,28 +9,31 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestConstructor_WhenApplicationIdGiven_ThenApplicationIdIsSet()
         {
-            UserId userId = UserId.Generate();
-            var applicationId = ApplicationId.Generate();
-            var applicationCreated = new ApplicationCreated(
-                applicationId: applicationId,
-                applicationName: "MyApp",
-                applicationUserId: userId,
-                applicationHomepageUrl: new Url("http://wwww.example.com"),
-                applicationCallbackUrl: new Url("http://wwww.example.com/1"));
+            ApplicationId applicationId = ApplicationId.Generate();
+            ApplicationCreated applicationCreated = this.GetApplicationCreated(applicationId);
 
             Assert.That(applicationCreated.ApplicationId, Is.EqualTo(applicationId));
+        }
+
+        private ApplicationCreated GetApplicationCreated(
+            ApplicationId applicationId = null, 
+            string applicationName = null, 
+            UserId applicationUserId = null,
+            Url applicationHomepageUrl = null,
+            Url applicationCallbackUrl = null)
+        {
+            return new ApplicationCreated(
+                applicationId: applicationId ?? ApplicationId.Generate(),
+                applicationName: applicationName ?? "MyApp",
+                applicationUserId: applicationUserId ?? UserId.Generate(),
+                applicationHomepageUrl: applicationHomepageUrl ?? new Url("http://wwww.example.com"),
+                applicationCallbackUrl: applicationCallbackUrl ?? new Url("http://wwww.example.com/1"));
         }
 
         [Test]
         public void TestConstructor_WhenApplicationNameGiven_ThenApplicationNameIsSet()
         {
-            UserId userId = UserId.Generate();
-            var applicationCreated = new ApplicationCreated(
-                applicationId: ApplicationId.Generate(),
-                applicationName: "MyApp",
-                applicationUserId: userId,
-                applicationHomepageUrl: new Url("http://wwww.example.com"),
-                applicationCallbackUrl: new Url("http://wwww.example.com/1"));
+            ApplicationCreated applicationCreated = this.GetApplicationCreated(applicationName: "MyApp");
 
             Assert.That(applicationCreated.ApplicationName, Is.EqualTo("MyApp"));
         }
@@ -39,12 +42,7 @@ namespace Identity.Tests.Unit.Domain
         public void TestConstructor_WhenApplicationUserIdGiven_ThenApplicationUserIdIsSet()
         {
             UserId userId = UserId.Generate();
-            var applicationCreated = new ApplicationCreated(
-                applicationId: ApplicationId.Generate(),
-                applicationName: "MyApp",
-                applicationUserId: userId,
-                applicationHomepageUrl: new Url("http://wwww.example.com"),
-                applicationCallbackUrl: new Url("http://wwww.example.com/1"));
+            ApplicationCreated applicationCreated = this.GetApplicationCreated(applicationUserId: userId);
 
             Assert.That(applicationCreated.ApplicationUserId, Is.EqualTo(userId));
         }
@@ -52,13 +50,8 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestConstructor_WhenApplicationHomepageUrlGiven_ThenApplicationHomepageUrlIsSet()
         {
-            UserId userId = UserId.Generate();
-            var applicationCreated = new ApplicationCreated(
-                applicationId: ApplicationId.Generate(),
-                applicationName: "MyApp",
-                applicationUserId: userId,
-                applicationHomepageUrl: new Url("http://wwww.example.com"),
-                applicationCallbackUrl: new Url("http://wwww.example.com/1"));
+            ApplicationCreated applicationCreated = this.GetApplicationCreated(
+                applicationHomepageUrl: new Url("http://wwww.example.com"));
 
             Assert.That(applicationCreated.ApplicationHomepageUrl, Is.EqualTo(new Url("http://wwww.example.com")));
         }
@@ -66,12 +59,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestConstructor_WhenApplicationCallbackUrlGiven_ThenApplicationCallbackUrlIsSet()
         {
-            UserId userId = UserId.Generate();
-            var applicationCreated = new ApplicationCreated(
-                applicationId: ApplicationId.Generate(),
-                applicationName: "MyApp",
-                applicationUserId: userId,
-                applicationHomepageUrl: new Url("http://wwww.example.com"),
+            ApplicationCreated applicationCreated = this.GetApplicationCreated(
                 applicationCallbackUrl: new Url("http://wwww.example.com/1"));
 
             Assert.That(applicationCreated.ApplicationCallbackUrl, Is.EqualTo(new Url("http://wwww.example.com/1")));

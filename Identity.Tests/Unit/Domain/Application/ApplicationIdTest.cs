@@ -38,7 +38,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestToString_WhenConvertingToString_ThenGuidStringIsReturned()
         {
-            var guid = Guid.NewGuid();
+            Guid guid = Guid.NewGuid();
             ApplicationId applicationId = new ApplicationId(guid);
 
             string applicationIdString = applicationId.ToString();

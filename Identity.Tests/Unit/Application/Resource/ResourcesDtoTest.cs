@@ -10,15 +10,24 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestConstructor_WhenIdGiven_ThenIdIsSet()
         {
-            var resourceDto = new ResourceDto("MyResource", "My resource description.");
+            ResourceDto resourceDto = this.GetResourceDto("MyResource");
 
             Assert.That(resourceDto.Id, Is.EqualTo("MyResource"));
+        }
+
+        private ResourceDto GetResourceDto(
+            string id = null, 
+            string description = null)
+        {
+            return new ResourceDto(
+                id ?? "MyResource", 
+                description ?? "My resource description.");
         }
 
         [Test]
         public void TestConstructor_WhenDescriptionGiven_ThenDescriptionIsSet()
         {
-            var resourceDto = new ResourceDto("MyResource", "My resource description.");
+            ResourceDto resourceDto = this.GetResourceDto(description: "My resource description.");
 
             Assert.That(resourceDto.Description, Is.EqualTo("My resource description."));
         }
@@ -26,7 +35,7 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestToResource_WhenConvertingToResource_ThenResourceIsReturned()
         {
-            var resourceDto = new ResourceDto("MyResource", "My resource description.");
+            ResourceDto resourceDto = this.GetResourceDto("MyResource", "My resource description.");
 
             Resource resource = resourceDto.ToResource();
 
@@ -40,8 +49,8 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestEquals_WhenTwoIdentitcalResourcesDtosGiven_ThenTrueIsReturned()
         {
-            var leftResourceDto = new ResourceDto("MyResource", "My resource description.");
-            var rightResourceDto = new ResourceDto("MyResource", "My resource description.");
+            ResourceDto leftResourceDto = this.GetResourceDto();
+            ResourceDto rightResourceDto = this.GetResourceDto();
 
             Assert.That(leftResourceDto.Equals(rightResourceDto), Is.True);
         }
@@ -49,8 +58,8 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestEquals_WhenTwoDifferentResourcesDtosGiven_ThenFalseIsReturned()
         {
-            var leftResourceDto = new ResourceDto("MyResource", "My resource description.");
-            var rightResourceDto = new ResourceDto("MyResource2", "My resource description 2.");
+            ResourceDto leftResourceDto = this.GetResourceDto("MyResource", "My resource description.");
+            ResourceDto rightResourceDto = this.GetResourceDto("MyResource2", "My resource description 2.");
 
             Assert.That(leftResourceDto.Equals(rightResourceDto), Is.False);
         }
@@ -58,8 +67,8 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestGetHashCode_WhenTwoIdenticalResourcesDtosGiven_ThenSameHashCodesAreReturned()
         {
-            var leftResourceDto = new ResourceDto("MyResource", "My resource description.");
-            var rightResourceDto = new ResourceDto("MyResource", "My resource description.");
+            ResourceDto leftResourceDto = this.GetResourceDto();
+            ResourceDto rightResourceDto = this.GetResourceDto();
 
             Assert.That(leftResourceDto.GetHashCode(), Is.EqualTo(rightResourceDto.GetHashCode()));
         }
@@ -67,8 +76,8 @@ namespace Identity.Tests.Unit.Application
         [Test]
         public void TestGetHashCode_WhenTwoDifferentResourcesDtosGiven_ThenDifferentHashCodesAreReturned()
         {
-            var leftResourceDto = new ResourceDto("MyResource", "My resource description.");
-            var rightResourceDto = new ResourceDto("MyResource2", "My resource description 2.");
+            ResourceDto leftResourceDto = this.GetResourceDto("MyResource", "My resource description.");
+            ResourceDto rightResourceDto = this.GetResourceDto("MyResource2", "My resource description 2.");
 
             Assert.That(leftResourceDto.GetHashCode(), Is.Not.EqualTo(rightResourceDto.GetHashCode()));
         }

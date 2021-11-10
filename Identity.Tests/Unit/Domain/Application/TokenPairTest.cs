@@ -20,6 +20,7 @@ namespace Identity.Tests.Unit.Domain
             ApplicationId applicationId = ApplicationId.Generate();
             Token accessToken = Token.GenerateAccessToken(applicationId, permissions);
             Token refreshToken = Token.GenerateRefreshToken(applicationId, permissions);
+
             var tokenPair = new TokenPair(
                 accessToken: accessToken,
                 refreshToken: refreshToken);
@@ -38,6 +39,7 @@ namespace Identity.Tests.Unit.Domain
             ApplicationId applicationId = ApplicationId.Generate();
             Token accessToken = Token.GenerateAccessToken(applicationId, permissions);
             Token refreshToken = Token.GenerateRefreshToken(applicationId, permissions);
+
             var tokenPair = new TokenPair(
                 accessToken: accessToken,
                 refreshToken: refreshToken);

@@ -10,23 +10,28 @@ namespace Identity.Tests.Unit.Domain
         public void TestConstructor_WhenUserIdGiven_ThenUserIdIsSet()
         {
             UserId userId = UserId.Generate();
-            var revokedPermissionId = new PermissionId(new ResourceId("MyResource"), "Permission");
 
-            var userPermissionRevokedEvent = new UserPermissionRevoked(
-                userId: userId,
-                revokedPermissionId: revokedPermissionId);
+            UserPermissionRevoked userPermissionRevokedEvent = this.GetUserPermissionRevoked(
+                userId: userId);
 
             Assert.That(userPermissionRevokedEvent.UserId, Is.EqualTo(userId));
+        }
+
+        private UserPermissionRevoked GetUserPermissionRevoked(
+            UserId userId = null, 
+            PermissionId revokedPermissionId = null)
+        {
+            return new UserPermissionRevoked(
+                userId ?? UserId.Generate(),
+                revokedPermissionId ?? new PermissionId(new ResourceId("MyResource"), "Permission"));  
         }
 
         [Test]
         public void TestConstructor_WhenRevokedPermissionIdGiven_ThenRevokedPermissionIdIsSet()
         {
-            UserId userId = UserId.Generate();
             var revokedPermissionId = new PermissionId(new ResourceId("MyResource"), "Permission");
 
-            var userPermissionRevokedEvent = new UserPermissionRevoked(
-                userId: userId,
+            UserPermissionRevoked userPermissionRevokedEvent = this.GetUserPermissionRevoked(
                 revokedPermissionId: revokedPermissionId);
 
             Assert.That(userPermissionRevokedEvent.RevokedPermissionId, Is.EqualTo(revokedPermissionId));

@@ -45,7 +45,7 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestConstructor_WhenValueGiven_ThenToStringReturnsSameValue()
         {
-            var password = new Password("asdgasdgasgd");
+            Password password = new Password("asdgasdgasgd");
 
             Assert.That(password.ToString(), Is.EqualTo("asdgasdgasgd"));
         }
