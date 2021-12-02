@@ -71,7 +71,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestValidate_WhenNullHashedPasswordGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestValidate_WhenNullEncryptedSecretKeyGiven_ThenArgumentNullExceptionIsThrown()
         {
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -81,7 +81,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestValidate_WhenEmptyHashedPasswordGiven_ThenArgumentExceptionIsThrown()
+        public void TestValidate_WhenEmptyEncryptedSecretKeyGiven_ThenArgumentExceptionIsThrown()
         {
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()
@@ -91,7 +91,7 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestValidate_WhenCorrectHashedPasswordGiven_ThenNoExceptionIsThrown()
+        public void TestValidate_WhenCorrectEncryptedSecretKeyGiven_ThenNoExceptionIsThrown()
         {
             EncryptedSecretKey encryptedSecretKey = SecretKeyEncrypter.Encrypt(SecretKey.Generate());
 

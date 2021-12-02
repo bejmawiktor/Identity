@@ -14,9 +14,9 @@ namespace Identity.Domain
                 throw new ArgumentNullException(nameof(secretKey));
             }
 
-            var algorithmHashedPassword = CurrentAlgorithm.Encrypt(secretKey);
+            var encryptedSecretKey = CurrentAlgorithm.Encrypt(secretKey);
 
-            return new EncryptedSecretKey(AssemblyEncryptedSecretKey(algorithmHashedPassword));
+            return new EncryptedSecretKey(AssemblyEncryptedSecretKey(encryptedSecretKey));
         }
 
         private static byte[] AssemblyEncryptedSecretKey(byte[] algorithmEncryptedSecretKey)
@@ -41,19 +41,19 @@ namespace Identity.Domain
             ISecretKeyEncryptionAlgorithm secretKeyEncryptionAlgorithm = SecretKeyEncryptionAlgorithmFactory.Create(
                 algorithmSymbol);
 
-            return secretKeyEncryptionAlgorithm.Decrypt(ExtractAlgorithmPassword(encryptedSecretKeyBytes));
+            return secretKeyEncryptionAlgorithm.Decrypt(ExtractAlgorithmSecretKey(encryptedSecretKeyBytes));
         }
 
         private static byte ExtractAlgorithmSymbol(byte[] encryptedSecretKeyBytes)
             => encryptedSecretKeyBytes[0];
 
-        private static byte[] ExtractAlgorithmPassword(byte[] encryptedSecretKeyBytes)
+        private static byte[] ExtractAlgorithmSecretKey(byte[] encryptedSecretKeyBytes)
         {
-            var algorithmHashedPassword = new byte[encryptedSecretKeyBytes.Length - AlgorithmSymbolLength];
+            var encryptedSecretKey = new byte[encryptedSecretKeyBytes.Length - AlgorithmSymbolLength];
 
-            Buffer.BlockCopy(encryptedSecretKeyBytes, AlgorithmSymbolLength, algorithmHashedPassword, 0, algorithmHashedPassword.Length);
+            Buffer.BlockCopy(encryptedSecretKeyBytes, AlgorithmSymbolLength, encryptedSecretKey, 0, encryptedSecretKey.Length);
 
-            return algorithmHashedPassword;
+            return encryptedSecretKey;
         }
 
         public static void Validate(byte[] encryptedSecretKey)
@@ -72,7 +72,7 @@ namespace Identity.Domain
             ISecretKeyEncryptionAlgorithm secretKeyEncryptionAlgorithm = SecretKeyEncryptionAlgorithmFactory.Create(
                 algorithmSymbol);
 
-            secretKeyEncryptionAlgorithm.Validate(ExtractAlgorithmPassword(encryptedSecretKey));
+            secretKeyEncryptionAlgorithm.Validate(ExtractAlgorithmSecretKey(encryptedSecretKey));
         }
     }
 }

@@ -28,20 +28,23 @@ namespace Identity.Tests.Unit.Application
             IUsersRepository usersRepository = null,
             IRolesRepository rolesRepository = null,
             IApplicationsRepository applicationsRepository = null,
-            IAuthorizationCodesRepository authorizationCodesRepository = null)
+            IAuthorizationCodesRepository authorizationCodesRepository = null,
+            IRefreshTokensRepository refreshTokensRepository = null)
         {
             var resourcesRepositoryMock = new Mock<IResourcesRepository>();
             var usersRepositoryMock = new Mock<IUsersRepository>();
             var rolesRepositoryMock = new Mock<IRolesRepository>();
             var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
             var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
+            var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
 
             return new CreateResourceCommandHandler(
                 resourcesRepository ?? resourcesRepositoryMock.Object,
                 usersRepository ?? usersRepositoryMock.Object,
                 rolesRepository ?? rolesRepositoryMock.Object,
                 applicationsRepository ?? applicationsRepositoryMock.Object,
-                authorizationCodesRepository ?? authorizationCodesRepositoryMock.Object);
+                authorizationCodesRepository ?? authorizationCodesRepositoryMock.Object,
+                refreshTokensRepository ?? refreshTokensRepositoryMock.Object);
         }
 
         [Test]
@@ -93,16 +96,30 @@ namespace Identity.Tests.Unit.Application
         }
 
         [Test]
+        public void TestConstructor_WhenRefreshTokensRepositoryGiven_ThenRefreshTokensRepositoryIsSet()
+        {
+            var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
+            IRefreshTokensRepository refreshTokensRepository = refreshTokensRepositoryMock.Object;
+
+            CreateResourceCommandHandler createResourceCommandHandler = this.GetCreateResourceCommandHandler(
+                refreshTokensRepository: refreshTokensRepository);
+
+            Assert.That(createResourceCommandHandler.RefreshTokensRepository, Is.EqualTo(refreshTokensRepository));
+        }
+
+        [Test]
         public void TestConstructor_WhenNullResourcesRepositoryGiven_ThenArgumentNullExceptionIsThrown()
         {
             var usersRepositoryMock = new Mock<IUsersRepository>();
             var rolesRepositoryMock = new Mock<IRolesRepository>();
             var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
             var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
+            var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
             IUsersRepository usersRepository = usersRepositoryMock.Object;
             IRolesRepository rolesRepository = rolesRepositoryMock.Object;
             IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
             IAuthorizationCodesRepository authorizationCodesRepository = authorizationCodesRepositoryMock.Object;
+            IRefreshTokensRepository refreshTokensRepository = refreshTokensRepositoryMock.Object;
 
             Assert.Throws(
                Is.InstanceOf<ArgumentNullException>()
@@ -113,7 +130,8 @@ namespace Identity.Tests.Unit.Application
                    usersRepository,
                    rolesRepository,
                    applicationsRepository,
-                   authorizationCodesRepository));
+                   authorizationCodesRepository,
+                   refreshTokensRepository));
         }
 
         [Test]
@@ -123,10 +141,12 @@ namespace Identity.Tests.Unit.Application
             var rolesRepositoryMock = new Mock<IRolesRepository>();
             var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
             var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
+            var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
             IResourcesRepository resourcesRepository = resourcesRepositoryMock.Object;
             IRolesRepository rolesRepository = rolesRepositoryMock.Object;
             IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
             IAuthorizationCodesRepository authorizationCodesRepository = authorizationCodesRepositoryMock.Object;
+            IRefreshTokensRepository refreshTokensRepository = refreshTokensRepositoryMock.Object;
 
             Assert.Throws(
                Is.InstanceOf<ArgumentNullException>()
@@ -137,7 +157,8 @@ namespace Identity.Tests.Unit.Application
                    null,
                    rolesRepository,
                    applicationsRepository,
-                   authorizationCodesRepository));
+                   authorizationCodesRepository,
+                   refreshTokensRepository));
         }
 
         [Test]
@@ -147,10 +168,12 @@ namespace Identity.Tests.Unit.Application
             var usersRepositoryMock = new Mock<IUsersRepository>();
             var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
             var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
+            var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
             IResourcesRepository resourcesRepository = resourcesRepositoryMock.Object;
             IUsersRepository usersRepository = usersRepositoryMock.Object;
             IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
             IAuthorizationCodesRepository authorizationCodesRepository = authorizationCodesRepositoryMock.Object;
+            IRefreshTokensRepository refreshTokensRepository = refreshTokensRepositoryMock.Object;
 
             Assert.Throws(
                Is.InstanceOf<ArgumentNullException>()
@@ -161,7 +184,8 @@ namespace Identity.Tests.Unit.Application
                    usersRepository,
                    null,
                    applicationsRepository,
-                   authorizationCodesRepository));
+                   authorizationCodesRepository,
+                   refreshTokensRepository));
         }
 
         [Test]
@@ -171,10 +195,12 @@ namespace Identity.Tests.Unit.Application
             var usersRepositoryMock = new Mock<IUsersRepository>();
             var rolesRepositoryMock = new Mock<IRolesRepository>();
             var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
+            var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
             IResourcesRepository resourcesRepository = resourcesRepositoryMock.Object;
             IRolesRepository rolesRepository = rolesRepositoryMock.Object;
             IUsersRepository usersRepository = usersRepositoryMock.Object;
             IAuthorizationCodesRepository authorizationCodesRepository = authorizationCodesRepositoryMock.Object;
+            IRefreshTokensRepository refreshTokensRepository = refreshTokensRepositoryMock.Object;
 
             Assert.Throws(
                Is.InstanceOf<ArgumentNullException>()
@@ -185,7 +211,8 @@ namespace Identity.Tests.Unit.Application
                    usersRepository,
                    rolesRepository,
                    null,
-                   authorizationCodesRepository));
+                   authorizationCodesRepository,
+                   refreshTokensRepository));
         }
 
         [Test]
@@ -195,10 +222,12 @@ namespace Identity.Tests.Unit.Application
             var usersRepositoryMock = new Mock<IUsersRepository>();
             var rolesRepositoryMock = new Mock<IRolesRepository>();
             var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
             IResourcesRepository resourcesRepository = resourcesRepositoryMock.Object;
             IRolesRepository rolesRepository = rolesRepositoryMock.Object;
             IUsersRepository usersRepository = usersRepositoryMock.Object;
             IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+            IRefreshTokensRepository refreshTokensRepository = refreshTokensRepositoryMock.Object;
 
             Assert.Throws(
                Is.InstanceOf<ArgumentNullException>()
@@ -209,6 +238,34 @@ namespace Identity.Tests.Unit.Application
                    usersRepository,
                    rolesRepository,
                    applicationsRepository,
+                   null,
+                   refreshTokensRepository));
+        }
+
+        [Test]
+        public void TestConstructor_WhenNullRefreshTokensRepositoryGiven_ThenArgumentNullExceptionIsThrown()
+        {
+            var resourcesRepositoryMock = new Mock<IResourcesRepository>();
+            var usersRepositoryMock = new Mock<IUsersRepository>();
+            var rolesRepositoryMock = new Mock<IRolesRepository>();
+            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
+            IResourcesRepository resourcesRepository = resourcesRepositoryMock.Object;
+            IRolesRepository rolesRepository = rolesRepositoryMock.Object;
+            IUsersRepository usersRepository = usersRepositoryMock.Object;
+            IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+            IAuthorizationCodesRepository authorizationCodesRepository = authorizationCodesRepositoryMock.Object;
+
+            Assert.Throws(
+               Is.InstanceOf<ArgumentNullException>()
+                   .And.Property(nameof(ArgumentNullException.ParamName))
+                   .EqualTo("refreshTokensRepository"),
+               () => new CreateResourceCommandHandler(
+                   resourcesRepository,
+                   usersRepository,
+                   rolesRepository,
+                   applicationsRepository,
+                   authorizationCodesRepository,
                    null));
         }
 

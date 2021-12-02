@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Identity.Domain
 {
-    internal class HS256JWTTokenGenerationAlgorithm : ITokenGenerationAlgorithm
+    internal class HS256JWTTokenValueEncodingAlgorithm : ITokenValueEncodingAlgorithm
     {
         internal static readonly string SecretKey = "4U@2d&yDyWMqe&@k2%vB6p$SWR&qufg8";
         internal static readonly string Issuer = "Identity";
@@ -18,7 +18,7 @@ namespace Identity.Domain
         private string TokenTypeClaimName => "tokenType";
         private string PermissionsClaimName => "permissions";
 
-        public HS256JWTTokenGenerationAlgorithm()
+        public HS256JWTTokenValueEncodingAlgorithm()
         {
         }
 
@@ -33,6 +33,7 @@ namespace Identity.Domain
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithm);
             var claims = new Claim[]
             {
+                new Claim(JwtRegisteredClaimNames.Jti, tokenInformation.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Sub, tokenInformation.ApplicationId.ToString()),
                 new Claim(this.TokenTypeClaimName, tokenInformation.TokenType.Name),
                 new Claim(this.PermissionsClaimName, this.ConvertPermissionsToPermissionsText(tokenInformation.Permissions))
@@ -69,10 +70,19 @@ namespace Identity.Domain
             }
 
             return new TokenInformation(
+                id: this.ExtractId(jwtSecurityToken),
                 applicationId: this.ExtractApplicationId(jwtSecurityToken),
                 tokenType: this.ExtractTokenType(jwtSecurityToken),
                 permissions: this.ExtractPermissions(jwtSecurityToken),
                 expirationDate: this.ExtractExpirationDate(jwtSecurityToken));
+        }
+        private Guid ExtractId(JwtSecurityToken jwtSecurityToken)
+        {
+            string sub = jwtSecurityToken.Claims
+                .FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti)?
+                .Value;
+
+            return new Guid(sub);
         }
 
         private IEnumerable<PermissionId> ExtractPermissions(JwtSecurityToken jwtSecurityToken)
@@ -127,6 +137,12 @@ namespace Identity.Domain
             }
 
             if(jwtSecurityToken.Audiences.FirstOrDefault() != Audience)
+            {
+                return false;
+            }
+
+            if(!jwtSecurityToken.Claims.Any(j => j.Type == JwtRegisteredClaimNames.Jti) 
+                || this.ExtractId(jwtSecurityToken) == Guid.Empty)
             {
                 return false;
             }

@@ -10,16 +10,27 @@ namespace Identity.Tests.Unit.Domain
     public class TokenInformationTest
     {
         [Test]
+        public void TestConstructor_WhenIdGiven_ThenApplicationIdIsSet()
+        {
+            Guid id = Guid.NewGuid();
+
+            TokenInformation tokenInformation = this.GetTokenInformation(id);
+
+            Assert.That(tokenInformation.Id, Is.EqualTo(id));
+        }
+
+        [Test]
         public void TestConstructor_WhenApplicationIdGiven_ThenApplicationIdIsSet()
         {
             ApplicationId applicationId = ApplicationId.Generate();
             
-            TokenInformation tokenInformation = this.GetTokenInformation(applicationId);
+            TokenInformation tokenInformation = this.GetTokenInformation(applicationId: applicationId);
 
             Assert.That(tokenInformation.ApplicationId, Is.EqualTo(applicationId));
         }
 
         private TokenInformation GetTokenInformation(
+            Guid? id = null,
             ApplicationId applicationId = null,
             TokenType tokenType = null,
             PermissionId[] permissions = null,
@@ -32,6 +43,7 @@ namespace Identity.Tests.Unit.Domain
             };
 
             return new TokenInformation(
+                id ?? Guid.NewGuid(),
                 applicationId ?? ApplicationId.Generate(),
                 tokenType ?? TokenType.Refresh,
                 permissions ?? permissionsReplacement,

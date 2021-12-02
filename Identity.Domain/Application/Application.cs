@@ -76,33 +76,52 @@ namespace Identity.Domain
             this.SecretKey = EncryptedSecretKey.Encrypt(Domain.SecretKey.Generate());
         }
 
-        internal TokenPair GenerateTokens(IEnumerable<PermissionId> permissions)
+        internal AuthorizationCode CreateAuthorizationCode(IEnumerable<PermissionId> permissions, out Code code)
+            => AuthorizationCode.Create(this.Id, permissions, out code);
+
+        internal AccessToken CreateAccessToken(IEnumerable<PermissionId> permissions)
         {
-            return new TokenPair(
-                accessToken: Token.GenerateAccessToken(this.Id, permissions),
-                refreshToken: Token.GenerateRefreshToken(this.Id, permissions));
+            return new AccessToken(TokenId.GenerateAccessTokenId(this.Id, permissions));
         }
 
-        internal TokenPair RefreshTokens(Token refreshToken)
+        internal RefreshToken CreateRefreshToken(IEnumerable<PermissionId> permissions)
+        {
+            return new RefreshToken(TokenId.GenerateRefreshTokenId(this.Id, permissions));
+        }
+
+        internal AccessToken RefreshAccessToken(RefreshToken refreshToken)
         {
             if(refreshToken.ApplicationId != this.Id)
             {
                 throw new InvalidTokenException("Wrong refresh token given.");
             }
 
-            TokenVerificationResult verificationResult = refreshToken.Verify();
+            TokenVerificationResult tokenVerificationResult = refreshToken.Verify();
 
-            if(verificationResult == TokenVerificationResult.Failed)
+            if(tokenVerificationResult == TokenVerificationResult.Failed)
             {
-                throw new InvalidTokenException(verificationResult.Message);
+                throw new InvalidTokenException(tokenVerificationResult.Message);
             }
 
-            return new TokenPair(
-                accessToken: Token.GenerateAccessToken(this.Id, refreshToken.Permissions),
-                refreshToken: Token.GenerateRefreshToken(this.Id, refreshToken.Permissions, refreshToken.ExpiresAt));
+            return new AccessToken(TokenId.GenerateAccessTokenId(this.Id, refreshToken.Permissions));
         }
 
-        internal AuthorizationCode CreateAuthorizationCode(IEnumerable<PermissionId> permissions, out Code code)
-            => AuthorizationCode.Create(this.Id, permissions, out code);
+        internal RefreshToken RefreshRefreshToken(RefreshToken refreshToken)
+        {
+            if(refreshToken.ApplicationId != this.Id)
+            {
+                throw new InvalidTokenException("Wrong refresh token given.");
+            }
+
+            TokenVerificationResult tokenVerificationResult = refreshToken.Verify();
+
+            if(tokenVerificationResult == TokenVerificationResult.Failed)
+            {
+                throw new InvalidTokenException(tokenVerificationResult.Message);
+            }
+
+            return new RefreshToken(
+                TokenId.GenerateRefreshTokenId(this.Id, refreshToken.Permissions, refreshToken.ExpiresAt));
+        }
     }
 }

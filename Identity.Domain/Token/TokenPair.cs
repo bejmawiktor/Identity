@@ -6,10 +6,10 @@ namespace Identity.Domain
 {
     public class TokenPair : ValueObject
     {
-        public Token AccessToken { get; }
-        public Token RefreshToken { get; }
+        public TokenValue AccessToken { get; }
+        public TokenValue RefreshToken { get; }
 
-        public TokenPair(Token accessToken, Token refreshToken)
+        public TokenPair(TokenValue accessToken, TokenValue refreshToken)
         {
             this.ValidateMembers(accessToken, refreshToken);
 
@@ -17,7 +17,7 @@ namespace Identity.Domain
             this.RefreshToken = refreshToken;
         }
 
-        private void ValidateMembers(Token accessToken, Token refreshToken)
+        private void ValidateMembers(TokenValue accessToken, TokenValue refreshToken)
         {
             if(accessToken == null)
             {

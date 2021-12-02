@@ -4,28 +4,22 @@ using System.Collections.Generic;
 
 namespace Identity.Domain
 {
-    public class Token : ValueObject
+    public class TokenValue : Identifier<string, TokenValue>
     {
-        internal static readonly ITokenGenerationAlgorithm TokenGenerationAlgorithm
-            = new HS256JWTTokenGenerationAlgorithm();
-
-        private string Value { get; }
         private TokenInformation TokenInformation { get; }
 
         public ApplicationId ApplicationId => this.TokenInformation.ApplicationId;
         public TokenType Type => this.TokenInformation.TokenType;
         public DateTime ExpiresAt => this.TokenInformation.ExpirationDate;
         public IReadOnlyCollection<PermissionId> Permissions => this.TokenInformation.Permissions;
+        public bool Expired => this.ExpiresAt < DateTime.Now;
 
-        public Token(string value)
+        public TokenValue(string value) : base(value)
         {
-            this.ValidateValue(value);
-
-            this.Value = value;
-            this.TokenInformation = TokenGenerationAlgorithm.Decode(value);
+            this.TokenInformation = TokenValueEncoder.Decode(this);
         }
 
-        private void ValidateValue(string value)
+        protected override void ValidateValue(string value)
         {
             if(value == null)
             {
@@ -37,10 +31,10 @@ namespace Identity.Domain
                 throw new ArgumentException("Given token value can't be empty.");
             }
 
-            TokenGenerationAlgorithm.Validate(value);
+            TokenValueEncoder.Validate(value);
         }
 
-        internal static Token GenerateAccessToken(
+        internal static TokenValue GenerateAccessToken(
             ApplicationId applicationId,
             IEnumerable<PermissionId> permissions)
         {
@@ -54,13 +48,14 @@ namespace Identity.Domain
                 throw new ArgumentNullException(nameof(permissions));
             }
 
-            return new Token(TokenGenerationAlgorithm.Encode(new TokenInformation(
+            return TokenValueEncoder.Encode(new TokenInformation(
+                id: Guid.NewGuid(),
                 applicationId: applicationId,
                 tokenType: TokenType.Access,
-                permissions: permissions)));
+                permissions: permissions));
         }
 
-        internal static Token GenerateRefreshToken(
+        internal static TokenValue GenerateRefreshToken(
             ApplicationId applicationId,
             IEnumerable<PermissionId> permissions,
             DateTime? expiresAt = null)
@@ -75,21 +70,12 @@ namespace Identity.Domain
                 throw new ArgumentNullException(nameof(permissions));
             }
 
-            return new Token(TokenGenerationAlgorithm.Encode(new TokenInformation(
+            return TokenValueEncoder.Encode(new TokenInformation(
+                id: Guid.NewGuid(),
                 applicationId: applicationId,
                 tokenType: TokenType.Refresh,
                 permissions: permissions,
-                expirationDate: expiresAt)));
-        }
-
-        public TokenVerificationResult Verify()
-        {
-            if(DateTime.Now > this.ExpiresAt)
-            {
-                return TokenVerificationResult.Failed.WithMessage("Token has expired.");
-            }
-
-            return TokenVerificationResult.Success;
+                expirationDate: expiresAt));
         }
 
         public override string ToString()

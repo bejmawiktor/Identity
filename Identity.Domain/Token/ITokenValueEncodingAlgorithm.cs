@@ -1,6 +1,6 @@
 ﻿namespace Identity.Domain
 {
-    internal interface ITokenGenerationAlgorithm
+    internal interface ITokenValueEncodingAlgorithm
     {
         string Encode(TokenInformation tokenInformation);
 

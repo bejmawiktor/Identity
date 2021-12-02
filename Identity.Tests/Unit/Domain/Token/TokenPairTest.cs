@@ -18,8 +18,8 @@ namespace Identity.Tests.Unit.Domain
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
             ApplicationId applicationId = ApplicationId.Generate();
-            Token accessToken = Token.GenerateAccessToken(applicationId, permissions);
-            Token refreshToken = Token.GenerateRefreshToken(applicationId, permissions);
+            TokenValue accessToken = TokenValue.GenerateAccessToken(applicationId, permissions);
+            TokenValue refreshToken = TokenValue.GenerateRefreshToken(applicationId, permissions);
 
             var tokenPair = new TokenPair(
                 accessToken: accessToken,
@@ -37,8 +37,8 @@ namespace Identity.Tests.Unit.Domain
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
             ApplicationId applicationId = ApplicationId.Generate();
-            Token accessToken = Token.GenerateAccessToken(applicationId, permissions);
-            Token refreshToken = Token.GenerateRefreshToken(applicationId, permissions);
+            TokenValue accessToken = TokenValue.GenerateAccessToken(applicationId, permissions);
+            TokenValue refreshToken = TokenValue.GenerateRefreshToken(applicationId, permissions);
 
             var tokenPair = new TokenPair(
                 accessToken: accessToken,
@@ -56,7 +56,7 @@ namespace Identity.Tests.Unit.Domain
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
             ApplicationId applicationId = ApplicationId.Generate();
-            Token refreshToken = Token.GenerateRefreshToken(applicationId, permissions);
+            TokenValue refreshToken = TokenValue.GenerateRefreshToken(applicationId, permissions);
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()
@@ -76,7 +76,7 @@ namespace Identity.Tests.Unit.Domain
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
             ApplicationId applicationId = ApplicationId.Generate();
-            Token accessToken = Token.GenerateAccessToken(applicationId, permissions);
+            TokenValue accessToken = TokenValue.GenerateAccessToken(applicationId, permissions);
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()
@@ -96,7 +96,7 @@ namespace Identity.Tests.Unit.Domain
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
             ApplicationId applicationId = ApplicationId.Generate();
-            Token refreshToken = Token.GenerateRefreshToken(applicationId, permissions);
+            TokenValue refreshToken = TokenValue.GenerateRefreshToken(applicationId, permissions);
 
             Assert.Throws(
                Is.InstanceOf<ArgumentNullException>()
@@ -116,7 +116,7 @@ namespace Identity.Tests.Unit.Domain
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
             ApplicationId applicationId = ApplicationId.Generate();
-            Token accessToken = Token.GenerateAccessToken(applicationId, permissions);
+            TokenValue accessToken = TokenValue.GenerateAccessToken(applicationId, permissions);
 
             Assert.Throws(
                Is.InstanceOf<ArgumentNullException>()

@@ -8,26 +8,28 @@ namespace Identity.Tests.Unit.Domain
     using ApplicationId = Identity.Domain.ApplicationId;
 
     [TestFixture]
-    public class TokenTest
+    public class TokenValueTest
     {
         [Test]
         public void TestConstructor_WhenTokenValueGiven_ThenValueIsSet()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            string tokenValue = this.GetTokenValue(applicationId);
+            string tokenValue = this.GetTokenValue(applicationId: applicationId);
 
-            var token = new Token(tokenValue);
+            var token = new TokenValue(tokenValue);
 
             Assert.That(token.ToString(), Is.EqualTo(tokenValue));
         }
 
         private string GetTokenValue(
+            Guid? id = null,
             ApplicationId applicationId = null, 
             TokenType tokenType = null, 
             IEnumerable<PermissionId> permissions = null,
             DateTime? expirationDate = null)
         {
             var tokenInformation = new TokenInformation(
+                id ?? Guid.NewGuid(),
                 applicationId ?? ApplicationId.Generate(), 
                 tokenType ?? TokenType.Access,
                 permissions ?? new PermissionId[]
@@ -37,16 +39,16 @@ namespace Identity.Tests.Unit.Domain
                 },
                 expirationDate);
 
-            return Token.TokenGenerationAlgorithm.Encode(tokenInformation);
+            return TokenValueEncoder.Encode(tokenInformation).ToString();
         }
 
         [Test]
         public void TestConstructor_WhenTokenValueGiven_ThenApplicationIdIsSet()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            string tokenValue = this.GetTokenValue(applicationId);
+            string tokenValue = this.GetTokenValue(applicationId: applicationId);
 
-            var token = new Token(tokenValue);
+            var token = new TokenValue(tokenValue);
 
             Assert.That(token.ApplicationId, Is.EqualTo(applicationId));
         }
@@ -56,7 +58,7 @@ namespace Identity.Tests.Unit.Domain
         {
             string tokenValue = this.GetTokenValue(tokenType: TokenType.Refresh);
 
-            var token = new Token(tokenValue);
+            var token = new TokenValue(tokenValue);
 
             Assert.That(token.Type, Is.EqualTo(TokenType.Refresh));
         }
@@ -67,9 +69,24 @@ namespace Identity.Tests.Unit.Domain
             DateTime expirationDate = DateTime.Now;
             string tokenValue = this.GetTokenValue(expirationDate: expirationDate);
 
-            var token = new Token(tokenValue);
+            var token = new TokenValue(tokenValue);
 
             Assert.That(token.ExpiresAt, Is.EqualTo(expirationDate).Within(1).Seconds);
+        }
+
+        [Test]
+        public void TestConstructor_WhenTokenValueGiven_ThenPermissionsAreSet()
+        {
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource"), "Add"),
+                new PermissionId(new ResourceId("MyResource"), "Remove")
+            };
+            string tokenValue = this.GetTokenValue(permissions: permissions);
+
+            var token = new TokenValue(tokenValue);
+
+            Assert.That(token.Permissions, Is.EquivalentTo(permissions));
         }
 
         [Test]
@@ -79,7 +96,7 @@ namespace Identity.Tests.Unit.Domain
                 Is.InstanceOf<ArgumentNullException>()
                     .And.Property(nameof(ArgumentNullException.ParamName))
                     .EqualTo("value"),
-                () => new Token(null));
+                () => new TokenValue(null));
         }
 
         [Test]
@@ -89,7 +106,7 @@ namespace Identity.Tests.Unit.Domain
                 Is.InstanceOf<ArgumentException>()
                     .And.Message
                     .EqualTo("Given token value can't be empty."),
-                () => new Token(string.Empty));
+                () => new TokenValue(string.Empty));
         }
 
         [TestCase("a")]
@@ -99,7 +116,7 @@ namespace Identity.Tests.Unit.Domain
         {
             Assert.Throws(
                 Is.InstanceOf<InvalidTokenException>(),
-                () => new Token(token));
+                () => new TokenValue(token));
         }
 
         [Test]
@@ -112,7 +129,7 @@ namespace Identity.Tests.Unit.Domain
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
 
-            Token token = Token.GenerateAccessToken(applicationId, permissions);
+            TokenValue token = TokenValue.GenerateAccessToken(applicationId, permissions);
 
             Assert.Multiple(() =>
             {
@@ -136,7 +153,7 @@ namespace Identity.Tests.Unit.Domain
                 Is.InstanceOf<ArgumentNullException>()
                     .And.Property(nameof(ArgumentNullException.ParamName))
                     .EqualTo("applicationId"),
-                () => Token.GenerateAccessToken(null, permissions));
+                () => TokenValue.GenerateAccessToken(null, permissions));
         }
 
         [Test]
@@ -152,7 +169,7 @@ namespace Identity.Tests.Unit.Domain
                 Is.InstanceOf<ArgumentNullException>()
                     .And.Property(nameof(ArgumentNullException.ParamName))
                     .EqualTo("permissions"),
-                () => Token.GenerateAccessToken(ApplicationId.Generate(), null));
+                () => TokenValue.GenerateAccessToken(ApplicationId.Generate(), null));
         }
 
         [Test]
@@ -166,7 +183,7 @@ namespace Identity.Tests.Unit.Domain
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
 
-            Token token = Token.GenerateRefreshToken(applicationId, permissions, expiresAt);
+            TokenValue token = TokenValue.GenerateRefreshToken(applicationId, permissions, expiresAt);
 
             Assert.Multiple(() =>
             {
@@ -191,7 +208,7 @@ namespace Identity.Tests.Unit.Domain
                 Is.InstanceOf<ArgumentNullException>()
                     .And.Property(nameof(ArgumentNullException.ParamName))
                     .EqualTo("applicationId"),
-                () => Token.GenerateRefreshToken(null, permissions, expiresAt));
+                () => TokenValue.GenerateRefreshToken(null, permissions, expiresAt));
         }
 
         [Test]
@@ -208,46 +225,66 @@ namespace Identity.Tests.Unit.Domain
                 Is.InstanceOf<ArgumentNullException>()
                     .And.Property(nameof(ArgumentNullException.ParamName))
                     .EqualTo("permissions"),
-                () => Token.GenerateRefreshToken(ApplicationId.Generate(), null, expiresAt));
+                () => TokenValue.GenerateRefreshToken(ApplicationId.Generate(), null, expiresAt));
         }
 
         [Test]
-        public void TestVerify_WhenCorrectTokenGiven_ThenSuccessIsReturned()
+        public void TestExpired_WhenExpiredTokenGiven_ThenTrueIsReturned()
         {
-            ApplicationId applicationId = ApplicationId.Generate();
-            var permissions = new PermissionId[]
-            {
-                new PermissionId(new ResourceId("MyResource"), "Add"),
-                new PermissionId(new ResourceId("MyResource"), "Remove")
-            };
-            Token token = Token.GenerateAccessToken(applicationId, permissions);
-
-            TokenVerificationResult tokenVerificationResult = token.Verify();
-
-            Assert.That(tokenVerificationResult, Is.EqualTo(TokenVerificationResult.Success));
-        }
-
-        [Test]
-        public void TestVerify_WhenExpiredTokenGiven_ThenFailedIsReturned()
-        {
-            ApplicationId applicationId = ApplicationId.Generate();
-            var permissions = new PermissionId[]
-            {
-                new PermissionId(new ResourceId("MyResource"), "Add"),
-                new PermissionId(new ResourceId("MyResource"), "Remove")
-            };
             string tokenValue = this.GetTokenValue(
-                tokenType: TokenType.Refresh, 
+                tokenType: TokenType.Refresh,
                 expirationDate: DateTime.Now.AddDays(-1));
-            var token = new Token(tokenValue);
+            var token = new TokenValue(tokenValue);
 
-            TokenVerificationResult tokenVerificationResult = token.Verify();
+            bool expired = token.Expired;
 
-            Assert.Multiple(() =>
+            Assert.That(expired, Is.True);
+        }
+
+        [Test]
+        public void TestExpired_WhenValidTokenGiven_ThenFalseIsReturned()
+        {
+            string tokenValue = this.GetTokenValue(
+                tokenType: TokenType.Refresh,
+                expirationDate: DateTime.Now.AddDays(1));
+            var token = new TokenValue(tokenValue);
+
+            bool expired = token.Expired;
+
+            Assert.That(expired, Is.False);
+        }
+
+        [Test]
+        public void TestEquals_WhenSameTokenGiven_ThenTrueIsReturned()
+        {
+            var permissions = new PermissionId[]
             {
-                Assert.That(tokenVerificationResult, Is.EqualTo(TokenVerificationResult.Failed));
-                Assert.That(tokenVerificationResult.Message, Is.EqualTo("Token has expired."));
-            });
+                new PermissionId(new ResourceId("MyResource"), "Add")
+            };
+            var token = TokenValue.GenerateRefreshToken(
+                ApplicationId.Generate(),
+                permissions);
+            var leftToken = new TokenValue(token.ToString());
+            var rightToken = new TokenValue(token.ToString());
+
+            Assert.That(leftToken.Equals(rightToken), Is.True);
+        }
+
+        [Test]
+        public void TestEquals_WhenDifferentTokenGiven_ThenFalseIsReturned()
+        {
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource"), "Add")
+            };
+            var leftToken = TokenValue.GenerateRefreshToken(
+                ApplicationId.Generate(),
+                permissions);
+            var rightToken = TokenValue.GenerateRefreshToken(
+                ApplicationId.Generate(),
+                permissions);
+
+            Assert.That(leftToken.Equals(rightToken), Is.False);
         }
     }
 }

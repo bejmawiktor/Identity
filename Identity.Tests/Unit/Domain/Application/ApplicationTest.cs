@@ -24,11 +24,11 @@ namespace Identity.Tests.Unit.Domain
         }
 
         private Application GetApplication(
-            ApplicationId applicationId = null, 
-            UserId userId = null, 
-            string name = null, 
-            EncryptedSecretKey secretKey = null, 
-            Url homepageUrl = null, 
+            ApplicationId applicationId = null,
+            UserId userId = null,
+            string name = null,
+            EncryptedSecretKey secretKey = null,
+            Url homepageUrl = null,
             Url callbackUrl = null)
         {
             return new Application(
@@ -224,104 +224,6 @@ namespace Identity.Tests.Unit.Domain
         }
 
         [Test]
-        public void TestGenerateTokens_WhenGenerating_ThenTokenPairIsReturnedWithApplicationIdAndPermissions()
-        {
-            ApplicationId applicationId = ApplicationId.Generate();
-            var permissions = new PermissionId[]
-            {
-                new PermissionId(new ResourceId("MyResource"), "Add"),
-                new PermissionId(new ResourceId("MyResource"), "Remove")
-            };
-            Application application = this.GetApplication(applicationId);
-
-            TokenPair tokens = application.GenerateTokens(permissions);
-
-            Assert.Multiple(() =>
-            {
-                Assert.That(tokens.AccessToken.ApplicationId, Is.EqualTo(applicationId));
-                Assert.That(tokens.RefreshToken.ApplicationId, Is.EqualTo(applicationId));
-                Assert.That(tokens.AccessToken.Permissions, Is.EquivalentTo(permissions));
-                Assert.That(tokens.RefreshToken.Permissions, Is.EquivalentTo(permissions));
-            });
-        }
-
-        [Test]
-        public void TestRefreshTokens_WhenRefreshing_ThenTokenPairIsReturnedWithApplicationId()
-        {
-            var permissions = new PermissionId[]
-            {
-                new PermissionId(new ResourceId("MyResource1"), "Add")
-            }; 
-            ApplicationId applicationId = ApplicationId.Generate();
-            Application application = this.GetApplication(applicationId);
-            Token refreshToken = Token.GenerateRefreshToken(applicationId, permissions);
-
-            TokenPair tokens = application.RefreshTokens(refreshToken);
-
-            Assert.Multiple(() =>
-            {
-                Assert.That(tokens.AccessToken.ApplicationId, Is.EqualTo(applicationId));
-                Assert.That(tokens.RefreshToken.ApplicationId, Is.EqualTo(applicationId));
-                Assert.That(tokens.AccessToken.Permissions, Is.EquivalentTo(permissions));
-                Assert.That(tokens.RefreshToken.Permissions, Is.EquivalentTo(permissions));
-            });
-        }
-
-        [Test]
-        public void TestRefreshTokens_WhenRefreshing_ThenTokenPairIsReturnedWithRefreshTokenExpirationDateSameAsPreviousRefreshTokenGiven()
-        {
-            var permissions = new PermissionId[]
-            {
-                new PermissionId(new ResourceId("MyResource1"), "Add")
-            };
-            ApplicationId applicationId = ApplicationId.Generate();
-            Application application = this.GetApplication(applicationId);
-            DateTime expiresAt = DateTime.Now.AddDays(1);
-            Token refreshToken = Token.GenerateRefreshToken(applicationId, permissions, expiresAt);
-
-            TokenPair tokens = application.RefreshTokens(refreshToken);
-
-            Assert.That(tokens.RefreshToken.ExpiresAt, Is.EqualTo(expiresAt).Within(1).Seconds);
-        }
-
-        [Test]
-        public void TestRefreshTokens_WhenWrongApplicationIdRefreshTokenGiven_ThenInvalidTokenExceptionIsThrown()
-        {
-            var permissions = new PermissionId[]
-            {
-                new PermissionId(new ResourceId("MyResource1"), "Add")
-            };
-            ApplicationId applicationId = ApplicationId.Generate();
-            ApplicationId wrongApplicationId = ApplicationId.Generate();
-            Application application = this.GetApplication(applicationId);
-            Token refreshToken = Token.GenerateRefreshToken(wrongApplicationId, permissions);
-
-            Assert.Throws(
-                Is.InstanceOf<InvalidTokenException>()
-                    .And.Message
-                    .EqualTo("Wrong refresh token given."),
-                () => application.RefreshTokens(refreshToken));
-        }
-
-        [Test]
-        public void TestRefreshTokens_WhenRefreshTokenWithFailedVerificationGiven_ThenInvalidTokenExceptionIsThrown()
-        {
-            var permissions = new PermissionId[]
-            {
-                new PermissionId(new ResourceId("MyResource1"), "Add")
-            };
-            DateTime expiresAt = DateTime.Now.AddDays(-1);
-            ApplicationId applicationId = ApplicationId.Generate();
-            Application application = this.GetApplication(applicationId);
-
-            Token refreshToken = Token.GenerateRefreshToken(applicationId, permissions, expiresAt);
-
-            Assert.Throws(
-                Is.InstanceOf<InvalidTokenException>(),
-                () => application.RefreshTokens(refreshToken));
-        }
-
-        [Test]
         public void TestCreateAuthorizationCode_WhenCreating_ThenAuthorizationCodeIsReturned()
         {
             ApplicationId applicationId = ApplicationId.Generate();
@@ -339,6 +241,201 @@ namespace Identity.Tests.Unit.Domain
                 Assert.That(authorizationCode.Permissions, Is.EqualTo(permissions));
                 Assert.That(authorizationCode.Used, Is.False);
                 Assert.That(code, Is.Not.Null);
+            });
+        }
+
+        [Test]
+        public void TestCreateAccessToken_WhenCreating_ThenAccessTokenIsReturned()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource1"), "Add")
+            };
+            Application application = this.GetApplication(applicationId);
+
+            AccessToken accessToken = application.CreateAccessToken(permissions);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(accessToken.ApplicationId, Is.EqualTo(applicationId));
+                Assert.That(accessToken.Permissions, Is.EquivalentTo(permissions));
+            });
+        }
+
+        [Test]
+        public void TestCreateRefreshToken_WhenCreating_ThenRefreshTokenIsReturned()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource1"), "Add")
+            };
+            Application application = this.GetApplication(applicationId);
+
+            RefreshToken refreshToken = application.CreateRefreshToken(permissions);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(refreshToken.ApplicationId, Is.EqualTo(applicationId));
+                Assert.That(refreshToken.Permissions, Is.EquivalentTo(permissions));
+            });
+        }
+
+        [Test]
+        public void TestRefreshAccessToken_WhenWrongApplicationRefreshTokenGiven_ThenInvalidOperationExceptionIsThrown()
+        {
+            ApplicationId firstApplicationId = ApplicationId.Generate();
+            ApplicationId secondApplicationId = ApplicationId.Generate();
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource1"), "Add")
+            };
+            Application firstApplication = this.GetApplication(firstApplicationId);
+            Application secondApplication = this.GetApplication(secondApplicationId);
+            RefreshToken refreshToken = firstApplication.CreateRefreshToken(permissions);
+
+            Assert.Throws(
+                Is.InstanceOf<InvalidTokenException>()
+                    .And.Message
+                    .EqualTo("Wrong refresh token given."),
+                () => secondApplication.RefreshAccessToken(refreshToken));
+        }
+
+        [Test]
+        public void TestRefreshAccessToken_WhenUsedRefreshTokenGiven_ThenInvalidOperationExceptionIsThrown()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource1"), "Add")
+            };
+            Application application = this.GetApplication(applicationId);
+            RefreshToken refreshToken = application.CreateRefreshToken(permissions);
+            refreshToken.Use();
+
+            Assert.Throws(
+                Is.InstanceOf<InvalidTokenException>()
+                    .And.Message
+                    .EqualTo("Token was used before."),
+                () => application.RefreshAccessToken(refreshToken));
+        }
+
+        [Test]
+        public void TestRefreshAccessToken_WhenExpiredRefreshTokenGiven_ThenInvalidOperationExceptionIsThrown()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource1"), "Add")
+            };
+            var tokenId = TokenId.GenerateRefreshTokenId(applicationId, permissions, DateTime.Now.AddDays(-1));
+            Application application = this.GetApplication(applicationId);
+            RefreshToken refreshToken = new RefreshToken(tokenId);
+
+            Assert.Throws(
+                Is.InstanceOf<InvalidTokenException>()
+                    .And.Message
+                    .EqualTo("Token has expired."),
+                () => application.RefreshAccessToken(refreshToken));
+        }
+
+        [Test]
+        public void TestRefreshAccessToken_WhenRefreshTokenGiven_ThenAccessTokenIsReturned()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource1"), "Add")
+            };
+            Application application = this.GetApplication(applicationId);
+            RefreshToken refreshToken = application.CreateRefreshToken(permissions);
+
+            AccessToken accessToken = application.RefreshAccessToken(refreshToken);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(accessToken.ApplicationId, Is.EqualTo(applicationId));
+                Assert.That(accessToken.Permissions, Is.EquivalentTo(permissions));
+            });
+        }
+
+        [Test]
+        public void TestRefreshRefreshToken_WhenWrongApplicationRefreshTokenGiven_ThenInvalidOperationExceptionIsThrown()
+        {
+            ApplicationId firstApplicationId = ApplicationId.Generate();
+            ApplicationId secondApplicationId = ApplicationId.Generate();
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource1"), "Add")
+            };
+            Application firstApplication = this.GetApplication(firstApplicationId);
+            Application secondApplication = this.GetApplication(secondApplicationId);
+            RefreshToken refreshToken = firstApplication.CreateRefreshToken(permissions);
+
+            Assert.Throws(
+                Is.InstanceOf<InvalidTokenException>()
+                    .And.Message
+                    .EqualTo("Wrong refresh token given."),
+                () => secondApplication.RefreshRefreshToken(refreshToken));
+        }
+
+        [Test]
+        public void TestRefreshRefreshToken_WhenUsedRefreshTokenGiven_ThenInvalidOperationExceptionIsThrown()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource1"), "Add")
+            };
+            Application application = this.GetApplication(applicationId);
+            RefreshToken refreshToken = application.CreateRefreshToken(permissions);
+            refreshToken.Use();
+
+            Assert.Throws(
+                Is.InstanceOf<InvalidTokenException>()
+                    .And.Message
+                    .EqualTo("Token was used before."),
+                () => application.RefreshRefreshToken(refreshToken));
+        }
+
+        [Test]
+        public void TestRefreshRefreshToken_WhenExpiredRefreshTokenGiven_ThenInvalidOperationExceptionIsThrown()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource1"), "Add")
+            };
+            var tokenId = TokenId.GenerateRefreshTokenId(applicationId, permissions, DateTime.Now.AddDays(-1));
+            Application application = this.GetApplication(applicationId);
+            RefreshToken refreshToken = new RefreshToken(tokenId);
+
+            Assert.Throws(
+                Is.InstanceOf<InvalidTokenException>()
+                    .And.Message
+                    .EqualTo("Token has expired."),
+                () => application.RefreshRefreshToken(refreshToken));
+        }
+
+        [Test]
+        public void TestRefreshRefreshToken_WhenRefreshTokenGiven_ThenRefreshTokenIsReturned()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            var permissions = new PermissionId[]
+            {
+                new PermissionId(new ResourceId("MyResource1"), "Add")
+            };
+            Application application = this.GetApplication(applicationId);
+            RefreshToken refreshToken = application.CreateRefreshToken(permissions);
+
+            RefreshToken refreshedRefreshToken = application.RefreshRefreshToken(refreshToken);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(refreshedRefreshToken.ApplicationId, Is.EqualTo(applicationId));
+                Assert.That(refreshedRefreshToken.Permissions, Is.EquivalentTo(permissions));
+                Assert.That(refreshedRefreshToken.ExpiresAt, Is.EqualTo(refreshToken.ExpiresAt));
             });
         }
     }

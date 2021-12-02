@@ -11,12 +11,14 @@ namespace Identity.Domain
         public IRolesRepository RolesRepository { get; }
         public IApplicationsRepository ApplicationsRepository { get; }
         public IAuthorizationCodesRepository AuthorizationCodesRepository { get; }
+        public IRefreshTokensRepository RefreshTokensRepository { get; }
 
         public AuthorizationService(
             IUsersRepository usersRepository,
             IRolesRepository rolesRepository,
             IApplicationsRepository applicationsRepository,
-            IAuthorizationCodesRepository authorizationCodesRepository)
+            IAuthorizationCodesRepository authorizationCodesRepository,
+            IRefreshTokensRepository refreshTokensRepository)
         {
             this.UsersRepository = usersRepository
                 ?? throw new ArgumentNullException(nameof(usersRepository));
@@ -26,6 +28,8 @@ namespace Identity.Domain
                 ?? throw new ArgumentNullException(nameof(applicationsRepository));
             this.AuthorizationCodesRepository = authorizationCodesRepository
                 ?? throw new ArgumentNullException(nameof(authorizationCodesRepository));
+            this.RefreshTokensRepository = refreshTokensRepository 
+                ?? throw new ArgumentNullException(nameof(refreshTokensRepository)); 
         }
 
         public async Task<bool> CheckUserAccess(UserId userId, PermissionId permissionId)
@@ -189,9 +193,13 @@ namespace Identity.Domain
 
             authorizationCode.Use();
 
-            TokenPair tokens = application.GenerateTokens(authorizationCode.Permissions);
+            AccessToken accessToken = application.CreateAccessToken(authorizationCode.Permissions);
+            RefreshToken refreshToken = application.CreateRefreshToken(authorizationCode.Permissions);
+
+            TokenPair tokens = new TokenPair(accessToken.Id.Decrypt(), refreshToken.Id.Decrypt());
 
             await this.AuthorizationCodesRepository.UpdateAsync(authorizationCode);
+            await this.RefreshTokensRepository.AddAsync(refreshToken);
 
             return tokens;
         }

@@ -15,6 +15,7 @@ namespace Identity.Persistence.MSSQL
         internal DbSet<User> Users { get; set; }
         internal DbSet<Application> Applications { get; set; }
         internal DbSet<AuthorizationCode> AuthorizationCodes { get; set; }
+        internal DbSet<RefreshToken> RefreshTokens { get; set; }
 
         public IdentityContext(string connectionString)
         : base(GetDefaultOptions(connectionString ?? throw new ArgumentNullException(nameof(connectionString))))
@@ -77,6 +78,12 @@ namespace Identity.Persistence.MSSQL
                 a.Property(r => r.HomepageUrl).HasMaxLength(2000);
                 a.Property(r => r.CallbackUrl).HasMaxLength(2000);
                 a.ToTable("Applications");
+            });
+            modelBuilder.Entity<RefreshToken>(r =>
+            {
+                r.HasKey(r => r.Id);
+                r.Property(r => r.Used).IsRequired();
+                r.ToTable("RefreshTokens");
             });
             modelBuilder.Entity<RolePermission>(r =>
             {
