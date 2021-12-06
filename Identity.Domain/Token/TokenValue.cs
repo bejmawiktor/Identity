@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Identity.Domain
 {
-    public class TokenValue : Identifier<string, TokenValue>
+    public class TokenValue : ValueObject<string>
     {
         private TokenInformation TokenInformation { get; }
 
@@ -76,14 +76,6 @@ namespace Identity.Domain
                 tokenType: TokenType.Refresh,
                 permissions: permissions,
                 expirationDate: expiresAt));
-        }
-
-        public override string ToString()
-            => this.Value;
-
-        protected override IEnumerable<object> GetEqualityMembers()
-        {
-            yield return this.Value;
         }
     }
 }
