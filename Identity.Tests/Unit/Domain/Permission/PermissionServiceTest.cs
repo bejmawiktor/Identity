@@ -11,61 +11,37 @@ namespace Identity.Tests.Unit.Domain
     public class PermissionServiceTest
     {
         [Test]
-        public void TestConstructor_WhenPermissionsRepositoryGiven_ThenResourcesRepositoryIsSet()
+        public void TestConstructor_WhenUnitOfWorkGiven_ThenUnitOfWorkIsSet()
         {
-            var resourcesRepositoryMock = new Mock<IResourcesRepository>();
-            var permissionsRepositoryMock = new Mock<IPermissionsRepository>();
-            IPermissionsRepository permissionsRepository = permissionsRepositoryMock.Object;
+            var unitOfWork = this.GetUnitOfWork();
 
-            var permissionService = new PermissionService(
-                permissionsRepository: permissionsRepositoryMock.Object,
-                resourcesRepository: resourcesRepositoryMock.Object);
+            var permissionService = new PermissionService(unitOfWork);
 
-            Assert.That(permissionService.PermissionsRepository, Is.EqualTo(permissionsRepository));
+            Assert.That(permissionService.UnitOfWork, Is.EqualTo(unitOfWork));
+        }
+
+        private IUnitOfWork GetUnitOfWork(
+            IResourcesRepository resourcesRepository = null, 
+            IPermissionsRepository permissionsRepository = null)
+        {
+            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            unitOfWorkMock.Setup(x => x.ResourcesRepository)
+                .Returns(resourcesRepository ?? new Mock<IResourcesRepository>().Object);
+            unitOfWorkMock.Setup(x => x.PermissionsRepository)
+                .Returns(permissionsRepository ?? new Mock<IPermissionsRepository>().Object);
+            var unitOfWork = unitOfWorkMock.Object;
+
+            return unitOfWork;
         }
 
         [Test]
-        public void TestConstructor_WhenNullPermissionsRepositoryGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullUnitOfWorkGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var resourcesRepositoryMock = new Mock<IResourcesRepository>();
-            var permissionsRepositoryMock = new Mock<IPermissionsRepository>();
-
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
                     .And.Property(nameof(ArgumentNullException.ParamName))
-                    .EqualTo("permissionsRepository"),
-                () => new PermissionService(
-                    permissionsRepository: null,
-                    resourcesRepository: resourcesRepositoryMock.Object));
-        }
-
-        [Test]
-        public void TestConstructor_WhenResourcesRepositoryGiven_ThenResourcesRepositoryIsSet()
-        {
-            var resourcesRepositoryMock = new Mock<IResourcesRepository>();
-            var permissionsRepositoryMock = new Mock<IPermissionsRepository>();
-            IResourcesRepository resourcesRepository = resourcesRepositoryMock.Object;
-
-            var permissionService = new PermissionService(
-                permissionsRepository: permissionsRepositoryMock.Object,
-                resourcesRepository: resourcesRepositoryMock.Object);
-
-            Assert.That(permissionService.ResourcesRepository, Is.EqualTo(resourcesRepository));
-        }
-
-        [Test]
-        public void TestConstructor_WhenNullResourcesRepositoryGiven_ThenArgumentNullExceptionIsThrown()
-        {
-            var resourcesRepositoryMock = new Mock<IResourcesRepository>();
-            var permissionsRepositoryMock = new Mock<IPermissionsRepository>();
-
-            Assert.Throws(
-                Is.InstanceOf<ArgumentNullException>()
-                    .And.Property(nameof(ArgumentNullException.ParamName))
-                    .EqualTo("resourcesRepository"),
-                () => new PermissionService(
-                    permissionsRepository: permissionsRepositoryMock.Object,
-                    resourcesRepository: null));
+                    .EqualTo("unitOfWork"),
+                () => new PermissionService(null));
         }
 
         [Test]
@@ -77,9 +53,10 @@ namespace Identity.Tests.Unit.Domain
                 .Setup(r => r.GetAsync(It.IsAny<ResourceId>()))
                 .Returns(Task.FromResult(new Resource(resourceId, "Resource description.")));
             var permissionsRepositoryMock = new Mock<IPermissionsRepository>();
-            var permissionService = new PermissionService(
-                permissionsRepository: permissionsRepositoryMock.Object,
-                resourcesRepository: resourcesRepositoryMock.Object);
+            var unitOfWork = this.GetUnitOfWork(
+                resourcesRepositoryMock.Object, 
+                permissionsRepositoryMock.Object);
+            var permissionService = new PermissionService(unitOfWork);
 
             await permissionService.CreatePermission(resourceId, "AddSomething", "Permission description.");
 
@@ -100,10 +77,9 @@ namespace Identity.Tests.Unit.Domain
             resourcesRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ResourceId>()))
                 .Returns(Task.FromResult(new Resource(resourceId, "Resource description.")));
-            var permissionsRepositoryMock = new Mock<IPermissionsRepository>();
-            var permissionService = new PermissionService(
-                permissionsRepository: permissionsRepositoryMock.Object,
-                resourcesRepository: resourcesRepositoryMock.Object);
+            var unitOfWork = this.GetUnitOfWork(
+                resourcesRepositoryMock.Object);
+            var permissionService = new PermissionService(unitOfWork);
 
             await permissionService.CreatePermission(resourceId, "AddSomething", "Permission description.");
 
@@ -132,9 +108,10 @@ namespace Identity.Tests.Unit.Domain
             permissionsRepositoryMock
                 .Setup(p => p.AddAsync(It.IsAny<Permission>()))
                 .Throws(new Exception());
-            var permissionService = new PermissionService(
-                permissionsRepository: permissionsRepositoryMock.Object,
-                resourcesRepository: resourcesRepositoryMock.Object);
+            var unitOfWork = this.GetUnitOfWork(
+                resourcesRepositoryMock.Object,
+                permissionsRepositoryMock.Object);
+            var permissionService = new PermissionService(unitOfWork);
 
             try
             {
@@ -161,10 +138,9 @@ namespace Identity.Tests.Unit.Domain
             resourcesRepositoryMock
                 .Setup(p => p.GetAsync(It.IsAny<ResourceId>()))
                 .Throws(new Exception());
-            var permissionsRepositoryMock = new Mock<IPermissionsRepository>();
-            var permissionService = new PermissionService(
-                permissionsRepository: permissionsRepositoryMock.Object,
-                resourcesRepository: resourcesRepositoryMock.Object);
+            var unitOfWork = this.GetUnitOfWork(
+                resourcesRepositoryMock.Object);
+            var permissionService = new PermissionService(unitOfWork);
 
             try
             {
@@ -191,10 +167,9 @@ namespace Identity.Tests.Unit.Domain
             resourcesRepositoryMock
                 .Setup(p => p.GetAsync(It.IsAny<ResourceId>()))
                 .Returns(Task.FromResult((Resource)null));
-            var permissionsRepositoryMock = new Mock<IPermissionsRepository>();
-            var permissionService = new PermissionService(
-                permissionsRepository: permissionsRepositoryMock.Object,
-                resourcesRepository: resourcesRepositoryMock.Object);
+            var unitOfWork = this.GetUnitOfWork(
+                resourcesRepositoryMock.Object);
+            var permissionService = new PermissionService(unitOfWork);
 
             Assert.ThrowsAsync(
                 Is.InstanceOf<ResourceNotFoundException>()

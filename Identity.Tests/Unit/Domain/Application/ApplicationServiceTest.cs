@@ -14,61 +14,38 @@ namespace Identity.Tests.Unit.Domain
         private static readonly HashedPassword TestPassword = HashedPassword.Hash(new Password("MyPassword"));
 
         [Test]
-        public void TestConstructor_WhenApplicationsRepositoryGiven_ThenApplicationsRepositoryIsSet()
+        public void TestConstructor_WhenUnitOfWorkGiven_ThenUnitOfWorkIsSet()
         {
-            var usersRepositoryMock = new Mock<IUsersRepository>();
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
-            IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+            IUnitOfWork unitOfWork = this.GetUnitOfWork();
 
             var applicationService = new ApplicationService(
-                applicationsRepository: applicationsRepositoryMock.Object,
-                usersRepository: usersRepositoryMock.Object);
+                unitOfWork);
 
-            Assert.That(applicationService.ApplicationsRepository, Is.EqualTo(applicationsRepository));
+            Assert.That(applicationService.UnitOfWork, Is.EqualTo(unitOfWork));
+        }
+
+        public IUnitOfWork GetUnitOfWork(
+            IApplicationsRepository applicationsRepository = null,
+            IUsersRepository usersRepository = null)
+        {
+            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            unitOfWorkMock.Setup(x => x.ApplicationsRepository)
+                .Returns(applicationsRepository ?? new Mock<IApplicationsRepository>().Object);
+            unitOfWorkMock.Setup(x => x.UsersRepository)
+                .Returns(usersRepository ?? new Mock<IUsersRepository>().Object);
+            IUnitOfWork unitOfWork = unitOfWorkMock.Object;
+
+            return unitOfWork;
         }
 
         [Test]
-        public void TestConstructor_WhenNullApplicationsRepositoryGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullUnitOfWorkGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var usersRepositoryMock = new Mock<IUsersRepository>();
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
-
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
                     .And.Property(nameof(ArgumentNullException.ParamName))
-                    .EqualTo("applicationsRepository"),
-                () => new ApplicationService(
-                    applicationsRepository: null,
-                    usersRepository: usersRepositoryMock.Object));
-        }
-
-        [Test]
-        public void TestConstructor_WhenUsersRepositoryGiven_ThenUsersRepositoryIsSet()
-        {
-            var usersRepositoryMock = new Mock<IUsersRepository>();
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
-            IUsersRepository usersRepository = usersRepositoryMock.Object;
-
-            var applicationService = new ApplicationService(
-                applicationsRepository: applicationsRepositoryMock.Object,
-                usersRepository: usersRepositoryMock.Object);
-
-            Assert.That(applicationService.UsersRepository, Is.EqualTo(usersRepository));
-        }
-
-        [Test]
-        public void TestConstructor_WhenNullUsersRepositoryGiven_ThenArgumentNullExceptionIsThrown()
-        {
-            var usersRepositoryMock = new Mock<IUsersRepository>();
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
-
-            Assert.Throws(
-                Is.InstanceOf<ArgumentNullException>()
-                    .And.Property(nameof(ArgumentNullException.ParamName))
-                    .EqualTo("usersRepository"),
-                () => new ApplicationService(
-                    applicationsRepository: applicationsRepositoryMock.Object,
-                    usersRepository: null));
+                    .EqualTo("unitOfWork"),
+                () => new ApplicationService(null));
         }
 
         [Test]
@@ -84,9 +61,10 @@ namespace Identity.Tests.Unit.Domain
                 .Setup(r => r.GetAsync(It.IsAny<UserId>()))
                 .Returns(Task.FromResult(user));
             var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
-            var applicationService = new ApplicationService(
-                applicationsRepository: applicationsRepositoryMock.Object,
-                usersRepository: usersRepositoryMock.Object);
+            IUnitOfWork unitOfWork = this.GetUnitOfWork(
+                applicationsRepositoryMock.Object,
+                usersRepositoryMock.Object);
+            var applicationService = new ApplicationService(unitOfWork);
 
             await applicationService.CreateApplicationAsync(
                 userId: userId,
@@ -116,9 +94,10 @@ namespace Identity.Tests.Unit.Domain
                 .Setup(r => r.GetAsync(It.IsAny<UserId>()))
                 .Returns(Task.FromResult(user));
             var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
-            var applicationService = new ApplicationService(
-                applicationsRepository: applicationsRepositoryMock.Object,
-                usersRepository: usersRepositoryMock.Object);
+            IUnitOfWork unitOfWork = this.GetUnitOfWork(
+                applicationsRepositoryMock.Object,
+                usersRepositoryMock.Object);
+            var applicationService = new ApplicationService(unitOfWork);
 
             await applicationService.CreateApplicationAsync(
                 userId: userId,
@@ -157,9 +136,10 @@ namespace Identity.Tests.Unit.Domain
             applicationsRepositoryMock
                 .Setup(p => p.AddAsync(It.IsAny<Application>()))
                 .Throws(new Exception());
-            var applicationService = new ApplicationService(
-                applicationsRepository: applicationsRepositoryMock.Object,
-                usersRepository: usersRepositoryMock.Object);
+            IUnitOfWork unitOfWork = this.GetUnitOfWork(
+                applicationsRepositoryMock.Object,
+                usersRepositoryMock.Object);
+            var applicationService = new ApplicationService(unitOfWork);
 
             try
             {
@@ -194,10 +174,9 @@ namespace Identity.Tests.Unit.Domain
             usersRepositoryMock
                 .Setup(p => p.GetAsync(It.IsAny<UserId>()))
                 .Throws(new Exception());
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
-            var applicationService = new ApplicationService(
-                applicationsRepository: applicationsRepositoryMock.Object,
+            IUnitOfWork unitOfWork = this.GetUnitOfWork(
                 usersRepository: usersRepositoryMock.Object);
+            var applicationService = new ApplicationService(unitOfWork);
 
             try
             {
@@ -232,10 +211,9 @@ namespace Identity.Tests.Unit.Domain
             usersRepositoryMock
                 .Setup(p => p.GetAsync(It.IsAny<UserId>()))
                 .Returns(Task.FromResult((User)null));
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
-            var applicationService = new ApplicationService(
-                applicationsRepository: applicationsRepositoryMock.Object,
+            IUnitOfWork unitOfWork = this.GetUnitOfWork(
                 usersRepository: usersRepositoryMock.Object);
+            var applicationService = new ApplicationService(unitOfWork);
 
             Assert.ThrowsAsync(
                 Is.InstanceOf<UserNotFoundException>()

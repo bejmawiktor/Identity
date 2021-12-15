@@ -6,24 +6,19 @@ namespace Identity.Domain
 {
     public class ApplicationService
     {
-        public IApplicationsRepository ApplicationsRepository { get; }
-        public IUsersRepository UsersRepository { get; }
+        public IUnitOfWork UnitOfWork { get; }
 
-        public ApplicationService(
-            IApplicationsRepository applicationsRepository,
-            IUsersRepository usersRepository)
+        public ApplicationService(IUnitOfWork unitOfWork)
         {
-            this.ApplicationsRepository = applicationsRepository
-                ?? throw new ArgumentNullException(nameof(applicationsRepository));
-            this.UsersRepository = usersRepository
-                ?? throw new ArgumentNullException(nameof(usersRepository));
+            this.UnitOfWork = unitOfWork 
+                ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 
         public async Task CreateApplicationAsync(UserId userId, string name, Url homepageUrl, Url callbackUrl)
         {
             using(var eventsScope = new EventsScope())
             {
-                User user = await this.UsersRepository.GetAsync(userId);
+                User user = await this.UnitOfWork.UsersRepository.GetAsync(userId);
 
                 if(user == null)
                 {
@@ -32,7 +27,7 @@ namespace Identity.Domain
 
                 Application application = user.CreateApplication(name, homepageUrl, callbackUrl);
 
-                await this.ApplicationsRepository.AddAsync(application);
+                await this.UnitOfWork.ApplicationsRepository.AddAsync(application);
 
                 eventsScope.Publish();
             }

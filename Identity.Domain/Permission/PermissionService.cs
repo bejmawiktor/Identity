@@ -6,24 +6,18 @@ namespace Identity.Domain
 {
     public class PermissionService
     {
-        public IPermissionsRepository PermissionsRepository { get; }
-        public IResourcesRepository ResourcesRepository { get; }
+        public IUnitOfWork UnitOfWork { get; }
 
-        public PermissionService(
-            IPermissionsRepository permissionsRepository,
-            IResourcesRepository resourcesRepository)
+        public PermissionService(IUnitOfWork unitOfWork)
         {
-            this.PermissionsRepository = permissionsRepository
-                ?? throw new ArgumentNullException(nameof(permissionsRepository));
-            this.ResourcesRepository = resourcesRepository
-                ?? throw new ArgumentNullException(nameof(resourcesRepository));
+            this.UnitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 
         public async Task CreatePermission(ResourceId resourceId, string name, string description)
         {
             using(var eventsScope = new EventsScope())
             {
-                Resource resource = await this.ResourcesRepository.GetAsync(resourceId);
+                Resource resource = await this.UnitOfWork.ResourcesRepository.GetAsync(resourceId);
 
                 if(resource == null)
                 {
@@ -32,7 +26,7 @@ namespace Identity.Domain
 
                 Permission permission = resource.CreatePermission(name, description);
 
-                await this.PermissionsRepository.AddAsync(permission);
+                await this.UnitOfWork.PermissionsRepository.AddAsync(permission);
 
                 eventsScope.Publish();
             }

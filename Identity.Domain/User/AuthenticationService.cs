@@ -5,16 +5,17 @@ namespace Identity.Domain
 {
     public class AuthenticationService
     {
-        private IUsersRepository UsersRepository { get; set; }
+        public IUnitOfWork UnitOfWork { get; set; }
 
-        public AuthenticationService(IUsersRepository usersRepository)
+        public AuthenticationService(IUnitOfWork unitOfWork)
         {
-            this.UsersRepository = usersRepository ?? throw new ArgumentNullException(nameof(usersRepository));
+            this.UnitOfWork = unitOfWork 
+                ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 
         public async Task<User> Authenticate(EmailAddress emailAddress, Password password)
         {
-            User user = await this.UsersRepository.GetAsync(emailAddress);
+            User user = await this.UnitOfWork.UsersRepository.GetAsync(emailAddress);
 
             if(user == null)
             {

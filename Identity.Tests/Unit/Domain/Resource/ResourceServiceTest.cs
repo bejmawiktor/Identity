@@ -11,35 +11,45 @@ namespace Identity.Tests.Unit.Domain
     public class ResourceServiceTest
     {
         [Test]
-        public void TestConstructor_WhenResourcesRepositoryGiven_ThenResourcesRepositoryIsSet()
+        public void TestConstructor_WhenUnitOfWorkGiven_ThenUnitOfWorkIsSet()
         {
-            var repositoryMock = new Mock<IResourcesRepository>();
-            IResourcesRepository repository = repositoryMock.Object;
+            IUnitOfWork unitOfWork = this.GetUnitOfWork();
 
-            var resourceService = new ResourceService(repository);
+            var resourceService = new ResourceService(unitOfWork);
 
-            Assert.That(resourceService.ResourcesRepository, Is.EqualTo(repository));
+            Assert.That(resourceService.UnitOfWork, Is.EqualTo(unitOfWork));
+        }
+
+        private IUnitOfWork GetUnitOfWork(IResourcesRepository resourcesRepository = null)
+        {
+            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            unitOfWorkMock.Setup(x => x.ResourcesRepository)
+                .Returns(resourcesRepository ?? new Mock<IResourcesRepository>().Object);
+            var unitOfWork = unitOfWorkMock.Object;
+
+            return unitOfWork;
         }
 
         [Test]
-        public void TestConstructor_WhenNullResourcesRepositoryGiven_ThenArgumentNullExceptionIsThrown()
+        public void TestConstructor_WhenNullUnitOfWorkGiven_ThenArgumentNullExceptionIsThrown()
         {
             Assert.Throws(
                Is.InstanceOf<ArgumentNullException>()
                    .And.Property(nameof(ArgumentNullException.ParamName))
-                   .EqualTo("resourcesRepository"),
-               () => new ResourceService(null));
+                   .EqualTo("unitOfWork"),
+               () => new ResourceService(unitOfWork: null));
         }
 
         [Test]
         public async Task TestCreateResourceAsync_WhenNoExceptionsThrown_ThenResourceIsPersisted()
         {
-            var repositoryMock = new Mock<IResourcesRepository>();
-            var resourceService = new ResourceService(repositoryMock.Object);
+            var resourcesRepositoryMock = new Mock<IResourcesRepository>();
+            IUnitOfWork unitOfWork = this.GetUnitOfWork(resourcesRepositoryMock.Object);
+            var resourceService = new ResourceService(unitOfWork);
 
             await resourceService.CreateResourceAsync("MyResource", "My resource description.");
 
-            repositoryMock.Verify(r => r.AddAsync(It.IsAny<Resource>()), Times.Once);
+            resourcesRepositoryMock.Verify(r => r.AddAsync(It.IsAny<Resource>()), Times.Once);
         }
 
         [Test]
@@ -51,8 +61,8 @@ namespace Identity.Tests.Unit.Domain
                 .Setup(e => e.Dispatch(It.IsAny<IEvent>()))
                 .Callback((IEvent p) => resourceCreated = p as ResourceCreated);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
-            var repositoryMock = new Mock<IResourcesRepository>();
-            var resourceService = new ResourceService(repositoryMock.Object);
+            IUnitOfWork unitOfWork = this.GetUnitOfWork();
+            var resourceService = new ResourceService(unitOfWork);
 
             await resourceService.CreateResourceAsync("MyResource", "My resource description.");
 
@@ -72,9 +82,10 @@ namespace Identity.Tests.Unit.Domain
                 .Setup(e => e.Dispatch(It.IsAny<IEvent>()))
                 .Callback((IEvent p) => resourceCreated = p as ResourceCreated);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
-            var repositoryMock = new Mock<IResourcesRepository>();
-            repositoryMock.Setup(r => r.AddAsync(It.IsAny<Resource>())).Throws(new Exception());
-            var resourceService = new ResourceService(repositoryMock.Object);
+            var resourcesRepositoryMock = new Mock<IResourcesRepository>();
+            resourcesRepositoryMock.Setup(r => r.AddAsync(It.IsAny<Resource>())).Throws(new Exception());
+            IUnitOfWork unitOfWork = this.GetUnitOfWork(resourcesRepositoryMock.Object);
+            var resourceService = new ResourceService(unitOfWork);
 
             try
             {

@@ -7,36 +7,18 @@ namespace Identity.Domain
 {
     public class AuthorizationService
     {
-        public IUsersRepository UsersRepository { get; }
-        public IRolesRepository RolesRepository { get; }
-        public IApplicationsRepository ApplicationsRepository { get; }
-        public IAuthorizationCodesRepository AuthorizationCodesRepository { get; }
-        public IRefreshTokensRepository RefreshTokensRepository { get; }
+        public IUnitOfWork UnitOfWork { get; }
 
-        public AuthorizationService(
-            IUsersRepository usersRepository,
-            IRolesRepository rolesRepository,
-            IApplicationsRepository applicationsRepository,
-            IAuthorizationCodesRepository authorizationCodesRepository,
-            IRefreshTokensRepository refreshTokensRepository)
+        public AuthorizationService(IUnitOfWork unitOfWork)
         {
-            this.UsersRepository = usersRepository
-                ?? throw new ArgumentNullException(nameof(usersRepository));
-            this.RolesRepository = rolesRepository
-                ?? throw new ArgumentNullException(nameof(rolesRepository));
-            this.ApplicationsRepository = applicationsRepository
-                ?? throw new ArgumentNullException(nameof(applicationsRepository));
-            this.AuthorizationCodesRepository = authorizationCodesRepository
-                ?? throw new ArgumentNullException(nameof(authorizationCodesRepository));
-            this.RefreshTokensRepository = refreshTokensRepository 
-                ?? throw new ArgumentNullException(nameof(refreshTokensRepository)); 
+            this.UnitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 
         public async Task<bool> CheckUserAccess(UserId userId, PermissionId permissionId)
         {
             this.ValidateCheckUserParameters(userId, permissionId);
 
-            User user = await this.UsersRepository.GetAsync(userId);
+            User user = await this.UnitOfWork.UsersRepository.GetAsync(userId);
 
             if(user == null)
             {
@@ -50,7 +32,7 @@ namespace Identity.Domain
 
             foreach(var roleId in user.Roles)
             {
-                Role role = await this.RolesRepository.GetAsync(roleId);
+                Role role = await this.UnitOfWork.RolesRepository.GetAsync(roleId);
 
                 if(role.IsPermittedTo(permissionId))
                 {
@@ -81,7 +63,7 @@ namespace Identity.Domain
         {
             this.ValidateGenerateAuthorizationCodeParameters(applicationId, callbackUrl, permissions);
 
-            Application application = await this.ApplicationsRepository.GetAsync(applicationId);
+            Application application = await this.UnitOfWork.ApplicationsRepository.GetAsync(applicationId);
 
             if(application == null)
             {
@@ -100,7 +82,7 @@ namespace Identity.Domain
 
             AuthorizationCode authorizationCode = application.CreateAuthorizationCode(permissions, out Code code);
 
-            await this.AuthorizationCodesRepository.AddAsync(authorizationCode);
+            await this.UnitOfWork.AuthorizationCodesRepository.AddAsync(authorizationCode);
 
             return code;
         }
@@ -133,7 +115,7 @@ namespace Identity.Domain
 
         private async Task<bool> ComparePermissions(UserId userId, IEnumerable<PermissionId> requestedPermissions)
         {
-            User user = await this.UsersRepository.GetAsync(userId);
+            User user = await this.UnitOfWork.UsersRepository.GetAsync(userId);
 
             if(user == null)
             {
@@ -145,7 +127,7 @@ namespace Identity.Domain
 
             foreach(var roleId in user.Roles)
             {
-                Role role = await this.RolesRepository.GetAsync(roleId);
+                Role role = await this.UnitOfWork.RolesRepository.GetAsync(roleId);
 
                 userPermissions.AddRange(role.Permissions);
             }
@@ -165,41 +147,47 @@ namespace Identity.Domain
             Code code)
         {
             this.ValidateGenerateTokensParameters(applicationId, secretKey, callbackUrl, code);
+            TokenPair tokens = null;
 
-            Application application = await this.ApplicationsRepository.GetAsync(applicationId);
-
-            if(application == null)
+            using(var transactionScope = this.UnitOfWork.BeginScope())
             {
-                throw new ApplicationNotFoundException(applicationId);
+                Application application = await this.UnitOfWork.ApplicationsRepository.GetAsync(applicationId);
+
+                if(application == null)
+                {
+                    throw new ApplicationNotFoundException(applicationId);
+                }
+
+                if(application.SecretKey.Decrypt() != secretKey)
+                {
+                    throw new ArgumentException("Wrong secret key given.");
+                }
+
+                if(application.CallbackUrl != callbackUrl)
+                {
+                    throw new ArgumentException("Wrong callback url given.");
+                }
+
+                var authorizationCodeId = new AuthorizationCodeId(HashedCode.Hash(code), applicationId);
+                AuthorizationCode authorizationCode = await this.UnitOfWork.AuthorizationCodesRepository.GetAsync(authorizationCodeId);
+
+                if(authorizationCode == null)
+                {
+                    throw new AuthorizationCodeNotFoundException();
+                }
+
+                authorizationCode.Use();
+
+                AccessToken accessToken = application.CreateAccessToken(authorizationCode.Permissions);
+                RefreshToken refreshToken = application.CreateRefreshToken(authorizationCode.Permissions);
+
+                tokens = new TokenPair(accessToken.Id.Decrypt(), refreshToken.Id.Decrypt());
+
+                await this.UnitOfWork.AuthorizationCodesRepository.UpdateAsync(authorizationCode);
+                await this.UnitOfWork.RefreshTokensRepository.AddAsync(refreshToken);
+
+                transactionScope.Complete();
             }
-
-            if(application.SecretKey.Decrypt() != secretKey)
-            {
-                throw new ArgumentException("Wrong secret key given.");
-            }
-
-            if(application.CallbackUrl != callbackUrl)
-            {
-                throw new ArgumentException("Wrong callback url given.");
-            }
-
-            var authorizationCodeId = new AuthorizationCodeId(HashedCode.Hash(code), applicationId);
-            AuthorizationCode authorizationCode = await this.AuthorizationCodesRepository.GetAsync(authorizationCodeId);
-
-            if(authorizationCode == null)
-            {
-                throw new AuthorizationCodeNotFoundException();
-            }
-
-            authorizationCode.Use();
-
-            AccessToken accessToken = application.CreateAccessToken(authorizationCode.Permissions);
-            RefreshToken refreshToken = application.CreateRefreshToken(authorizationCode.Permissions);
-
-            TokenPair tokens = new TokenPair(accessToken.Id.Decrypt(), refreshToken.Id.Decrypt());
-
-            await this.AuthorizationCodesRepository.UpdateAsync(authorizationCode);
-            await this.RefreshTokensRepository.AddAsync(refreshToken);
 
             return tokens;
         }

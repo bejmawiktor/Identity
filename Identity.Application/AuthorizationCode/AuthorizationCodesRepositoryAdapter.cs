@@ -3,7 +3,8 @@ using System;
 
 namespace Identity.Application
 {
-    using IAsyncAuthorizationCodesRepositoryAdapter = IAsyncRepositoryAdapter<AuthorizationCodeDto, (Guid ApplicationId, string Code), IAuthorizationCodesRepository, AuthorizationCodeDtoConverter, Domain.AuthorizationCode, Domain.AuthorizationCodeId>;
+    using IAsyncAuthorizationCodesRepositoryAdapter 
+        = IAsyncRepositoryAdapter<AuthorizationCodeDto, (Guid ApplicationId, string Code), IAuthorizationCodesRepository, AuthorizationCodeDtoConverter, Domain.AuthorizationCode, Domain.AuthorizationCodeId>;
 
     internal class AuthorizationCodesRepositoryAdapter
     : IAsyncAuthorizationCodesRepositoryAdapter, Domain.IAuthorizationCodesRepository
