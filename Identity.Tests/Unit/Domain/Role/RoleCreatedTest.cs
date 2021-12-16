@@ -13,7 +13,7 @@ namespace Identity.Tests.Unit.Domain
 
             RoleCreated roleCreated = this.GetRoleCreated(roleId);
 
-            Assert.That(roleCreated.RoleId, Is.EqualTo(roleId));
+            Assert.That(roleCreated.RoleId, Is.EqualTo(roleId.ToGuid()));
         }
 
         private RoleCreated GetRoleCreated(

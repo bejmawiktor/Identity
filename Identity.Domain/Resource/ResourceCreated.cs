@@ -4,12 +4,12 @@ namespace Identity.Domain
 {
     public class ResourceCreated : Event
     {
-        public ResourceId ResourceId { get; }
+        public string ResourceId { get; }
         public string ResourceDescription { get; }
 
         internal ResourceCreated(ResourceId resourceId, string resourceDescription)
         {
-            this.ResourceId = resourceId;
+            this.ResourceId = resourceId.ToString();
             this.ResourceDescription = resourceDescription;
         }
     }

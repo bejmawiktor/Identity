@@ -125,8 +125,8 @@ namespace Identity.Tests.Unit.Domain
 
             Assert.Multiple(() =>
             {
-                Assert.That(userCreatedEvent.UserId, Is.EqualTo(user.Id));
-                Assert.That(userCreatedEvent.UserEmail, Is.EqualTo(user.Email));
+                Assert.That(userCreatedEvent.UserId, Is.EqualTo(user.Id.ToGuid()));
+                Assert.That(userCreatedEvent.UserEmail, Is.EqualTo(user.Email.ToString()));
             });
         }
 
@@ -191,8 +191,8 @@ namespace Identity.Tests.Unit.Domain
 
             Assert.Multiple(() =>
             {
-                Assert.That(userPermissionObtained.UserId, Is.EqualTo(user.Id));
-                Assert.That(userPermissionObtained.ObtainedPermissionId, Is.EqualTo(permissionId));
+                Assert.That(userPermissionObtained.UserId, Is.EqualTo(user.Id.ToGuid()));
+                Assert.That(userPermissionObtained.ObtainedPermissionId, Is.EqualTo(permissionId.ToString()));
             });
         }
 
@@ -224,8 +224,8 @@ namespace Identity.Tests.Unit.Domain
 
             Assert.Multiple(() =>
             {
-                Assert.That(userPermissionRevokedEvent.UserId, Is.EqualTo(user.Id));
-                Assert.That(userPermissionRevokedEvent.RevokedPermissionId, Is.EqualTo(permissionId));
+                Assert.That(userPermissionRevokedEvent.UserId, Is.EqualTo(user.Id.ToGuid()));
+                Assert.That(userPermissionRevokedEvent.RevokedPermissionId, Is.EqualTo(permissionId.ToString()));
             });
         }
 
@@ -337,8 +337,8 @@ namespace Identity.Tests.Unit.Domain
 
             Assert.Multiple(() =>
             {
-                Assert.That(userRoleAssumed.UserId, Is.EqualTo(user.Id));
-                Assert.That(userRoleAssumed.AssumedRoleId, Is.EqualTo(roleId));
+                Assert.That(userRoleAssumed.UserId, Is.EqualTo(user.Id.ToGuid()));
+                Assert.That(userRoleAssumed.AssumedRoleId, Is.EqualTo(roleId.ToGuid()));
             });
         }
 
@@ -397,8 +397,8 @@ namespace Identity.Tests.Unit.Domain
 
             Assert.Multiple(() =>
             {
-                Assert.That(userRoleRevoked.UserId, Is.EqualTo(user.Id));
-                Assert.That(userRoleRevoked.RevokedRoleId, Is.EqualTo(roleId));
+                Assert.That(userRoleRevoked.UserId, Is.EqualTo(user.Id.ToGuid()));
+                Assert.That(userRoleRevoked.RevokedRoleId, Is.EqualTo(roleId.ToGuid()));
             });
         }
 
@@ -441,11 +441,11 @@ namespace Identity.Tests.Unit.Domain
 
             Assert.Multiple(() =>
             {
-                Assert.That(applicationCreated.ApplicationId, Is.EqualTo(application.Id));
-                Assert.That(applicationCreated.ApplicationUserId, Is.EqualTo(application.UserId));
+                Assert.That(applicationCreated.ApplicationId, Is.EqualTo(application.Id.ToGuid()));
+                Assert.That(applicationCreated.ApplicationUserId, Is.EqualTo(application.UserId.ToGuid()));
                 Assert.That(applicationCreated.ApplicationName, Is.EqualTo(application.Name));
-                Assert.That(applicationCreated.ApplicationHomepageUrl, Is.EqualTo(application.HomepageUrl));
-                Assert.That(applicationCreated.ApplicationCallbackUrl, Is.EqualTo(application.CallbackUrl));
+                Assert.That(applicationCreated.ApplicationHomepageUrl, Is.EqualTo(application.HomepageUrl.ToString()));
+                Assert.That(applicationCreated.ApplicationCallbackUrl, Is.EqualTo(application.CallbackUrl.ToString()));
             });
         }
     }

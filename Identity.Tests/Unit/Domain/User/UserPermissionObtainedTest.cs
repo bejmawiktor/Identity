@@ -13,7 +13,7 @@ namespace Identity.Tests.Unit.Domain
 
             UserPermissionObtained userPermissionObtained = this.GetUserPermissionObtained(userId);
 
-            Assert.That(userPermissionObtained.UserId, Is.EqualTo(userId));
+            Assert.That(userPermissionObtained.UserId, Is.EqualTo(userId.ToGuid()));
         }
 
         private UserPermissionObtained GetUserPermissionObtained(
@@ -33,7 +33,7 @@ namespace Identity.Tests.Unit.Domain
             UserPermissionObtained userPermissionObtained = this.GetUserPermissionObtained(
                 obtainedPermissionId: obtainedPermissionId);
 
-            Assert.That(userPermissionObtained.ObtainedPermissionId, Is.EqualTo(obtainedPermissionId));
+            Assert.That(userPermissionObtained.ObtainedPermissionId, Is.EqualTo(obtainedPermissionId.ToString()));
         }
     }
 }

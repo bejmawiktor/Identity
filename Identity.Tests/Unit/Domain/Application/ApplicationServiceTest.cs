@@ -107,10 +107,10 @@ namespace Identity.Tests.Unit.Domain
 
             Assert.Multiple(() =>
             {
-                Assert.That(applicationCreated.ApplicationUserId, Is.EqualTo(userId));
+                Assert.That(applicationCreated.ApplicationUserId, Is.EqualTo(userId.ToGuid()));
                 Assert.That(applicationCreated.ApplicationName, Is.EqualTo("MyApp"));
-                Assert.That(applicationCreated.ApplicationCallbackUrl, Is.EqualTo(new Url("http://example.com/1")));
-                Assert.That(applicationCreated.ApplicationHomepageUrl, Is.EqualTo(new Url("http://example.com")));
+                Assert.That(applicationCreated.ApplicationCallbackUrl, Is.EqualTo("http://example.com/1"));
+                Assert.That(applicationCreated.ApplicationHomepageUrl, Is.EqualTo("http://example.com"));
             });
         }
 

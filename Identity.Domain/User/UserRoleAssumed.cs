@@ -1,16 +1,17 @@
 ﻿using DDD.Domain.Events;
+using System;
 
 namespace Identity.Domain
 {
     public class UserRoleAssumed : Event
     {
-        public UserId UserId { get; }
-        public RoleId AssumedRoleId { get; }
+        public Guid UserId { get; }
+        public Guid AssumedRoleId { get; }
 
         public UserRoleAssumed(UserId userId, RoleId assumedRoleId)
         {
-            this.UserId = userId;
-            this.AssumedRoleId = assumedRoleId;
+            this.UserId = userId.ToGuid();
+            this.AssumedRoleId = assumedRoleId.ToGuid();
         }
     }
 }

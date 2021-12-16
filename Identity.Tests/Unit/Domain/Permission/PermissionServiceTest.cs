@@ -85,7 +85,7 @@ namespace Identity.Tests.Unit.Domain
 
             Assert.Multiple(() =>
             {
-                Assert.That(permissionCreated.PermissionId, Is.EqualTo(new PermissionId(resourceId, "AddSomething")));
+                Assert.That(permissionCreated.PermissionId, Is.EqualTo(new PermissionId(resourceId, "AddSomething").ToString()));
                 Assert.That(permissionCreated.PermissionDescription, Is.EqualTo("Permission description."));
             });
         }

@@ -13,7 +13,7 @@ namespace Identity.Tests.Unit.Domain
             PermissionCreated permissionCreated = this.GetPermissionCreated(
                 permissionId: permissionId);
 
-            Assert.That(permissionCreated.PermissionId, Is.EqualTo(permissionId));
+            Assert.That(permissionCreated.PermissionId, Is.EqualTo(permissionId.ToString()));
         }
 
         private PermissionCreated GetPermissionCreated(

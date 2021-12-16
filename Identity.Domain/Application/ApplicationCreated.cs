@@ -1,14 +1,15 @@
 ﻿using DDD.Domain.Events;
+using System;
 
 namespace Identity.Domain
 {
     public class ApplicationCreated : Event
     {
-        public ApplicationId ApplicationId { get; }
-        public UserId ApplicationUserId { get; }
+        public Guid ApplicationId { get; }
+        public Guid ApplicationUserId { get; }
         public string ApplicationName { get; }
-        public Url ApplicationHomepageUrl { get; }
-        public Url ApplicationCallbackUrl { get; }
+        public string ApplicationHomepageUrl { get; }
+        public string ApplicationCallbackUrl { get; }
 
         public ApplicationCreated(
             ApplicationId applicationId,
@@ -17,11 +18,11 @@ namespace Identity.Domain
             Url applicationHomepageUrl,
             Url applicationCallbackUrl)
         {
-            this.ApplicationId = applicationId;
-            this.ApplicationUserId = applicationUserId;
+            this.ApplicationId = applicationId.ToGuid();
+            this.ApplicationUserId = applicationUserId.ToGuid();
             this.ApplicationName = applicationName;
-            this.ApplicationHomepageUrl = applicationHomepageUrl;
-            this.ApplicationCallbackUrl = applicationCallbackUrl;
+            this.ApplicationHomepageUrl = applicationHomepageUrl.ToString();
+            this.ApplicationCallbackUrl = applicationCallbackUrl.ToString();
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Identity.Tests.Unit.Domain
 
             RolePermissionRevoked rolePermissionRevoked = this.GetRolePermissionRevoked(roleId);
 
-            Assert.That(rolePermissionRevoked.RoleId, Is.EqualTo(roleId));
+            Assert.That(rolePermissionRevoked.RoleId, Is.EqualTo(roleId.ToGuid()));
         }
 
         private RolePermissionRevoked GetRolePermissionRevoked(
@@ -32,7 +32,7 @@ namespace Identity.Tests.Unit.Domain
 
             RolePermissionRevoked rolePermissionRevoked = this.GetRolePermissionRevoked(permissionId: revokedPermissionId);
 
-            Assert.That(rolePermissionRevoked.RevokedPermissionId, Is.EqualTo(revokedPermissionId));
+            Assert.That(rolePermissionRevoked.RevokedPermissionId, Is.EqualTo(revokedPermissionId.ToString()));
         }
     }
 }

@@ -9,10 +9,12 @@ namespace Identity.Tests.Unit.Domain
         [Test]
         public void TestConstructor_WhenResourceIdGiven_ThenResourceIdIsSet()
         {
+            var resourceId = new ResourceId("TestResource");
+
             ResourceCreated resourceCreated = this.GetResourceCreated(
                 resourceId: new ResourceId("TestResource"));
 
-            Assert.That(resourceCreated.ResourceId, Is.EqualTo(new ResourceId("TestResource")));
+            Assert.That(resourceCreated.ResourceId, Is.EqualTo(resourceId.ToString()));
         }
 
         private ResourceCreated GetResourceCreated(

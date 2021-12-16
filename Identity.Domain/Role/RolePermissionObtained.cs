@@ -1,18 +1,19 @@
 ﻿using DDD.Domain.Events;
+using System;
 
 namespace Identity.Domain
 {
     public class RolePermissionObtained : Event
     {
-        public RoleId RoleId { get; }
-        public PermissionId ObtainedPermissionId { get; }
+        public Guid RoleId { get; }
+        public string ObtainedPermissionId { get; }
 
         internal RolePermissionObtained(
             RoleId roleId,
             PermissionId obtainedPermissionId)
         {
-            this.RoleId = roleId;
-            this.ObtainedPermissionId = obtainedPermissionId;
+            this.RoleId = roleId.ToGuid();
+            this.ObtainedPermissionId = obtainedPermissionId.ToString();
         }
     }
 }

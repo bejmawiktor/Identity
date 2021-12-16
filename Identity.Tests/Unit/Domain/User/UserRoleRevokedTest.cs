@@ -13,7 +13,7 @@ namespace Identity.Tests.Unit.Domain
 
             UserRoleRevoked userRoleRevoked = this.GetUserRoleRevoked(userId);
 
-            Assert.That(userRoleRevoked.UserId, Is.EqualTo(userId));
+            Assert.That(userRoleRevoked.UserId, Is.EqualTo(userId.ToGuid()));
         }
 
         private UserRoleRevoked GetUserRoleRevoked(
@@ -32,7 +32,7 @@ namespace Identity.Tests.Unit.Domain
 
             UserRoleRevoked userRoleRevoked = this.GetUserRoleRevoked(revokedRoleId: revokedRoleId);
 
-            Assert.That(userRoleRevoked.RevokedRoleId, Is.EqualTo(revokedRoleId));
+            Assert.That(userRoleRevoked.RevokedRoleId, Is.EqualTo(revokedRoleId.ToGuid()));
         }
     }
 }

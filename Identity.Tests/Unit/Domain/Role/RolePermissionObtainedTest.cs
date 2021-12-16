@@ -13,7 +13,7 @@ namespace Identity.Tests.Unit.Domain
            
             RolePermissionObtained rolePermissionObtained = this.GetRolePermissionObtained(roleId);
 
-            Assert.That(rolePermissionObtained.RoleId, Is.EqualTo(roleId));
+            Assert.That(rolePermissionObtained.RoleId, Is.EqualTo(roleId.ToGuid()));
         }
 
         private RolePermissionObtained GetRolePermissionObtained(
@@ -21,8 +21,8 @@ namespace Identity.Tests.Unit.Domain
             PermissionId obtainedPermissionId = null)
         {
             return new RolePermissionObtained(
-                roleId: roleId, 
-                obtainedPermissionId: obtainedPermissionId);
+                roleId: roleId ?? RoleId.Generate(), 
+                obtainedPermissionId: obtainedPermissionId ?? new PermissionId(new ResourceId("MyResource"), "Permission"));
         }
 
         [Test]
@@ -33,7 +33,7 @@ namespace Identity.Tests.Unit.Domain
             RolePermissionObtained rolePermissionObtained = this.GetRolePermissionObtained(
                 obtainedPermissionId: obtainedPermissionId);
 
-            Assert.That(rolePermissionObtained.ObtainedPermissionId, Is.EqualTo(obtainedPermissionId));
+            Assert.That(rolePermissionObtained.ObtainedPermissionId, Is.EqualTo(obtainedPermissionId.ToString()));
         }
     }
 }

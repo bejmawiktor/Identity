@@ -13,7 +13,7 @@ namespace Identity.Tests.Unit.Domain
 
             UserRoleAssumed userRoleAssumed = this.GetUserRoleAssumed(userId);
 
-            Assert.That(userRoleAssumed.UserId, Is.EqualTo(userId));
+            Assert.That(userRoleAssumed.UserId, Is.EqualTo(userId.ToGuid()));
         }
 
         private UserRoleAssumed GetUserRoleAssumed(
@@ -32,7 +32,7 @@ namespace Identity.Tests.Unit.Domain
 
             UserRoleAssumed userRoleAssumed = this.GetUserRoleAssumed(assumedRoleId: assumedRoleId);
 
-            Assert.That(userRoleAssumed.AssumedRoleId, Is.EqualTo(assumedRoleId));
+            Assert.That(userRoleAssumed.AssumedRoleId, Is.EqualTo(assumedRoleId.ToGuid()));
         }
     }
 }

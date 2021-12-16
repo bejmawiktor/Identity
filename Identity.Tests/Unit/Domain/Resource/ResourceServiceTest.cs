@@ -68,7 +68,7 @@ namespace Identity.Tests.Unit.Domain
 
             Assert.Multiple(() =>
             {
-                Assert.That(resourceCreated.ResourceId, Is.EqualTo(new ResourceId("MyResource")));
+                Assert.That(resourceCreated.ResourceId, Is.EqualTo("MyResource"));
                 Assert.That(resourceCreated.ResourceDescription, Is.EqualTo("My resource description."));
             });
         }

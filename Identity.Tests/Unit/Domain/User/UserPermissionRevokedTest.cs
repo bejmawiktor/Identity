@@ -14,7 +14,7 @@ namespace Identity.Tests.Unit.Domain
             UserPermissionRevoked userPermissionRevokedEvent = this.GetUserPermissionRevoked(
                 userId: userId);
 
-            Assert.That(userPermissionRevokedEvent.UserId, Is.EqualTo(userId));
+            Assert.That(userPermissionRevokedEvent.UserId, Is.EqualTo(userId.ToGuid()));
         }
 
         private UserPermissionRevoked GetUserPermissionRevoked(
@@ -34,7 +34,7 @@ namespace Identity.Tests.Unit.Domain
             UserPermissionRevoked userPermissionRevokedEvent = this.GetUserPermissionRevoked(
                 revokedPermissionId: revokedPermissionId);
 
-            Assert.That(userPermissionRevokedEvent.RevokedPermissionId, Is.EqualTo(revokedPermissionId));
+            Assert.That(userPermissionRevokedEvent.RevokedPermissionId, Is.EqualTo(revokedPermissionId.ToString()));
         }
     }
 }

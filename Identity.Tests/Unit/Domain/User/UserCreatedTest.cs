@@ -13,7 +13,7 @@ namespace Identity.Tests.Unit.Domain
 
             UserCreated userCreatedEvent = this.GetUserCreated(userId: userId);
 
-            Assert.That(userCreatedEvent.UserId, Is.EqualTo(userId));
+            Assert.That(userCreatedEvent.UserId, Is.EqualTo(userId.ToGuid()));
         }
 
         private UserCreated GetUserCreated(
@@ -30,7 +30,7 @@ namespace Identity.Tests.Unit.Domain
         {
             UserCreated userCreatedEvent = this.GetUserCreated(userEmailAddress: new EmailAddress("example@example.com"));
 
-            Assert.That(userCreatedEvent.UserEmail, Is.EqualTo(new EmailAddress("example@example.com")));
+            Assert.That(userCreatedEvent.UserEmail, Is.EqualTo("example@example.com"));
         }
     }
 }

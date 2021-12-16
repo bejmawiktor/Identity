@@ -12,7 +12,7 @@ namespace Identity.Tests.Unit.Domain
             ApplicationId applicationId = ApplicationId.Generate();
             ApplicationCreated applicationCreated = this.GetApplicationCreated(applicationId);
 
-            Assert.That(applicationCreated.ApplicationId, Is.EqualTo(applicationId));
+            Assert.That(applicationCreated.ApplicationId, Is.EqualTo(applicationId.ToGuid()));
         }
 
         private ApplicationCreated GetApplicationCreated(
@@ -44,7 +44,7 @@ namespace Identity.Tests.Unit.Domain
             UserId userId = UserId.Generate();
             ApplicationCreated applicationCreated = this.GetApplicationCreated(applicationUserId: userId);
 
-            Assert.That(applicationCreated.ApplicationUserId, Is.EqualTo(userId));
+            Assert.That(applicationCreated.ApplicationUserId, Is.EqualTo(userId.ToGuid()));
         }
 
         [Test]
@@ -53,7 +53,7 @@ namespace Identity.Tests.Unit.Domain
             ApplicationCreated applicationCreated = this.GetApplicationCreated(
                 applicationHomepageUrl: new Url("http://wwww.example.com"));
 
-            Assert.That(applicationCreated.ApplicationHomepageUrl, Is.EqualTo(new Url("http://wwww.example.com")));
+            Assert.That(applicationCreated.ApplicationHomepageUrl, Is.EqualTo("http://wwww.example.com"));
         }
 
         [Test]
@@ -62,7 +62,7 @@ namespace Identity.Tests.Unit.Domain
             ApplicationCreated applicationCreated = this.GetApplicationCreated(
                 applicationCallbackUrl: new Url("http://wwww.example.com/1"));
 
-            Assert.That(applicationCreated.ApplicationCallbackUrl, Is.EqualTo(new Url("http://wwww.example.com/1")));
+            Assert.That(applicationCreated.ApplicationCallbackUrl, Is.EqualTo("http://wwww.example.com/1"));
         }
     }
 }

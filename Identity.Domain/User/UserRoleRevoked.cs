@@ -1,16 +1,17 @@
 ﻿using DDD.Domain.Events;
+using System;
 
 namespace Identity.Domain
 {
     public class UserRoleRevoked : Event
     {
-        public UserId UserId { get; }
-        public RoleId RevokedRoleId { get; }
+        public Guid UserId { get; }
+        public Guid RevokedRoleId { get; }
 
         public UserRoleRevoked(UserId userId, RoleId revokedRoleId)
         {
-            this.UserId = userId;
-            this.RevokedRoleId = revokedRoleId;
+            this.UserId = userId.ToGuid();
+            this.RevokedRoleId = revokedRoleId.ToGuid();
         }
     }
 }

@@ -88,7 +88,7 @@ namespace Identity.Tests.Unit.Domain
 
             Assert.Multiple(() =>
             {
-                Assert.That(permissionCreated.PermissionId, Is.EqualTo(permission.Id));
+                Assert.That(permissionCreated.PermissionId, Is.EqualTo(permission.Id.ToString()));
                 Assert.That(permissionCreated.PermissionDescription, Is.EqualTo(permission.Description));
             });
         }
@@ -123,7 +123,7 @@ namespace Identity.Tests.Unit.Domain
 
             Assert.Multiple(() =>
             {
-                Assert.That(resourceCreated.ResourceId, Is.EqualTo(resource.Id));
+                Assert.That(resourceCreated.ResourceId, Is.EqualTo(resource.Id.ToString()));
                 Assert.That(resourceCreated.ResourceDescription, Is.EqualTo(resource.Description));
             });
         }

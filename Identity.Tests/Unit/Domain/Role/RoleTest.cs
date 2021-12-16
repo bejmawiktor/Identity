@@ -188,7 +188,7 @@ namespace Identity.Tests.Unit.Domain
 
             Assert.Multiple(() =>
             {
-                Assert.That(roleCreated.RoleId, Is.EqualTo(role.Id));
+                Assert.That(roleCreated.RoleId, Is.EqualTo(role.Id.ToGuid()));
                 Assert.That(roleCreated.RoleName, Is.EqualTo(role.Name));
                 Assert.That(roleCreated.RoleDescription, Is.EqualTo(role.Description));
             });
@@ -210,8 +210,8 @@ namespace Identity.Tests.Unit.Domain
 
             Assert.Multiple(() =>
             {
-                Assert.That(rolePermissionObtained.RoleId, Is.EqualTo(role.Id));
-                Assert.That(rolePermissionObtained.ObtainedPermissionId, Is.EqualTo(permissionId));
+                Assert.That(rolePermissionObtained.RoleId, Is.EqualTo(role.Id.ToGuid()));
+                Assert.That(rolePermissionObtained.ObtainedPermissionId, Is.EqualTo(permissionId.ToString()));
             });
         }
 
@@ -243,8 +243,8 @@ namespace Identity.Tests.Unit.Domain
 
             Assert.Multiple(() =>
             {
-                Assert.That(rolePermissionRevoked.RoleId, Is.EqualTo(role.Id));
-                Assert.That(rolePermissionRevoked.RevokedPermissionId, Is.EqualTo(permissionId));
+                Assert.That(rolePermissionRevoked.RoleId, Is.EqualTo(role.Id.ToGuid()));
+                Assert.That(rolePermissionRevoked.RevokedPermissionId, Is.EqualTo(permissionId.ToString()));
             });
         }
 
