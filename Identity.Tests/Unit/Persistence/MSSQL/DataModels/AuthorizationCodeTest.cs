@@ -1,12 +1,12 @@
-﻿using Identity.Application;
+﻿using Identity.Core.Application;
 using Identity.Persistence.MSSQL.DataModels;
 using NUnit.Framework;
 using System;
 
 namespace Identity.Tests.Unit.Persistence.MSSQL
 {
-    using ApplicationId = Identity.Domain.ApplicationId;
-    using AuthorizationCodeId = Identity.Domain.AuthorizationCodeId;
+    using ApplicationId = Identity.Core.Domain.ApplicationId;
+    using AuthorizationCodeId = Identity.Core.Domain.AuthorizationCodeId;
 
     [TestFixture]
     public class AuthorizationCodeTest

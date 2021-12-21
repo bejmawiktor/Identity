@@ -1,6 +1,6 @@
 ﻿using DDD.Domain.Persistence;
-using Identity.Application;
-using Identity.Domain;
+using Identity.Core.Application;
+using Identity.Core.Domain;
 using Identity.Persistence.MSSQL;
 using NUnit.Framework;
 using System;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Identity.Tests.Unit.Persistence.MSSQL
 {
-    using ApplicationId = Identity.Domain.ApplicationId;
+    using ApplicationId = Identity.Core.Domain.ApplicationId;
 
     [TestFixture]
     public class RefreshTokensRepositoryTest : DatabaseTestBase

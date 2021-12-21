@@ -1,5 +1,5 @@
-﻿using Identity.Application;
-using Identity.Domain;
+﻿using Identity.Core.Application;
+using Identity.Core.Domain;
 using Identity.Persistence.MSSQL.DataModels;
 using NUnit.Framework;
 using System;
@@ -26,7 +26,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             };
             Guid userId = Guid.NewGuid();
             HashedPassword hashedPassword = HashedPassword.Hash(new Password("MyPassword"));
-            var userDto = new Identity.Application.UserDto(
+            var userDto = new Identity.Core.Application.UserDto(
                 userId,
                 "example@example.com",
                 hashedPassword.ToString(),
@@ -91,7 +91,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             };
             Guid userId = Guid.NewGuid();
             HashedPassword hashedPassword = HashedPassword.Hash(new Password("MyPassword"));
-            var userDto = new Identity.Application.UserDto(
+            var userDto = new Identity.Core.Application.UserDto(
                 userId,
                 "example@example.com",
                 hashedPassword.ToString(),

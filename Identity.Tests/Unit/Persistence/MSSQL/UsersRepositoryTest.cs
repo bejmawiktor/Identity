@@ -1,5 +1,5 @@
 ﻿using DDD.Domain.Persistence;
-using Identity.Domain;
+using Identity.Core.Domain;
 using Identity.Persistence.MSSQL;
 using NUnit.Framework;
 using System;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Identity.Tests.Unit.Persistence.MSSQL
 {
-    using UserDto = Identity.Application.UserDto;
+    using UserDto = Identity.Core.Application.UserDto;
 
     [TestFixture]
     public class UsersRepositoryTest : DatabaseTestBase

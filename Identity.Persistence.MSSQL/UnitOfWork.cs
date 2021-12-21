@@ -1,10 +1,10 @@
 ﻿using DDD.Domain.Persistence;
-using Identity.Application;
+using Identity.Core.Application;
 using System;
 
 namespace Identity.Persistence.MSSQL
 {
-    public class UnitOfWork : Identity.Application.IUnitOfWork
+    public class UnitOfWork : Identity.Core.Application.IUnitOfWork
     {
         public IApplicationsRepository ApplicationsRepository { get; }
         public IAuthorizationCodesRepository AuthorizationCodesRepository { get; }

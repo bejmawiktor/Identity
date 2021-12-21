@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Identity.Tests.Unit.Persistence.MSSQL
 {
-    using RoleDto = Identity.Application.RoleDto;
+    using RoleDto = Identity.Core.Application.RoleDto;
 
     public class RolesRepositoryTest : DatabaseTestBase
     {

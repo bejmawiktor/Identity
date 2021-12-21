@@ -1,4 +1,4 @@
-﻿using Identity.Application;
+﻿using Identity.Core.Application;
 using NUnit.Framework;
 using System;
 
@@ -8,7 +8,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
 
     public class ApplicationTest
     {
-        private static readonly string SecretKey = Identity.Domain.SecretKey.Generate().ToString();
+        private static readonly string SecretKey = Identity.Core.Domain.SecretKey.Generate().ToString();
 
         [Test]
         public void TestConstructor_WhenDtoGiven_ThenMembersAreSet()

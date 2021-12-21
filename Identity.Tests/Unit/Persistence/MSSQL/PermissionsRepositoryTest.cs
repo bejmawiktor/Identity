@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Identity.Tests.Unit.Persistence.MSSQL
 {
-    using PermissionDto = Identity.Application.PermissionDto;
+    using PermissionDto = Identity.Core.Application.PermissionDto;
 
     [TestFixture]
     public class PermissionRepositoryTest : DatabaseTestBase

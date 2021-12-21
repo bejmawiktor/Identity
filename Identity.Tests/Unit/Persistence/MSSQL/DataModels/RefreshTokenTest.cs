@@ -1,11 +1,11 @@
-﻿using Identity.Application;
-using Identity.Domain;
+﻿using Identity.Core.Application;
+using Identity.Core.Domain;
 using NUnit.Framework;
 using System;
 
-namespace Identity.Tests.Unit.Persistence.MSSQL.DataModels
+namespace Identity.Tests.Unit.Persistence.MSSQL
 {
-    using ApplicationId = Identity.Domain.ApplicationId;
+    using ApplicationId = Identity.Core.Domain.ApplicationId;
     using RefreshToken = Identity.Persistence.MSSQL.DataModels.RefreshToken;
 
     [TestFixture]

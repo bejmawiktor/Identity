@@ -1,5 +1,5 @@
 ﻿using DDD.Domain.Persistence;
-using Identity.Application;
+using Identity.Core.Application;
 using System;
 using System.Collections.Generic;
 using System.Linq;

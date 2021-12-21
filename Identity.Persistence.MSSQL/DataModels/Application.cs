@@ -1,4 +1,4 @@
-﻿using Identity.Application;
+﻿using Identity.Core.Application;
 using System;
 
 namespace Identity.Persistence.MSSQL.DataModels

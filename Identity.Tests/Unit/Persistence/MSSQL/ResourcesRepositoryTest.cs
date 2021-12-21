@@ -1,5 +1,5 @@
 ﻿using DDD.Domain.Persistence;
-using Identity.Application;
+using Identity.Core.Application;
 using Identity.Persistence.MSSQL;
 using NUnit.Framework;
 using System.Collections.Generic;

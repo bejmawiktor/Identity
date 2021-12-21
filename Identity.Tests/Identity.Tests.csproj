@@ -26,11 +26,12 @@
     <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+    <PackageReference Include="TngTech.ArchUnitNET" Version="0.9.0" />
+    <PackageReference Include="TngTech.ArchUnitNET.NUnit" Version="0.9.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Identity.Application\Identity.Application.csproj" />
-    <ProjectReference Include="..\Identity.Domain\Identity.Domain.csproj" />
+    <ProjectReference Include="..\Identity.Core\Identity.Core.csproj" />
     <ProjectReference Include="..\Identity.Persistence.MSSQL\Identity.Persistence.MSSQL.csproj" />
   </ItemGroup>
 
