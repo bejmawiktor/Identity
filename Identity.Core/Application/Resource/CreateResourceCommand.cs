@@ -1,19 +1,11 @@
-﻿using DDD.Application.CQRS;
+﻿using MediatR;
 using System;
 
 namespace Identity.Core.Application
 {
-    public class CreateResourceCommand : ICommand
-    {
-        public string ResourceId { get; }
-        public string ResourceDescription { get; }
-        public Guid UserId { get; }
-
-        public CreateResourceCommand(string resourceId, string resourceDescription, Guid userId)
-        {
-            this.ResourceId = resourceId;
-            this.ResourceDescription = resourceDescription;
-            this.UserId = userId;
-        }
-    }
+    public record CreateResourceCommand(
+        string ResourceName,
+        string ResourceDescription,
+        Guid UserId)
+    : IRequest;
 }

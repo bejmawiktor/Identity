@@ -1,11 +1,12 @@
-﻿using DDD.Application.CQRS;
-using Identity.Core.Domain;
+﻿using Identity.Core.Domain;
 using System;
 using System.Threading.Tasks;
+using MediatR;
+using System.Threading;
 
 namespace Identity.Core.Application
 {
-    public class CreateResourceCommandHandler : IAsyncCommandHandler<CreateResourceCommand>
+    public class CreateResourceCommandHandler : IRequestHandler<CreateResourceCommand>
     {
         private ResourceService ResourceService { get; }
         private AuthorizationService AuthorizationService { get; }
@@ -19,11 +20,13 @@ namespace Identity.Core.Application
             this.AuthorizationService = new AuthorizationService(this.UnitOfWorkAdapter);
         }
 
-        public async Task HandleAsync(CreateResourceCommand command)
+        public async Task<Unit> Handle(CreateResourceCommand command, CancellationToken cancellationToken)
         {
             await this.ValidateUserIsAuthorized(command);
 
-            await this.ResourceService.CreateResourceAsync(command.ResourceId, command.ResourceDescription);
+            await this.ResourceService.CreateResourceAsync(command.ResourceName, command.ResourceDescription);
+
+            return await Unit.Task;
         }
 
         private async Task ValidateUserIsAuthorized(CreateResourceCommand command)

@@ -1,16 +1,17 @@
-﻿using Identity.Core.Application;
+﻿using DDD.Domain.Events;
+using Identity.Core.Application;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace Identity.Tests.Unit.Application
+namespace Identity.Tests.Unit.Core.Application
 {
     using Password = Identity.Core.Domain.Password;
     using UnauthorizedAccessException = Identity.Core.Application.UnauthorizedAccessException;
 
-    [TestFixture]
-    public class CreateResourceCommandHandlerTest
+    internal class CreateResourceCommandHandlerTest
     {
         [Test]
         public void TestConstructor_WhenNullUnitOfWorkGiven_ThenArgumentNullExceptionIsThrown()
@@ -35,13 +36,13 @@ namespace Identity.Tests.Unit.Application
             IUsersRepository usersRepository = usersRepositoryMock.Object;
             CreateResourceCommandHandler createResourceCommandHandler = new CreateResourceCommandHandler(
                 this.GetUnitOfWorkMock(usersRepository: usersRepository).Object);
-            var createResourceCommand = new CreateResourceCommand(
+            var createResourceCommandM = new CreateResourceCommand(
                 "MyResource",
                 "My resource description.",
                 userId);
 
             UnauthorizedAccessException exception = Assert.ThrowsAsync<UnauthorizedAccessException>(
-                async () => await createResourceCommandHandler.HandleAsync(createResourceCommand));
+                async () => await createResourceCommandHandler.Handle(createResourceCommandM, CancellationToken.None));
 
             Assert.That(exception, Is.InstanceOf<UnauthorizedAccessException>()
                 .And.Message
@@ -74,6 +75,38 @@ namespace Identity.Tests.Unit.Application
                 .Returns(usersRepository ?? new Mock<IUsersRepository>().Object);
 
             return unitOfWorkMock;
+        }
+
+        [Test]
+        public async Task TestHandleAsync_WhenUserIsAuthorizedToCreateResource_ThenResourceIsCreated()
+        {
+            Guid userId = Guid.NewGuid();
+            var user = new UserDto(
+                id: userId,
+                email: "example@example.com",
+                hashedPassword: Identity.Core.Domain.HashedPassword.Hash(new Password("MyPassword")).ToString(),
+                permissions: new (string ResourceId, string Name)[]
+                {
+                    new PermissionDtoConverter().ToDtoIdentifier(Permissions.CreateResource.Id)
+                });
+            var usersRepositoryMock = new Mock<IUsersRepository>();
+            var resourcesRepositoryMock = new Mock<IResourcesRepository>();
+            usersRepositoryMock.Setup(u => u.GetAsync(It.IsAny<Guid>())).Returns(Task.FromResult(user));
+            IUsersRepository usersRepository = usersRepositoryMock.Object;
+            IResourcesRepository resourcesRepository = resourcesRepositoryMock.Object;
+            CreateResourceCommandHandler createResourceCommandHandler = new CreateResourceCommandHandler(
+                this.GetUnitOfWorkMock(
+                    usersRepository: usersRepository,
+                    resourcesRepository: resourcesRepository).Object);
+            EventManager.Instance.EventDispatcher = new Mock<IEventDispatcher>().Object;
+            var createResourceCommandM = new CreateResourceCommand(
+                "MyResource",
+                "My resource description.",
+                userId);
+
+            await createResourceCommandHandler.Handle(createResourceCommandM, CancellationToken.None);
+
+            resourcesRepositoryMock.Verify(r => r.AddAsync(It.IsAny<ResourceDto>()), Times.Once);
         }
     }
 }
