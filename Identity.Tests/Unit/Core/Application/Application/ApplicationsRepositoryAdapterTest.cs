@@ -4,7 +4,7 @@ using NUnit.Framework;
 using System;
 using IApplicationsRepository = Identity.Core.Application.IApplicationsRepository;
 
-namespace Identity.Tests.Unit.Application
+namespace Identity.Tests.Unit.Core.Application
 {
     [TestFixture]
     public class ApplicationsRepositoryAdapterTest

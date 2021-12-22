@@ -4,7 +4,7 @@ using NUnit.Framework;
 using System;
 using IPermissionsRepository = Identity.Core.Application.IPermissionsRepository;
 
-namespace Identity.Tests.Unit.Application
+namespace Identity.Tests.Unit.Core.Application
 {
     [TestFixture]
     public class PermissionsRepositoryAdapterTest

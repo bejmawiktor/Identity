@@ -3,7 +3,7 @@ using Identity.Core.Application;
 using Moq;
 using NUnit.Framework;
 
-namespace Identity.Tests.Unit.Application
+namespace Identity.Tests.Unit.Core.Application
 {
     using IUnitOfWork = Identity.Core.Application.IUnitOfWork;
 

@@ -3,7 +3,7 @@ using Moq;
 using NUnit.Framework;
 using System;
 
-namespace Identity.Tests.Unit.Application
+namespace Identity.Tests.Unit.Core.Application
 {
     using IRefreshTokensRepository = Identity.Core.Application.IRefreshTokensRepository;
 

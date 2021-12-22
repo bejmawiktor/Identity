@@ -2,7 +2,7 @@
 using Identity.Core.Domain;
 using NUnit.Framework;
 
-namespace Identity.Tests.Unit.Application
+namespace Identity.Tests.Unit.Core.Application
 {
     [TestFixture]
     public class RefreshTokenDtoTest
