@@ -6,20 +6,15 @@ using System.Security.Cryptography;
 
 namespace Identity.Core.Domain
 {
-    internal class SecretKey : ValueObject
+    internal class SecretKey : ValueObject<string>
     {
-        private string Value { get; }
-
         private static uint Length => 32;
 
-        public SecretKey(string value)
+        public SecretKey(string value) : base(value)
         {
-            this.ValidateValue(value);
-
-            this.Value = value;
         }
 
-        private void ValidateValue(string value)
+        protected override void ValidateValue(string value)
         {
             if(value == null)
             {
@@ -30,11 +25,6 @@ namespace Identity.Core.Domain
             {
                 throw new ArgumentException("Secret key can't be empty.");
             }
-        }
-
-        protected override IEnumerable<object> GetEqualityMembers()
-        {
-            yield return this.Value;
         }
 
         internal static SecretKey Generate()
@@ -48,8 +38,5 @@ namespace Identity.Core.Domain
 
             return new SecretKey(WebEncoders.Base64UrlEncode(buffer));
         }
-
-        public override string ToString()
-            => this.Value;
     }
 }

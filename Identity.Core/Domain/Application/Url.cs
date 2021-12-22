@@ -4,18 +4,13 @@ using System.Collections.Generic;
 
 namespace Identity.Core.Domain
 {
-    internal class Url : ValueObject
+    internal class Url : ValueObject<string>
     {
-        private string Value { get; }
-
-        public Url(string value)
+        public Url(string value) : base(value)
         {
-            this.ValidateValue(value);
-
-            this.Value = value;
         }
 
-        private void ValidateValue(string value)
+        protected override void ValidateValue(string value)
         {
             if(value == null)
             {
@@ -39,13 +34,5 @@ namespace Identity.Core.Domain
                 throw new ArgumentException("Invalid url given.");
             }
         }
-
-        protected override IEnumerable<object> GetEqualityMembers()
-        {
-            yield return this.Value;
-        }
-
-        public override string ToString()
-            => this.Value;
     }
 }

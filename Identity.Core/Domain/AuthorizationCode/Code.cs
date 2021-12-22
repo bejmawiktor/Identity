@@ -1,28 +1,22 @@
 ﻿using DDD.Domain.Model;
 using System;
-using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace Identity.Core.Domain
 {
-    internal class Code : ValueObject
+    internal class Code : ValueObject<string>
     {
         private static int Length => 32;
 
         private static readonly char[] CharacterSet
              = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".ToCharArray();
 
-        public string Value { get; }
-
-        public Code(string value)
+        public Code(string value) : base(value)
         {
-            this.ValidateValue(value);
-
-            this.Value = value;
         }
 
-        private void ValidateValue(string value)
+        protected override void ValidateValue(string value)
         {
             if(value == null)
             {
@@ -60,13 +54,5 @@ namespace Identity.Core.Domain
 
             return new Code(result.ToString());
         }
-
-        protected override IEnumerable<object> GetEqualityMembers()
-        {
-            yield return this.Value;
-        }
-
-        public override string ToString()
-            => this.Value;
     }
 }

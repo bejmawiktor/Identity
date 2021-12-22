@@ -1,23 +1,17 @@
 ﻿using DDD.Domain.Model;
 using System;
-using System.Collections.Generic;
 
 namespace Identity.Core.Domain
 {
-    internal class Password : ValueObject
+    internal class Password : ValueObject<string>
     {
-        private string Value { get; }
-
         private static int RequiredPasswordLength => 7;
 
-        public Password(string value)
+        public Password(string value) : base(value)
         {
-            this.ValidateValue(value);
-
-            this.Value = value;
         }
 
-        private void ValidateValue(string value)
+        protected override void ValidateValue(string value)
         {
             if(value == null)
             {
@@ -34,13 +28,5 @@ namespace Identity.Core.Domain
                 throw new ArgumentException("Password must be longer than 6 characters.");
             }
         }
-
-        protected override IEnumerable<object> GetEqualityMembers()
-        {
-            yield return this.Value;
-        }
-
-        public override string ToString()
-            => this.Value;
     }
 }

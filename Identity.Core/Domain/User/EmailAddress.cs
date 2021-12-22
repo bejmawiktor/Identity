@@ -1,27 +1,21 @@
 ﻿using DDD.Domain.Model;
 using System;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace Identity.Core.Domain
 {
-    internal class EmailAddress : ValueObject
+    internal class EmailAddress : ValueObject<string>
     {
-        private string Address { get; }
-
         private string CorrectAddressPattern
             => @"^[\w!#$%&'*+\-/=?\^_`{|}~]+(\.[\w!#$%&'*+\-/=?\^_`{|}~]+)*"
                 + "@"
                 + @"((([\-\w]+\.)+[a-zA-Z]{2,4})|(([0-9]{1,3}\.){3}[0-9]{1,3}))\z";
 
-        public EmailAddress(string address)
+        public EmailAddress(string value) : base(value)
         {
-            this.ValidateAddress(address);
-
-            this.Address = address;
         }
 
-        protected void ValidateAddress(string address)
+        protected override void ValidateValue(string address)
         {
             if(address == null)
             {
@@ -38,13 +32,5 @@ namespace Identity.Core.Domain
                 throw new ArgumentException("Incorrect email address given.");
             }
         }
-
-        protected override IEnumerable<object> GetEqualityMembers()
-        {
-            yield return this.Address;
-        }
-
-        public override string ToString()
-            => this.Address;
     }
 }

@@ -51,7 +51,7 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             var code = new Code(codeValue);
 
-            Assert.That(code.Value, Is.EqualTo(codeValue));
+            Assert.That(code.ToString(), Is.EqualTo(codeValue));
         }
 
         [Test]
@@ -59,7 +59,7 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             Code code = Code.Generate();
 
-            Assert.That(code.Value, Is.Not.Null);
+            Assert.That(code.ToString(), Is.Not.Null);
         }
 
         [Test]
@@ -67,7 +67,7 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             Code code = Code.Generate();
 
-            Assert.That(code.Value, Is.Not.Empty);
+            Assert.That(code.ToString(), Is.Not.Empty);
         }
 
         [Test]
@@ -77,14 +77,6 @@ namespace Identity.Tests.Unit.Core.Domain
             Code secondCode = Code.Generate();
 
             Assert.That(firstCode, Is.Not.EqualTo(secondCode));
-        }
-
-        [Test]
-        public void TestToString_WhenConverting_ThenValueIsReturned()
-        {
-            Code code = Code.Generate();
-
-            Assert.That(code.ToString(), Is.EqualTo(code.Value));
         }
     }
 }
