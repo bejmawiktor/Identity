@@ -16,11 +16,11 @@ namespace Identity.Tests.Unit.Core.Application
         }
 
         private ResourceDto GetResourceDto(
-            string id = null, 
+            string id = null,
             string description = null)
         {
             return new ResourceDto(
-                id ?? "MyResource", 
+                id ?? "MyResource",
                 description ?? "My resource description.");
         }
 

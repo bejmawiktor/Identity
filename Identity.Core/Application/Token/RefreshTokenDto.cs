@@ -1,6 +1,6 @@
-﻿using Identity.Core.Domain;
+﻿using DDD.Application.Model;
+using Identity.Core.Domain;
 using System;
-using DDD.Application.Model;
 
 namespace Identity.Core.Application
 {
@@ -17,12 +17,12 @@ namespace Identity.Core.Application
 
         public override bool Equals(object obj)
         {
-            return obj is RefreshTokenDto dto 
+            return obj is RefreshTokenDto dto
                 && this.Id == dto.Id
                 && this.Used == dto.Used;
         }
 
-        public override int GetHashCode() 
+        public override int GetHashCode()
             => HashCode.Combine(this.Id, this.Used);
 
         internal RefreshToken ToRefreshToken()
@@ -30,7 +30,7 @@ namespace Identity.Core.Application
                 id: new TokenId(new EncryptedTokenValue(this.Id)),
                 used: this.Used);
 
-        RefreshToken IDomainObjectDto<RefreshToken>.ToDomainObject() 
+        RefreshToken IDomainObjectDto<RefreshToken>.ToDomainObject()
             => this.ToRefreshToken();
     }
 }

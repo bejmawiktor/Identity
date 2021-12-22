@@ -15,11 +15,11 @@ namespace Identity.Core.Application
 
         public UnitOfWorkAdapter(IUnitOfWork unitOfWork)
         {
-            this.ApplicationsRepository 
+            this.ApplicationsRepository
                 = new ApplicationsRepositoryAdapter(unitOfWork.ApplicationsRepository);
-            this.AuthorizationCodesRepository 
+            this.AuthorizationCodesRepository
                 = new AuthorizationCodesRepositoryAdapter(unitOfWork.AuthorizationCodesRepository);
-            this.PermissionsRepository 
+            this.PermissionsRepository
                 = new PermissionsRepositoryAdapter(unitOfWork.PermissionsRepository);
             this.ResourcesRepository
                 = new ResourcesRepositoryAdapter(unitOfWork.ResourcesRepository);
@@ -27,12 +27,12 @@ namespace Identity.Core.Application
                 = new RolesRepositoryAdapter(unitOfWork.RolesRepository);
             this.RefreshTokensRepository
                 = new RefreshTokensRepositoryAdapter(unitOfWork.RefreshTokensRepository);
-            this.UsersRepository 
+            this.UsersRepository
                 = new UsersRepositoryAdapter(unitOfWork.UsersRepository);
             this.UnitOfWork = unitOfWork;
         }
 
-        public ITransactionScope BeginScope() 
+        public ITransactionScope BeginScope()
             => this.UnitOfWork.BeginScope();
     }
 }

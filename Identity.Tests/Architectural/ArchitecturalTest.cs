@@ -1,6 +1,4 @@
-﻿using ArchUnitNET.Domain;
-using ArchUnitNET.Fluent;
-using ArchUnitNET.Fluent.Extensions;
+﻿using ArchUnitNET.Fluent;
 using ArchUnitNET.Loader;
 using ArchUnitNET.NUnit;
 using NUnit.Framework;

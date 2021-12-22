@@ -17,8 +17,8 @@ namespace Identity.Tests.Unit.Core.Domain
         }
 
         private Permission GetPermission(
-            ResourceId resourceId = null, 
-            string name = null, 
+            ResourceId resourceId = null,
+            string name = null,
             string description = null)
         {
             return new Permission(

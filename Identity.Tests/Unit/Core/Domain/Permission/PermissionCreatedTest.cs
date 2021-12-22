@@ -18,13 +18,13 @@ namespace Identity.Tests.Unit.Core.Domain
         }
 
         private PermissionCreated GetPermissionCreated(
-            PermissionId permissionId = null, 
+            PermissionId permissionId = null,
             string permissionDescription = null)
         {
             var permissionIdReplacement = new PermissionId(new ResourceId("TestResource"), "MyPermission");
 
             return new PermissionCreated(
-                permissionId: permissionId ?? permissionIdReplacement, 
+                permissionId: permissionId ?? permissionIdReplacement,
                 permissionDescription: permissionDescription ?? "Test permission description");
         }
 

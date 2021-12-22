@@ -20,8 +20,8 @@ namespace Identity.Tests.Unit.Core.Application
         }
 
         private RoleDto GetRoleDto(
-            Guid? id = null, 
-            string name = null, 
+            Guid? id = null,
+            string name = null,
             string description = null,
             IEnumerable<(string ResourceId, string Name)> permissions = null)
         {

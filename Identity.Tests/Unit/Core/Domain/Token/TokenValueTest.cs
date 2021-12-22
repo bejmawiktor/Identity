@@ -23,14 +23,14 @@ namespace Identity.Tests.Unit.Core.Domain
 
         private string GetTokenValue(
             Guid? id = null,
-            ApplicationId applicationId = null, 
-            TokenType tokenType = null, 
+            ApplicationId applicationId = null,
+            TokenType tokenType = null,
             IEnumerable<PermissionId> permissions = null,
             DateTime? expirationDate = null)
         {
             var tokenInformation = new TokenInformation(
                 id ?? Guid.NewGuid(),
-                applicationId ?? ApplicationId.Generate(), 
+                applicationId ?? ApplicationId.Generate(),
                 tokenType ?? TokenType.Access,
                 permissions ?? new PermissionId[]
                 {

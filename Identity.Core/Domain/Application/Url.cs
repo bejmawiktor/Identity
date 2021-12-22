@@ -1,6 +1,5 @@
 ﻿using DDD.Domain.Model;
 using System;
-using System.Collections.Generic;
 
 namespace Identity.Core.Domain
 {

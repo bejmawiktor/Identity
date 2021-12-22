@@ -35,7 +35,7 @@ namespace Identity.Core.Domain
         protected virtual TokenVerificationResult GetTokenExtraVerification()
             => TokenVerificationResult.Success;
 
-        public override string ToString() 
+        public override string ToString()
             => this.Id.ToString();
     }
 }

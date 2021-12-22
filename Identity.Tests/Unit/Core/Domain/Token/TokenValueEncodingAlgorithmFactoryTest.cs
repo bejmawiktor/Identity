@@ -13,7 +13,7 @@ namespace Identity.Tests.Unit.Core.Domain
 
             Assert.That(tokenValueEncryptionAlgorithm, Is.TypeOf<HS256JWTTokenValueEncodingAlgorithm>());
         }
-        
+
         [Test]
         public void TestCreate_WhenUnrecognizedSymbolGiven_ThenUnknownTokenValueEncodingAlgorithmExceptionIsThrown()
         {
@@ -23,7 +23,7 @@ namespace Identity.Tests.Unit.Core.Domain
                     .EqualTo("Unrecognized algorithm symbol given."),
                 () => TokenValueEncodingAlgorithmFactory.Create(2));
         }
-        
+
         [Test]
         public void TestConvertToAlgorithmSymbol_WhenHS256JWTTokenValueEncodingAlgorithmGiven_ThenOneIsReturned()
         {

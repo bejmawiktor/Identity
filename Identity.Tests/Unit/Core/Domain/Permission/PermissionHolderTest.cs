@@ -24,7 +24,7 @@ namespace Identity.Tests.Unit.Core.Domain
         }
 
         private PermissionHolderStub GetPermissionHolderStub(
-            Guid? id = null, 
+            Guid? id = null,
             IEnumerable<PermissionId> permissions = null)
         {
             var permissionsReplacement = new PermissionId[]
@@ -33,7 +33,7 @@ namespace Identity.Tests.Unit.Core.Domain
             };
 
             return new PermissionHolderStub(
-                id ?? Guid.NewGuid(), 
+                id ?? Guid.NewGuid(),
                 permissions ?? permissionsReplacement);
         }
 

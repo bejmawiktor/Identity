@@ -23,7 +23,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestConstructor_WhenApplicationIdGiven_ThenApplicationIdIsSet()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            
+
             TokenInformation tokenInformation = this.GetTokenInformation(applicationId: applicationId);
 
             Assert.That(tokenInformation.ApplicationId, Is.EqualTo(applicationId));

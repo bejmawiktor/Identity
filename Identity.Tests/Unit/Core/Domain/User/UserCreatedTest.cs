@@ -18,7 +18,7 @@ namespace Identity.Tests.Unit.Core.Domain
         }
 
         private UserCreated GetUserCreated(
-            UserId userId = null, 
+            UserId userId = null,
             EmailAddress userEmailAddress = null)
         {
             return new UserCreated(

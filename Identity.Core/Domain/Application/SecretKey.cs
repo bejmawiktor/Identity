@@ -1,7 +1,6 @@
 ﻿using DDD.Domain.Model;
 using Microsoft.AspNetCore.WebUtilities;
 using System;
-using System.Collections.Generic;
 using System.Security.Cryptography;
 
 namespace Identity.Core.Domain

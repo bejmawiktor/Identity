@@ -15,13 +15,13 @@ namespace Identity.Tests.Unit.Core.Application
         }
 
         private PermissionDto GetPermissionDto(
-            string resourceId = null, 
-            string name = null, 
+            string resourceId = null,
+            string name = null,
             string description = null)
         {
             return new PermissionDto(
-                resourceId ?? "MyResource", 
-                name ?? "MyPermission", 
+                resourceId ?? "MyResource",
+                name ?? "MyPermission",
                 description ?? "My permission description.");
         }
 

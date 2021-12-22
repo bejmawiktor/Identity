@@ -18,8 +18,8 @@ namespace Identity.Tests.Unit.Core.Domain
         }
 
         private RoleCreated GetRoleCreated(
-            RoleId roleId = null, 
-            string roleName = null, 
+            RoleId roleId = null,
+            string roleName = null,
             string roleDescription = null)
         {
             return new RoleCreated(

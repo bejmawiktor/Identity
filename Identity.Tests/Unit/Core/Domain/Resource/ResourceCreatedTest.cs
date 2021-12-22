@@ -19,7 +19,7 @@ namespace Identity.Tests.Unit.Core.Domain
         }
 
         private ResourceCreated GetResourceCreated(
-            ResourceId resourceId = null, 
+            ResourceId resourceId = null,
             string resourceDescription = null)
         {
             return new ResourceCreated(

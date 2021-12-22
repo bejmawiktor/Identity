@@ -18,7 +18,7 @@ namespace Identity.Tests.Unit.Core.Domain
         }
 
         private RolePermissionRevoked GetRolePermissionRevoked(
-            RoleId roleId = null, 
+            RoleId roleId = null,
             PermissionId permissionId = null)
         {
             return new RolePermissionRevoked(

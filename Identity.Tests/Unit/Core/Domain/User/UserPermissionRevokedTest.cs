@@ -19,12 +19,12 @@ namespace Identity.Tests.Unit.Core.Domain
         }
 
         private UserPermissionRevoked GetUserPermissionRevoked(
-            UserId userId = null, 
+            UserId userId = null,
             PermissionId revokedPermissionId = null)
         {
             return new UserPermissionRevoked(
                 userId ?? UserId.Generate(),
-                revokedPermissionId ?? new PermissionId(new ResourceId("MyResource"), "Permission"));  
+                revokedPermissionId ?? new PermissionId(new ResourceId("MyResource"), "Permission"));
         }
 
         [Test]

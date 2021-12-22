@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
 namespace Identity.Core.Domain
 {
@@ -13,7 +12,7 @@ namespace Identity.Core.Domain
         {
         }
 
-        public UnknownTokenValueEncodingAlgorithmException(string message, Exception innerException) 
+        public UnknownTokenValueEncodingAlgorithmException(string message, Exception innerException)
             : base(message, innerException)
         {
         }

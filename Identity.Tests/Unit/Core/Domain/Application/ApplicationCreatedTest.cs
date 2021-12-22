@@ -17,8 +17,8 @@ namespace Identity.Tests.Unit.Core.Domain
         }
 
         private ApplicationCreated GetApplicationCreated(
-            ApplicationId applicationId = null, 
-            string applicationName = null, 
+            ApplicationId applicationId = null,
+            string applicationName = null,
             UserId applicationUserId = null,
             Url applicationHomepageUrl = null,
             Url applicationCallbackUrl = null)

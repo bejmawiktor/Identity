@@ -18,7 +18,7 @@ namespace Identity.Tests.Unit.Core.Domain
         }
 
         private UserRoleAssumed GetUserRoleAssumed(
-            UserId userId = null, 
+            UserId userId = null,
             RoleId assumedRoleId = null)
         {
             return new UserRoleAssumed(

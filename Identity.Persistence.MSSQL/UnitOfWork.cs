@@ -30,7 +30,7 @@ namespace Identity.Persistence.MSSQL
             this.UsersRepository = new UsersRepository(identityContext);
         }
 
-        public ITransactionScope BeginScope() 
+        public ITransactionScope BeginScope()
             => new TransactionScope();
     }
 }

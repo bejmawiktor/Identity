@@ -5,7 +5,6 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Identity.Tests.Unit.Core.Domain
 {
@@ -25,8 +24,8 @@ namespace Identity.Tests.Unit.Core.Domain
         }
 
         private User GetUser(
-            UserId id = null, 
-            EmailAddress email = null, 
+            UserId id = null,
+            EmailAddress email = null,
             HashedPassword password = null,
             IEnumerable<RoleId> roles = null)
         {

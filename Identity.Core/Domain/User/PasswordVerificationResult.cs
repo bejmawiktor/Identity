@@ -4,8 +4,8 @@ namespace Identity.Core.Domain
 {
     internal class PasswordVerificationResult : Enumeration<string, PasswordVerificationResult>
     {
-        public readonly static PasswordVerificationResult Success = new PasswordVerificationResult(nameof(Success));
-        public readonly static PasswordVerificationResult Failed = new PasswordVerificationResult(nameof(Failed));
+        public static readonly PasswordVerificationResult Success = new PasswordVerificationResult(nameof(Success));
+        public static readonly PasswordVerificationResult Failed = new PasswordVerificationResult(nameof(Failed));
 
         protected override string DefaultValue => nameof(Failed);
 

@@ -1,8 +1,8 @@
 ﻿using Identity.Core.Domain;
-using System;
-using System.Threading.Tasks;
 using MediatR;
+using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Identity.Core.Application
 {

@@ -20,9 +20,9 @@ namespace Identity.Tests.Unit.Core.Domain
         }
 
         private AuthorizationCode GetAuthorizationCode(
-            AuthorizationCodeId authorizationCodeId = null, 
-            DateTime? expiresAt = null, 
-            bool? used = null, 
+            AuthorizationCodeId authorizationCodeId = null,
+            DateTime? expiresAt = null,
+            bool? used = null,
             IEnumerable<PermissionId> permissions = null)
         {
             var permissionsReplacement = new PermissionId[]
@@ -174,7 +174,7 @@ namespace Identity.Tests.Unit.Core.Domain
             {
                 new PermissionId(new ResourceId("MyResource"), "Add")
             };
-            
+
             AuthorizationCode.Create(ApplicationId.Generate(), permissions, out Code code);
 
             Assert.That(code, Is.Not.Null);

@@ -31,7 +31,7 @@ namespace Identity.Tests.Unit.Core.Application
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
             var tokenId = TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions);
-            
+
             return new RefreshTokenDto(
                 id ?? tokenId.ToString(),
                 used ?? false);

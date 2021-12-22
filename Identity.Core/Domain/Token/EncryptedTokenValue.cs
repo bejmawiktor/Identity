@@ -75,7 +75,7 @@ namespace Identity.Core.Domain
         public byte[] ToByteArray()
             => this.EncryptedValue.ToArray();
 
-        public bool Equals(EncryptedTokenValue other) 
+        public bool Equals(EncryptedTokenValue other)
             => this.Equals((object)other);
     }
 }

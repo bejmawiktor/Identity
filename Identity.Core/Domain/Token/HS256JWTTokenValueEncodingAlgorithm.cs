@@ -76,6 +76,7 @@ namespace Identity.Core.Domain
                 permissions: this.ExtractPermissions(jwtSecurityToken),
                 expirationDate: this.ExtractExpirationDate(jwtSecurityToken));
         }
+
         private Guid ExtractId(JwtSecurityToken jwtSecurityToken)
         {
             string sub = jwtSecurityToken.Claims
@@ -141,7 +142,7 @@ namespace Identity.Core.Domain
                 return false;
             }
 
-            if(!jwtSecurityToken.Claims.Any(j => j.Type == JwtRegisteredClaimNames.Jti) 
+            if(!jwtSecurityToken.Claims.Any(j => j.Type == JwtRegisteredClaimNames.Jti)
                 || this.ExtractId(jwtSecurityToken) == Guid.Empty)
             {
                 return false;

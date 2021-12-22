@@ -27,8 +27,8 @@ namespace Identity.Tests.Unit.Core.Domain
 
         private TokenInformation GetTokenInformation(
             Guid? id = null,
-            ApplicationId applicationId = null, 
-            TokenType tokenType = null, 
+            ApplicationId applicationId = null,
+            TokenType tokenType = null,
             PermissionId[] permissions = null)
         {
             var permissionsReplacement = new PermissionId[]

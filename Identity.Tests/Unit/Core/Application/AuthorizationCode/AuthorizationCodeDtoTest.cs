@@ -23,14 +23,14 @@ namespace Identity.Tests.Unit.Core.Application
             ApplicationId applicationId = ApplicationId.Generate();
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId, out _);
             AuthorizationCodeDto authorizationCodeDto = this.GetAuthorizationCodeDto(
-                authorizationCodeId.Code.ToString(), 
+                authorizationCodeId.Code.ToString(),
                 applicationId.ToGuid());
 
             Assert.That(authorizationCodeDto.Code, Is.EqualTo(authorizationCodeId.Code.ToString()));
         }
 
         private AuthorizationCodeDto GetAuthorizationCodeDto(
-            string code = null, 
+            string code = null,
             Guid? applicationId = null,
             DateTime? expiresAt = null,
             bool? used = null,

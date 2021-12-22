@@ -1,5 +1,5 @@
-﻿using Identity.Core.Domain;
-using DDD.Application.Model.Converters;
+﻿using DDD.Application.Model.Converters;
+using Identity.Core.Domain;
 using System;
 
 namespace Identity.Core.Application

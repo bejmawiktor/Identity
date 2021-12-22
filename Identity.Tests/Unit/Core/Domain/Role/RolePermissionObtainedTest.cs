@@ -11,18 +11,18 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestConstructor_WhenRoleIdGiven_ThenRoleIdIsSet()
         {
             RoleId roleId = RoleId.Generate();
-           
+
             RolePermissionObtained rolePermissionObtained = this.GetRolePermissionObtained(roleId);
 
             Assert.That(rolePermissionObtained.RoleId, Is.EqualTo(roleId.ToGuid()));
         }
 
         private RolePermissionObtained GetRolePermissionObtained(
-            RoleId roleId = null, 
+            RoleId roleId = null,
             PermissionId obtainedPermissionId = null)
         {
             return new RolePermissionObtained(
-                roleId: roleId ?? RoleId.Generate(), 
+                roleId: roleId ?? RoleId.Generate(),
                 obtainedPermissionId: obtainedPermissionId ?? new PermissionId(new ResourceId("MyResource"), "Permission"));
         }
 

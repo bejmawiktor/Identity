@@ -22,7 +22,7 @@ namespace Identity.Tests.Unit.Core.Domain
         }
 
         private IUnitOfWork GetUnitOfWork(
-            IResourcesRepository resourcesRepository = null, 
+            IResourcesRepository resourcesRepository = null,
             IPermissionsRepository permissionsRepository = null)
         {
             var unitOfWorkMock = new Mock<IUnitOfWork>();
@@ -55,7 +55,7 @@ namespace Identity.Tests.Unit.Core.Domain
                 .Returns(Task.FromResult(new Resource(resourceId, "Resource description.")));
             var permissionsRepositoryMock = new Mock<IPermissionsRepository>();
             var unitOfWork = this.GetUnitOfWork(
-                resourcesRepositoryMock.Object, 
+                resourcesRepositoryMock.Object,
                 permissionsRepositoryMock.Object);
             var permissionService = new PermissionService(unitOfWork);
 

@@ -15,7 +15,7 @@ namespace Identity.Core.Application
 
         public RefreshTokensRepositoryAdapter(IRefreshTokensRepository refreshTokensRepository)
         {
-            this.RefreshTokensRepository = refreshTokensRepository 
+            this.RefreshTokensRepository = refreshTokensRepository
                 ?? throw new ArgumentNullException(nameof(refreshTokensRepository));
         }
     }

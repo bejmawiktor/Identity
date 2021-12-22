@@ -20,7 +20,7 @@ namespace Identity.Tests.Unit.Core.Domain
         }
 
         private Resource GetResource(
-            ResourceId id = null, 
+            ResourceId id = null,
             string description = null)
         {
             return new Resource(

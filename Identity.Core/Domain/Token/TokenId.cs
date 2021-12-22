@@ -12,8 +12,10 @@ namespace Identity.Core.Domain
         public ApplicationId ApplicationId { get; }
         public TokenType Type { get; }
         public DateTime ExpiresAt { get; }
-        public IReadOnlyCollection<PermissionId> Permissions 
+
+        public IReadOnlyCollection<PermissionId> Permissions
             => this.permissions.ToList().AsReadOnly();
+
         public bool Expired => this.ExpiresAt < DateTime.Now;
 
         public TokenId(EncryptedTokenValue encryptedTokenValue)

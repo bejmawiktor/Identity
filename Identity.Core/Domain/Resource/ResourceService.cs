@@ -10,7 +10,7 @@ namespace Identity.Core.Domain
 
         public ResourceService(IUnitOfWork unitOfWork)
         {
-            this.UnitOfWork = unitOfWork 
+            this.UnitOfWork = unitOfWork
                 ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 

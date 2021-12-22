@@ -9,7 +9,7 @@ namespace Identity.Core.Domain
 
         public AuthenticationService(IUnitOfWork unitOfWork)
         {
-            this.UnitOfWork = unitOfWork 
+            this.UnitOfWork = unitOfWork
                 ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 

@@ -45,7 +45,7 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             ApplicationId applicationId = ApplicationId.Generate();
             EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(this.GetTokenValue(applicationId: applicationId));
-            
+
             var tokenId = new TokenId(encryptedTokenValue);
 
             Assert.That(tokenId.ApplicationId, Is.EqualTo(applicationId));
@@ -56,7 +56,7 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             TokenValue tokenValue = this.GetTokenValue(tokenType: TokenType.Refresh);
             EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(tokenValue);
-            
+
             var tokenId = new TokenId(encryptedTokenValue);
 
             Assert.That(tokenId.Type, Is.EqualTo(TokenType.Refresh));
@@ -110,7 +110,7 @@ namespace Identity.Tests.Unit.Core.Domain
                 Assert.That(tokenid.Permissions, Is.EquivalentTo(permissions));
             });
         }
-        
+
         [Test]
         public void TestGenerateAccessToken_WhenNullApplicationIdGiven_ThenArgumentNullExceptionIsThrown()
         {

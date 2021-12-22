@@ -11,14 +11,14 @@ namespace Identity.Tests.Unit.Core.Domain
             this.Used = used;
         }
 
-        protected override TokenVerificationResult GetTokenExtraVerification() 
-        { 
+        protected override TokenVerificationResult GetTokenExtraVerification()
+        {
             if(this.Used)
             {
                 return TokenVerificationResult.Failed.WithMessage("Token has been used.");
             }
 
-            return TokenVerificationResult.Success; 
+            return TokenVerificationResult.Success;
         }
     }
 }

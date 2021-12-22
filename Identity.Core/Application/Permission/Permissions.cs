@@ -4,19 +4,19 @@ namespace Identity.Core.Application
 {
     public static class Permissions
     {
-        private readonly static PermissionDtoConverter Converter = new PermissionDtoConverter();
+        private static readonly PermissionDtoConverter Converter = new PermissionDtoConverter();
 
-        private readonly static PermissionId CreateResourceId
+        private static readonly PermissionId CreateResourceId
             = new PermissionId(
                 resourceId: new ResourceId("Identity"),
                 name: "CreateResource");
 
-        internal readonly static Permission CreateResource
+        internal static readonly Permission CreateResource
             = new Permission(
                 id: CreateResourceId,
                 description: "It allows to create new resources.");
 
-        public readonly static PermissionDto CreateResourceDto
+        public static readonly PermissionDto CreateResourceDto
             = Permissions.Converter.ToDto(Permissions.CreateResource);
     }
 }
