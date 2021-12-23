@@ -44,14 +44,14 @@ namespace Identity.Tests.Unit.Core.Domain
         }
 
         [Test]
-        public void TestEncrypt_WhenMultipleTimesSameTokenValueIsEncrypted_ThenReturnedEncryptedTokenValuesAreDifferent()
+        public void TestEncrypt_WhenMultipleTimesSameTokenValueIsEncrypted_ThenReturnedEncryptedTokenValuesAreSame()
         {
             TokenValue tokenValue = this.GetTokenValue();
 
             EncryptedTokenValue firstEncryptedTokenValue = TokenValueEncrypter.Encrypt(tokenValue);
             EncryptedTokenValue secondEncryptedTokenValue = TokenValueEncrypter.Encrypt(tokenValue);
 
-            Assert.That(firstEncryptedTokenValue, Is.Not.EqualTo(secondEncryptedTokenValue));
+            Assert.That(firstEncryptedTokenValue, Is.EqualTo(secondEncryptedTokenValue));
         }
 
         [Test]

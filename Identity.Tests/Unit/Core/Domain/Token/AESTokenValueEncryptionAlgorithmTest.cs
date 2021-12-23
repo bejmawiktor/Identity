@@ -61,7 +61,7 @@ namespace Identity.Tests.Unit.Core.Domain
         }
 
         [Test]
-        public void TestEncrypt_WhenMultipleTimesSameTokenValueIsEncrypted_ThenReturnedEncryptedTokenValuesAreDifferent()
+        public void TestEncrypt_WhenMultipleTimesSameTokenValueIsEncrypted_ThenReturnedEncryptedTokenValuesAreSame()
         {
             TokenValue tokenValue = this.GetTokenValue();
             var aesTokenValueEncriptionAlgorithm = new AESTokenValueEncryptionAlgorithm();
@@ -69,7 +69,7 @@ namespace Identity.Tests.Unit.Core.Domain
             byte[] firstEncryptedTokenValue = aesTokenValueEncriptionAlgorithm.Encrypt(tokenValue);
             byte[] secondEncryptedTokenValue = aesTokenValueEncriptionAlgorithm.Encrypt(tokenValue);
 
-            Assert.That(firstEncryptedTokenValue, Is.Not.EqualTo(secondEncryptedTokenValue));
+            Assert.That(firstEncryptedTokenValue, Is.EqualTo(secondEncryptedTokenValue));
         }
 
         [Test]
