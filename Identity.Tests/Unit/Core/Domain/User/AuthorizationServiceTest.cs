@@ -1342,9 +1342,9 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             IUnitOfWork unitOfWork = this.GetUnitOfWork();
             TokenValue refreshTokenValue = TokenValue.GenerateRefreshToken(
-                ApplicationId.Generate(), 
-                new PermissionId[] 
-                { 
+                ApplicationId.Generate(),
+                new PermissionId[]
+                {
                     new PermissionId(new ResourceId("MyRes"), "Add")
                 },
                 DateTime.Now.AddDays(1));
@@ -1459,7 +1459,7 @@ namespace Identity.Tests.Unit.Core.Domain
 
             RefreshTokenNotFoundException exception = Assert.ThrowsAsync<RefreshTokenNotFoundException>(
                 async () => await authorizationService.RefreshTokens(refreshTokenValue, new Url("http://example.com/1")));
-            
+
             Assert.That(exception, Is.InstanceOf<RefreshTokenNotFoundException>()
                 .And.Message
                 .EqualTo($"Refresh token {new TokenId(TokenValueEncrypter.Encrypt(refreshTokenValue))} not found."));
@@ -1482,7 +1482,7 @@ namespace Identity.Tests.Unit.Core.Domain
             var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
-                .Returns(Task.FromResult(application)); 
+                .Returns(Task.FromResult(application));
             TokenValue refreshTokenValue = TokenValue.GenerateRefreshToken(
                  applicationId,
                  new PermissionId[]
@@ -1598,7 +1598,7 @@ namespace Identity.Tests.Unit.Core.Domain
             AuthorizationService authorizationService = new AuthorizationService(unitOfWorkMock.Object);
 
             TokenPair tokenPair = await authorizationService.RefreshTokens(
-                refreshTokenValue, 
+                refreshTokenValue,
                 new Url("http://example.com/1"));
 
             Assert.Multiple(() =>
