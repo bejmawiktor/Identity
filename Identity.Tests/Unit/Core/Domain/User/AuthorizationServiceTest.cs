@@ -1322,5 +1322,543 @@ namespace Identity.Tests.Unit.Core.Domain
 
             transactionScopeMock.Verify(a => a.Complete(), Times.Once());
         }
+
+        [Test]
+        public void TestRefreshTokens_WhenNullRefreshTokenValueGiven_ThenArgumentNullExceptionIsThrown()
+        {
+            IUnitOfWork unitOfWork = this.GetUnitOfWork();
+            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+
+            ArgumentNullException exception = Assert.ThrowsAsync<ArgumentNullException>(
+                async () => await authorizationService.RefreshTokens(null, new Url("http://example.com/1")));
+
+            Assert.That(exception, Is.InstanceOf<ArgumentNullException>()
+                .And.Property(nameof(ArgumentNullException.ParamName))
+                .EqualTo("refreshTokenValue"));
+        }
+
+        [Test]
+        public void TestRefreshTokens_WhenNullCallbackUrlGiven_ThenArgumentNullExceptionIsThrown()
+        {
+            IUnitOfWork unitOfWork = this.GetUnitOfWork();
+            TokenValue refreshTokenValue = TokenValue.GenerateRefreshToken(
+                ApplicationId.Generate(), 
+                new PermissionId[] 
+                { 
+                    new PermissionId(new ResourceId("MyRes"), "Add")
+                },
+                DateTime.Now.AddDays(1));
+            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+
+            ArgumentNullException exception = Assert.ThrowsAsync<ArgumentNullException>(
+                async () => await authorizationService.RefreshTokens(refreshTokenValue, null));
+
+            Assert.That(exception, Is.InstanceOf<ArgumentNullException>()
+                .And.Property(nameof(ArgumentNullException.ParamName))
+                .EqualTo("callbackUrl"));
+        }
+
+        [Test]
+        public void TestRefreshTokens_WhenApplicationWasNotFoundInRepository_ThenApplicationNotFoundExceptionIsThrown()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            TokenValue refreshTokenValue = TokenValue.GenerateRefreshToken(
+                applicationId,
+                new PermissionId[]
+                {
+                    new PermissionId(new ResourceId("MyRes"), "Add")
+                },
+                DateTime.Now.AddDays(1));
+            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            applicationsRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
+                .Returns(Task.FromResult((Application)null));
+            IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+            IUnitOfWork unitOfWork = this.GetUnitOfWork(applicationsRepository: applicationsRepository);
+            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+
+            ApplicationNotFoundException exception = Assert.ThrowsAsync<ApplicationNotFoundException>(
+                async () => await authorizationService.RefreshTokens(refreshTokenValue, new Url("http://example.com/1")));
+
+            Assert.That(exception, Is.InstanceOf<ApplicationNotFoundException>()
+                .And.Message
+                .EqualTo($"Application {applicationId} not found."));
+        }
+
+        [Test]
+        public void TestRefreshTokens_WhenApplicationCallbackUrlIsNotSameAsRequested_ThenArgumentExceptionIsThrown()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            SecretKey secretKey = SecretKey.Generate();
+            Code code = Code.Generate();
+            var application = new Application(
+                ApplicationId.Generate(),
+                UserId.Generate(),
+                "MyApp1",
+                EncryptedSecretKey.Encrypt(secretKey),
+                new Url("http://example.com"),
+                new Url("http://example.com/1"));
+            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            applicationsRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
+                .Returns(Task.FromResult(application));
+            IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+            TokenValue refreshTokenValue = TokenValue.GenerateRefreshToken(
+                applicationId,
+                new PermissionId[]
+                {
+                    new PermissionId(new ResourceId("MyRes"), "Add")
+                },
+                DateTime.Now.AddDays(1));
+            IUnitOfWork unitOfWork = this.GetUnitOfWork(
+                applicationsRepository: applicationsRepository);
+            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+
+            ArgumentException exception = Assert.ThrowsAsync<ArgumentException>(
+                async () => await authorizationService.RefreshTokens(refreshTokenValue, new Url("http://example.com/2")));
+
+            Assert.That(exception, Is.InstanceOf<ArgumentException>()
+                .And.Message
+                .EqualTo("Wrong callback url given."));
+        }
+
+        [Test]
+        public void TestRefreshTokens_WhenRefreshTokenNotFound_ThenRefreshTokenNotFoundExceptionIsThrown()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            SecretKey secretKey = SecretKey.Generate();
+            Code code = Code.Generate();
+            var application = new Application(
+                applicationId,
+                UserId.Generate(),
+                "MyApp1",
+                EncryptedSecretKey.Encrypt(secretKey),
+                new Url("http://example.com"),
+                new Url("http://example.com/1"));
+            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
+            applicationsRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
+                .Returns(Task.FromResult(application));
+            refreshTokensRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<TokenId>()))
+                .Returns(Task.FromResult<RefreshToken>(null));
+            IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+            IRefreshTokensRepository refreshTokensRepository = refreshTokensRepositoryMock.Object;
+            TokenValue refreshTokenValue = TokenValue.GenerateRefreshToken(
+                applicationId,
+                new PermissionId[]
+                {
+                    new PermissionId(new ResourceId("MyRes"), "Add")
+                },
+                DateTime.Now.AddDays(1));
+            IUnitOfWork unitOfWork = this.GetUnitOfWork(
+                applicationsRepository: applicationsRepository,
+                refreshTokensRepository: refreshTokensRepository);
+            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+
+            RefreshTokenNotFoundException exception = Assert.ThrowsAsync<RefreshTokenNotFoundException>(
+                async () => await authorizationService.RefreshTokens(refreshTokenValue, new Url("http://example.com/1")));
+            
+            Assert.That(exception, Is.InstanceOf<RefreshTokenNotFoundException>()
+                .And.Message
+                .EqualTo($"Refresh token {new TokenId(TokenValueEncrypter.Encrypt(refreshTokenValue))} not found."));
+        }
+
+        [Test]
+        public void TestRefreshTokens_WhenRefreshTokenFoundAndHasBeenUsed_ThenInvalidTokenExceptionIsThrown()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            SecretKey secretKey = SecretKey.Generate();
+            Code code = Code.Generate();
+            var application = new Application(
+                applicationId,
+                UserId.Generate(),
+                "MyApp1",
+                EncryptedSecretKey.Encrypt(secretKey),
+                new Url("http://example.com"),
+                new Url("http://example.com/1"));
+            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
+            applicationsRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
+                .Returns(Task.FromResult(application)); 
+            TokenValue refreshTokenValue = TokenValue.GenerateRefreshToken(
+                 applicationId,
+                 new PermissionId[]
+                 {
+                    new PermissionId(new ResourceId("MyRes"), "Add")
+                 },
+                 DateTime.Now.AddDays(1));
+            var refreshToken = new RefreshToken(
+                new TokenId(TokenValueEncrypter.Encrypt(refreshTokenValue)),
+                true);
+            refreshTokensRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<TokenId>()))
+                .Returns(Task.FromResult(refreshToken));
+            IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+            IRefreshTokensRepository refreshTokensRepository = refreshTokensRepositoryMock.Object;
+            IUnitOfWork unitOfWork = this.GetUnitOfWork(
+                applicationsRepository: applicationsRepository,
+                refreshTokensRepository: refreshTokensRepository);
+            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+
+            InvalidTokenException exception = Assert.ThrowsAsync<InvalidTokenException>(
+                async () => await authorizationService.RefreshTokens(refreshTokenValue, new Url("http://example.com/1")));
+
+            Assert.That(exception, Is.InstanceOf<InvalidTokenException>()
+                .And.Message
+                .EqualTo("Token was used before."));
+        }
+
+        [Test]
+        public void TestRefreshTokens_WhenRefreshTokenFoundAndExpired_ThenInvalidTokenExceptionIsThrown()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            SecretKey secretKey = SecretKey.Generate();
+            Code code = Code.Generate();
+            var application = new Application(
+                applicationId,
+                UserId.Generate(),
+                "MyApp1",
+                EncryptedSecretKey.Encrypt(secretKey),
+                new Url("http://example.com"),
+                new Url("http://example.com/1"));
+            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
+            applicationsRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
+                .Returns(Task.FromResult(application));
+            TokenValue refreshTokenValue = TokenValue.GenerateRefreshToken(
+                 applicationId,
+                 new PermissionId[]
+                 {
+                    new PermissionId(new ResourceId("MyRes"), "Add")
+                 },
+                 DateTime.Now.AddDays(-1));
+            var refreshToken = new RefreshToken(
+                new TokenId(TokenValueEncrypter.Encrypt(refreshTokenValue)),
+                false);
+            refreshTokensRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<TokenId>()))
+                .Returns(Task.FromResult(refreshToken));
+            IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+            IRefreshTokensRepository refreshTokensRepository = refreshTokensRepositoryMock.Object;
+            IUnitOfWork unitOfWork = this.GetUnitOfWork(
+                applicationsRepository: applicationsRepository,
+                refreshTokensRepository: refreshTokensRepository);
+            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+
+            InvalidTokenException exception = Assert.ThrowsAsync<InvalidTokenException>(
+                async () => await authorizationService.RefreshTokens(refreshTokenValue, new Url("http://example.com/1")));
+
+            Assert.That(exception, Is.InstanceOf<InvalidTokenException>()
+                .And.Message
+                .EqualTo("Token has expired."));
+        }
+
+        [Test]
+        public async Task TestRefreshTokens_WhenRefreshTokenFoundAndVerifiedSucessful_ThenTokenPairIsReturned()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            SecretKey secretKey = SecretKey.Generate();
+            Code code = Code.Generate();
+            var application = new Application(
+                applicationId,
+                UserId.Generate(),
+                "MyApp1",
+                EncryptedSecretKey.Encrypt(secretKey),
+                new Url("http://example.com"),
+                new Url("http://example.com/1"));
+            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
+            applicationsRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
+                .Returns(Task.FromResult(application));
+            TokenValue refreshTokenValue = TokenValue.GenerateRefreshToken(
+                 applicationId,
+                 new PermissionId[]
+                 {
+                    new PermissionId(new ResourceId("MyRes"), "Add")
+                 },
+                 DateTime.Now.AddDays(1));
+            var refreshToken = new RefreshToken(
+                new TokenId(TokenValueEncrypter.Encrypt(refreshTokenValue)),
+                false);
+            refreshTokensRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<TokenId>()))
+                .Returns(Task.FromResult(refreshToken));
+            IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+            IRefreshTokensRepository refreshTokensRepository = refreshTokensRepositoryMock.Object;
+            Mock<ITransactionScope> transactionScopeMock = new Mock<ITransactionScope>();
+            Mock<IUnitOfWork> unitOfWorkMock = new Mock<IUnitOfWork>();
+            unitOfWorkMock.Setup(u => u.ApplicationsRepository).Returns(applicationsRepository);
+            unitOfWorkMock.Setup(u => u.RefreshTokensRepository).Returns(refreshTokensRepository);
+            unitOfWorkMock.Setup(u => u.BeginScope()).Returns(transactionScopeMock.Object);
+            AuthorizationService authorizationService = new AuthorizationService(unitOfWorkMock.Object);
+
+            TokenPair tokenPair = await authorizationService.RefreshTokens(
+                refreshTokenValue, 
+                new Url("http://example.com/1"));
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(tokenPair.AccessToken, Is.Not.Null);
+                Assert.That(tokenPair.RefreshToken, Is.Not.EqualTo(refreshTokenValue));
+                Assert.That(tokenPair.RefreshToken, Is.Not.Null);
+            });
+        }
+
+        [Test]
+        public async Task TestRefreshTokens_WhenRefreshTokenFoundAndVerifiedSucessful_ThenRefreshTokenIsMarkedAsUsed()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            SecretKey secretKey = SecretKey.Generate();
+            Code code = Code.Generate();
+            var application = new Application(
+                applicationId,
+                UserId.Generate(),
+                "MyApp1",
+                EncryptedSecretKey.Encrypt(secretKey),
+                new Url("http://example.com"),
+                new Url("http://example.com/1"));
+            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
+            applicationsRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
+                .Returns(Task.FromResult(application));
+            TokenValue refreshTokenValue = TokenValue.GenerateRefreshToken(
+                 applicationId,
+                 new PermissionId[]
+                 {
+                    new PermissionId(new ResourceId("MyRes"), "Add")
+                 },
+                 DateTime.Now.AddDays(1));
+            var refreshToken = new RefreshToken(
+                new TokenId(TokenValueEncrypter.Encrypt(refreshTokenValue)),
+                false);
+            refreshTokensRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<TokenId>()))
+                .Returns(Task.FromResult(refreshToken));
+            IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+            IRefreshTokensRepository refreshTokensRepository = refreshTokensRepositoryMock.Object;
+            Mock<ITransactionScope> transactionScopeMock = new Mock<ITransactionScope>();
+            Mock<IUnitOfWork> unitOfWorkMock = new Mock<IUnitOfWork>();
+            unitOfWorkMock.Setup(u => u.ApplicationsRepository).Returns(applicationsRepository);
+            unitOfWorkMock.Setup(u => u.RefreshTokensRepository).Returns(refreshTokensRepository);
+            unitOfWorkMock.Setup(u => u.BeginScope()).Returns(transactionScopeMock.Object);
+            AuthorizationService authorizationService = new AuthorizationService(unitOfWorkMock.Object);
+
+            TokenPair tokenPair = await authorizationService.RefreshTokens(
+                refreshTokenValue,
+                new Url("http://example.com/1"));
+
+            Assert.That(refreshToken.Used, Is.True);
+        }
+
+        [Test]
+        public async Task TestRefreshTokens_WhenRefreshTokenFoundAndVerifiedSucessful_ThenRefreshTokenIsUpdated()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            SecretKey secretKey = SecretKey.Generate();
+            Code code = Code.Generate();
+            var application = new Application(
+                applicationId,
+                UserId.Generate(),
+                "MyApp1",
+                EncryptedSecretKey.Encrypt(secretKey),
+                new Url("http://example.com"),
+                new Url("http://example.com/1"));
+            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
+            applicationsRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
+                .Returns(Task.FromResult(application));
+            TokenValue refreshTokenValue = TokenValue.GenerateRefreshToken(
+                 applicationId,
+                 new PermissionId[]
+                 {
+                    new PermissionId(new ResourceId("MyRes"), "Add")
+                 },
+                 DateTime.Now.AddDays(1));
+            var refreshToken = new RefreshToken(
+                new TokenId(TokenValueEncrypter.Encrypt(refreshTokenValue)),
+                false);
+            refreshTokensRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<TokenId>()))
+                .Returns(Task.FromResult(refreshToken));
+            IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+            IRefreshTokensRepository refreshTokensRepository = refreshTokensRepositoryMock.Object;
+            Mock<ITransactionScope> transactionScopeMock = new Mock<ITransactionScope>();
+            Mock<IUnitOfWork> unitOfWorkMock = new Mock<IUnitOfWork>();
+            unitOfWorkMock.Setup(u => u.ApplicationsRepository).Returns(applicationsRepository);
+            unitOfWorkMock.Setup(u => u.RefreshTokensRepository).Returns(refreshTokensRepository);
+            unitOfWorkMock.Setup(u => u.BeginScope()).Returns(transactionScopeMock.Object);
+            AuthorizationService authorizationService = new AuthorizationService(unitOfWorkMock.Object);
+
+            TokenPair tokenPair = await authorizationService.RefreshTokens(
+                refreshTokenValue,
+                new Url("http://example.com/1"));
+
+            refreshTokensRepositoryMock.Verify(r => r.UpdateAsync(refreshToken), Times.Once);
+        }
+
+        [Test]
+        public async Task TestRefreshTokens_WhenRefreshTokenFoundAndVerifiedSucessful_ThenNewRefreshTokenIsAdded()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            SecretKey secretKey = SecretKey.Generate();
+            Code code = Code.Generate();
+            var application = new Application(
+                applicationId,
+                UserId.Generate(),
+                "MyApp1",
+                EncryptedSecretKey.Encrypt(secretKey),
+                new Url("http://example.com"),
+                new Url("http://example.com/1"));
+            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
+            applicationsRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
+                .Returns(Task.FromResult(application));
+            TokenValue refreshTokenValue = TokenValue.GenerateRefreshToken(
+                 applicationId,
+                 new PermissionId[]
+                 {
+                    new PermissionId(new ResourceId("MyRes"), "Add")
+                 },
+                 DateTime.Now.AddDays(1));
+            var refreshToken = new RefreshToken(
+                new TokenId(TokenValueEncrypter.Encrypt(refreshTokenValue)),
+                false);
+            refreshTokensRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<TokenId>()))
+                .Returns(Task.FromResult(refreshToken));
+            IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+            IRefreshTokensRepository refreshTokensRepository = refreshTokensRepositoryMock.Object;
+            Mock<ITransactionScope> transactionScopeMock = new Mock<ITransactionScope>();
+            Mock<IUnitOfWork> unitOfWorkMock = new Mock<IUnitOfWork>();
+            unitOfWorkMock.Setup(u => u.ApplicationsRepository).Returns(applicationsRepository);
+            unitOfWorkMock.Setup(u => u.RefreshTokensRepository).Returns(refreshTokensRepository);
+            unitOfWorkMock.Setup(u => u.BeginScope()).Returns(transactionScopeMock.Object);
+            AuthorizationService authorizationService = new AuthorizationService(unitOfWorkMock.Object);
+
+            TokenPair tokenPair = await authorizationService.RefreshTokens(
+                refreshTokenValue,
+                new Url("http://example.com/1"));
+
+            var newRefreshToken = new RefreshToken(
+                new TokenId(TokenValueEncrypter.Encrypt(tokenPair.RefreshToken)),
+                false);
+
+            refreshTokensRepositoryMock.Verify(r => r.AddAsync(newRefreshToken), Times.Once);
+        }
+
+        [Test]
+        public async Task TestRefreshTokens_WhenUpdateRefreshTokenThrowsException_ThenTransactionIsntCompleted()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            SecretKey secretKey = SecretKey.Generate();
+            Code code = Code.Generate();
+            var application = new Application(
+                applicationId,
+                UserId.Generate(),
+                "MyApp1",
+                EncryptedSecretKey.Encrypt(secretKey),
+                new Url("http://example.com"),
+                new Url("http://example.com/1"));
+            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
+            applicationsRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
+                .Returns(Task.FromResult(application));
+            TokenValue refreshTokenValue = TokenValue.GenerateRefreshToken(
+                 applicationId,
+                 new PermissionId[]
+                 {
+                    new PermissionId(new ResourceId("MyRes"), "Add")
+                 },
+                 DateTime.Now.AddDays(1));
+            var refreshToken = new RefreshToken(
+                new TokenId(TokenValueEncrypter.Encrypt(refreshTokenValue)),
+                false);
+            refreshTokensRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<TokenId>()))
+                .Returns(Task.FromResult(refreshToken));
+            refreshTokensRepositoryMock.Setup(r => r.UpdateAsync(It.IsAny<RefreshToken>())).Throws(new Exception());
+            IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+            IRefreshTokensRepository refreshTokensRepository = refreshTokensRepositoryMock.Object;
+            Mock<ITransactionScope> transactionScopeMock = new Mock<ITransactionScope>();
+            Mock<IUnitOfWork> unitOfWorkMock = new Mock<IUnitOfWork>();
+            unitOfWorkMock.Setup(u => u.ApplicationsRepository).Returns(applicationsRepository);
+            unitOfWorkMock.Setup(u => u.RefreshTokensRepository).Returns(refreshTokensRepository);
+            unitOfWorkMock.Setup(u => u.BeginScope()).Returns(transactionScopeMock.Object);
+            AuthorizationService authorizationService = new AuthorizationService(unitOfWorkMock.Object);
+
+            try
+            {
+                TokenPair tokenPair = await authorizationService.RefreshTokens(
+                    refreshTokenValue,
+                    new Url("http://example.com/1"));
+            }
+            catch(Exception)
+            {
+            }
+
+            transactionScopeMock.Verify(t => t.Complete(), Times.Never);
+        }
+
+        [Test]
+        public async Task TestRefreshTokens_WhenRefreshTokenFoundAndVerifiedSucessful_ThenTransactionIsCompleted()
+        {
+            ApplicationId applicationId = ApplicationId.Generate();
+            SecretKey secretKey = SecretKey.Generate();
+            Code code = Code.Generate();
+            var application = new Application(
+                applicationId,
+                UserId.Generate(),
+                "MyApp1",
+                EncryptedSecretKey.Encrypt(secretKey),
+                new Url("http://example.com"),
+                new Url("http://example.com/1"));
+            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
+            applicationsRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
+                .Returns(Task.FromResult(application));
+            TokenValue refreshTokenValue = TokenValue.GenerateRefreshToken(
+                 applicationId,
+                 new PermissionId[]
+                 {
+                    new PermissionId(new ResourceId("MyRes"), "Add")
+                 },
+                 DateTime.Now.AddDays(1));
+            var refreshToken = new RefreshToken(
+                new TokenId(TokenValueEncrypter.Encrypt(refreshTokenValue)),
+                false);
+            refreshTokensRepositoryMock
+                .Setup(r => r.GetAsync(It.IsAny<TokenId>()))
+                .Returns(Task.FromResult(refreshToken));
+            IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
+            IRefreshTokensRepository refreshTokensRepository = refreshTokensRepositoryMock.Object;
+            Mock<ITransactionScope> transactionScopeMock = new Mock<ITransactionScope>();
+            Mock<IUnitOfWork> unitOfWorkMock = new Mock<IUnitOfWork>();
+            unitOfWorkMock.Setup(u => u.ApplicationsRepository).Returns(applicationsRepository);
+            unitOfWorkMock.Setup(u => u.RefreshTokensRepository).Returns(refreshTokensRepository);
+            unitOfWorkMock.Setup(u => u.BeginScope()).Returns(transactionScopeMock.Object);
+            AuthorizationService authorizationService = new AuthorizationService(unitOfWorkMock.Object);
+
+            try
+            {
+                TokenPair tokenPair = await authorizationService.RefreshTokens(
+                    refreshTokenValue,
+                    new Url("http://example.com/1"));
+            }
+            catch(Exception)
+            {
+            }
+
+            transactionScopeMock.Verify(t => t.Complete(), Times.Once);
+        }
     }
 }

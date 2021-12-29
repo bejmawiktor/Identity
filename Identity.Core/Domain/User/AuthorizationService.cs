@@ -153,20 +153,7 @@ namespace Identity.Core.Domain
             {
                 Application application = await this.UnitOfWork.ApplicationsRepository.GetAsync(applicationId);
 
-                if(application == null)
-                {
-                    throw new ApplicationNotFoundException(applicationId);
-                }
-
-                if(application.SecretKey.Decrypt() != secretKey)
-                {
-                    throw new ArgumentException("Wrong secret key given.");
-                }
-
-                if(application.CallbackUrl != callbackUrl)
-                {
-                    throw new ArgumentException("Wrong callback url given.");
-                }
+                this.ValidateGenerateTokensApplication(applicationId, secretKey, callbackUrl, application);
 
                 var authorizationCodeId = new AuthorizationCodeId(HashedCode.Hash(code), applicationId);
                 AuthorizationCode authorizationCode = await this.UnitOfWork.AuthorizationCodesRepository.GetAsync(authorizationCodeId);
@@ -216,6 +203,103 @@ namespace Identity.Core.Domain
             if(callbackUrl == null)
             {
                 throw new ArgumentNullException(nameof(callbackUrl));
+            }
+        }
+
+        private void ValidateGenerateTokensApplication(
+            ApplicationId applicationId,
+            SecretKey secretKey,
+            Url callbackUrl,
+            Application application)
+        {
+            if(application == null)
+            {
+                throw new ApplicationNotFoundException(applicationId);
+            }
+
+            if(application.SecretKey.Decrypt() != secretKey)
+            {
+                throw new ArgumentException("Wrong secret key given.");
+            }
+
+            if(application.CallbackUrl != callbackUrl)
+            {
+                throw new ArgumentException("Wrong callback url given.");
+            }
+        }
+
+        public async Task<TokenPair> RefreshTokens(TokenValue refreshTokenValue, Url callbackUrl)
+        {
+            this.ValidateRefreshTokensParamters(refreshTokenValue, callbackUrl);
+
+            TokenPair tokens = null;
+
+            using(var transactionScope = this.UnitOfWork.BeginScope())
+            {
+                Application application = await this.UnitOfWork.ApplicationsRepository
+                    .GetAsync(refreshTokenValue.ApplicationId);
+
+                this.ValidateRefreshTokensApplication(refreshTokenValue, callbackUrl, application);
+
+                var tokenId = new TokenId(TokenValueEncrypter.Encrypt(refreshTokenValue));
+                RefreshToken refreshToken = await this.UnitOfWork.RefreshTokensRepository.GetAsync(tokenId);
+
+                this.ValidateRefreshTokensRefreshToken(tokenId, refreshToken);
+
+                AccessToken accessToken = application.RefreshAccessToken(refreshToken);
+                RefreshToken newRefreshToken = application.RefreshRefreshToken(refreshToken);
+
+                tokens = new TokenPair(accessToken.Id.Decrypt(), newRefreshToken.Id.Decrypt());
+
+                refreshToken.Use();
+
+                await this.UnitOfWork.RefreshTokensRepository.UpdateAsync(refreshToken);
+                await this.UnitOfWork.RefreshTokensRepository.AddAsync(newRefreshToken);
+
+                transactionScope.Complete();
+            }
+
+            return tokens;
+        }
+
+        private void ValidateRefreshTokensParamters(TokenValue refreshTokenValue, Url callbackUrl)
+        {
+            if(refreshTokenValue == null)
+            {
+                throw new ArgumentNullException(nameof(refreshTokenValue));
+            }
+
+            if(callbackUrl == null)
+            {
+                throw new ArgumentNullException(nameof(callbackUrl));
+            }
+        }
+
+        private void ValidateRefreshTokensApplication(TokenValue refreshTokenValue, Url callbackUrl, Application application)
+        {
+            if(application == null)
+            {
+                throw new ApplicationNotFoundException(refreshTokenValue.ApplicationId);
+            }
+
+            if(application.CallbackUrl != callbackUrl)
+            {
+                throw new ArgumentException("Wrong callback url given.");
+            }
+        }
+
+        private void ValidateRefreshTokensRefreshToken(TokenId tokenId, RefreshToken refreshToken)
+        {
+            if(refreshToken == null)
+            {
+                throw new RefreshTokenNotFoundException(tokenId);
+            }
+
+            TokenVerificationResult tokenVerificationResult = refreshToken.Verify();
+
+            if(tokenVerificationResult == TokenVerificationResult.Failed)
+            {
+                throw new InvalidTokenException(tokenVerificationResult.Message);
             }
         }
     }
