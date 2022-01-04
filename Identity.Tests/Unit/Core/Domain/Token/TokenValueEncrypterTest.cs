@@ -29,7 +29,7 @@ namespace Identity.Tests.Unit.Core.Domain
 
         private TokenValue GetTokenValue()
         {
-            var tokenInformation = new TokenInformation(
+            TokenInformation tokenInformation = new(
                 Guid.NewGuid(),
                 ApplicationId.Generate(),
                 TokenType.Access,

@@ -92,11 +92,11 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public async Task TestAddAsync_WhenPermissionGiven_ThenPermissionIsStored()
         {
-            var permissionDto = new PermissionDto(
+            PermissionDto permissionDto = new(
                 resourceId: "MyResource",
                 name: "MyPermission",
                 description: "My permission description.");
-            var permissionRepository = new PermissionsRepository(this.IdentityContext);
+            PermissionsRepository permissionRepository = new(this.IdentityContext);
 
             await permissionRepository.AddAsync(permissionDto);
 
@@ -112,11 +112,11 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public async Task TestUpdateAsync_WhenPermissionGiven_ThenPermissionIsUpdated()
         {
-            var permissionDto = new PermissionDto(
+            PermissionDto permissionDto = new(
                 resourceId: "MyResource",
                 name: "MyPermission",
                 description: "My permission description.");
-            var permissionRepository = new PermissionsRepository(this.IdentityContext);
+            PermissionsRepository permissionRepository = new(this.IdentityContext);
             await permissionRepository.AddAsync(permissionDto);
             permissionDto = new PermissionDto(
                 resourceId: "MyResource",
@@ -137,11 +137,11 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public async Task TestRemoveAsync_WhenPermissionGiven_ThenPermissionIsRemoved()
         {
-            var permissionDto = new PermissionDto(
+            PermissionDto permissionDto = new(
                 resourceId: "MyResource",
                 name: "MyPermission",
                 description: "My permission description.");
-            var permissionRepository = new PermissionsRepository(this.IdentityContext);
+            PermissionsRepository permissionRepository = new(this.IdentityContext);
             await permissionRepository.AddAsync(permissionDto);
 
             await permissionRepository.RemoveAsync(permissionDto);
@@ -154,11 +154,11 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public async Task TestGetAsync_WhenPermissionIdGiven_ThenPermissionIsReturned()
         {
-            var permissionDto = new PermissionDto(
+            PermissionDto permissionDto = new(
                 resourceId: "MyResource",
                 name: "MyPermission",
                 description: "My permission description.");
-            var permissionRepository = new PermissionsRepository(this.IdentityContext);
+            PermissionsRepository permissionRepository = new(this.IdentityContext);
             await permissionRepository.AddAsync(permissionDto);
 
             PermissionDto result = await permissionRepository.GetAsync(("MyResource", "MyPermission"));
@@ -172,11 +172,11 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             Pagination pagination,
             IEnumerable<PermissionDto> expectedPermissions)
         {
-            var permissionDto = new PermissionDto(
+            PermissionDto permissionDto = new(
                 resourceId: "MyResource",
                 name: "MyPermission",
                 description: "My permission description.");
-            var permissionRepository = new PermissionsRepository(this.IdentityContext);
+            PermissionsRepository permissionRepository = new(this.IdentityContext);
             permissions.ToList().ForEach(r => permissionRepository.AddAsync(r).Wait());
 
             IEnumerable<PermissionDto> result = await permissionRepository.GetAsync(pagination);

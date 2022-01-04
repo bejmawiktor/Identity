@@ -36,7 +36,7 @@ namespace Identity.Tests.Unit.Core.Domain
             PermissionId[] permissions = null,
             DateTime? expirationDate = null)
         {
-            var permissionsReplacement = new PermissionId[]
+            PermissionId[] permissionsReplacement = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
@@ -61,7 +61,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenPermissionsGiven_ThenPermissionsAreSet()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")

@@ -75,12 +75,12 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestCreatePermission_WhenCreating_ThenPermissionCreatedIsNotified()
         {
             PermissionCreated permissionCreated = null;
-            var eventDispatcherMock = new Mock<IEventDispatcher>();
+            Mock<IEventDispatcher> eventDispatcherMock = new();
             eventDispatcherMock
                 .Setup(e => e.Dispatch(It.IsAny<PermissionCreated>()))
                 .Callback((PermissionCreated p) => permissionCreated = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
-            var resourceId = new ResourceId("TestResource");
+            ResourceId resourceId = new("TestResource");
             Resource resource = this.GetResource(resourceId);
 
             Permission permission = resource.CreatePermission(
@@ -112,7 +112,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestCreate_WhenCreatingResource_ThenResourceCreatedIsNotified()
         {
             ResourceCreated resourceCreated = null;
-            var eventDispatcherMock = new Mock<IEventDispatcher>();
+            Mock<IEventDispatcher> eventDispatcherMock = new();
             eventDispatcherMock
                 .Setup(e => e.Dispatch(It.IsAny<ResourceCreated>()))
                 .Callback((ResourceCreated p) => resourceCreated = p);

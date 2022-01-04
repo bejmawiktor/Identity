@@ -87,8 +87,8 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public async Task TestAddAsync_WhenRoleGiven_ThenRoleIsStored()
         {
-            var roleId = Guid.NewGuid();
-            var roleDto = new RoleDto(
+            Guid roleId = Guid.NewGuid();
+            RoleDto roleDto = new(
                 id: roleId,
                 name: "MyRole",
                 description: "My role description.",
@@ -96,7 +96,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 {
                     ("MyResource", "MyPermission")
                 });
-            var roleRepository = new RolesRepository(this.IdentityContext);
+            RolesRepository roleRepository = new(this.IdentityContext);
 
             await roleRepository.AddAsync(roleDto);
 
@@ -117,8 +117,8 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public async Task TestUpdateAsync_WhenRoleGiven_ThenRoleIsUpdated()
         {
-            var roleId = Guid.NewGuid();
-            var roleDto = new RoleDto(
+            Guid roleId = Guid.NewGuid();
+            RoleDto roleDto = new(
                 id: roleId,
                 name: "MyRole",
                 description: "My role description.",
@@ -126,7 +126,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 {
                     ("MyResource", "MyPermission")
                 });
-            var roleRepository = new RolesRepository(this.IdentityContext);
+            RolesRepository roleRepository = new(this.IdentityContext);
             await roleRepository.AddAsync(roleDto);
             roleDto = new RoleDto(
                 id: roleId,
@@ -150,8 +150,8 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public async Task TestRemoveAsync_WhenRoleGiven_ThenRoleIsRemoved()
         {
-            var roleId = Guid.NewGuid();
-            var roleDto = new RoleDto(
+            Guid roleId = Guid.NewGuid();
+            RoleDto roleDto = new RoleDto(
                 id: roleId,
                 name: "MyRole",
                 description: "My role description.",
@@ -159,7 +159,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 {
                     ("MyResource", "MyPermission")
                 });
-            var roleRepository = new RolesRepository(this.IdentityContext);
+            RolesRepository roleRepository = new(this.IdentityContext);
             await roleRepository.AddAsync(roleDto);
 
             await roleRepository.RemoveAsync(roleDto);
@@ -172,8 +172,8 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public async Task TestGetAsync_WhenRoleIdGiven_ThenRoleIsReturned()
         {
-            var roleId = Guid.NewGuid();
-            var roleDto = new RoleDto(
+            Guid roleId = Guid.NewGuid();
+            RoleDto roleDto = new(
                 id: roleId,
                 name: "MyRole",
                 description: "My role description.",
@@ -181,7 +181,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 {
                     ("MyResource", "MyPermission")
                 });
-            var roleRepository = new RolesRepository(this.IdentityContext);
+            RolesRepository roleRepository = new(this.IdentityContext);
             await roleRepository.AddAsync(roleDto);
 
             RoleDto result = await roleRepository.GetAsync(roleId);
@@ -195,7 +195,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             Pagination pagination,
             IEnumerable<RoleDto> expectedRoles)
         {
-            var roleRepository = new RolesRepository(this.IdentityContext);
+            RolesRepository roleRepository = new(this.IdentityContext);
             roles.ToList().ForEach(r => roleRepository.AddAsync(r).Wait());
 
             IEnumerable<RoleDto> result = await roleRepository.GetAsync(pagination);

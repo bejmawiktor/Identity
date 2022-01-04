@@ -43,7 +43,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestConstructor_WhenBase64HashedStringGiven_ThenToStringReturnsBased64HashedString()
         {
             string base64HashedCode = HashedCodeTest.TestCode.ToString();
-            var hashedCode = new HashedCode(base64HashedCode);
+            HashedCode hashedCode = new HashedCode(base64HashedCode);
 
             Assert.That(hashedCode.ToString(), Is.EqualTo(base64HashedCode));
         }
@@ -52,7 +52,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestConstructor_WhenHashedCodeBytesGiven_ThenToByteArrayReturnsSameByteArray()
         {
             byte[] hashedCodeBytes = HashedCodeTest.TestCode.ToByteArray();
-            var hashedCode = new HashedCode(hashedCodeBytes);
+            HashedCode hashedCode = new HashedCode(hashedCodeBytes);
 
             Assert.That(hashedCode.ToByteArray(), Is.EqualTo(hashedCodeBytes));
         }

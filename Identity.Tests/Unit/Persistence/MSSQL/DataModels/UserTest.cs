@@ -14,26 +14,26 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public void TestConstructor_WhenDtoGiven_ThenMembersAreSet()
         {
-            var roles = new Guid[]
+            Guid[] roles = new Guid[]
             {
                 Guid.NewGuid(),
                 Guid.NewGuid()
             };
-            var permissions = new (string ResourceId, string Name)[]
+            (string ResourceId, string Name)[] permissions = new (string ResourceId, string Name)[]
             {
                 ("MyResource", "MyPermission"),
                 ("MyResource2", "MyPermission2")
             };
             Guid userId = Guid.NewGuid();
             HashedPassword hashedPassword = HashedPassword.Hash(new Password("MyPassword"));
-            var userDto = new Identity.Core.Application.UserDto(
+            UserDto userDto = new UserDto(
                 userId,
                 "example@example.com",
                 hashedPassword.ToString(),
                 roles,
                 permissions);
 
-            var user = new User(
+            User user = new User(
                 userDto);
 
             Assert.Multiple(() =>
@@ -79,25 +79,25 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public void TestSetFields_WhenDtoGiven_ThenMembersAreSet()
         {
-            var roles = new Guid[]
+            Guid[] roles = new Guid[]
             {
                 Guid.NewGuid(),
                 Guid.NewGuid()
             };
-            var permissions = new (string ResourceId, string Name)[]
+            (string ResourceId, string Name)[] permissions = new (string ResourceId, string Name)[]
             {
                 ("MyResource", "MyPermission"),
                 ("MyResource2", "MyPermission2")
             };
             Guid userId = Guid.NewGuid();
             HashedPassword hashedPassword = HashedPassword.Hash(new Password("MyPassword"));
-            var userDto = new Identity.Core.Application.UserDto(
+            UserDto userDto = new(
                 userId,
                 "example@example.com",
                 hashedPassword.ToString(),
                 roles,
                 permissions);
-            var user = new User();
+            User user = new();
 
             user.SetFields(userDto);
 
@@ -144,19 +144,19 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public void TestToDto_WhenConvertingToDto_ThenUserDtoIsReturned()
         {
-            var roles = new Guid[]
+            Guid[] roles = new Guid[]
             {
                 Guid.NewGuid(),
                 Guid.NewGuid()
             };
-            var permissions = new (string ResourceId, string Name)[]
+            (string ResourceId, string Name)[] permissions = new (string ResourceId, string Name)[]
             {
                 ("MyResource", "MyPermission"),
                 ("MyResource2", "MyPermission2")
             };
             Guid userId = Guid.NewGuid();
             HashedPassword hashedPassword = HashedPassword.Hash(new Password("MyPassword"));
-            var user = new User()
+            User user = new()
             {
                 Id = userId,
                 Email = "example@example.com",

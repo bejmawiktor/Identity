@@ -46,7 +46,7 @@ namespace Identity.Persistence.MSSQL
 
         private void Remove(PermissionDto permission)
         {
-            var dataModel = this.Context
+            Permission dataModel = this.Context
                 .Find<Permission>(new object[] { permission.Id.Name, permission.Id.ResourceId });
 
             this.Context.Remove(dataModel);
@@ -60,7 +60,7 @@ namespace Identity.Persistence.MSSQL
 
         private void Update(PermissionDto permission)
         {
-            var dataModel = this.Context
+            Permission dataModel = this.Context
                 .Find<Permission>(new object[] { permission.Id.Name, permission.Id.ResourceId });
             dataModel.SetFields(permission);
 

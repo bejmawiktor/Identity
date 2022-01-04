@@ -9,7 +9,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public void TestConstructor_WhenDtoGiven_ThenMembersAreSet()
         {
-            var resource = new Resource(
+            Resource resource = new(
                 new ResourceDto("MyResource", "My resource description."));
 
             Assert.Multiple(() =>
@@ -22,7 +22,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public void TestSetFields_WhenDtoGiven_ThenMembersAreSet()
         {
-            var resource = new Resource();
+            Resource resource = new();
 
             resource.SetFields(new ResourceDto("MyResource", "My resource description."));
 
@@ -36,7 +36,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public void TestToDto_WhenConvertingToDto_ThenResourceDtoIsReturned()
         {
-            var resource = new Resource()
+            Resource resource = new()
             {
                 Id = "MyResource",
                 Description = "My resource description."

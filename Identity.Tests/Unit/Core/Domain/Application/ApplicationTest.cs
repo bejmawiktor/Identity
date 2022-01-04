@@ -227,7 +227,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestCreateAuthorizationCode_WhenCreating_ThenAuthorizationCodeIsReturned()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource1"), "Add")
             };
@@ -248,7 +248,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestCreateAccessToken_WhenCreating_ThenAccessTokenIsReturned()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource1"), "Add")
             };
@@ -267,7 +267,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestCreateRefreshToken_WhenCreating_ThenRefreshTokenIsReturned()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource1"), "Add")
             };
@@ -287,7 +287,7 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             ApplicationId firstApplicationId = ApplicationId.Generate();
             ApplicationId secondApplicationId = ApplicationId.Generate();
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource1"), "Add")
             };
@@ -306,7 +306,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestRefreshAccessToken_WhenUsedRefreshTokenGiven_ThenInvalidOperationExceptionIsThrown()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource1"), "Add")
             };
@@ -325,11 +325,11 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestRefreshAccessToken_WhenExpiredRefreshTokenGiven_ThenInvalidOperationExceptionIsThrown()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource1"), "Add")
             };
-            var tokenId = TokenId.GenerateRefreshTokenId(applicationId, permissions, DateTime.Now.AddDays(-1));
+            TokenId tokenId = TokenId.GenerateRefreshTokenId(applicationId, permissions, DateTime.Now.AddDays(-1));
             Application application = this.GetApplication(applicationId);
             RefreshToken refreshToken = new RefreshToken(tokenId);
 
@@ -344,7 +344,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestRefreshAccessToken_WhenRefreshTokenGiven_ThenAccessTokenIsReturned()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource1"), "Add")
             };
@@ -365,7 +365,7 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             ApplicationId firstApplicationId = ApplicationId.Generate();
             ApplicationId secondApplicationId = ApplicationId.Generate();
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource1"), "Add")
             };
@@ -384,7 +384,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestRefreshRefreshToken_WhenUsedRefreshTokenGiven_ThenInvalidOperationExceptionIsThrown()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource1"), "Add")
             };
@@ -403,11 +403,11 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestRefreshRefreshToken_WhenExpiredRefreshTokenGiven_ThenInvalidOperationExceptionIsThrown()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource1"), "Add")
             };
-            var tokenId = TokenId.GenerateRefreshTokenId(applicationId, permissions, DateTime.Now.AddDays(-1));
+            TokenId tokenId = TokenId.GenerateRefreshTokenId(applicationId, permissions, DateTime.Now.AddDays(-1));
             Application application = this.GetApplication(applicationId);
             RefreshToken refreshToken = new RefreshToken(tokenId);
 
@@ -422,7 +422,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestRefreshRefreshToken_WhenRefreshTokenGiven_ThenRefreshTokenIsReturned()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource1"), "Add")
             };

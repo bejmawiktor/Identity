@@ -21,7 +21,7 @@ namespace Identity.Core.Domain
             byte[] salt;
             byte[] pbkdf2Subkey;
 
-            using(var rfc2898DeriveBytes = new Rfc2898DeriveBytes(password.ToString(), this.SaltLength, this.Pbkdf2IterCount, this.HashAlgorithmName))
+            using(Rfc2898DeriveBytes rfc2898DeriveBytes = new(password.ToString(), this.SaltLength, this.Pbkdf2IterCount, this.HashAlgorithmName))
             {
                 salt = rfc2898DeriveBytes.Salt;
                 pbkdf2Subkey = rfc2898DeriveBytes.GetBytes(this.Pbkdf2SubkeyLength);
@@ -32,7 +32,7 @@ namespace Identity.Core.Domain
 
         private byte[] AssemblyHashedPassword(byte[] salt, byte[] pbkdf2Subkey)
         {
-            var hashedPassword = new byte[this.HashedPasswordLength];
+            byte[] hashedPassword = new byte[this.HashedPasswordLength];
 
             Buffer.BlockCopy(salt, 0, hashedPassword, 0, this.SaltLength);
             Buffer.BlockCopy(pbkdf2Subkey, 0, hashedPassword, this.SaltLength, this.Pbkdf2SubkeyLength);
@@ -66,7 +66,7 @@ namespace Identity.Core.Domain
             byte[] pbkdf2Subkey = this.ExtractPbkdf2Subkey(hashedPassword);
             byte[] verifiedPasswordBytes;
 
-            using(var rfc2898DeriveBytes = new Rfc2898DeriveBytes(verifiedPassword.ToString(), salt, this.Pbkdf2IterCount, this.HashAlgorithmName))
+            using(Rfc2898DeriveBytes rfc2898DeriveBytes = new(verifiedPassword.ToString(), salt, this.Pbkdf2IterCount, this.HashAlgorithmName))
             {
                 verifiedPasswordBytes = rfc2898DeriveBytes.GetBytes(this.Pbkdf2SubkeyLength);
             }

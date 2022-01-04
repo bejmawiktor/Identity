@@ -29,16 +29,16 @@ namespace Identity.Core.Domain
                 throw new ArgumentNullException(nameof(tokenInformation));
             }
 
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithm);
-            var claims = new Claim[]
+            SymmetricSecurityKey securityKey = new(Encoding.UTF8.GetBytes(SecretKey));
+            SigningCredentials credentials = new(securityKey, SecurityAlgorithm);
+            Claim[] claims = new Claim[]
             {
                 new Claim(JwtRegisteredClaimNames.Jti, tokenInformation.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Sub, tokenInformation.ApplicationId.ToString()),
                 new Claim(this.TokenTypeClaimName, tokenInformation.TokenType.Name),
                 new Claim(this.PermissionsClaimName, this.ConvertPermissionsToPermissionsText(tokenInformation.Permissions))
             };
-            var token = new JwtSecurityToken(
+            JwtSecurityToken token = new JwtSecurityToken(
                 issuer: Issuer,
                 audience: Audience,
                 claims: claims,
@@ -51,7 +51,7 @@ namespace Identity.Core.Domain
 
         private string ConvertPermissionsToPermissionsText(IEnumerable<PermissionId> permissions)
         {
-            var permissionsText = new StringBuilder();
+            StringBuilder permissionsText = new();
 
             foreach(PermissionId permission in permissions)
             {
@@ -103,7 +103,7 @@ namespace Identity.Core.Domain
                 throw new ArgumentException("Wrong permissions given.");
             }
 
-            foreach(var permission in splitedPermissionsText)
+            foreach(string permission in splitedPermissionsText)
             {
                 string[] permissionComponents = permission.Split('.');
 
@@ -169,7 +169,7 @@ namespace Identity.Core.Domain
 
             try
             {
-                var tokenType = this.ExtractTokenType(jwtSecurityToken);
+                TokenType tokenType = this.ExtractTokenType(jwtSecurityToken);
             }
             catch
             {
@@ -178,7 +178,7 @@ namespace Identity.Core.Domain
 
             try
             {
-                var permissions = this.ExtractPermissions(jwtSecurityToken);
+                IEnumerable<PermissionId> permissions = this.ExtractPermissions(jwtSecurityToken);
             }
             catch
             {
@@ -190,8 +190,8 @@ namespace Identity.Core.Domain
 
         private bool TryGetJwtSecurityToken(string token, out JwtSecurityToken jwtSecurityToken)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var securityKey = Encoding.ASCII.GetBytes(SecretKey);
+            JwtSecurityTokenHandler tokenHandler = new();
+            byte[] securityKey = Encoding.ASCII.GetBytes(SecretKey);
 
             try
             {
@@ -257,7 +257,7 @@ namespace Identity.Core.Domain
 
         private DateTime ExtractExpirationDate(JwtSecurityToken jwtSecurityToken)
         {
-            var expirationUnixTimeStamp = long.Parse(jwtSecurityToken.Claims
+            long expirationUnixTimeStamp = long.Parse(jwtSecurityToken.Claims
                 .FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Exp)
                 .Value);
 
@@ -266,7 +266,7 @@ namespace Identity.Core.Domain
 
         private DateTime UnixTimeStampToDateTime(double unixTimeStamp)
         {
-            var dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            DateTime dateTime = new(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             dateTime = dateTime.AddSeconds(unixTimeStamp).ToLocalTime();
 
             return dateTime;

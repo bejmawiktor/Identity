@@ -72,7 +72,7 @@ namespace Identity.Core.Domain
 
         public static Role Create(string name, string description)
         {
-            var role = new Role(RoleId.Generate(), name, description);
+            Role role = new(RoleId.Generate(), name, description);
 
             EventManager.Instance.Notify(new RoleCreated(
                 role.Id,

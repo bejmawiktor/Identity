@@ -10,7 +10,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public void TestCreateDbContext_WhenNullArgsGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var identityContextFactory = new IdentityContextFactory();
+            IdentityContextFactory identityContextFactory = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -22,7 +22,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public void TestCreateDbContext_WhenEmptyArgsGiven_ThenArgumentExceptionIsThrown()
         {
-            var identityContextFactory = new IdentityContextFactory();
+            IdentityContextFactory identityContextFactory = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()
@@ -34,7 +34,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public void TestCreateDbContext_WhenConnectionStringsGivenInArgs_ThenIdentityContextIsReturned()
         {
-            var identityContextFactory = new IdentityContextFactory();
+            IdentityContextFactory identityContextFactory = new();
 
             IdentityContext identityContext = identityContextFactory.CreateDbContext(new string[]
             {

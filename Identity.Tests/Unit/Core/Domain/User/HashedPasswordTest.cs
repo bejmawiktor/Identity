@@ -43,7 +43,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestConstructor_WhenBase64HashedStringGiven_ThenToStringReturnsBased64HashedString()
         {
             string base64HashedPassword = HashedPasswordTest.TestPassword.ToString();
-            var password = new HashedPassword(base64HashedPassword);
+            HashedPassword password = new(base64HashedPassword);
 
             Assert.That(password.ToString(), Is.EqualTo(base64HashedPassword));
         }
@@ -52,7 +52,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestConstructor_WhenHashedPasswordBytesGiven_ThenToByteArrayReturnsSameByteArray()
         {
             byte[] hashedPassowrdBytes = HashedPasswordTest.TestPassword.ToByteArray();
-            var password = new HashedPassword(hashedPassowrdBytes);
+            HashedPassword password = new(hashedPassowrdBytes);
 
             Assert.That(password.ToByteArray(), Is.EqualTo(hashedPassowrdBytes));
         }
@@ -96,7 +96,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [TestCase("!2#Asdfg;'p*&")]
         public void TestVerify_WhenCorrectPasswordGiven_ThenSuccessIsReturned(string verifiedPassword)
         {
-            var password = new Password(verifiedPassword);
+            Password password = new(verifiedPassword);
             HashedPassword hashedPassword = HashedPassword.Hash(password);
 
             PasswordVerificationResult result = hashedPassword.Verify(password);

@@ -9,7 +9,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenDefaultConstructorIsUsed_ThenFailedIsReturned()
         {
-            var tokenVerificationResult = new TokenVerificationResult();
+            TokenVerificationResult tokenVerificationResult = new();
 
             Assert.That(tokenVerificationResult, Is.EqualTo(TokenVerificationResult.Failed));
         }
@@ -17,7 +17,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenDefaultConstructorIsUsed_ThenMessageIsEmpty()
         {
-            var tokenVerificationResult = new TokenVerificationResult();
+            TokenVerificationResult tokenVerificationResult = new();
 
             Assert.That(tokenVerificationResult.Message, Is.Empty);
         }

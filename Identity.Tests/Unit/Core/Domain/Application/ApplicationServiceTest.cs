@@ -19,7 +19,7 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             IUnitOfWork unitOfWork = this.GetUnitOfWork();
 
-            var applicationService = new ApplicationService(
+            ApplicationService applicationService = new(
                 unitOfWork);
 
             Assert.That(applicationService.UnitOfWork, Is.EqualTo(unitOfWork));
@@ -29,7 +29,7 @@ namespace Identity.Tests.Unit.Core.Domain
             IApplicationsRepository applicationsRepository = null,
             IUsersRepository usersRepository = null)
         {
-            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            Mock<IUnitOfWork> unitOfWorkMock = new();
             unitOfWorkMock.Setup(x => x.ApplicationsRepository)
                 .Returns(applicationsRepository ?? new Mock<IApplicationsRepository>().Object);
             unitOfWorkMock.Setup(x => x.UsersRepository)
@@ -53,19 +53,19 @@ namespace Identity.Tests.Unit.Core.Domain
         public async Task TestCreateApplicationAsync_WhenNoExceptionsThrown_ThenApplicationIsPersisted()
         {
             UserId userId = UserId.Generate();
-            var user = new User(
+            User user = new(
                 id: userId,
                 email: new EmailAddress("example@example.com"),
                 password: TestPassword);
-            var usersRepositoryMock = new Mock<IUsersRepository>();
+            Mock<IUsersRepository> usersRepositoryMock = new();
             usersRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<UserId>()))
                 .Returns(Task.FromResult(user));
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
             IUnitOfWork unitOfWork = this.GetUnitOfWork(
                 applicationsRepositoryMock.Object,
                 usersRepositoryMock.Object);
-            var applicationService = new ApplicationService(unitOfWork);
+            ApplicationService applicationService = new(unitOfWork);
 
             await applicationService.CreateApplicationAsync(
                 userId: userId,
@@ -80,25 +80,25 @@ namespace Identity.Tests.Unit.Core.Domain
         public async Task TestCreateApplicationAsync_WhenNoExceptionsThrown_ThenApplicationCreatedIsPublished()
         {
             ApplicationCreated applicationCreated = null;
-            var eventDispatcherMock = new Mock<IEventDispatcher>();
+            Mock<IEventDispatcher> eventDispatcherMock = new();
             eventDispatcherMock
                 .Setup(e => e.Dispatch(It.IsAny<IEvent>()))
                 .Callback((IEvent p) => applicationCreated = p as ApplicationCreated);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             UserId userId = UserId.Generate();
-            var user = new User(
+            User user = new User(
                 id: userId,
                 email: new EmailAddress("example@example.com"),
                 password: TestPassword);
-            var usersRepositoryMock = new Mock<IUsersRepository>();
+            Mock<IUsersRepository> usersRepositoryMock = new();
             usersRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<UserId>()))
                 .Returns(Task.FromResult(user));
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
             IUnitOfWork unitOfWork = this.GetUnitOfWork(
                 applicationsRepositoryMock.Object,
                 usersRepositoryMock.Object);
-            var applicationService = new ApplicationService(unitOfWork);
+            ApplicationService applicationService = new(unitOfWork);
 
             await applicationService.CreateApplicationAsync(
                 userId: userId,
@@ -119,28 +119,28 @@ namespace Identity.Tests.Unit.Core.Domain
         public async Task TestCreateApplicationAsync_WhenAddApplicationThrowsException_ThenApplicationCreatedIsNotPublished()
         {
             ApplicationCreated applicationCreated = null;
-            var eventDispatcherMock = new Mock<IEventDispatcher>();
+            Mock<IEventDispatcher> eventDispatcherMock = new();
             eventDispatcherMock
                 .Setup(e => e.Dispatch(It.IsAny<IEvent>()))
                 .Callback((IEvent p) => applicationCreated = p as ApplicationCreated);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             UserId userId = UserId.Generate();
-            var user = new User(
+            User user = new(
                 id: userId,
                 email: new EmailAddress("example@example.com"),
                 password: TestPassword);
-            var usersRepositoryMock = new Mock<IUsersRepository>();
+            Mock<IUsersRepository> usersRepositoryMock = new();
             usersRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<UserId>()))
                 .Returns(Task.FromResult(user));
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(p => p.AddAsync(It.IsAny<Application>()))
                 .Throws(new Exception());
             IUnitOfWork unitOfWork = this.GetUnitOfWork(
                 applicationsRepositoryMock.Object,
                 usersRepositoryMock.Object);
-            var applicationService = new ApplicationService(unitOfWork);
+            ApplicationService applicationService = new(unitOfWork);
 
             try
             {
@@ -161,23 +161,23 @@ namespace Identity.Tests.Unit.Core.Domain
         public async Task TestCreateApplicationAsync_WhenGetUserThrowsException_ThenApplicationCreatedIsNotPublished()
         {
             ApplicationCreated applicationCreated = null;
-            var eventDispatcherMock = new Mock<IEventDispatcher>();
+            Mock<IEventDispatcher> eventDispatcherMock = new();
             eventDispatcherMock
                 .Setup(e => e.Dispatch(It.IsAny<IEvent>()))
                 .Callback((IEvent p) => applicationCreated = p as ApplicationCreated);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             UserId userId = UserId.Generate();
-            var user = new User(
+            User user = new User(
                 id: userId,
                 email: new EmailAddress("example@example.com"),
                 password: TestPassword);
-            var usersRepositoryMock = new Mock<IUsersRepository>();
+            Mock<IUsersRepository> usersRepositoryMock = new();
             usersRepositoryMock
                 .Setup(p => p.GetAsync(It.IsAny<UserId>()))
                 .Throws(new Exception());
             IUnitOfWork unitOfWork = this.GetUnitOfWork(
                 usersRepository: usersRepositoryMock.Object);
-            var applicationService = new ApplicationService(unitOfWork);
+            ApplicationService applicationService = new(unitOfWork);
 
             try
             {
@@ -198,23 +198,23 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestCreateApplicationAsync_WhenGetUserReturnsNull_ThenUserNotFoundExceptionIsThrown()
         {
             ApplicationCreated applicationCreated = null;
-            var eventDispatcherMock = new Mock<IEventDispatcher>();
+            Mock<IEventDispatcher> eventDispatcherMock = new();
             eventDispatcherMock
                 .Setup(e => e.Dispatch(It.IsAny<IEvent>()))
                 .Callback((IEvent p) => applicationCreated = p as ApplicationCreated);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             UserId userId = UserId.Generate();
-            var user = new User(
+            User user = new(
                 id: userId,
                 email: new EmailAddress("example@example.com"),
                 password: TestPassword);
-            var usersRepositoryMock = new Mock<IUsersRepository>();
+            Mock<IUsersRepository> usersRepositoryMock = new();
             usersRepositoryMock
                 .Setup(p => p.GetAsync(It.IsAny<UserId>()))
                 .Returns(Task.FromResult((User)null));
             IUnitOfWork unitOfWork = this.GetUnitOfWork(
                 usersRepository: usersRepositoryMock.Object);
-            var applicationService = new ApplicationService(unitOfWork);
+            ApplicationService applicationService = new(unitOfWork);
 
             Assert.ThrowsAsync(
                 Is.InstanceOf<UserNotFoundException>()

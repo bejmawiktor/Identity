@@ -29,7 +29,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenObtainedPermissionIdGiven_ThenObtainedPermissionIdIsSet()
         {
-            var obtainedPermissionId = new PermissionId(new ResourceId("MyResource"), "Permission");
+            PermissionId obtainedPermissionId = new(new ResourceId("MyResource"), "Permission");
 
             UserPermissionObtained userPermissionObtained = this.GetUserPermissionObtained(
                 obtainedPermissionId: obtainedPermissionId);

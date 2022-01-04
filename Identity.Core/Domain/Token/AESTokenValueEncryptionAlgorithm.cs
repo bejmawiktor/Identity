@@ -9,7 +9,6 @@ namespace Identity.Core.Domain
     {
         private static readonly int AesBlockByteSize = 128 / 8;
         private static readonly string Key = "gDZ2Z4VUbtunNuhtCSdxMfiGcjbbcaWGhKS6UwP9DV6fTcBSw58HqGMUaY8APHq6";
-
         private static readonly byte[] Iv
             = new byte[] { 10, 58, 188, 94, 18, 176, 128, 190, 13, 128, 126, 166, 42, 11, 100, 175 };
 
@@ -19,12 +18,12 @@ namespace Identity.Core.Domain
 
             byte[] key = this.GetKey(Key);
 
-            using(var aes = Aes.Create())
+            using(Aes aes = Aes.Create())
             {
                 byte[] iv = encryptedTokenValue.Take(AesBlockByteSize).ToArray();
                 byte[] cipherText = encryptedTokenValue.Skip(AesBlockByteSize).ToArray();
 
-                using(var decryptor = aes.CreateDecryptor(key, iv))
+                using(ICryptoTransform decryptor = aes.CreateDecryptor(key, iv))
                 {
                     byte[] decryptedBytes = decryptor
                         .TransformFinalBlock(cipherText, 0, cipherText.Length);
@@ -50,7 +49,7 @@ namespace Identity.Core.Domain
                     byte[] plainText = Encoding.UTF8.GetBytes(tokenValue.ToString());
                     byte[] cipherText = encryptor
                         .TransformFinalBlock(plainText, 0, plainText.Length);
-                    var result = new byte[AESTokenValueEncryptionAlgorithm.Iv.Length + cipherText.Length];
+                    byte[] result = new byte[AESTokenValueEncryptionAlgorithm.Iv.Length + cipherText.Length];
 
                     AESTokenValueEncryptionAlgorithm.Iv.CopyTo(result, 0);
                     cipherText.CopyTo(result, AESTokenValueEncryptionAlgorithm.Iv.Length);

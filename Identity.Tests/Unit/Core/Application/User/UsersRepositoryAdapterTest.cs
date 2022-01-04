@@ -27,9 +27,9 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestConstructor_WhenUsersRepositoryGiven_ThenUsersRepositoryIsSet()
         {
-            var usersRepositoryMock = new Mock<IUsersRepository>();
+            Mock<IUsersRepository> usersRepositoryMock = new();
             IUsersRepository usersRepository = usersRepositoryMock.Object;
-            var usersRepositoryAdapter = new UsersRepositoryAdapter(usersRepository);
+            UsersRepositoryAdapter usersRepositoryAdapter = new(usersRepository);
 
             Assert.That(usersRepositoryAdapter.UsersRepository, Is.EqualTo(usersRepository));
         }
@@ -37,14 +37,14 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public async Task TestGetAsync_WhenUserWithEmailRegistered_ThenUserIsReturned()
         {
-            var emailAddress = new EmailAddress("example@example.com");
+            EmailAddress emailAddress = new("example@example.com");
             User user = User.Create(new EmailAddress("example@example.com"), this.HashedPassword);
-            var usersRepositoryMock = new Mock<IUsersRepository>();
+            Mock<IUsersRepository> usersRepositoryMock = new();
             usersRepositoryMock
                 .Setup(u => u.GetAsync(It.IsAny<string>()))
                 .Returns(Task.FromResult(new UserDtoConverter().ToDto(user)));
             IUsersRepository usersRepository = usersRepositoryMock.Object;
-            var usersRepositoryAdapter = new UsersRepositoryAdapter(usersRepository);
+            UsersRepositoryAdapter usersRepositoryAdapter = new(usersRepository);
 
             User result = await usersRepositoryAdapter.GetAsync(emailAddress);
 

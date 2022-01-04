@@ -25,7 +25,7 @@ namespace Identity.Tests.Unit.Core.Domain
             bool? used = null,
             IEnumerable<PermissionId> permissions = null)
         {
-            var permissionsReplacement = new PermissionId[]
+            PermissionId[] permissionsReplacement = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add")
             };
@@ -48,7 +48,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenOnlyIdWithPermissionsGiven_ThenUsedIsSetToFalse()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add")
             };
@@ -62,7 +62,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenOnlyIdWithPermissionsGiven_ThenExpiresAtIsSetTo60SecondsAfterNow()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add")
             };
@@ -76,7 +76,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenPermissionsGiven_ThenPermissionsAreSet()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add")
             };
@@ -116,7 +116,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenOnlyIdWithPermissionsGiven_ThenPermissionsAreSet()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add")
             };
@@ -154,7 +154,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestCreate_WhenCreating_ThenAuthorizationCodeIsReturned()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add")
             };
@@ -170,7 +170,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestCreate_WhenCreating_ThenCodeIsReturned()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add")
             };

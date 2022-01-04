@@ -9,7 +9,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public void TestConstructor_WhenDtoGiven_ThenMembersAreSet()
         {
-            var permission = new Permission(
+            Permission permission = new(
                 new PermissionDto("MyResource", "MyPermission", "My permission description."));
 
             Assert.Multiple(() =>
@@ -23,7 +23,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public void TestSetFields_WhenDtoGiven_ThenMembersAreSet()
         {
-            var permission = new Permission();
+            Permission permission = new();
 
             permission.SetFields(new PermissionDto("MyResource", "MyPermission", "My permission description."));
 
@@ -38,7 +38,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public void TestToDto_WhenConvertingToDto_ThenPermissionDtoIsReturned()
         {
-            var permission = new Permission()
+            Permission permission = new()
             {
                 ResourceId = "MyResource",
                 Name = "MyPermission",

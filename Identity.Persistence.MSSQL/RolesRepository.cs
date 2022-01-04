@@ -47,7 +47,7 @@ namespace Identity.Persistence.MSSQL
 
         private void Remove(RoleDto role)
         {
-            var dataModel = this.Context
+            Role dataModel = this.Context
                 .Find<Role>(new object[] { role.Id });
 
             this.Context.Remove(dataModel);
@@ -61,7 +61,7 @@ namespace Identity.Persistence.MSSQL
 
         private void Update(RoleDto role)
         {
-            var dataModel = this.Context
+            Role dataModel = this.Context
                 .Find<Role>(new object[] { role.Id });
             dataModel.SetFields(role);
 

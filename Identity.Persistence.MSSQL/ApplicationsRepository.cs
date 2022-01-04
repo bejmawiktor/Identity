@@ -48,7 +48,7 @@ namespace Identity.Persistence.MSSQL
 
         private void Remove(ApplicationDto application)
         {
-            var dataModel = this.Context
+            Application dataModel = this.Context
                 .Find<Application>(new object[] { application.Id });
 
             this.Context.Remove(dataModel);
@@ -62,7 +62,7 @@ namespace Identity.Persistence.MSSQL
 
         private void Update(ApplicationDto application)
         {
-            var dataModel = this.Context
+            Application dataModel = this.Context
                 .Find<Application>(new object[] { application.Id });
             dataModel.SetFields(application);
 

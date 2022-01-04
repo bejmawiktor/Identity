@@ -12,7 +12,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [SetUp]
         public void SetupTransaction()
         {
-            var options = new DbContextOptionsBuilder<IdentityContext>()
+            DbContextOptions<IdentityContext> options = new DbContextOptionsBuilder<IdentityContext>()
                 .UseInMemoryDatabase(databaseName: "Test")
                 .Options;
             this.IdentityContext = new IdentityContext(options);

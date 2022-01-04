@@ -40,7 +40,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenCorrectNameGiven_ThenNameIsSet()
         {
-            var permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
+            PermissionId permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
 
             Assert.That(permissionId.Name, Is.EqualTo("MyPermission"));
         }
@@ -48,7 +48,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenCorrectResourceIdGiven_ThenResourceIdIsSet()
         {
-            var permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
+            PermissionId permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
 
             Assert.That(permissionId.ResourceId, Is.EqualTo(new ResourceId("MyResource")));
         }
@@ -75,7 +75,7 @@ namespace Identity.Tests.Unit.Core.Domain
             string resourceName,
             string name)
         {
-            var permissionId = new PermissionId(new ResourceId(resourceName), name);
+            PermissionId permissionId = new PermissionId(new ResourceId(resourceName), name);
 
             Assert.That(permissionId.ToString(), Is.EqualTo($"{resourceName}.{name}"));
         }

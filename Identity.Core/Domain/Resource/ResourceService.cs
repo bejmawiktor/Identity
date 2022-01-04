@@ -18,7 +18,7 @@ namespace Identity.Core.Domain
         {
             using(EventsScope eventsScope = new EventsScope())
             {
-                var resource = Resource.Create(name, description);
+                Resource resource = Resource.Create(name, description);
 
                 await this.UnitOfWork.ResourcesRepository.AddAsync(resource);
 

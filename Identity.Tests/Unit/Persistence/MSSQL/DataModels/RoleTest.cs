@@ -12,7 +12,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         public void TestConstructor_WhenDtoGiven_ThenMembersAreSet()
         {
             Guid roleId = Guid.NewGuid();
-            var role = new Role(
+            Role role = new(
                 new RoleDto(
                     id: roleId,
                     name: "MyRole",
@@ -44,7 +44,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         public void TestSetFields_WhenDtoGiven_ThenMembersAreSet()
         {
             Guid roleId = Guid.NewGuid();
-            var role = new Role();
+            Role role = new();
 
             role.SetFields(
                 new RoleDto(
@@ -78,7 +78,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         public void TestToDto_WhenConvertingToDto_ThenRoleDtoIsReturned()
         {
             Guid roleId = Guid.NewGuid();
-            var role = new Role
+            Role role = new()
             {
                 Id = roleId,
                 Name = "MyRole",

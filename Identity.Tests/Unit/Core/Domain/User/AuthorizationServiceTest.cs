@@ -200,7 +200,7 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             IUnitOfWork unitOfWork = this.GetUnitOfWork();
 
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             Assert.That(authorizationService.UnitOfWork, Is.EqualTo(unitOfWork));
         }
@@ -214,7 +214,7 @@ namespace Identity.Tests.Unit.Core.Domain
             IRolesRepository rolesRepository = null,
             IUsersRepository usersRepository = null)
         {
-            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            Mock<IUnitOfWork> unitOfWorkMock = new();
             unitOfWorkMock
                 .Setup(u => u.ApplicationsRepository)
                 .Returns(applicationsRepository ?? new Mock<IApplicationsRepository>().Object);
@@ -254,7 +254,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestCheckUserAccess_WhenNullUserIdGiven_ThenArgumentNullExceptionIsThrown()
         {
             IUnitOfWork unitOfWork = this.GetUnitOfWork();
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             ArgumentNullException exception = Assert.ThrowsAsync<ArgumentNullException>(
                async () => await authorizationService.CheckUserAccess(
@@ -270,7 +270,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestCheckUserAccess_WhenNullPermissionIdGiven_ThenArgumentNullExceptionIsThrown()
         {
             IUnitOfWork unitOfWork = this.GetUnitOfWork();
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             ArgumentNullException exception = Assert.ThrowsAsync<ArgumentNullException>(
                async () => await authorizationService.CheckUserAccess(
@@ -285,12 +285,12 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestCheckUserAccess_WhenNotFoundUserIdGiven_ThenUserNotFoundExceptionIsThrown()
         {
-            var usersRepositoryMock = new Mock<IUsersRepository>();
+            Mock<IUsersRepository> usersRepositoryMock = new();
             usersRepositoryMock.Setup(u => u.GetAsync(It.IsAny<UserId>())).Returns(Task.FromResult((User)null));
             IUsersRepository usersRepository = usersRepositoryMock.Object;
             UserId userId = UserId.Generate();
             IUnitOfWork unitOfWork = this.GetUnitOfWork(usersRepository: usersRepository);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             UserNotFoundException exception = Assert.ThrowsAsync<UserNotFoundException>(
                async () => await authorizationService.CheckUserAccess(
@@ -305,11 +305,11 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public async Task TestCheckUserAccess_WhenUserPermittedByRoleGiven_ThenTrueIsReturned()
         {
-            var usersRepositoryMock = new Mock<IUsersRepository>();
-            var rolesRepositoryMock = new Mock<IRolesRepository>();
+            Mock<IUsersRepository> usersRepositoryMock = new();
+            Mock<IRolesRepository> rolesRepositoryMock = new();
             RoleId permittedRoleId = RoleId.Generate();
             RoleId notPermittedRoleId = RoleId.Generate();
-            var user = new User(
+            User user = new(
                 id: UserId.Generate(),
                 email: new EmailAddress("example@example.com"),
                 password: AuthorizationServiceTest.TestPassword,
@@ -318,8 +318,8 @@ namespace Identity.Tests.Unit.Core.Domain
                     notPermittedRoleId,
                     permittedRoleId,
                 });
-            var permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
-            var permittedRole = new Role(
+            PermissionId permissionId = new(new ResourceId("MyResource"), "MyPermission");
+            Role permittedRole = new(
                 id: permittedRoleId,
                 name: "MyRole",
                 description: "My role description",
@@ -327,7 +327,7 @@ namespace Identity.Tests.Unit.Core.Domain
                 {
                     permissionId
                 });
-            var notPermittedRole = new Role(
+            Role notPermittedRole = new(
                 id: notPermittedRoleId,
                 name: "MyRole",
                 description: "My role description");
@@ -339,7 +339,7 @@ namespace Identity.Tests.Unit.Core.Domain
             IUnitOfWork unitOfWork = this.GetUnitOfWork(
                 usersRepository: usersRepository,
                 rolesRepository: rolesRepository);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             bool userIsPermitted = await authorizationService.CheckUserAccess(user.Id, permissionId);
 
@@ -349,9 +349,9 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public async Task TestCheckUserAccess_WhenUserPermittedBySinglePermission_ThenTrueIsReturned()
         {
-            var usersRepositoryMock = new Mock<IUsersRepository>();
-            var permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
-            var user = new User(
+            Mock<IUsersRepository> usersRepositoryMock = new();
+            PermissionId permissionId = new(new ResourceId("MyResource"), "MyPermission");
+            User user = new(
                 id: UserId.Generate(),
                 email: new EmailAddress("example@example.com"),
                 password: AuthorizationServiceTest.TestPassword,
@@ -363,7 +363,7 @@ namespace Identity.Tests.Unit.Core.Domain
             usersRepositoryMock.Setup(u => u.GetAsync(It.IsAny<UserId>())).Returns(Task.FromResult(user));
             IUsersRepository usersRepository = usersRepositoryMock.Object;
             IUnitOfWork unitOfWork = this.GetUnitOfWork(usersRepository: usersRepository);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             bool userIsPermitted = await authorizationService.CheckUserAccess(user.Id, permissionId);
 
@@ -373,10 +373,10 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public async Task TestCheckUserAccess_WhenUserPermittedFromRoleAndSinglePermission_ThenTrueIsReturned()
         {
-            var usersRepositoryMock = new Mock<IUsersRepository>();
-            var rolesRepositoryMock = new Mock<IRolesRepository>();
-            var permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
-            var user = new User(
+            Mock<IUsersRepository> usersRepositoryMock = new();
+            Mock<IRolesRepository> rolesRepositoryMock = new();
+            PermissionId permissionId = new(new ResourceId("MyResource"), "MyPermission");
+            User user = new(
                 id: UserId.Generate(),
                 email: new EmailAddress("example@example.com"),
                 password: AuthorizationServiceTest.TestPassword,
@@ -388,7 +388,7 @@ namespace Identity.Tests.Unit.Core.Domain
                 {
                     permissionId
                 });
-            var role = new Role(
+            Role role = new(
                 id: RoleId.Generate(),
                 name: "MyRole",
                 description: "My role description",
@@ -403,7 +403,7 @@ namespace Identity.Tests.Unit.Core.Domain
             IUnitOfWork unitOfWork = this.GetUnitOfWork(
                 usersRepository: usersRepository,
                 rolesRepository: rolesRepository);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             bool userIsPermitted = await authorizationService.CheckUserAccess(user.Id, permissionId);
 
@@ -413,16 +413,16 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public async Task TestCheckUserAccess_WhenUserIsntPermittedFromRoleAndSinglePermission_ThenFalseIsReturned()
         {
-            var permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
-            var user = new User(
+            PermissionId permissionId = new(new ResourceId("MyResource"), "MyPermission");
+            User user = new(
                 id: UserId.Generate(),
                 email: new EmailAddress("example@example.com"),
                 password: AuthorizationServiceTest.TestPassword);
-            var usersRepositoryMock = new Mock<IUsersRepository>();
+            Mock<IUsersRepository> usersRepositoryMock = new();
             usersRepositoryMock.Setup(u => u.GetAsync(It.IsAny<UserId>())).Returns(Task.FromResult(user));
             IUsersRepository usersRepository = usersRepositoryMock.Object;
             IUnitOfWork unitOfWork = this.GetUnitOfWork(usersRepository: usersRepository);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             bool userIsPermitted = await authorizationService.CheckUserAccess(user.Id, permissionId);
 
@@ -432,9 +432,9 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestGenerateAuthorizationCode_WhenNullApplicationIdGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var permissions = new PermissionId[] { new PermissionId(new ResourceId("MyResource"), "Add") };
+            PermissionId[] permissions = new PermissionId[] { new PermissionId(new ResourceId("MyResource"), "Add") };
             IUnitOfWork unitOfWork = this.GetUnitOfWork();
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             ArgumentNullException exception = Assert.ThrowsAsync<ArgumentNullException>(
                 async () => await authorizationService.GenerateAuthorizationCode(
@@ -451,9 +451,9 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestGenerateAuthorizationCode_WhenNullCallbackUrlGiven_ThenArgumentNullExceptionIsThrown()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            var permissions = new PermissionId[] { new PermissionId(new ResourceId("MyResource"), "Add") };
+            PermissionId[] permissions = new PermissionId[] { new PermissionId(new ResourceId("MyResource"), "Add") };
             IUnitOfWork unitOfWork = this.GetUnitOfWork();
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             ArgumentNullException exception = Assert.ThrowsAsync<ArgumentNullException>(
                 async () => await authorizationService.GenerateAuthorizationCode(
@@ -470,14 +470,14 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestGenerateAuthorizationCode_WhenApplicationWasNotFoundInRepository_ThenApplicationNotFoundExceptionIsThrown()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            var permissions = new PermissionId[] { new PermissionId(new ResourceId("MyResource"), "Add") };
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            PermissionId[] permissions = new PermissionId[] { new PermissionId(new ResourceId("MyResource"), "Add") };
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult((Application)null));
             IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
             IUnitOfWork unitOfWork = this.GetUnitOfWork(applicationsRepository: applicationsRepository);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             ApplicationNotFoundException exception = Assert.ThrowsAsync<ApplicationNotFoundException>(
                 async () => await authorizationService.GenerateAuthorizationCode(
@@ -494,21 +494,21 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestGenerateAuthorizationCode_WhenApplicationCallbackUrlIsNotSameAsRequested_ThenArgumentExceptionIsThrown()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            var permissions = new PermissionId[] { new PermissionId(new ResourceId("MyResource"), "Add") };
-            var application = new Application(
+            PermissionId[] permissions = new PermissionId[] { new PermissionId(new ResourceId("MyResource"), "Add") };
+            Application application = new(
                 ApplicationId.Generate(),
                 UserId.Generate(),
                 "MyApp1",
                 EncryptedSecretKey.Encrypt(SecretKey.Generate()),
                 new Url("http://example.com"),
                 new Url("http://example.com/1"));
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult(application));
             IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
             IUnitOfWork unitOfWork = this.GetUnitOfWork(applicationsRepository: applicationsRepository);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             ArgumentException exception = Assert.ThrowsAsync<ArgumentException>(
                 async () => await authorizationService.GenerateAuthorizationCode(
@@ -525,7 +525,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestGenerateAuthorizationCode_WhenPermissionsAreNull_ThenArgumentNullExceptionIsThrown()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult(new Application(
@@ -537,7 +537,7 @@ namespace Identity.Tests.Unit.Core.Domain
                     new Url("http://example.com/1"))));
             IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
             IUnitOfWork unitOfWork = this.GetUnitOfWork(applicationsRepository: applicationsRepository);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             ArgumentNullException exception = Assert.ThrowsAsync<ArgumentNullException>(
                 async () => await authorizationService.GenerateAuthorizationCode(
@@ -554,7 +554,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestGenerateAuthorizationCode_WhenPermissionsAreEmpty_ThenArgumentExceptionIsThrown()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult(new Application(
@@ -566,7 +566,7 @@ namespace Identity.Tests.Unit.Core.Domain
                     new Url("http://example.com/1"))));
             IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
             IUnitOfWork unitOfWork = this.GetUnitOfWork(applicationsRepository: applicationsRepository);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             ArgumentException exception = Assert.ThrowsAsync<ArgumentException>(
                 async () => await authorizationService.GenerateAuthorizationCode(
@@ -591,28 +591,28 @@ namespace Identity.Tests.Unit.Core.Domain
             IEnumerable<RoleId> roles = rolePermissions.Count() == 0
                 ? Enumerable.Empty<RoleId>()
                 : new RoleId[] { roleId };
-            var user = new User(
+            User user = new(
                 UserId.Generate(),
                 new EmailAddress("example@example.com"),
                 HashedPassword.Hash(new Password("myexamplepassword")),
                 roles,
                 userPermissions);
-            var application = new Application(
+            Application application = new(
                 ApplicationId.Generate(),
                 UserId.Generate(),
                 "MyApp1",
                 EncryptedSecretKey.Encrypt(SecretKey.Generate()),
                 new Url("http://example.com"),
                 new Url("http://example.com/1"));
-            var usersRepositoryMock = new Mock<IUsersRepository>();
+            Mock<IUsersRepository> usersRepositoryMock = new();
             usersRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<UserId>()))
                 .Returns(Task.FromResult(user));
-            var rolesRepositoryMock = new Mock<IRolesRepository>();
+            Mock<IRolesRepository> rolesRepositoryMock = new();
             rolesRepositoryMock
                 .Setup(r => r.GetAsync(roleId))
                 .Returns(Task.FromResult(role));
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult(application));
@@ -623,7 +623,7 @@ namespace Identity.Tests.Unit.Core.Domain
                 usersRepository: usersRepository,
                 rolesRepository: rolesRepository,
                 applicationsRepository: applicationsRepository);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             ArgumentException exception = Assert.ThrowsAsync<ArgumentException>(
                 async () => await authorizationService.GenerateAuthorizationCode(
@@ -648,32 +648,32 @@ namespace Identity.Tests.Unit.Core.Domain
                 ? Enumerable.Empty<RoleId>()
                 : new RoleId[] { roleId };
             ApplicationId applicationId = ApplicationId.Generate();
-            var user = new User(
+            User user = new User(
                 UserId.Generate(),
                 new EmailAddress("example@example.com"),
                 HashedPassword.Hash(new Password("myexamplepassword")),
                 roles,
                 userPermissions);
-            var application = new Application(
+            Application application = new(
                 ApplicationId.Generate(),
                 UserId.Generate(),
                 "MyApp1",
                 EncryptedSecretKey.Encrypt(SecretKey.Generate()),
                 new Url("http://example.com"),
                 new Url("http://example.com/1"));
-            var usersRepositoryMock = new Mock<IUsersRepository>();
+            Mock<IUsersRepository> usersRepositoryMock = new();
             usersRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<UserId>()))
                 .Returns(Task.FromResult(user));
-            var rolesRepositoryMock = new Mock<IRolesRepository>();
+            Mock<IRolesRepository> rolesRepositoryMock = new();
             rolesRepositoryMock
                 .Setup(r => r.GetAsync(roleId))
                 .Returns(Task.FromResult(role));
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult(application));
-            var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
+            Mock<IAuthorizationCodesRepository> authorizationCodesRepositoryMock = new();
             IUsersRepository usersRepository = usersRepositoryMock.Object;
             IRolesRepository rolesRepository = rolesRepositoryMock.Object;
             IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
@@ -683,7 +683,7 @@ namespace Identity.Tests.Unit.Core.Domain
                 rolesRepository: rolesRepository,
                 applicationsRepository: applicationsRepository,
                 authorizationCodesRepository: authorizationCodesRepository);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             Code authorizationCode = await authorizationService.GenerateAuthorizationCode(
                 applicationId,
@@ -698,13 +698,13 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestGenerateTokens_WhenNullApplicationIdGiven_ThenArgumentNullExceptionIsThrown()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult((Application)null));
             IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
             IUnitOfWork unitOfWork = this.GetUnitOfWork(applicationsRepository: applicationsRepository);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             ArgumentNullException exception = Assert.ThrowsAsync<ArgumentNullException>(
                 async () => await authorizationService.GenerateTokens(
@@ -722,13 +722,13 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestGenerateTokens_WhenApplicationWasNotFoundInRepository_ThenApplicationNotFoundExceptionIsThrown()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult((Application)null));
             IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
             IUnitOfWork unitOfWork = this.GetUnitOfWork(applicationsRepository: applicationsRepository);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             ApplicationNotFoundException exception = Assert.ThrowsAsync<ApplicationNotFoundException>(
                 async () => await authorizationService.GenerateTokens(
@@ -747,20 +747,20 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             ApplicationId applicationId = ApplicationId.Generate();
             SecretKey secretKey = SecretKey.Generate();
-            var application = new Application(
+            Application application = new(
                 ApplicationId.Generate(),
                 UserId.Generate(),
                 "MyApp1",
                 EncryptedSecretKey.Encrypt(secretKey),
                 new Url("http://example.com"),
                 new Url("http://example.com/1"));
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult(application));
             IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
             IUnitOfWork unitOfWork = this.GetUnitOfWork(applicationsRepository: applicationsRepository);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             ArgumentNullException exception = Assert.ThrowsAsync<ArgumentNullException>(
                 async () => await authorizationService.GenerateTokens(
@@ -778,18 +778,18 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestGenerateTokens_WhenWrongSecretKeyGiven_ThenArgumentExceptionIsThrown()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            var application = new Application(
+            Application application = new(
                 ApplicationId.Generate(),
                 UserId.Generate(),
                 "MyApp1",
                 EncryptedSecretKey.Encrypt(SecretKey.Generate()),
                 new Url("http://example.com"),
                 new Url("http://example.com/1"));
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult((Application)application));
-            var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
+            Mock<IAuthorizationCodesRepository> authorizationCodesRepositoryMock = new();
             authorizationCodesRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<AuthorizationCodeId>()))
                 .Returns(Task.FromResult((AuthorizationCode)null));
@@ -798,7 +798,7 @@ namespace Identity.Tests.Unit.Core.Domain
             IUnitOfWork unitOfWork = this.GetUnitOfWork(
                 applicationsRepository: applicationsRepository,
                 authorizationCodesRepository: authorizationCodesRepository);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             ArgumentException exception = Assert.ThrowsAsync<ArgumentException>(
                 async () => await authorizationService.GenerateTokens(
@@ -818,24 +818,24 @@ namespace Identity.Tests.Unit.Core.Domain
             ApplicationId applicationId = ApplicationId.Generate();
             SecretKey secretKey = SecretKey.Generate();
             Code code = Code.Generate();
-            var application = new Application(
+            Application application = new(
                 ApplicationId.Generate(),
                 UserId.Generate(),
                 "MyApp1",
                 EncryptedSecretKey.Encrypt(secretKey),
                 new Url("http://example.com"),
                 new Url("http://example.com/1"));
-            var authorizationCode = new AuthorizationCode(
+            AuthorizationCode authorizationCode = new(
                 id: new AuthorizationCodeId(HashedCode.Hash(code), application.Id),
                 permissions: new PermissionId[]
                 {
                     new PermissionId(new ResourceId("MyResource"), "Add")
                 });
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult((Application)application));
-            var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
+            Mock<IAuthorizationCodesRepository> authorizationCodesRepositoryMock = new();
             authorizationCodesRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<AuthorizationCodeId>()))
                 .Returns(Task.FromResult(authorizationCode));
@@ -844,7 +844,7 @@ namespace Identity.Tests.Unit.Core.Domain
             IUnitOfWork unitOfWork = this.GetUnitOfWork(
                 applicationsRepository: applicationsRepository,
                 authorizationCodesRepository: authorizationCodesRepository);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             ArgumentNullException exception = Assert.ThrowsAsync<ArgumentNullException>(
                 async () => await authorizationService.GenerateTokens(
@@ -864,24 +864,24 @@ namespace Identity.Tests.Unit.Core.Domain
             ApplicationId applicationId = ApplicationId.Generate();
             SecretKey secretKey = SecretKey.Generate();
             Code code = Code.Generate();
-            var application = new Application(
+            Application application = new(
                 ApplicationId.Generate(),
                 UserId.Generate(),
                 "MyApp1",
                 EncryptedSecretKey.Encrypt(secretKey),
                 new Url("http://example.com"),
                 new Url("http://example.com/1"));
-            var authorizationCode = new AuthorizationCode(
+            AuthorizationCode authorizationCode = new(
                 id: new AuthorizationCodeId(HashedCode.Hash(code), application.Id),
                 permissions: new PermissionId[]
                 {
                     new PermissionId(new ResourceId("MyResource"), "Add")
                 });
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult(application));
-            var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
+            Mock<IAuthorizationCodesRepository> authorizationCodesRepositoryMock = new();
             authorizationCodesRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<AuthorizationCodeId>()))
                 .Returns(Task.FromResult(authorizationCode));
@@ -890,7 +890,7 @@ namespace Identity.Tests.Unit.Core.Domain
             IUnitOfWork unitOfWork = this.GetUnitOfWork(
                 applicationsRepository: applicationsRepository,
                 authorizationCodesRepository: authorizationCodesRepository);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             ArgumentException exception = Assert.ThrowsAsync<ArgumentException>(
                 async () => await authorizationService.GenerateTokens(
@@ -909,21 +909,21 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             ApplicationId applicationId = ApplicationId.Generate();
             SecretKey secretKey = SecretKey.Generate();
-            var application = new Application(
+            Application application = new(
                 ApplicationId.Generate(),
                 UserId.Generate(),
                 "MyApp1",
                 EncryptedSecretKey.Encrypt(secretKey),
                 new Url("http://example.com"),
                 new Url("http://example.com/1"));
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult(application));
             IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
             IUnitOfWork unitOfWork = this.GetUnitOfWork(
                 applicationsRepository: applicationsRepository);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             ArgumentNullException exception = Assert.ThrowsAsync<ArgumentNullException>(
                 async () => await authorizationService.GenerateTokens(
@@ -942,18 +942,18 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             ApplicationId applicationId = ApplicationId.Generate();
             SecretKey secretKey = SecretKey.Generate();
-            var application = new Application(
+            Application application = new(
                 ApplicationId.Generate(),
                 UserId.Generate(),
                 "MyApp1",
                 EncryptedSecretKey.Encrypt(secretKey),
                 new Url("http://example.com"),
                 new Url("http://example.com/1"));
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult((Application)application));
-            var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
+            Mock<IAuthorizationCodesRepository> authorizationCodesRepositoryMock = new();
             authorizationCodesRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<AuthorizationCodeId>()))
                 .Returns(Task.FromResult((AuthorizationCode)null));
@@ -962,7 +962,7 @@ namespace Identity.Tests.Unit.Core.Domain
             IUnitOfWork unitOfWork = this.GetUnitOfWork(
                 applicationsRepository: applicationsRepository,
                 authorizationCodesRepository: authorizationCodesRepository);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             AuthorizationCodeNotFoundException exception = Assert.ThrowsAsync<AuthorizationCodeNotFoundException>(
                 async () => await authorizationService.GenerateTokens(
@@ -980,14 +980,14 @@ namespace Identity.Tests.Unit.Core.Domain
             ApplicationId applicationId = ApplicationId.Generate();
             SecretKey secretKey = SecretKey.Generate();
             Code code = Code.Generate();
-            var application = new Application(
+            Application application = new(
                 ApplicationId.Generate(),
                 UserId.Generate(),
                 "MyApp1",
                 EncryptedSecretKey.Encrypt(secretKey),
                 new Url("http://example.com"),
                 new Url("http://example.com/1"));
-            var authorizationCode = new AuthorizationCode(
+            AuthorizationCode authorizationCode = new(
                 id: new AuthorizationCodeId(HashedCode.Hash(code), application.Id),
                 DateTime.Now.AddMinutes(-2),
                 false,
@@ -995,11 +995,11 @@ namespace Identity.Tests.Unit.Core.Domain
                 {
                     new PermissionId(new ResourceId("MyResource"), "Add")
                 });
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult(application));
-            var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
+            Mock<IAuthorizationCodesRepository> authorizationCodesRepositoryMock = new();
             authorizationCodesRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<AuthorizationCodeId>()))
                 .Returns(Task.FromResult(authorizationCode));
@@ -1008,7 +1008,7 @@ namespace Identity.Tests.Unit.Core.Domain
             IUnitOfWork unitOfWork = this.GetUnitOfWork(
                 applicationsRepository: applicationsRepository,
                 authorizationCodesRepository: authorizationCodesRepository);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             InvalidOperationException exception = Assert.ThrowsAsync<InvalidOperationException>(
                 async () => await authorizationService.GenerateTokens(
@@ -1028,14 +1028,14 @@ namespace Identity.Tests.Unit.Core.Domain
             ApplicationId applicationId = ApplicationId.Generate();
             SecretKey secretKey = SecretKey.Generate();
             Code code = Code.Generate();
-            var application = new Application(
+            Application application = new(
                 ApplicationId.Generate(),
                 UserId.Generate(),
                 "MyApp1",
                 EncryptedSecretKey.Encrypt(secretKey),
                 new Url("http://example.com"),
                 new Url("http://example.com/1"));
-            var authorizationCode = new AuthorizationCode(
+            AuthorizationCode authorizationCode = new(
                 id: new AuthorizationCodeId(HashedCode.Hash(code), application.Id),
                 DateTime.Now.AddMinutes(2),
                 true,
@@ -1043,11 +1043,11 @@ namespace Identity.Tests.Unit.Core.Domain
                 {
                     new PermissionId(new ResourceId("MyResource"), "Add")
                 });
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult(application));
-            var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
+            Mock<IAuthorizationCodesRepository> authorizationCodesRepositoryMock = new();
             authorizationCodesRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<AuthorizationCodeId>()))
                 .Returns(Task.FromResult(authorizationCode));
@@ -1056,7 +1056,7 @@ namespace Identity.Tests.Unit.Core.Domain
             IUnitOfWork unitOfWork = this.GetUnitOfWork(
                 applicationsRepository: applicationsRepository,
                 authorizationCodesRepository: authorizationCodesRepository);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             InvalidOperationException exception = Assert.ThrowsAsync<InvalidOperationException>(
                 async () => await authorizationService.GenerateTokens(
@@ -1076,39 +1076,39 @@ namespace Identity.Tests.Unit.Core.Domain
             ApplicationId applicationId = ApplicationId.Generate();
             SecretKey secretKey = SecretKey.Generate();
             Code code = Code.Generate();
-            var application = new Application(
+            Application application = new(
                 ApplicationId.Generate(),
                 UserId.Generate(),
                 "MyApp1",
                 EncryptedSecretKey.Encrypt(secretKey),
                 new Url("http://example.com"),
                 new Url("http://example.com/1"));
-            var authorizationCode = new AuthorizationCode(
+            AuthorizationCode authorizationCode = new(
                 id: new AuthorizationCodeId(HashedCode.Hash(code), application.Id),
                 permissions: new PermissionId[]
                 {
                     new PermissionId(new ResourceId("MyResource"), "Add")
                 });
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult(application));
-            var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
+            Mock<IAuthorizationCodesRepository> authorizationCodesRepositoryMock = new();
             authorizationCodesRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<AuthorizationCodeId>()))
                 .Returns(Task.FromResult(authorizationCode));
-            var refreshTokensMock = new Mock<IRefreshTokensRepository>();
+            Mock<IRefreshTokensRepository> refreshTokensMock = new();
             IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
             IAuthorizationCodesRepository authorizationCodesRepository = authorizationCodesRepositoryMock.Object;
             IRefreshTokensRepository refreshTokensRepository = refreshTokensMock.Object;
-            var transactionScopeMock = new Mock<ITransactionScope>();
-            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            Mock<ITransactionScope> transactionScopeMock = new();
+            Mock<IUnitOfWork> unitOfWorkMock = new();
             unitOfWorkMock.Setup(u => u.ApplicationsRepository).Returns(applicationsRepository);
             unitOfWorkMock.Setup(u => u.AuthorizationCodesRepository).Returns(authorizationCodesRepository);
             unitOfWorkMock.Setup(u => u.RefreshTokensRepository).Returns(refreshTokensRepository);
             unitOfWorkMock.Setup(u => u.BeginScope()).Returns(transactionScopeMock.Object);
             IUnitOfWork unitOfWork = unitOfWorkMock.Object;
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             TokenPair tokenPair = await authorizationService.GenerateTokens(
                 applicationId,
@@ -1125,39 +1125,39 @@ namespace Identity.Tests.Unit.Core.Domain
             ApplicationId applicationId = ApplicationId.Generate();
             SecretKey secretKey = SecretKey.Generate();
             Code code = Code.Generate();
-            var application = new Application(
+            Application application = new(
                 ApplicationId.Generate(),
                 UserId.Generate(),
                 "MyApp1",
                 EncryptedSecretKey.Encrypt(secretKey),
                 new Url("http://example.com"),
                 new Url("http://example.com/1"));
-            var authorizationCode = new AuthorizationCode(
+            AuthorizationCode authorizationCode = new(
                 id: new AuthorizationCodeId(HashedCode.Hash(code), application.Id),
                 permissions: new PermissionId[]
                 {
                     new PermissionId(new ResourceId("MyResource"), "Add")
                 });
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult(application));
-            var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
+            Mock<IAuthorizationCodesRepository> authorizationCodesRepositoryMock = new();
             authorizationCodesRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<AuthorizationCodeId>()))
                 .Returns(Task.FromResult(authorizationCode));
-            var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
+            Mock<IRefreshTokensRepository> refreshTokensRepositoryMock = new();
             IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
             IAuthorizationCodesRepository authorizationCodesRepository = authorizationCodesRepositoryMock.Object;
             IRefreshTokensRepository refreshTokensRepository = refreshTokensRepositoryMock.Object;
-            var transactionScopeMock = new Mock<ITransactionScope>();
-            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            Mock<ITransactionScope> transactionScopeMock = new();
+            Mock<IUnitOfWork> unitOfWorkMock = new();
             unitOfWorkMock.Setup(u => u.ApplicationsRepository).Returns(applicationsRepository);
             unitOfWorkMock.Setup(u => u.AuthorizationCodesRepository).Returns(authorizationCodesRepository);
             unitOfWorkMock.Setup(u => u.RefreshTokensRepository).Returns(refreshTokensRepository);
             unitOfWorkMock.Setup(u => u.BeginScope()).Returns(transactionScopeMock.Object);
-            var unitOfWork = unitOfWorkMock.Object;
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            IUnitOfWork unitOfWork = unitOfWorkMock.Object;
+            AuthorizationService authorizationService = new(unitOfWork);
 
             TokenPair tokenPair = await authorizationService.GenerateTokens(
                 applicationId,
@@ -1175,39 +1175,39 @@ namespace Identity.Tests.Unit.Core.Domain
             ApplicationId applicationId = ApplicationId.Generate();
             SecretKey secretKey = SecretKey.Generate();
             Code code = Code.Generate();
-            var application = new Application(
+            Application application = new(
                 ApplicationId.Generate(),
                 UserId.Generate(),
                 "MyApp1",
                 EncryptedSecretKey.Encrypt(secretKey),
                 new Url("http://example.com"),
                 new Url("http://example.com/1"));
-            var authorizationCode = new AuthorizationCode(
+            AuthorizationCode authorizationCode = new(
                 id: new AuthorizationCodeId(HashedCode.Hash(code), application.Id),
                 permissions: new PermissionId[]
                 {
                     new PermissionId(new ResourceId("MyResource"), "Add")
                 });
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult(application));
-            var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
-            var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
+            Mock<IAuthorizationCodesRepository> authorizationCodesRepositoryMock = new();
+            Mock<IRefreshTokensRepository> refreshTokensRepositoryMock = new();
             authorizationCodesRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<AuthorizationCodeId>()))
                 .Returns(Task.FromResult(authorizationCode));
             IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
             IAuthorizationCodesRepository authorizationCodesRepository = authorizationCodesRepositoryMock.Object;
             IRefreshTokensRepository refreshTokensRepository = refreshTokensRepositoryMock.Object;
-            var transactionScopeMock = new Mock<ITransactionScope>();
-            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            Mock<ITransactionScope> transactionScopeMock = new();
+            Mock<IUnitOfWork> unitOfWorkMock = new();
             unitOfWorkMock.Setup(u => u.ApplicationsRepository).Returns(applicationsRepository);
             unitOfWorkMock.Setup(u => u.AuthorizationCodesRepository).Returns(authorizationCodesRepository);
             unitOfWorkMock.Setup(u => u.RefreshTokensRepository).Returns(refreshTokensRepository);
             unitOfWorkMock.Setup(u => u.BeginScope()).Returns(transactionScopeMock.Object);
-            var unitOfWork = unitOfWorkMock.Object;
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            IUnitOfWork unitOfWork = unitOfWorkMock.Object;
+            AuthorizationService authorizationService = new(unitOfWork);
 
             TokenPair tokenPair = await authorizationService.GenerateTokens(
                 applicationId,
@@ -1224,25 +1224,25 @@ namespace Identity.Tests.Unit.Core.Domain
             ApplicationId applicationId = ApplicationId.Generate();
             SecretKey secretKey = SecretKey.Generate();
             Code code = Code.Generate();
-            var application = new Application(
+            Application application = new(
                 ApplicationId.Generate(),
                 UserId.Generate(),
                 "MyApp1",
                 EncryptedSecretKey.Encrypt(secretKey),
                 new Url("http://example.com"),
                 new Url("http://example.com/1"));
-            var authorizationCode = new AuthorizationCode(
+            AuthorizationCode authorizationCode = new(
                 id: new AuthorizationCodeId(HashedCode.Hash(code), application.Id),
                 permissions: new PermissionId[]
                 {
                     new PermissionId(new ResourceId("MyResource"), "Add")
                 });
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult(application));
-            var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
-            var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
+            Mock<IAuthorizationCodesRepository> authorizationCodesRepositoryMock = new();
+            Mock<IRefreshTokensRepository> refreshTokensRepositoryMock = new();
             refreshTokensRepositoryMock.Setup(r => r.AddAsync(It.IsAny<RefreshToken>())).Throws(new Exception());
             authorizationCodesRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<AuthorizationCodeId>()))
@@ -1250,14 +1250,14 @@ namespace Identity.Tests.Unit.Core.Domain
             IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
             IAuthorizationCodesRepository authorizationCodesRepository = authorizationCodesRepositoryMock.Object;
             IRefreshTokensRepository refreshTokensRepository = refreshTokensRepositoryMock.Object;
-            var transactionScopeMock = new Mock<ITransactionScope>();
-            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            Mock<ITransactionScope> transactionScopeMock = new();
+            Mock<IUnitOfWork> unitOfWorkMock = new();
             unitOfWorkMock.Setup(u => u.ApplicationsRepository).Returns(applicationsRepository);
             unitOfWorkMock.Setup(u => u.AuthorizationCodesRepository).Returns(authorizationCodesRepository);
             unitOfWorkMock.Setup(u => u.RefreshTokensRepository).Returns(refreshTokensRepository);
             unitOfWorkMock.Setup(u => u.BeginScope()).Returns(transactionScopeMock.Object);
-            var unitOfWork = unitOfWorkMock.Object;
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            IUnitOfWork unitOfWork = unitOfWorkMock.Object;
+            AuthorizationService authorizationService = new(unitOfWork);
 
             try
             {
@@ -1280,39 +1280,39 @@ namespace Identity.Tests.Unit.Core.Domain
             ApplicationId applicationId = ApplicationId.Generate();
             SecretKey secretKey = SecretKey.Generate();
             Code code = Code.Generate();
-            var application = new Application(
+            Application application = new(
                 ApplicationId.Generate(),
                 UserId.Generate(),
                 "MyApp1",
                 EncryptedSecretKey.Encrypt(secretKey),
                 new Url("http://example.com"),
                 new Url("http://example.com/1"));
-            var authorizationCode = new AuthorizationCode(
+            AuthorizationCode authorizationCode = new(
                 id: new AuthorizationCodeId(HashedCode.Hash(code), application.Id),
                 permissions: new PermissionId[]
                 {
                     new PermissionId(new ResourceId("MyResource"), "Add")
                 });
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult(application));
-            var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
-            var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
+            Mock<IAuthorizationCodesRepository> authorizationCodesRepositoryMock = new();
+            Mock<IRefreshTokensRepository> refreshTokensRepositoryMock = new();
             authorizationCodesRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<AuthorizationCodeId>()))
                 .Returns(Task.FromResult(authorizationCode));
             IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
             IAuthorizationCodesRepository authorizationCodesRepository = authorizationCodesRepositoryMock.Object;
             IRefreshTokensRepository refreshTokensRepository = refreshTokensRepositoryMock.Object;
-            var transactionScopeMock = new Mock<ITransactionScope>();
-            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            Mock<ITransactionScope> transactionScopeMock = new();
+            Mock<IUnitOfWork> unitOfWorkMock = new();
             unitOfWorkMock.Setup(u => u.ApplicationsRepository).Returns(applicationsRepository);
             unitOfWorkMock.Setup(u => u.AuthorizationCodesRepository).Returns(authorizationCodesRepository);
             unitOfWorkMock.Setup(u => u.RefreshTokensRepository).Returns(refreshTokensRepository);
             unitOfWorkMock.Setup(u => u.BeginScope()).Returns(transactionScopeMock.Object);
-            var unitOfWork = unitOfWorkMock.Object;
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            IUnitOfWork unitOfWork = unitOfWorkMock.Object;
+            AuthorizationService authorizationService = new(unitOfWork);
 
             TokenPair tokenPair = await authorizationService.GenerateTokens(
                 applicationId,
@@ -1327,7 +1327,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestRefreshTokens_WhenNullRefreshTokenValueGiven_ThenArgumentNullExceptionIsThrown()
         {
             IUnitOfWork unitOfWork = this.GetUnitOfWork();
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             ArgumentNullException exception = Assert.ThrowsAsync<ArgumentNullException>(
                 async () => await authorizationService.RefreshTokens(null, new Url("http://example.com/1")));
@@ -1348,7 +1348,7 @@ namespace Identity.Tests.Unit.Core.Domain
                     new PermissionId(new ResourceId("MyRes"), "Add")
                 },
                 DateTime.Now.AddDays(1));
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             ArgumentNullException exception = Assert.ThrowsAsync<ArgumentNullException>(
                 async () => await authorizationService.RefreshTokens(refreshTokenValue, null));
@@ -1369,13 +1369,13 @@ namespace Identity.Tests.Unit.Core.Domain
                     new PermissionId(new ResourceId("MyRes"), "Add")
                 },
                 DateTime.Now.AddDays(1));
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult((Application)null));
             IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
             IUnitOfWork unitOfWork = this.GetUnitOfWork(applicationsRepository: applicationsRepository);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             ApplicationNotFoundException exception = Assert.ThrowsAsync<ApplicationNotFoundException>(
                 async () => await authorizationService.RefreshTokens(refreshTokenValue, new Url("http://example.com/1")));
@@ -1391,14 +1391,14 @@ namespace Identity.Tests.Unit.Core.Domain
             ApplicationId applicationId = ApplicationId.Generate();
             SecretKey secretKey = SecretKey.Generate();
             Code code = Code.Generate();
-            var application = new Application(
+            Application application = new(
                 ApplicationId.Generate(),
                 UserId.Generate(),
                 "MyApp1",
                 EncryptedSecretKey.Encrypt(secretKey),
                 new Url("http://example.com"),
                 new Url("http://example.com/1"));
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult(application));
@@ -1412,7 +1412,7 @@ namespace Identity.Tests.Unit.Core.Domain
                 DateTime.Now.AddDays(1));
             IUnitOfWork unitOfWork = this.GetUnitOfWork(
                 applicationsRepository: applicationsRepository);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             ArgumentException exception = Assert.ThrowsAsync<ArgumentException>(
                 async () => await authorizationService.RefreshTokens(refreshTokenValue, new Url("http://example.com/2")));
@@ -1428,15 +1428,15 @@ namespace Identity.Tests.Unit.Core.Domain
             ApplicationId applicationId = ApplicationId.Generate();
             SecretKey secretKey = SecretKey.Generate();
             Code code = Code.Generate();
-            var application = new Application(
+            Application application = new(
                 applicationId,
                 UserId.Generate(),
                 "MyApp1",
                 EncryptedSecretKey.Encrypt(secretKey),
                 new Url("http://example.com"),
                 new Url("http://example.com/1"));
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
-            var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
+            Mock<IRefreshTokensRepository> refreshTokensRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult(application));
@@ -1455,7 +1455,7 @@ namespace Identity.Tests.Unit.Core.Domain
             IUnitOfWork unitOfWork = this.GetUnitOfWork(
                 applicationsRepository: applicationsRepository,
                 refreshTokensRepository: refreshTokensRepository);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             RefreshTokenNotFoundException exception = Assert.ThrowsAsync<RefreshTokenNotFoundException>(
                 async () => await authorizationService.RefreshTokens(refreshTokenValue, new Url("http://example.com/1")));
@@ -1471,15 +1471,15 @@ namespace Identity.Tests.Unit.Core.Domain
             ApplicationId applicationId = ApplicationId.Generate();
             SecretKey secretKey = SecretKey.Generate();
             Code code = Code.Generate();
-            var application = new Application(
+            Application application = new(
                 applicationId,
                 UserId.Generate(),
                 "MyApp1",
                 EncryptedSecretKey.Encrypt(secretKey),
                 new Url("http://example.com"),
                 new Url("http://example.com/1"));
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
-            var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
+            Mock<IRefreshTokensRepository> refreshTokensRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult(application));
@@ -1490,7 +1490,7 @@ namespace Identity.Tests.Unit.Core.Domain
                     new PermissionId(new ResourceId("MyRes"), "Add")
                  },
                  DateTime.Now.AddDays(1));
-            var refreshToken = new RefreshToken(
+            RefreshToken refreshToken = new(
                 new TokenId(TokenValueEncrypter.Encrypt(refreshTokenValue)),
                 true);
             refreshTokensRepositoryMock
@@ -1501,7 +1501,7 @@ namespace Identity.Tests.Unit.Core.Domain
             IUnitOfWork unitOfWork = this.GetUnitOfWork(
                 applicationsRepository: applicationsRepository,
                 refreshTokensRepository: refreshTokensRepository);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             InvalidTokenException exception = Assert.ThrowsAsync<InvalidTokenException>(
                 async () => await authorizationService.RefreshTokens(refreshTokenValue, new Url("http://example.com/1")));
@@ -1517,15 +1517,15 @@ namespace Identity.Tests.Unit.Core.Domain
             ApplicationId applicationId = ApplicationId.Generate();
             SecretKey secretKey = SecretKey.Generate();
             Code code = Code.Generate();
-            var application = new Application(
+            Application application = new(
                 applicationId,
                 UserId.Generate(),
                 "MyApp1",
                 EncryptedSecretKey.Encrypt(secretKey),
                 new Url("http://example.com"),
                 new Url("http://example.com/1"));
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
-            var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
+            Mock<IRefreshTokensRepository> refreshTokensRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult(application));
@@ -1536,7 +1536,7 @@ namespace Identity.Tests.Unit.Core.Domain
                     new PermissionId(new ResourceId("MyRes"), "Add")
                  },
                  DateTime.Now.AddDays(-1));
-            var refreshToken = new RefreshToken(
+            RefreshToken refreshToken = new(
                 new TokenId(TokenValueEncrypter.Encrypt(refreshTokenValue)),
                 false);
             refreshTokensRepositoryMock
@@ -1547,7 +1547,7 @@ namespace Identity.Tests.Unit.Core.Domain
             IUnitOfWork unitOfWork = this.GetUnitOfWork(
                 applicationsRepository: applicationsRepository,
                 refreshTokensRepository: refreshTokensRepository);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWork);
+            AuthorizationService authorizationService = new(unitOfWork);
 
             InvalidTokenException exception = Assert.ThrowsAsync<InvalidTokenException>(
                 async () => await authorizationService.RefreshTokens(refreshTokenValue, new Url("http://example.com/1")));
@@ -1563,15 +1563,15 @@ namespace Identity.Tests.Unit.Core.Domain
             ApplicationId applicationId = ApplicationId.Generate();
             SecretKey secretKey = SecretKey.Generate();
             Code code = Code.Generate();
-            var application = new Application(
+            Application application = new(
                 applicationId,
                 UserId.Generate(),
                 "MyApp1",
                 EncryptedSecretKey.Encrypt(secretKey),
                 new Url("http://example.com"),
                 new Url("http://example.com/1"));
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
-            var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
+            Mock<IRefreshTokensRepository> refreshTokensRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult(application));
@@ -1582,7 +1582,7 @@ namespace Identity.Tests.Unit.Core.Domain
                     new PermissionId(new ResourceId("MyRes"), "Add")
                  },
                  DateTime.Now.AddDays(1));
-            var refreshToken = new RefreshToken(
+            RefreshToken refreshToken = new(
                 new TokenId(TokenValueEncrypter.Encrypt(refreshTokenValue)),
                 false);
             refreshTokensRepositoryMock
@@ -1590,12 +1590,12 @@ namespace Identity.Tests.Unit.Core.Domain
                 .Returns(Task.FromResult(refreshToken));
             IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
             IRefreshTokensRepository refreshTokensRepository = refreshTokensRepositoryMock.Object;
-            Mock<ITransactionScope> transactionScopeMock = new Mock<ITransactionScope>();
-            Mock<IUnitOfWork> unitOfWorkMock = new Mock<IUnitOfWork>();
+            Mock<ITransactionScope> transactionScopeMock = new();
+            Mock<IUnitOfWork> unitOfWorkMock = new();
             unitOfWorkMock.Setup(u => u.ApplicationsRepository).Returns(applicationsRepository);
             unitOfWorkMock.Setup(u => u.RefreshTokensRepository).Returns(refreshTokensRepository);
             unitOfWorkMock.Setup(u => u.BeginScope()).Returns(transactionScopeMock.Object);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWorkMock.Object);
+            AuthorizationService authorizationService = new(unitOfWorkMock.Object);
 
             TokenPair tokenPair = await authorizationService.RefreshTokens(
                 refreshTokenValue,
@@ -1615,15 +1615,15 @@ namespace Identity.Tests.Unit.Core.Domain
             ApplicationId applicationId = ApplicationId.Generate();
             SecretKey secretKey = SecretKey.Generate();
             Code code = Code.Generate();
-            var application = new Application(
+            Application application = new(
                 applicationId,
                 UserId.Generate(),
                 "MyApp1",
                 EncryptedSecretKey.Encrypt(secretKey),
                 new Url("http://example.com"),
                 new Url("http://example.com/1"));
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
-            var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
+            Mock<IRefreshTokensRepository> refreshTokensRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult(application));
@@ -1634,7 +1634,7 @@ namespace Identity.Tests.Unit.Core.Domain
                     new PermissionId(new ResourceId("MyRes"), "Add")
                  },
                  DateTime.Now.AddDays(1));
-            var refreshToken = new RefreshToken(
+            RefreshToken refreshToken = new(
                 new TokenId(TokenValueEncrypter.Encrypt(refreshTokenValue)),
                 false);
             refreshTokensRepositoryMock
@@ -1642,12 +1642,12 @@ namespace Identity.Tests.Unit.Core.Domain
                 .Returns(Task.FromResult(refreshToken));
             IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
             IRefreshTokensRepository refreshTokensRepository = refreshTokensRepositoryMock.Object;
-            Mock<ITransactionScope> transactionScopeMock = new Mock<ITransactionScope>();
-            Mock<IUnitOfWork> unitOfWorkMock = new Mock<IUnitOfWork>();
+            Mock<ITransactionScope> transactionScopeMock = new();
+            Mock<IUnitOfWork> unitOfWorkMock = new();
             unitOfWorkMock.Setup(u => u.ApplicationsRepository).Returns(applicationsRepository);
             unitOfWorkMock.Setup(u => u.RefreshTokensRepository).Returns(refreshTokensRepository);
             unitOfWorkMock.Setup(u => u.BeginScope()).Returns(transactionScopeMock.Object);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWorkMock.Object);
+            AuthorizationService authorizationService = new(unitOfWorkMock.Object);
 
             TokenPair tokenPair = await authorizationService.RefreshTokens(
                 refreshTokenValue,
@@ -1662,15 +1662,15 @@ namespace Identity.Tests.Unit.Core.Domain
             ApplicationId applicationId = ApplicationId.Generate();
             SecretKey secretKey = SecretKey.Generate();
             Code code = Code.Generate();
-            var application = new Application(
+            Application application = new(
                 applicationId,
                 UserId.Generate(),
                 "MyApp1",
                 EncryptedSecretKey.Encrypt(secretKey),
                 new Url("http://example.com"),
                 new Url("http://example.com/1"));
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
-            var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
+            Mock<IRefreshTokensRepository> refreshTokensRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult(application));
@@ -1681,7 +1681,7 @@ namespace Identity.Tests.Unit.Core.Domain
                     new PermissionId(new ResourceId("MyRes"), "Add")
                  },
                  DateTime.Now.AddDays(1));
-            var refreshToken = new RefreshToken(
+            RefreshToken refreshToken = new(
                 new TokenId(TokenValueEncrypter.Encrypt(refreshTokenValue)),
                 false);
             refreshTokensRepositoryMock
@@ -1689,12 +1689,12 @@ namespace Identity.Tests.Unit.Core.Domain
                 .Returns(Task.FromResult(refreshToken));
             IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
             IRefreshTokensRepository refreshTokensRepository = refreshTokensRepositoryMock.Object;
-            Mock<ITransactionScope> transactionScopeMock = new Mock<ITransactionScope>();
-            Mock<IUnitOfWork> unitOfWorkMock = new Mock<IUnitOfWork>();
+            Mock<ITransactionScope> transactionScopeMock = new();
+            Mock<IUnitOfWork> unitOfWorkMock = new();
             unitOfWorkMock.Setup(u => u.ApplicationsRepository).Returns(applicationsRepository);
             unitOfWorkMock.Setup(u => u.RefreshTokensRepository).Returns(refreshTokensRepository);
             unitOfWorkMock.Setup(u => u.BeginScope()).Returns(transactionScopeMock.Object);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWorkMock.Object);
+            AuthorizationService authorizationService = new(unitOfWorkMock.Object);
 
             TokenPair tokenPair = await authorizationService.RefreshTokens(
                 refreshTokenValue,
@@ -1709,15 +1709,15 @@ namespace Identity.Tests.Unit.Core.Domain
             ApplicationId applicationId = ApplicationId.Generate();
             SecretKey secretKey = SecretKey.Generate();
             Code code = Code.Generate();
-            var application = new Application(
+            Application application = new(
                 applicationId,
                 UserId.Generate(),
                 "MyApp1",
                 EncryptedSecretKey.Encrypt(secretKey),
                 new Url("http://example.com"),
                 new Url("http://example.com/1"));
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
-            var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
+            Mock<IRefreshTokensRepository> refreshTokensRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult(application));
@@ -1728,7 +1728,7 @@ namespace Identity.Tests.Unit.Core.Domain
                     new PermissionId(new ResourceId("MyRes"), "Add")
                  },
                  DateTime.Now.AddDays(1));
-            var refreshToken = new RefreshToken(
+            RefreshToken refreshToken = new(
                 new TokenId(TokenValueEncrypter.Encrypt(refreshTokenValue)),
                 false);
             refreshTokensRepositoryMock
@@ -1736,18 +1736,18 @@ namespace Identity.Tests.Unit.Core.Domain
                 .Returns(Task.FromResult(refreshToken));
             IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
             IRefreshTokensRepository refreshTokensRepository = refreshTokensRepositoryMock.Object;
-            Mock<ITransactionScope> transactionScopeMock = new Mock<ITransactionScope>();
-            Mock<IUnitOfWork> unitOfWorkMock = new Mock<IUnitOfWork>();
+            Mock<ITransactionScope> transactionScopeMock = new();
+            Mock<IUnitOfWork> unitOfWorkMock = new();
             unitOfWorkMock.Setup(u => u.ApplicationsRepository).Returns(applicationsRepository);
             unitOfWorkMock.Setup(u => u.RefreshTokensRepository).Returns(refreshTokensRepository);
             unitOfWorkMock.Setup(u => u.BeginScope()).Returns(transactionScopeMock.Object);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWorkMock.Object);
+            AuthorizationService authorizationService = new(unitOfWorkMock.Object);
 
             TokenPair tokenPair = await authorizationService.RefreshTokens(
                 refreshTokenValue,
                 new Url("http://example.com/1"));
 
-            var newRefreshToken = new RefreshToken(
+            RefreshToken newRefreshToken = new(
                 new TokenId(TokenValueEncrypter.Encrypt(tokenPair.RefreshToken)),
                 false);
 
@@ -1760,15 +1760,15 @@ namespace Identity.Tests.Unit.Core.Domain
             ApplicationId applicationId = ApplicationId.Generate();
             SecretKey secretKey = SecretKey.Generate();
             Code code = Code.Generate();
-            var application = new Application(
+            Application application = new(
                 applicationId,
                 UserId.Generate(),
                 "MyApp1",
                 EncryptedSecretKey.Encrypt(secretKey),
                 new Url("http://example.com"),
                 new Url("http://example.com/1"));
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
-            var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
+            Mock<IRefreshTokensRepository> refreshTokensRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult(application));
@@ -1779,7 +1779,7 @@ namespace Identity.Tests.Unit.Core.Domain
                     new PermissionId(new ResourceId("MyRes"), "Add")
                  },
                  DateTime.Now.AddDays(1));
-            var refreshToken = new RefreshToken(
+            RefreshToken refreshToken = new(
                 new TokenId(TokenValueEncrypter.Encrypt(refreshTokenValue)),
                 false);
             refreshTokensRepositoryMock
@@ -1788,12 +1788,12 @@ namespace Identity.Tests.Unit.Core.Domain
             refreshTokensRepositoryMock.Setup(r => r.UpdateAsync(It.IsAny<RefreshToken>())).Throws(new Exception());
             IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
             IRefreshTokensRepository refreshTokensRepository = refreshTokensRepositoryMock.Object;
-            Mock<ITransactionScope> transactionScopeMock = new Mock<ITransactionScope>();
-            Mock<IUnitOfWork> unitOfWorkMock = new Mock<IUnitOfWork>();
+            Mock<ITransactionScope> transactionScopeMock = new();
+            Mock<IUnitOfWork> unitOfWorkMock = new();
             unitOfWorkMock.Setup(u => u.ApplicationsRepository).Returns(applicationsRepository);
             unitOfWorkMock.Setup(u => u.RefreshTokensRepository).Returns(refreshTokensRepository);
             unitOfWorkMock.Setup(u => u.BeginScope()).Returns(transactionScopeMock.Object);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWorkMock.Object);
+            AuthorizationService authorizationService = new(unitOfWorkMock.Object);
 
             try
             {
@@ -1814,15 +1814,15 @@ namespace Identity.Tests.Unit.Core.Domain
             ApplicationId applicationId = ApplicationId.Generate();
             SecretKey secretKey = SecretKey.Generate();
             Code code = Code.Generate();
-            var application = new Application(
+            Application application = new(
                 applicationId,
                 UserId.Generate(),
                 "MyApp1",
                 EncryptedSecretKey.Encrypt(secretKey),
                 new Url("http://example.com"),
                 new Url("http://example.com/1"));
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
-            var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
+            Mock<IRefreshTokensRepository> refreshTokensRepositoryMock = new();
             applicationsRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ApplicationId>()))
                 .Returns(Task.FromResult(application));
@@ -1833,7 +1833,7 @@ namespace Identity.Tests.Unit.Core.Domain
                     new PermissionId(new ResourceId("MyRes"), "Add")
                  },
                  DateTime.Now.AddDays(1));
-            var refreshToken = new RefreshToken(
+            RefreshToken refreshToken = new(
                 new TokenId(TokenValueEncrypter.Encrypt(refreshTokenValue)),
                 false);
             refreshTokensRepositoryMock
@@ -1841,12 +1841,12 @@ namespace Identity.Tests.Unit.Core.Domain
                 .Returns(Task.FromResult(refreshToken));
             IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
             IRefreshTokensRepository refreshTokensRepository = refreshTokensRepositoryMock.Object;
-            Mock<ITransactionScope> transactionScopeMock = new Mock<ITransactionScope>();
-            Mock<IUnitOfWork> unitOfWorkMock = new Mock<IUnitOfWork>();
+            Mock<ITransactionScope> transactionScopeMock = new();
+            Mock<IUnitOfWork> unitOfWorkMock = new();
             unitOfWorkMock.Setup(u => u.ApplicationsRepository).Returns(applicationsRepository);
             unitOfWorkMock.Setup(u => u.RefreshTokensRepository).Returns(refreshTokensRepository);
             unitOfWorkMock.Setup(u => u.BeginScope()).Returns(transactionScopeMock.Object);
-            AuthorizationService authorizationService = new AuthorizationService(unitOfWorkMock.Object);
+            AuthorizationService authorizationService = new(unitOfWorkMock.Object);
 
             try
             {

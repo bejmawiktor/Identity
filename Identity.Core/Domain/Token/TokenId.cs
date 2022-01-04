@@ -21,7 +21,7 @@ namespace Identity.Core.Domain
         public TokenId(EncryptedTokenValue encryptedTokenValue)
         : base(encryptedTokenValue)
         {
-            var tokenValue = encryptedTokenValue.Decrypt();
+            TokenValue tokenValue = encryptedTokenValue.Decrypt();
 
             this.ApplicationId = tokenValue.ApplicationId;
             this.Type = tokenValue.Type;

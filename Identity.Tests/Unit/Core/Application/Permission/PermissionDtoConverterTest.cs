@@ -10,11 +10,11 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestToDto_WhenPermissionGiven_ThenPermissionDtoIsReturned()
         {
-            var permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
-            var permission = new Permission(
+            PermissionId permissionId = new(new ResourceId("MyResource"), "MyPermission");
+            Permission permission = new(
                 id: permissionId,
                 description: "My permission description");
-            var permissionDtoConverter = new PermissionDtoConverter();
+            PermissionDtoConverter permissionDtoConverter = new();
 
             PermissionDto permissionDto = permissionDtoConverter.ToDto(permission);
 
@@ -25,7 +25,7 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestToDto_WhenNullPermissionGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var permissionDtoConverter = new PermissionDtoConverter();
+            PermissionDtoConverter permissionDtoConverter = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -37,8 +37,8 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestToDtoIdentifier_WhenPermissionIdGiven_ThenDtoIdentifierIsReturned()
         {
-            var permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
-            var permissionDtoConverter = new PermissionDtoConverter();
+            PermissionId permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
+            PermissionDtoConverter permissionDtoConverter = new PermissionDtoConverter();
 
             (string resourceId, string name) = permissionDtoConverter.ToDtoIdentifier(permissionId);
 
@@ -49,7 +49,7 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestToDtoIdentifier_WhenNullPermissionIdGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var permissionDtoConverter = new PermissionDtoConverter();
+            PermissionDtoConverter permissionDtoConverter = new PermissionDtoConverter();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()

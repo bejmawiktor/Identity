@@ -70,7 +70,7 @@ namespace Identity.Core.Domain
 
         protected override IEnumerable<object> GetEqualityMembers()
         {
-            foreach(var @byte in this.HashedValue)
+            foreach(byte @byte in this.HashedValue)
             {
                 yield return @byte;
             }

@@ -10,12 +10,12 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestConstructor_WhenIdGiven_ThenIdIsSet()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
-            var tokenId = TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions);
+            TokenId tokenId = TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions);
             RefreshTokenDto tokenDto = this.GetRefreshTokenDto(id: tokenId.ToString());
 
             Assert.That(tokenDto.Id, Is.EqualTo(tokenId.ToString()));
@@ -25,12 +25,12 @@ namespace Identity.Tests.Unit.Core.Application
             string id = null,
             bool? used = false)
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
-            var tokenId = TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions);
+            TokenId tokenId = TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions);
 
             return new RefreshTokenDto(
                 id ?? tokenId.ToString(),
@@ -48,12 +48,12 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestEquals_WhenTwoIdentitcalTokensDtosGiven_ThenTrueIsReturned()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
-            var tokenId = TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions);
+            TokenId tokenId = TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions);
             RefreshTokenDto leftTokenDto = new RefreshTokenDto(tokenId.ToString(), true);
             RefreshTokenDto rightTokenDto = new RefreshTokenDto(tokenId.ToString(), true);
 
@@ -63,12 +63,12 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestEquals_WhenTwoDifferentTokensDtosGiven_ThenFalseIsReturned()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
-            var tokenId = TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions);
+            TokenId tokenId = TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions);
             RefreshTokenDto leftTokenDto = new RefreshTokenDto(tokenId.ToString(), true);
             RefreshTokenDto rightTokenDto = new RefreshTokenDto(tokenId.ToString(), false);
 
@@ -78,12 +78,12 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestGetHashCode_WhenTwoIdentitcalTokensDtosGiven_ThenSameHashCodesAreReturned()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
-            var tokenId = TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions);
+            TokenId tokenId = TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions);
             RefreshTokenDto leftTokenDto = new RefreshTokenDto(tokenId.ToString(), true);
             RefreshTokenDto rightTokenDto = new RefreshTokenDto(tokenId.ToString(), true);
 
@@ -93,12 +93,12 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestGetHashCode_WhenTwoDifferentTokensDtosGiven_ThenDifferentHashCodesAreReturned()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
-            var tokenId = TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions);
+            TokenId tokenId = TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions);
             RefreshTokenDto leftTokenDto = new RefreshTokenDto(tokenId.ToString(), true);
             RefreshTokenDto rightTokenDto = new RefreshTokenDto(tokenId.ToString(), false);
 
@@ -108,12 +108,12 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestToRefreshToken_WhenConvertingToToken_ThenTokenIsReturned()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
-            var tokenId = TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions);
+            TokenId tokenId = TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions);
             RefreshTokenDto tokenDto = new RefreshTokenDto(
                 tokenId.ToString(),
                 true);

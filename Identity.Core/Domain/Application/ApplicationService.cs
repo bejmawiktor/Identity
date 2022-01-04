@@ -16,7 +16,7 @@ namespace Identity.Core.Domain
 
         public async Task CreateApplicationAsync(UserId userId, string name, Url homepageUrl, Url callbackUrl)
         {
-            using(var eventsScope = new EventsScope())
+            using(EventsScope eventsScope = new())
             {
                 User user = await this.UnitOfWork.UsersRepository.GetAsync(userId);
 

@@ -55,7 +55,7 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestConstructor_WhenPermissionsGiven_ThenPermissionsAreSet()
         {
-            var permissions = new (string ResourceId, string Name)[]
+            (string ResourceId, string Name)[] permissions = new (string ResourceId, string Name)[]
             {
                 ("MyResource", "MyPermission")
             };
@@ -68,7 +68,7 @@ namespace Identity.Tests.Unit.Core.Application
         public void TestConstructor_WhenNullPermissionsGiven_ThenEmptyPermissionsIsSet()
         {
             Guid id = Guid.NewGuid();
-            RoleDto roleDto = new RoleDto(
+            RoleDto roleDto = new(
                 id: id,
                 name: "MyRole",
                 description: "My role description",
@@ -81,7 +81,7 @@ namespace Identity.Tests.Unit.Core.Application
         public void TestToRole_WhenConvertingToRole_ThenRoleIsReturned()
         {
             Guid id = Guid.NewGuid();
-            RoleDto roleDto = new RoleDto(
+            RoleDto roleDto = new(
                 id: id,
                 name: "MyRole",
                 description: "My role description",

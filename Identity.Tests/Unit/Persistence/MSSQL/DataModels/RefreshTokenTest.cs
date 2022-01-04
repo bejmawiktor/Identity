@@ -14,13 +14,13 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public void TestConstructor_WhenDtoGiven_ThenMembersAreSet()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource1"), "Add")
             };
             DateTime expiresAt = DateTime.Now;
             TokenId tokenId = TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions, expiresAt);
-            var refreshToken = new RefreshToken(
+            RefreshToken refreshToken = new(
                 new RefreshTokenDto(tokenId.ToString(), true));
 
             Assert.Multiple(() =>
@@ -33,13 +33,13 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public void TestSetFields_WhenDtoGiven_ThenMembersAreSet()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource1"), "Add")
             };
             DateTime expiresAt = DateTime.Now;
             TokenId tokenId = TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions, expiresAt);
-            var refreshToken = new RefreshToken();
+            RefreshToken refreshToken = new();
 
             refreshToken.SetFields(new RefreshTokenDto(tokenId.ToString(), true));
 
@@ -53,13 +53,13 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public void TestToDto_WhenConvertingToDto_ThenRefreshTokenDtoIsReturned()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource1"), "Add")
             };
             DateTime expiresAt = DateTime.Now;
             TokenId tokenId = TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions, expiresAt);
-            var refreshToken = new RefreshToken()
+            RefreshToken refreshToken = new RefreshToken()
             {
                 Id = tokenId.ToString(),
                 Used = true

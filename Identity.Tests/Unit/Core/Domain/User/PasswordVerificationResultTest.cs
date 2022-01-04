@@ -9,7 +9,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenDefaultConstructorIsUsed_ThenFailedIsReturned()
         {
-            var passwordVerificationResult = new PasswordVerificationResult();
+            PasswordVerificationResult passwordVerificationResult = new();
 
             Assert.That(passwordVerificationResult, Is.EqualTo(PasswordVerificationResult.Failed));
         }

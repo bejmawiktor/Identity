@@ -15,7 +15,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         {
             Guid applicationId = Guid.NewGuid();
             Guid userId = Guid.NewGuid();
-            var application = new Application(
+            Application application = new(
                 new ApplicationDto(
                     id: applicationId,
                     userId: userId,
@@ -39,7 +39,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         {
             Guid applicationId = Guid.NewGuid();
             Guid userId = Guid.NewGuid();
-            var application = new Application();
+            Application application = new();
 
             application.SetFields(new ApplicationDto(
                 id: applicationId,
@@ -64,7 +64,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         {
             Guid applicationId = Guid.NewGuid();
             Guid userId = Guid.NewGuid();
-            var application = new Application(
+            Application application = new(
                 new ApplicationDto(
                     id: applicationId,
                     userId: userId,

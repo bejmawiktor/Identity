@@ -71,10 +71,10 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public async Task TestAddAsync_WhenResourceGiven_ThenResourceIsStored()
         {
-            var resourceDto = new ResourceDto(
+            ResourceDto resourceDto = new(
                 id: "MyResource",
                 description: "My test resource");
-            var resourceRepository = new ResourcesRepository(this.IdentityContext);
+            ResourcesRepository resourceRepository = new(this.IdentityContext);
 
             await resourceRepository.AddAsync(resourceDto);
 
@@ -90,10 +90,10 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public async Task TestUpdateAsync_WhenResourceGiven_ThenResourceIsUpdated()
         {
-            var resourceDto = new ResourceDto(
+            ResourceDto resourceDto = new(
                 id: "MyResource",
                 description: "My test resource");
-            var resourceRepository = new ResourcesRepository(this.IdentityContext);
+            ResourcesRepository resourceRepository = new(this.IdentityContext);
             await resourceRepository.AddAsync(resourceDto);
             resourceDto = new ResourceDto(
                 id: "MyResource",
@@ -113,10 +113,10 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public async Task TestRemoveAsync_WhenResourceGiven_ThenResourceIsRemoved()
         {
-            var resourceDto = new ResourceDto(
+            ResourceDto resourceDto = new(
                 id: "MyResource",
                 description: "My test resource");
-            var resourceRepository = new ResourcesRepository(this.IdentityContext);
+            ResourcesRepository resourceRepository = new(this.IdentityContext);
             await resourceRepository.AddAsync(resourceDto);
 
             await resourceRepository.RemoveAsync(resourceDto);
@@ -129,10 +129,10 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public async Task TestGetAsync_WhenResourceIdGiven_ThenResourceIsReturned()
         {
-            var resourceDto = new ResourceDto(
+            ResourceDto resourceDto = new(
                 id: "MyResource",
                 description: "My test resource");
-            var resourceRepository = new ResourcesRepository(this.IdentityContext);
+            ResourcesRepository resourceRepository = new(this.IdentityContext);
             await resourceRepository.AddAsync(resourceDto);
 
             ResourceDto result = await resourceRepository.GetAsync("MyResource");
@@ -146,10 +146,10 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             Pagination pagination,
             IEnumerable<ResourceDto> expectedResources)
         {
-            var resourceDto = new ResourceDto(
+            ResourceDto resourceDto = new(
                 id: "MyResource",
                 description: "My test resource");
-            var resourceRepository = new ResourcesRepository(this.IdentityContext);
+            ResourcesRepository resourceRepository = new(this.IdentityContext);
             resources.ToList().ForEach(r => resourceRepository.AddAsync(r).Wait());
 
             IEnumerable<ResourceDto> result = await resourceRepository.GetAsync(pagination);

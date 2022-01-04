@@ -22,9 +22,9 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestConstructor_WhenApplicationsRepositoryGiven_ThenApplicationsRepositoryIsSet()
         {
-            var applicationsRepositoryMock = new Mock<IApplicationsRepository>();
+            Mock<IApplicationsRepository> applicationsRepositoryMock = new();
             IApplicationsRepository applicationsRepository = applicationsRepositoryMock.Object;
-            var applicationsRepositoryAdapter = new ApplicationsRepositoryAdapter(applicationsRepository);
+            ApplicationsRepositoryAdapter applicationsRepositoryAdapter = new(applicationsRepository);
 
             Assert.That(applicationsRepositoryAdapter.ApplicationsRepository, Is.EqualTo(applicationsRepository));
         }

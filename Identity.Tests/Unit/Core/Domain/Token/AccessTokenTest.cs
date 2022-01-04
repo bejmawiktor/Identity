@@ -12,7 +12,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenRefreshTokenIdGiven_ThenInvalidOperationExceptionIsThrown()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")

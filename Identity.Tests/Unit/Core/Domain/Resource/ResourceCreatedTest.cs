@@ -10,7 +10,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenResourceIdGiven_ThenResourceIdIsSet()
         {
-            var resourceId = new ResourceId("TestResource");
+            ResourceId resourceId = new("TestResource");
 
             ResourceCreated resourceCreated = this.GetResourceCreated(
                 resourceId: new ResourceId("TestResource"));

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DDD.Domain.Persistence;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,7 +31,7 @@ namespace Identity.Core.Domain
                 return true;
             }
 
-            foreach(var roleId in user.Roles)
+            foreach(RoleId roleId in user.Roles)
             {
                 Role role = await this.UnitOfWork.RolesRepository.GetAsync(roleId);
 
@@ -122,10 +123,10 @@ namespace Identity.Core.Domain
                 throw new UserNotFoundException(userId);
             }
 
-            var userPermissions = new List<PermissionId>();
+            List<PermissionId> userPermissions = new();
             userPermissions.AddRange(user.Permissions);
 
-            foreach(var roleId in user.Roles)
+            foreach(RoleId roleId in user.Roles)
             {
                 Role role = await this.UnitOfWork.RolesRepository.GetAsync(roleId);
 
@@ -149,13 +150,13 @@ namespace Identity.Core.Domain
             this.ValidateGenerateTokensParameters(applicationId, secretKey, callbackUrl, code);
             TokenPair tokens = null;
 
-            using(var transactionScope = this.UnitOfWork.BeginScope())
+            using(ITransactionScope transactionScope = this.UnitOfWork.BeginScope())
             {
                 Application application = await this.UnitOfWork.ApplicationsRepository.GetAsync(applicationId);
 
                 this.ValidateGenerateTokensApplication(applicationId, secretKey, callbackUrl, application);
 
-                var authorizationCodeId = new AuthorizationCodeId(HashedCode.Hash(code), applicationId);
+                AuthorizationCodeId authorizationCodeId = new(HashedCode.Hash(code), applicationId);
                 AuthorizationCode authorizationCode = await this.UnitOfWork.AuthorizationCodesRepository.GetAsync(authorizationCodeId);
 
                 if(authorizationCode == null)
@@ -234,14 +235,14 @@ namespace Identity.Core.Domain
 
             TokenPair tokens = null;
 
-            using(var transactionScope = this.UnitOfWork.BeginScope())
+            using(ITransactionScope transactionScope = this.UnitOfWork.BeginScope())
             {
                 Application application = await this.UnitOfWork.ApplicationsRepository
                     .GetAsync(refreshTokenValue.ApplicationId);
 
                 this.ValidateRefreshTokensApplication(refreshTokenValue, callbackUrl, application);
 
-                var tokenId = new TokenId(TokenValueEncrypter.Encrypt(refreshTokenValue));
+                TokenId tokenId = new(TokenValueEncrypter.Encrypt(refreshTokenValue));
                 RefreshToken refreshToken = await this.UnitOfWork.RefreshTokensRepository.GetAsync(tokenId);
 
                 this.ValidateRefreshTokensRefreshToken(tokenId, refreshToken);

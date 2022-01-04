@@ -92,12 +92,12 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         public async Task TestAddAsync_WhenUserGiven_ThenUserIsStored()
         {
             Guid userId = Guid.NewGuid();
-            var roles = new Guid[]
+            Guid[] roles = new Guid[]
             {
                 Guid.NewGuid(),
                 Guid.NewGuid()
             };
-            var userDto = new UserDto(
+            UserDto userDto = new(
                 id: userId,
                 email: "example1@example.com",
                 hashedPassword: UsersRepositoryTest.TestPassword.ToString(),
@@ -106,7 +106,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 {
                     ("MyResource", "MyPermission")
                 });
-            var userRepository = new UsersRepository(this.IdentityContext);
+            UsersRepository userRepository = new(this.IdentityContext);
 
             await userRepository.AddAsync(userDto);
 
@@ -129,12 +129,12 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         public async Task TestUpdateAsync_WhenUserGiven_ThenUserIsUpdated()
         {
             Guid userId = Guid.NewGuid();
-            var roles = new Guid[]
+            Guid[] roles = new Guid[]
             {
                 Guid.NewGuid(),
                 Guid.NewGuid()
             };
-            var userDto = new UserDto(
+            UserDto userDto = new(
                 id: userId,
                 email: "example1@example.com",
                 hashedPassword: UsersRepositoryTest.TestPassword.ToString(),
@@ -143,7 +143,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 {
                     ("MyResource", "MyPermission")
                 });
-            var userRepository = new UsersRepository(this.IdentityContext);
+            UsersRepository userRepository = new(this.IdentityContext);
             await userRepository.AddAsync(userDto);
             userDto = new UserDto(
                 id: userId,
@@ -182,12 +182,12 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         public async Task TestRemoveAsync_WhenUserGiven_ThenUserIsRemoved()
         {
             Guid userId = Guid.NewGuid();
-            var roles = new Guid[]
+            Guid[] roles = new Guid[]
             {
                 Guid.NewGuid(),
                 Guid.NewGuid()
             };
-            var userDto = new UserDto(
+            UserDto userDto = new UserDto(
                 id: userId,
                 email: "example1@example.com",
                 hashedPassword: UsersRepositoryTest.TestPassword.ToString(),
@@ -196,7 +196,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 {
                     ("MyResource", "MyPermission")
                 });
-            var userRepository = new UsersRepository(this.IdentityContext);
+            UsersRepository userRepository = new UsersRepository(this.IdentityContext);
             await userRepository.AddAsync(userDto);
 
             await userRepository.RemoveAsync(userDto);
@@ -210,12 +210,12 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         public async Task TestGetAsync_WhenUserIdGiven_ThenUserIsReturned()
         {
             Guid userId = Guid.NewGuid();
-            var roles = new Guid[]
+            Guid[] roles = new Guid[]
             {
                 Guid.NewGuid(),
                 Guid.NewGuid()
             };
-            var userDto = new UserDto(
+            UserDto userDto = new(
                 id: userId,
                 email: "example1@example.com",
                 hashedPassword: UsersRepositoryTest.TestPassword.ToString(),
@@ -224,7 +224,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 {
                     ("MyResource", "MyPermission")
                 });
-            var userRepository = new UsersRepository(this.IdentityContext);
+            UsersRepository userRepository = new(this.IdentityContext);
             await userRepository.AddAsync(userDto);
 
             UserDto result = await userRepository.GetAsync(userId);
@@ -238,7 +238,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             Pagination pagination,
             IEnumerable<UserDto> expectedUsers)
         {
-            var userRepository = new UsersRepository(this.IdentityContext);
+            UsersRepository userRepository = new(this.IdentityContext);
             users.ToList().ForEach(r => userRepository.AddAsync(r).Wait());
 
             IEnumerable<UserDto> result = await userRepository.GetAsync(pagination);
@@ -250,12 +250,12 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         public async Task TestGetAsync_WhenEmailAddressGiven_ThenUserIsReturned()
         {
             Guid userId = Guid.NewGuid();
-            var roles = new Guid[]
+            Guid[] roles = new Guid[]
             {
                 Guid.NewGuid(),
                 Guid.NewGuid()
             };
-            var userDto = new UserDto(
+            UserDto userDto = new(
                 id: userId,
                 email: "example1@example.com",
                 hashedPassword: UsersRepositoryTest.TestPassword.ToString(),
@@ -264,7 +264,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
                 {
                     ("MyResource", "MyPermission")
                 });
-            var userRepository = new UsersRepository(this.IdentityContext);
+            UsersRepository userRepository = new(this.IdentityContext);
             await userRepository.AddAsync(userDto);
 
             UserDto result = await userRepository.GetAsync("example1@example.com");

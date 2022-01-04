@@ -34,7 +34,7 @@ namespace Identity.Tests.Unit.Core.Domain
             TokenType tokenType = null,
             PermissionId[] permissions = null)
         {
-            var permissionsReplacement = new PermissionId[]
+            PermissionId[] permissionsReplacement = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")

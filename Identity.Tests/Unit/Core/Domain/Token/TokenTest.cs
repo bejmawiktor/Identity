@@ -15,9 +15,9 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             ApplicationId applicationId = ApplicationId.Generate();
             EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(this.GetTokenValue(applicationId: applicationId));
-            var tokenId = new TokenId(encryptedTokenValue);
+            TokenId tokenId = new(encryptedTokenValue);
 
-            var token = new TokenStub(tokenId);
+            TokenStub token = new(tokenId);
 
             Assert.That(token.ToString(), Is.EqualTo(tokenId.ToString()));
         }
@@ -29,7 +29,7 @@ namespace Identity.Tests.Unit.Core.Domain
             IEnumerable<PermissionId> permissions = null,
             DateTime? expirationDate = null)
         {
-            var tokenInformation = new TokenInformation(
+            TokenInformation tokenInformation = new(
                 id ?? Guid.NewGuid(),
                 applicationId ?? ApplicationId.Generate(),
                 tokenType ?? TokenType.Access,
@@ -48,9 +48,9 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             ApplicationId applicationId = ApplicationId.Generate();
             EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(this.GetTokenValue(applicationId: applicationId));
-            var tokenId = new TokenId(encryptedTokenValue);
+            TokenId tokenId = new(encryptedTokenValue);
 
-            var token = new TokenStub(tokenId);
+            TokenStub token = new(tokenId);
 
             Assert.That(token.ApplicationId, Is.EqualTo(applicationId));
         }
@@ -60,9 +60,9 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(
                 this.GetTokenValue(tokenType: TokenType.Refresh));
-            var tokenId = new TokenId(encryptedTokenValue);
+            TokenId tokenId = new(encryptedTokenValue);
 
-            var token = new TokenStub(tokenId);
+            TokenStub token = new(tokenId);
 
             Assert.That(token.Type, Is.EqualTo(TokenType.Refresh));
         }
@@ -73,9 +73,9 @@ namespace Identity.Tests.Unit.Core.Domain
             DateTime expirationDate = DateTime.Now;
             EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(
                 this.GetTokenValue(expirationDate: expirationDate));
-            var tokenId = new TokenId(encryptedTokenValue);
+            TokenId tokenId = new(encryptedTokenValue);
 
-            var token = new TokenStub(tokenId);
+            TokenStub token = new(tokenId);
 
             Assert.That(token.ExpiresAt, Is.EqualTo(expirationDate).Within(1).Seconds);
         }
@@ -83,16 +83,16 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenTokenValueGiven_ThenPermissionsAreSet()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
             EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(
                 this.GetTokenValue(permissions: permissions));
-            var tokenId = new TokenId(encryptedTokenValue);
+            TokenId tokenId = new(encryptedTokenValue);
 
-            var token = new TokenStub(tokenId);
+            TokenStub token = new(tokenId);
 
             Assert.That(token.Permissions, Is.EquivalentTo(permissions));
         }
@@ -102,8 +102,8 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(
                 this.GetTokenValue());
-            var tokenId = new TokenId(encryptedTokenValue);
-            var token = new TokenStub(tokenId, true);
+            TokenId tokenId = new(encryptedTokenValue);
+            TokenStub token = new(tokenId, true);
 
             TokenVerificationResult tokenVerificationResult = token.Verify();
 
@@ -119,8 +119,8 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(
                 this.GetTokenValue());
-            var tokenId = new TokenId(encryptedTokenValue);
-            var token = new TokenStub(tokenId, true);
+            TokenId tokenId = new(encryptedTokenValue);
+            TokenStub token = new(tokenId, true);
 
             TokenVerificationResult tokenVerificationResult = token.Verify();
 
@@ -137,8 +137,8 @@ namespace Identity.Tests.Unit.Core.Domain
             DateTime expirationDate = DateTime.Now.AddMinutes(-1);
             EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(
                 this.GetTokenValue(expirationDate: expirationDate));
-            var tokenId = new TokenId(encryptedTokenValue);
-            var token = new TokenStub(tokenId);
+            TokenId tokenId = new(encryptedTokenValue);
+            TokenStub token = new(tokenId);
 
             TokenVerificationResult tokenVerificationResult = token.Verify();
 
@@ -155,8 +155,8 @@ namespace Identity.Tests.Unit.Core.Domain
             DateTime expirationDate = DateTime.Now.AddMinutes(1);
             EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(
                 this.GetTokenValue(expirationDate: expirationDate));
-            var tokenId = new TokenId(encryptedTokenValue);
-            var token = new TokenStub(tokenId);
+            TokenId tokenId = new(encryptedTokenValue);
+            TokenStub token = new(tokenId);
 
             TokenVerificationResult tokenVerificationResult = token.Verify();
 

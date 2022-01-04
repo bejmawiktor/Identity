@@ -13,8 +13,8 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenPermissionsGiven_ThenPermissionsAreSet()
         {
-            var addSomethingPermission = new PermissionId(new ResourceId("MyResource"), "AddSomething");
-            var permissions = new PermissionId[]
+            PermissionId addSomethingPermission = new PermissionId(new ResourceId("MyResource"), "AddSomething");
+            PermissionId[] permissions = new PermissionId[]
             {
                 addSomethingPermission
             };
@@ -27,7 +27,7 @@ namespace Identity.Tests.Unit.Core.Domain
             Guid? id = null,
             IEnumerable<PermissionId> permissions = null)
         {
-            var permissionsReplacement = new PermissionId[]
+            PermissionId[] permissionsReplacement = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "AddSomething")
             };
@@ -61,8 +61,8 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestIsPermitedTo_WhenHolderHasPermission_ThenTrueIsReturned()
         {
-            var addSomethingPermission = new PermissionId(new ResourceId("MyResource"), "AddSomething");
-            var permissions = new PermissionId[]
+            PermissionId addSomethingPermission = new PermissionId(new ResourceId("MyResource"), "AddSomething");
+            PermissionId[] permissions = new PermissionId[]
             {
                 addSomethingPermission
             };
@@ -74,7 +74,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestIsPermitedTo_WhenHolderHasntPermission_ThenFalseIsReturned()
         {
-            var addSomethingPermission = new PermissionId(new ResourceId("MyResource"), "AddSomething");
+            PermissionId addSomethingPermission = new PermissionId(new ResourceId("MyResource"), "AddSomething");
             PermissionHolderStub permissionHolder = this.GetPermissionHolderStub(
                 permissions: Enumerable.Empty<PermissionId>());
 
@@ -96,8 +96,8 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestObtainPermission_WhenHolderWasPermissionWasAlreadyObtained_ThenInvalidOperationIsThrown()
         {
-            var addSomethingPermission = new PermissionId(new ResourceId("MyResource"), "AddSomething");
-            var permissions = new PermissionId[]
+            PermissionId addSomethingPermission = new PermissionId(new ResourceId("MyResource"), "AddSomething");
+            PermissionId[] permissions = new PermissionId[]
             {
                 addSomethingPermission
             };
@@ -113,7 +113,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestObtainPermission_WhenPermissionGiven_ThenHolderHasPermission()
         {
-            var addSomethingPermission = new PermissionId(new ResourceId("MyResource"), "AddSomething");
+            PermissionId addSomethingPermission = new PermissionId(new ResourceId("MyResource"), "AddSomething");
             PermissionHolderStub permissionHolder = this.GetPermissionHolderStub(
                 permissions: Enumerable.Empty<PermissionId>());
 
@@ -137,7 +137,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestRevokePermission_WhenHolderHasntObtainedGivenPermission_ThenInvalidOperationIsThrown()
         {
-            var addSomethingPermission = new PermissionId(new ResourceId("MyResource"), "AddSomething");
+            PermissionId addSomethingPermission = new PermissionId(new ResourceId("MyResource"), "AddSomething");
             PermissionHolderStub permissionHolder = this.GetPermissionHolderStub(
                 permissions: Enumerable.Empty<PermissionId>());
 
@@ -151,8 +151,8 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestRevokePermission_WhenPermissionIdGiven_ThenPermissionIsRevoked()
         {
-            var addSomethingPermission = new PermissionId(new ResourceId("MyResource"), "AddSomething");
-            var permissions = new PermissionId[]
+            PermissionId addSomethingPermission = new PermissionId(new ResourceId("MyResource"), "AddSomething");
+            PermissionId[] permissions = new PermissionId[]
             {
                 addSomethingPermission
             };

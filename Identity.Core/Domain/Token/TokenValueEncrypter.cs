@@ -14,14 +14,14 @@ namespace Identity.Core.Domain
                 throw new ArgumentNullException(nameof(tokenValue));
             }
 
-            var encryptedTokenValue = CurrentAlgorithm.Encrypt(tokenValue);
+            byte[] encryptedTokenValue = CurrentAlgorithm.Encrypt(tokenValue);
 
             return new EncryptedTokenValue(AssemblyEncryptedTokenValue(encryptedTokenValue));
         }
 
         private static byte[] AssemblyEncryptedTokenValue(byte[] algorithmEncryptedTokenValue)
         {
-            var encryptedTokenValue = new byte[AlgorithmSymbolLength + algorithmEncryptedTokenValue.Length];
+            byte[] encryptedTokenValue = new byte[AlgorithmSymbolLength + algorithmEncryptedTokenValue.Length];
 
             encryptedTokenValue[0] = TokenValueEncryptionAlgorithmFactory.ConvertToAlgorithmSymbol(CurrentAlgorithm.GetType());
             Buffer.BlockCopy(algorithmEncryptedTokenValue, 0, encryptedTokenValue, AlgorithmSymbolLength, algorithmEncryptedTokenValue.Length);
@@ -49,7 +49,7 @@ namespace Identity.Core.Domain
 
         private static byte[] ExtractAlgorithmTokenValue(byte[] encryptedTokenValueBytes)
         {
-            var encryptedTokenValue = new byte[encryptedTokenValueBytes.Length - AlgorithmSymbolLength];
+            byte[] encryptedTokenValue = new byte[encryptedTokenValueBytes.Length - AlgorithmSymbolLength];
 
             Buffer.BlockCopy(encryptedTokenValueBytes, AlgorithmSymbolLength, encryptedTokenValue, 0, encryptedTokenValue.Length);
 

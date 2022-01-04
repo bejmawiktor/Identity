@@ -12,7 +12,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenAccessTokenGiven_ThenAccessTokenIsSet()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
@@ -21,7 +21,7 @@ namespace Identity.Tests.Unit.Core.Domain
             TokenValue accessToken = TokenValue.GenerateAccessToken(applicationId, permissions);
             TokenValue refreshToken = TokenValue.GenerateRefreshToken(applicationId, permissions);
 
-            var tokenPair = new TokenPair(
+            TokenPair tokenPair = new(
                 accessToken: accessToken,
                 refreshToken: refreshToken);
 
@@ -31,7 +31,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenRefreshTokenGiven_ThenRefreshTokenIsSet()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
@@ -40,7 +40,7 @@ namespace Identity.Tests.Unit.Core.Domain
             TokenValue accessToken = TokenValue.GenerateAccessToken(applicationId, permissions);
             TokenValue refreshToken = TokenValue.GenerateRefreshToken(applicationId, permissions);
 
-            var tokenPair = new TokenPair(
+            TokenPair tokenPair = new(
                 accessToken: accessToken,
                 refreshToken: refreshToken);
 
@@ -50,7 +50,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenRefreshTokenGivenInAccessTokenPlace_ThenArgumentExceptionIsThrown()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
@@ -70,7 +70,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenAccessTokenGivenInRefreshTokenPlace_ThenArgumentExceptionIsThrown()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
@@ -90,7 +90,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenNullAccessTokenGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
@@ -110,7 +110,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenNullRefreshTokenGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")

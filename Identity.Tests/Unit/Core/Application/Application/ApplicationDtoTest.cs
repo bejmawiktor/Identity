@@ -88,7 +88,7 @@ namespace Identity.Tests.Unit.Core.Application
         {
             Guid applicationId = Guid.NewGuid();
             Guid userId = Guid.NewGuid();
-            var applicationDto = new ApplicationDto(
+            ApplicationDto applicationDto = new ApplicationDto(
                 id: applicationId,
                 userId: userId,
                 name: "MyApp",
@@ -114,8 +114,8 @@ namespace Identity.Tests.Unit.Core.Application
         {
             Guid applicationId = Guid.NewGuid();
             Guid userId = Guid.NewGuid();
-            var leftApplicationDto = this.GetApplicationDto(applicationId, userId);
-            var rightApplicationDto = this.GetApplicationDto(applicationId, userId);
+            ApplicationDto leftApplicationDto = this.GetApplicationDto(applicationId, userId);
+            ApplicationDto rightApplicationDto = this.GetApplicationDto(applicationId, userId);
 
             Assert.That(leftApplicationDto.Equals(rightApplicationDto), Is.True);
         }
@@ -127,8 +127,8 @@ namespace Identity.Tests.Unit.Core.Application
             Guid firstUserId = Guid.NewGuid();
             Guid secondApplicationId = Guid.NewGuid();
             Guid secondUserId = Guid.NewGuid();
-            var leftApplicationDto = this.GetApplicationDto(firstApplicationId, firstUserId);
-            var rightApplicationDto = this.GetApplicationDto(secondApplicationId, secondUserId);
+            ApplicationDto leftApplicationDto = this.GetApplicationDto(firstApplicationId, firstUserId);
+            ApplicationDto rightApplicationDto = this.GetApplicationDto(secondApplicationId, secondUserId);
 
             Assert.That(leftApplicationDto.Equals(rightApplicationDto), Is.False);
         }
@@ -138,8 +138,8 @@ namespace Identity.Tests.Unit.Core.Application
         {
             Guid applicationId = Guid.NewGuid();
             Guid userId = Guid.NewGuid();
-            var leftApplicationDto = this.GetApplicationDto(applicationId, userId);
-            var rightApplicationDto = this.GetApplicationDto(applicationId, userId);
+            ApplicationDto leftApplicationDto = this.GetApplicationDto(applicationId, userId);
+            ApplicationDto rightApplicationDto = this.GetApplicationDto(applicationId, userId);
 
             Assert.That(leftApplicationDto.GetHashCode(), Is.EqualTo(rightApplicationDto.GetHashCode()));
         }
@@ -151,8 +151,8 @@ namespace Identity.Tests.Unit.Core.Application
             Guid firstUserId = Guid.NewGuid();
             Guid secondApplicationId = Guid.NewGuid();
             Guid secondUserId = Guid.NewGuid();
-            var leftApplicationDto = this.GetApplicationDto(firstApplicationId, firstUserId);
-            var rightApplicationDto = this.GetApplicationDto(secondApplicationId, secondUserId);
+            ApplicationDto leftApplicationDto = this.GetApplicationDto(firstApplicationId, firstUserId);
+            ApplicationDto rightApplicationDto = this.GetApplicationDto(secondApplicationId, secondUserId);
 
             Assert.That(leftApplicationDto.GetHashCode(), Is.Not.EqualTo(rightApplicationDto.GetHashCode()));
         }

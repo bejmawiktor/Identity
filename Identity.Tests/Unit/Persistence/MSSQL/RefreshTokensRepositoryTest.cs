@@ -26,7 +26,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
 
         private static string GetTokenId()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource1"), "Add")
             };
@@ -88,10 +88,10 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         public async Task TestAddAsync_WhenRefreshTokenGiven_ThenRefreshTokenIsStored()
         {
             string tokenId = RefreshTokensRepositoryTest.GetTokenId();
-            var refreshTokenDto = new RefreshTokenDto(
+            RefreshTokenDto refreshTokenDto = new(
                 id: tokenId,
                 used: false);
-            var refreshTokensRepository = new RefreshTokensRepository(this.IdentityContext);
+            RefreshTokensRepository refreshTokensRepository = new(this.IdentityContext);
 
             await refreshTokensRepository.AddAsync(refreshTokenDto);
 
@@ -108,10 +108,10 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         public async Task TestUpdateAsync_WhenRefreshTokenGiven_ThenRefreshTokenIsUpdated()
         {
             string tokenId = RefreshTokensRepositoryTest.GetTokenId();
-            var refreshTokenDto = new RefreshTokenDto(
+            RefreshTokenDto refreshTokenDto = new(
                 id: tokenId,
                 used: false);
-            var refreshTokensRepository = new RefreshTokensRepository(this.IdentityContext);
+            RefreshTokensRepository refreshTokensRepository = new(this.IdentityContext);
             await refreshTokensRepository.AddAsync(refreshTokenDto);
             refreshTokenDto = new RefreshTokenDto(
                 id: tokenId,
@@ -132,10 +132,10 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         public async Task TestRemoveAsync_WhenRefreshTokenGiven_ThenRefreshTokenIsRemoved()
         {
             string tokenId = RefreshTokensRepositoryTest.GetTokenId();
-            var refreshTokenDto = new RefreshTokenDto(
+            RefreshTokenDto refreshTokenDto = new(
                 id: RefreshTokensRepositoryTest.GetTokenId(),
                 used: true);
-            var refreshTokensRepository = new RefreshTokensRepository(this.IdentityContext);
+            RefreshTokensRepository refreshTokensRepository = new(this.IdentityContext);
             await refreshTokensRepository.AddAsync(refreshTokenDto);
 
             await refreshTokensRepository.RemoveAsync(refreshTokenDto);
@@ -149,10 +149,10 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         public async Task TestGetAsync_WhenRefreshTokenIdGiven_ThenRefreshTokenIsReturned()
         {
             string tokenId = RefreshTokensRepositoryTest.GetTokenId();
-            var refreshTokenDto = new RefreshTokenDto(
+            RefreshTokenDto refreshTokenDto = new(
                 id: tokenId,
                 used: true);
-            var refreshTokensRepository = new RefreshTokensRepository(this.IdentityContext);
+            RefreshTokensRepository refreshTokensRepository = new(this.IdentityContext);
             await refreshTokensRepository.AddAsync(refreshTokenDto);
 
             RefreshTokenDto result = await refreshTokensRepository.GetAsync(tokenId);
@@ -166,7 +166,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             Pagination pagination,
             IEnumerable<RefreshTokenDto> expectedRefreshTokens)
         {
-            var refreshTokensRepository = new RefreshTokensRepository(this.IdentityContext);
+            RefreshTokensRepository refreshTokensRepository = new(this.IdentityContext);
             refreshTokens.ToList().ForEach(r => refreshTokensRepository.AddAsync(r).Wait());
 
             IEnumerable<RefreshTokenDto> result = await refreshTokensRepository.GetAsync(pagination);

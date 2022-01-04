@@ -29,7 +29,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenRevokedPermissionIdGiven_ThenRevokedPermissionIdIsSet()
         {
-            var revokedPermissionId = new PermissionId(new ResourceId("MyResource"), "Permission");
+            PermissionId revokedPermissionId = new(new ResourceId("MyResource"), "Permission");
 
             RolePermissionRevoked rolePermissionRevoked = this.GetRolePermissionRevoked(permissionId: revokedPermissionId);
 

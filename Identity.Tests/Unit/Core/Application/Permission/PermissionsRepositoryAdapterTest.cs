@@ -22,9 +22,9 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestConstructor_WhenPermissionsRepositoryGiven_ThenPermissionsRepositoryIsSet()
         {
-            var permissionsRepositoryMock = new Mock<IPermissionsRepository>();
+            Mock<IPermissionsRepository> permissionsRepositoryMock = new();
             IPermissionsRepository permissionsRepository = permissionsRepositoryMock.Object;
-            var permissionsRepositoryAdapter = new PermissionsRepositoryAdapter(permissionsRepository);
+            PermissionsRepositoryAdapter permissionsRepositoryAdapter = new(permissionsRepository);
 
             Assert.That(permissionsRepositoryAdapter.PermissionsRepository, Is.EqualTo(permissionsRepository));
         }

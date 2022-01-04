@@ -17,12 +17,12 @@ namespace Identity.Core.Domain
 
             byte[] key = this.GetKey(Key);
 
-            using(var aes = Aes.Create())
+            using(Aes aes = Aes.Create())
             {
                 byte[] iv = encryptedSecretKey.Take(AesBlockByteSize).ToArray();
                 byte[] cipherText = encryptedSecretKey.Skip(AesBlockByteSize).ToArray();
 
-                using(var decryptor = aes.CreateDecryptor(key, iv))
+                using(ICryptoTransform decryptor = aes.CreateDecryptor(key, iv))
                 {
                     byte[] decryptedBytes = decryptor
                         .TransformFinalBlock(cipherText, 0, cipherText.Length);
@@ -50,7 +50,7 @@ namespace Identity.Core.Domain
                     byte[] plainText = Encoding.UTF8.GetBytes(secretKey.ToString());
                     byte[] cipherText = encryptor
                         .TransformFinalBlock(plainText, 0, plainText.Length);
-                    var result = new byte[iv.Length + cipherText.Length];
+                    byte[] result = new byte[iv.Length + cipherText.Length];
 
                     iv.CopyTo(result, 0);
                     cipherText.CopyTo(result, iv.Length);

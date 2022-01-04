@@ -20,9 +20,9 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestConstructor_WhenAuthorizationCodesRepositoryGiven_ThenAuthorizationCodesRepositoryIsSet()
         {
-            var authorizationCodesRepositoryMock = new Mock<IAuthorizationCodesRepository>();
+            Mock<IAuthorizationCodesRepository> authorizationCodesRepositoryMock = new();
             IAuthorizationCodesRepository authorizationCodesRepository = authorizationCodesRepositoryMock.Object;
-            var authorizationCodesRepositoryAdapter = new AuthorizationCodesRepositoryAdapter(authorizationCodesRepository);
+            AuthorizationCodesRepositoryAdapter authorizationCodesRepositoryAdapter = new(authorizationCodesRepository);
 
             Assert.That(authorizationCodesRepositoryAdapter.AuthorizationCodesRepository, Is.EqualTo(authorizationCodesRepository));
         }

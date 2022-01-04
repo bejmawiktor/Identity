@@ -43,7 +43,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestConstructor_WhenBase64HashedStringGiven_ThenToStringReturnsBased64HashedString()
         {
             string base64EncryptedSecretKey = EncryptedSecretKeyTest.TestSecretKey.ToString();
-            var encryptedSecretKey = new EncryptedSecretKey(base64EncryptedSecretKey);
+            EncryptedSecretKey encryptedSecretKey = new EncryptedSecretKey(base64EncryptedSecretKey);
 
             Assert.That(encryptedSecretKey.ToString(), Is.EqualTo(base64EncryptedSecretKey));
         }
@@ -52,7 +52,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestConstructor_WhenEncryptedSecretKeyBytesGiven_ThenToByteArrayReturnsSameByteArray()
         {
             byte[] encryptedSecretKeyBytes = EncryptedSecretKeyTest.TestSecretKey.ToByteArray();
-            var encryptedSecretKey = new EncryptedSecretKey(encryptedSecretKeyBytes);
+            EncryptedSecretKey encryptedSecretKey = new EncryptedSecretKey(encryptedSecretKeyBytes);
 
             Assert.That(encryptedSecretKey.ToByteArray(), Is.EqualTo(encryptedSecretKeyBytes));
         }

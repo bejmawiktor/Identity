@@ -16,7 +16,7 @@ namespace Identity.Tests.Unit.Core.Application
             DateTime expiresAt = DateTime.Now;
             ApplicationId applicationId = ApplicationId.Generate();
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId, out _);
-            var authorizationCode = new AuthorizationCode(
+            AuthorizationCode authorizationCode = new(
                 id: authorizationCodeId,
                 expiresAt: expiresAt,
                 used: true,
@@ -25,7 +25,7 @@ namespace Identity.Tests.Unit.Core.Application
                     new PermissionId(new ResourceId("MyResource1"), "Add"),
                     new PermissionId(new ResourceId("MyResource2"), "Add")
                 });
-            var authorizationCodeDtoConverter = new AuthorizationCodeDtoConverter();
+            AuthorizationCodeDtoConverter authorizationCodeDtoConverter = new();
 
             AuthorizationCodeDto authorizationCodeDto = authorizationCodeDtoConverter.ToDto(authorizationCode);
 
@@ -46,7 +46,7 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestToDto_WhenNullAuthorizationCodeGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var authorizationCodeDtoConverter = new AuthorizationCodeDtoConverter();
+            AuthorizationCodeDtoConverter authorizationCodeDtoConverter = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -60,7 +60,7 @@ namespace Identity.Tests.Unit.Core.Application
         {
             ApplicationId applicationId = ApplicationId.Generate();
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId, out _);
-            var authorizationCodeDtoConverter = new AuthorizationCodeDtoConverter();
+            AuthorizationCodeDtoConverter authorizationCodeDtoConverter = new();
 
             (Guid ApplicationId, string Code) authorizationCodeDtoId = authorizationCodeDtoConverter.ToDtoIdentifier(authorizationCodeId);
 
@@ -70,7 +70,7 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestToDtoIdentifier_WhenNullAuthorizationCodeIdGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var authorizationCodeDtoConverter = new AuthorizationCodeDtoConverter();
+            AuthorizationCodeDtoConverter authorizationCodeDtoConverter = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()

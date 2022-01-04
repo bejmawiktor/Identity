@@ -11,11 +11,11 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestToDto_WhenResourceGiven_ThenResourceDtoIsReturned()
         {
-            var resourceId = new ResourceId("MyResource");
-            var resource = new Resource(
+            ResourceId resourceId = new("MyResource");
+            Resource resource = new(
                 id: resourceId,
                 description: "My resource description");
-            var resourceDtoConverter = new ResourceDtoConverter();
+            ResourceDtoConverter resourceDtoConverter = new();
 
             ResourceDto resourceDto = resourceDtoConverter.ToDto(resource);
 
@@ -26,7 +26,7 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestToDto_WhenNullResourceGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var resourceDtoConverter = new ResourceDtoConverter();
+            ResourceDtoConverter resourceDtoConverter = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -38,8 +38,8 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestToDtoIdentifier_WhenResourceIdGiven_ThenDtoIdentifierIsReturned()
         {
-            var resourceId = new ResourceId("MyResource");
-            var resourceDtoConverter = new ResourceDtoConverter();
+            ResourceId resourceId = new("MyResource");
+            ResourceDtoConverter resourceDtoConverter = new();
 
             string resourceDtoIdentifier = resourceDtoConverter.ToDtoIdentifier(resourceId);
 
@@ -49,7 +49,7 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestToDtoIdentifier_WhenNullResourceIdGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var resourceDtoConverter = new ResourceDtoConverter();
+            ResourceDtoConverter resourceDtoConverter = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()

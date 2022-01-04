@@ -22,18 +22,18 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenUnitOfWorkGiven_ThenUnitOfWorkIsSet()
         {
-            var unitOfWork = this.GetUnitOfWork();
-            var authenticationService = new AuthenticationService(unitOfWork);
+            IUnitOfWork unitOfWork = this.GetUnitOfWork();
+            AuthenticationService authenticationService = new(unitOfWork);
 
             Assert.That(authenticationService.UnitOfWork, Is.EqualTo(unitOfWork));
         }
 
         private IUnitOfWork GetUnitOfWork(IUsersRepository usersRepository = null)
         {
-            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            Mock<IUnitOfWork> unitOfWorkMock = new();
             unitOfWorkMock.Setup(x => x.UsersRepository)
                 .Returns(usersRepository ?? new Mock<IUsersRepository>().Object);
-            var unitOfWork = unitOfWorkMock.Object;
+            IUnitOfWork unitOfWork = unitOfWorkMock.Object;
 
             return unitOfWork;
         }
@@ -41,16 +41,16 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public async Task TestAuthenticate_WhenUserCredentialsAreGood_ThenUserIsReturned()
         {
-            var password = new Password("examplepassword");
+            Password password = new("examplepassword");
             HashedPassword hashedPassword = HashedPassword.Hash(password);
-            var emailAddress = new EmailAddress("example@example.com");
+            EmailAddress emailAddress = new("example@example.com");
             User user = User.Create(
                 email: emailAddress,
                 password: hashedPassword);
-            var usersRepositoryMock = new Mock<IUsersRepository>();
+            Mock<IUsersRepository> usersRepositoryMock = new();
             usersRepositoryMock.Setup(u => u.GetAsync(emailAddress)).Returns(Task.FromResult(user));
-            var unitOfWork = this.GetUnitOfWork(usersRepositoryMock.Object);
-            var authenticationService = new AuthenticationService(unitOfWork);
+            IUnitOfWork unitOfWork = this.GetUnitOfWork(usersRepositoryMock.Object);
+            AuthenticationService authenticationService = new(unitOfWork);
 
             User authenticatedUser = await authenticationService.Authenticate(emailAddress, password);
 
@@ -60,16 +60,16 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public async Task TestAuthenticate_WhenWrongUserEmailGiven_ThenNullIsReturned()
         {
-            var password = new Password("examplepassword");
+            Password password = new("examplepassword");
             HashedPassword hashedPassword = HashedPassword.Hash(password);
-            var emailAddress = new EmailAddress("example@example.com");
+            EmailAddress emailAddress = new("example@example.com");
             User user = User.Create(
                 email: emailAddress,
                 password: hashedPassword);
-            var usersRepositoryMock = new Mock<IUsersRepository>();
+            Mock<IUsersRepository> usersRepositoryMock = new();
             usersRepositoryMock.Setup(u => u.GetAsync(emailAddress)).Returns(Task.FromResult(user));
-            var unitOfWork = this.GetUnitOfWork(usersRepositoryMock.Object);
-            var authenticationService = new AuthenticationService(unitOfWork);
+            IUnitOfWork unitOfWork = this.GetUnitOfWork(usersRepositoryMock.Object);
+            AuthenticationService authenticationService = new(unitOfWork);
 
             User authenticatedUser = await authenticationService.Authenticate(new EmailAddress("example2@example.com"), password);
 
@@ -79,16 +79,16 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public async Task TestAuthenticate_WhenWrongPasswordGiven_ThenNullIsReturned()
         {
-            var password = new Password("examplepassword");
+            Password password = new("examplepassword");
             HashedPassword hashedPassword = HashedPassword.Hash(password);
-            var emailAddress = new EmailAddress("example@example.com");
+            EmailAddress emailAddress = new("example@example.com");
             User user = User.Create(
                 email: emailAddress,
                 password: hashedPassword);
-            var usersRepositoryMock = new Mock<IUsersRepository>();
+            Mock<IUsersRepository> usersRepositoryMock = new();
             usersRepositoryMock.Setup(u => u.GetAsync(emailAddress)).Returns(Task.FromResult(user));
-            var unitOfWork = this.GetUnitOfWork(usersRepositoryMock.Object);
-            var authenticationService = new AuthenticationService(unitOfWork);
+            IUnitOfWork unitOfWork = this.GetUnitOfWork(usersRepositoryMock.Object);
+            AuthenticationService authenticationService = new(unitOfWork);
 
             User authenticatedUser = await authenticationService.Authenticate(emailAddress, new Password("wrongpassword"));
 

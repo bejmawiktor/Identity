@@ -14,14 +14,14 @@ namespace Identity.Core.Domain
                 throw new ArgumentNullException(nameof(password));
             }
 
-            var algorithmHashedPassword = CurrentAlgorithm.Hash(password);
+            byte[] algorithmHashedPassword = CurrentAlgorithm.Hash(password);
 
             return new HashedPassword(AssemblyHashedPassword(algorithmHashedPassword));
         }
 
         private static byte[] AssemblyHashedPassword(byte[] algorithmHashedPassword)
         {
-            var hashedPassword = new byte[AlgorithmSymbolLength + algorithmHashedPassword.Length];
+            byte[] hashedPassword = new byte[AlgorithmSymbolLength + algorithmHashedPassword.Length];
 
             hashedPassword[0] = PasswordHashingAlgorithmFactory.ConvertToAlgorithmSymbol(CurrentAlgorithm.GetType());
             Buffer.BlockCopy(algorithmHashedPassword, 0, hashedPassword, AlgorithmSymbolLength, algorithmHashedPassword.Length);
@@ -56,7 +56,7 @@ namespace Identity.Core.Domain
 
         private static byte[] ExtractAlgorithmPassword(byte[] hashedPasswordBytes)
         {
-            var algorithmHashedPassword = new byte[hashedPasswordBytes.Length - AlgorithmSymbolLength];
+            byte[] algorithmHashedPassword = new byte[hashedPasswordBytes.Length - AlgorithmSymbolLength];
 
             Buffer.BlockCopy(hashedPasswordBytes, AlgorithmSymbolLength, algorithmHashedPassword, 0, algorithmHashedPassword.Length);
 

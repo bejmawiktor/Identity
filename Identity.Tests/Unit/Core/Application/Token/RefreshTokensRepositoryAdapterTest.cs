@@ -23,9 +23,9 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestConstructor_WhenRolesRepositoryGiven_ThenRolesRepositoryIsSet()
         {
-            var refreshTokensRepositoryMock = new Mock<IRefreshTokensRepository>();
+            Mock<IRefreshTokensRepository> refreshTokensRepositoryMock = new();
             IRefreshTokensRepository refreshTokensRepository = refreshTokensRepositoryMock.Object;
-            var refreshTokensRepositoryAdapter = new RefreshTokensRepositoryAdapter(refreshTokensRepository);
+            RefreshTokensRepositoryAdapter refreshTokensRepositoryAdapter = new(refreshTokensRepository);
 
             Assert.That(refreshTokensRepositoryAdapter.RefreshTokensRepository, Is.EqualTo(refreshTokensRepository));
         }

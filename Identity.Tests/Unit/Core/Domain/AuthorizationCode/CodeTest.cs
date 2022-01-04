@@ -49,7 +49,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [TestCase("X659biBIpIH2z37eJMR6qV63hpVUOupA")]
         public void TestConstructor_WhenCorrectLengthCodeGiven_ThenCodeIsSet(string codeValue)
         {
-            var code = new Code(codeValue);
+            Code code = new Code(codeValue);
 
             Assert.That(code.ToString(), Is.EqualTo(codeValue));
         }

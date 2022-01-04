@@ -23,7 +23,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             ApplicationId applicationId = ApplicationId.Generate();
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId, out _);
             DateTime now = DateTime.Now;
-            var authorizationCode = new AuthorizationCode(
+            AuthorizationCode authorizationCode = new(
                 new AuthorizationCodeDto(
                     authorizationCodeId.Code.ToString(),
                     authorizationCodeId.ApplicationId.ToGuid(),
@@ -65,7 +65,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             ApplicationId applicationId = ApplicationId.Generate();
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId, out _);
             DateTime now = DateTime.Now;
-            var authorizationCode = new AuthorizationCode();
+            AuthorizationCode authorizationCode = new();
 
             authorizationCode.SetFields(new AuthorizationCodeDto(
                 authorizationCodeId.Code.ToString(),
@@ -108,7 +108,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             ApplicationId applicationId = ApplicationId.Generate();
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId, out _);
             DateTime now = DateTime.Now;
-            var authorizationCode = new AuthorizationCode(
+            AuthorizationCode authorizationCode = new(
                 new AuthorizationCodeDto(
                     authorizationCodeId.Code.ToString(),
                     authorizationCodeId.ApplicationId.ToGuid(),

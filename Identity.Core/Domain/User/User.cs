@@ -69,7 +69,7 @@ namespace Identity.Core.Domain
 
         public static User Create(EmailAddress email, HashedPassword password)
         {
-            var user = new User(UserId.Generate(), email, password);
+            User user = new(UserId.Generate(), email, password);
 
             EventManager.Instance.Notify(new UserCreated(
                 user.Id,
@@ -138,8 +138,8 @@ namespace Identity.Core.Domain
 
         public Application CreateApplication(string name, Url homepageUrl, Url callbackUrl)
         {
-            var applicationId = ApplicationId.Generate();
-            var application = new Application(
+            ApplicationId applicationId = ApplicationId.Generate();
+            Application application = new(
                 id: applicationId,
                 userId: this.Id,
                 name: name,

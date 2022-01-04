@@ -16,7 +16,7 @@ namespace Identity.Tests.Unit.Core.Domain
             ApplicationId applicationId = ApplicationId.Generate();
             string tokenValue = this.GetTokenValue(applicationId: applicationId);
 
-            var token = new TokenValue(tokenValue);
+            TokenValue token = new(tokenValue);
 
             Assert.That(token.ToString(), Is.EqualTo(tokenValue));
         }
@@ -28,7 +28,7 @@ namespace Identity.Tests.Unit.Core.Domain
             IEnumerable<PermissionId> permissions = null,
             DateTime? expirationDate = null)
         {
-            var tokenInformation = new TokenInformation(
+            TokenInformation tokenInformation = new(
                 id ?? Guid.NewGuid(),
                 applicationId ?? ApplicationId.Generate(),
                 tokenType ?? TokenType.Access,
@@ -48,7 +48,7 @@ namespace Identity.Tests.Unit.Core.Domain
             ApplicationId applicationId = ApplicationId.Generate();
             string tokenValue = this.GetTokenValue(applicationId: applicationId);
 
-            var token = new TokenValue(tokenValue);
+            TokenValue token = new(tokenValue);
 
             Assert.That(token.ApplicationId, Is.EqualTo(applicationId));
         }
@@ -58,7 +58,7 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             string tokenValue = this.GetTokenValue(tokenType: TokenType.Refresh);
 
-            var token = new TokenValue(tokenValue);
+            TokenValue token = new(tokenValue);
 
             Assert.That(token.Type, Is.EqualTo(TokenType.Refresh));
         }
@@ -69,7 +69,7 @@ namespace Identity.Tests.Unit.Core.Domain
             DateTime expirationDate = DateTime.Now;
             string tokenValue = this.GetTokenValue(expirationDate: expirationDate);
 
-            var token = new TokenValue(tokenValue);
+            TokenValue token = new(tokenValue);
 
             Assert.That(token.ExpiresAt, Is.EqualTo(expirationDate).Within(1).Seconds);
         }
@@ -77,14 +77,14 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenTokenValueGiven_ThenPermissionsAreSet()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
             string tokenValue = this.GetTokenValue(permissions: permissions);
 
-            var token = new TokenValue(tokenValue);
+            TokenValue token = new(tokenValue);
 
             Assert.That(token.Permissions, Is.EquivalentTo(permissions));
         }
@@ -123,7 +123,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestGenerateAccessToken_WhenGenerated_ThenTokenIsReturned()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
@@ -143,7 +143,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestGenerateAccessToken_WhenNullApplicationIdGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
@@ -159,7 +159,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestGenerateAccessToken_WhenNullPermissionsGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
@@ -177,7 +177,7 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             ApplicationId applicationId = ApplicationId.Generate();
             DateTime expiresAt = DateTime.Now;
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
@@ -198,7 +198,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestGenerateRefreshToken_WhenNullApplicationIdGiven_ThenArgumentNullExceptionIsThrown()
         {
             DateTime expiresAt = DateTime.Now;
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
@@ -215,7 +215,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestGenerateRefreshToken_WhenNullPermissionsdGiven_ThenArgumentNullExceptionIsThrown()
         {
             DateTime expiresAt = DateTime.Now;
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
@@ -234,7 +234,7 @@ namespace Identity.Tests.Unit.Core.Domain
             string tokenValue = this.GetTokenValue(
                 tokenType: TokenType.Refresh,
                 expirationDate: DateTime.Now.AddDays(-1));
-            var token = new TokenValue(tokenValue);
+            TokenValue token = new(tokenValue);
 
             bool expired = token.Expired;
 
@@ -247,7 +247,7 @@ namespace Identity.Tests.Unit.Core.Domain
             string tokenValue = this.GetTokenValue(
                 tokenType: TokenType.Refresh,
                 expirationDate: DateTime.Now.AddDays(1));
-            var token = new TokenValue(tokenValue);
+            TokenValue token = new(tokenValue);
 
             bool expired = token.Expired;
 
@@ -257,15 +257,15 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestEquals_WhenSameTokenGiven_ThenTrueIsReturned()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add")
             };
-            var token = TokenValue.GenerateRefreshToken(
+            TokenValue token = TokenValue.GenerateRefreshToken(
                 ApplicationId.Generate(),
                 permissions);
-            var leftToken = new TokenValue(token.ToString());
-            var rightToken = new TokenValue(token.ToString());
+            TokenValue leftToken = new TokenValue(token.ToString());
+            TokenValue rightToken = new TokenValue(token.ToString());
 
             Assert.That(leftToken.Equals(rightToken), Is.True);
         }
@@ -273,14 +273,14 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestEquals_WhenDifferentTokenGiven_ThenFalseIsReturned()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add")
             };
-            var leftToken = TokenValue.GenerateRefreshToken(
+            TokenValue leftToken = TokenValue.GenerateRefreshToken(
                 ApplicationId.Generate(),
                 permissions);
-            var rightToken = TokenValue.GenerateRefreshToken(
+            TokenValue rightToken = TokenValue.GenerateRefreshToken(
                 ApplicationId.Generate(),
                 permissions);
 

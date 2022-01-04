@@ -10,7 +10,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public void TestConstructor_WhenNullConnectionStringGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var identityContext = new IdentityContext("TestConnectionString");
+            IdentityContext identityContext = new("TestConnectionString");
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()

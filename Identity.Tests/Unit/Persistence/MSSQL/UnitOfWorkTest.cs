@@ -20,10 +20,10 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         private UnitOfWork GetUnitOfWork()
         {
             var options = new DbContextOptionsBuilder<IdentityContext>()
-                            .UseInMemoryDatabase(databaseName: "Test")
-                            .Options;
-            var identityContext = new IdentityContext(options);
-            var unitOfWork = new UnitOfWork(identityContext);
+                .UseInMemoryDatabase(databaseName: "Test")
+                .Options;
+            IdentityContext identityContext = new(options);
+            UnitOfWork unitOfWork = new(identityContext);
             return unitOfWork;
         }
 

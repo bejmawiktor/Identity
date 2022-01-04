@@ -60,7 +60,7 @@ namespace Identity.Core.Application
                 hash = hash * 23 + this.Name?.GetHashCode() ?? 0;
                 hash = hash * 23 + this.Description?.GetHashCode() ?? 0;
 
-                foreach(var permission in this.Permissions)
+                foreach((string ResourceId, string Name) permission in this.Permissions)
                 {
                     hash = hash * 23 + permission.GetHashCode();
                 }

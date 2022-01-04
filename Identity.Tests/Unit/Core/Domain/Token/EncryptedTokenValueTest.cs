@@ -45,7 +45,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestConstructor_WhenBase64HashedStringGiven_ThenToStringReturnsBased64HashedString()
         {
             string base64EncryptedTokenValue = EncryptedTokenValueTest.TestTokenValue.ToString();
-            var encryptedTokenValue = new EncryptedTokenValue(base64EncryptedTokenValue);
+            EncryptedTokenValue encryptedTokenValue = new(base64EncryptedTokenValue);
 
             Assert.That(encryptedTokenValue.ToString(), Is.EqualTo(base64EncryptedTokenValue));
         }
@@ -54,7 +54,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestConstructor_WhenEncryptedTokenValueBytesGiven_ThenToByteArrayReturnsSameByteArray()
         {
             byte[] encryptedTokenValueBytes = EncryptedTokenValueTest.TestTokenValue.ToByteArray();
-            var encryptedTokenValue = new EncryptedTokenValue(encryptedTokenValueBytes);
+            EncryptedTokenValue encryptedTokenValue = new(encryptedTokenValueBytes);
 
             Assert.That(encryptedTokenValue.ToByteArray(), Is.EqualTo(encryptedTokenValueBytes));
         }
@@ -69,7 +69,7 @@ namespace Identity.Tests.Unit.Core.Domain
 
         private static TokenValue GetTokenValue()
         {
-            var tokenInformation = new TokenInformation(
+            TokenInformation tokenInformation = new(
                 Guid.NewGuid(),
                 ApplicationId.Generate(),
                 TokenType.Access,
@@ -109,7 +109,7 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             TokenValue tokenValue = EncryptedTokenValueTest.GetTokenValue();
             EncryptedTokenValue firstEncryptedTokenValue = EncryptedTokenValue.Encrypt(tokenValue);
-            var secondEncryptedTokenValue = new EncryptedTokenValue(firstEncryptedTokenValue.ToByteArray());
+            EncryptedTokenValue secondEncryptedTokenValue = new(firstEncryptedTokenValue.ToByteArray());
 
             Assert.That(firstEncryptedTokenValue.Equals((EncryptedTokenValue)secondEncryptedTokenValue), Is.True);
         }
@@ -120,7 +120,7 @@ namespace Identity.Tests.Unit.Core.Domain
             TokenValue firstTokenValue = EncryptedTokenValueTest.GetTokenValue();
             TokenValue secondTokenValue = EncryptedTokenValueTest.GetTokenValue();
             EncryptedTokenValue firstEncryptedTokenValue = EncryptedTokenValue.Encrypt(firstTokenValue);
-            var secondEncryptedTokenValue = EncryptedTokenValue.Encrypt(secondTokenValue);
+            EncryptedTokenValue secondEncryptedTokenValue = EncryptedTokenValue.Encrypt(secondTokenValue);
 
             Assert.That(firstEncryptedTokenValue.Equals((EncryptedTokenValue)secondEncryptedTokenValue), Is.False);
         }

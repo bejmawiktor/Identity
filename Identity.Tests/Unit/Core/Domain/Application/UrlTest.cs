@@ -53,7 +53,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [TestCase("https://www.google.pl")]
         public void TestToString_WhenValidUrlGiven_ThenUrlValueIsReturned(string value)
         {
-            var url = new Url(value);
+            Url url = new Url(value);
 
             Assert.That(url.ToString(), Is.EqualTo(value));
         }

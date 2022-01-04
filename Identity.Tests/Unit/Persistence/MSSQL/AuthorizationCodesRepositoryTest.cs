@@ -110,13 +110,13 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         {
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId, out _);
             DateTime now = DateTime.Now;
-            var authorizationCodeDto = new AuthorizationCodeDto(
+            AuthorizationCodeDto authorizationCodeDto = new(
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: authorizationCodeId.ApplicationId.ToGuid(),
                 expiresAt: now,
                 used: true,
                 permissions: TestPermissions);
-            var authorizationCodesRepository = new AuthorizationCodesRepository(this.IdentityContext);
+            AuthorizationCodesRepository authorizationCodesRepository = new(this.IdentityContext);
 
             await authorizationCodesRepository.AddAsync(authorizationCodeDto);
 
@@ -136,13 +136,13 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         {
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId, out _);
             DateTime now = DateTime.Now;
-            var authorizationCodeDto = new AuthorizationCodeDto(
+            AuthorizationCodeDto authorizationCodeDto = new(
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: authorizationCodeId.ApplicationId.ToGuid(),
                 expiresAt: now,
                 used: false,
                 permissions: TestPermissions);
-            var authorizationCodesRepository = new AuthorizationCodesRepository(this.IdentityContext);
+            AuthorizationCodesRepository authorizationCodesRepository = new(this.IdentityContext);
             await authorizationCodesRepository.AddAsync(authorizationCodeDto);
             authorizationCodeDto = new AuthorizationCodeDto(
                 code: authorizationCodeId.Code.ToString(),
@@ -172,13 +172,13 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         {
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId, out _);
             DateTime now = DateTime.Now;
-            var authorizationCodeDto = new AuthorizationCodeDto(
+            AuthorizationCodeDto authorizationCodeDto = new(
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: authorizationCodeId.ApplicationId.ToGuid(),
                 expiresAt: now,
                 used: false,
                 permissions: TestPermissions);
-            var authorizationCodesRepository = new AuthorizationCodesRepository(this.IdentityContext);
+            AuthorizationCodesRepository authorizationCodesRepository = new(this.IdentityContext);
             await authorizationCodesRepository.AddAsync(authorizationCodeDto);
 
             await authorizationCodesRepository.RemoveAsync(authorizationCodeDto);
@@ -193,13 +193,13 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         {
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(AuthorizationCodesRepositoryTest.ApplicationId, out _);
             DateTime now = DateTime.Now;
-            var authorizationCodeDto = new AuthorizationCodeDto(
+            AuthorizationCodeDto authorizationCodeDto = new(
                 code: authorizationCodeId.Code.ToString(),
                 applicationId: authorizationCodeId.ApplicationId.ToGuid(),
                 expiresAt: now,
                 used: false,
                 permissions: TestPermissions);
-            var authorizationCodesRepository = new AuthorizationCodesRepository(this.IdentityContext);
+            AuthorizationCodesRepository authorizationCodesRepository = new(this.IdentityContext);
             await authorizationCodesRepository.AddAsync(authorizationCodeDto);
 
             AuthorizationCodeDto result = await authorizationCodesRepository.GetAsync((authorizationCodeId.ApplicationId.ToGuid(), authorizationCodeId.Code.ToString()));
@@ -213,7 +213,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             Pagination pagination,
             IEnumerable<AuthorizationCodeDto> expectedAuthorizationCodes)
         {
-            var authorizationCodesRepository = new AuthorizationCodesRepository(this.IdentityContext);
+            AuthorizationCodesRepository authorizationCodesRepository = new(this.IdentityContext);
             authorizationCodes.ToList().ForEach(r => authorizationCodesRepository.AddAsync(r).Wait());
 
             IEnumerable<AuthorizationCodeDto> result = await authorizationCodesRepository.GetAsync(pagination);

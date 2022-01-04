@@ -51,7 +51,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [TestCase("email@123.123.123.123")]
         public void TestConstructor_WhenCorrectAddressGiven_ThenAddressIsSet(string address)
         {
-            var email = new EmailAddress(address);
+            EmailAddress email = new(address);
 
             Assert.That(email.ToString(), Is.EqualTo(address));
         }

@@ -27,16 +27,16 @@ namespace Identity.Tests.Unit.Core.Application
         public void TestHandleAsync_WhenUserIsNotAuthorizedToCreateResource_ThenUnauthorizedAccessExceptionIsThrown()
         {
             Guid userId = Guid.NewGuid();
-            var user = new UserDto(
+            UserDto user = new(
                 id: userId,
                 email: "example@example.com",
                 hashedPassword: Identity.Core.Domain.HashedPassword.Hash(new Password("MyPassword")).ToString());
-            var usersRepositoryMock = new Mock<IUsersRepository>();
+            Mock<IUsersRepository> usersRepositoryMock = new();
             usersRepositoryMock.Setup(u => u.GetAsync(It.IsAny<Guid>())).Returns(Task.FromResult(user));
             IUsersRepository usersRepository = usersRepositoryMock.Object;
             CreateResourceCommandHandler createResourceCommandHandler = new CreateResourceCommandHandler(
                 this.GetUnitOfWorkMock(usersRepository: usersRepository).Object);
-            var createResourceCommandM = new CreateResourceCommand(
+            CreateResourceCommand createResourceCommandM = new(
                 "MyResource",
                 "My resource description.",
                 userId);
@@ -58,7 +58,7 @@ namespace Identity.Tests.Unit.Core.Application
             IRefreshTokensRepository refreshTokensRepository = null,
             IUsersRepository usersRepository = null)
         {
-            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            Mock<IUnitOfWork> unitOfWorkMock = new();
             unitOfWorkMock.Setup(x => x.ApplicationsRepository)
                 .Returns(applicationsRepository ?? new Mock<IApplicationsRepository>().Object);
             unitOfWorkMock.Setup(x => x.AuthorizationCodesRepository)
@@ -81,7 +81,7 @@ namespace Identity.Tests.Unit.Core.Application
         public async Task TestHandleAsync_WhenUserIsAuthorizedToCreateResource_ThenResourceIsCreated()
         {
             Guid userId = Guid.NewGuid();
-            var user = new UserDto(
+            UserDto user = new UserDto(
                 id: userId,
                 email: "example@example.com",
                 hashedPassword: Identity.Core.Domain.HashedPassword.Hash(new Password("MyPassword")).ToString(),
@@ -89,8 +89,8 @@ namespace Identity.Tests.Unit.Core.Application
                 {
                     new PermissionDtoConverter().ToDtoIdentifier(Permissions.CreateResource.Id)
                 });
-            var usersRepositoryMock = new Mock<IUsersRepository>();
-            var resourcesRepositoryMock = new Mock<IResourcesRepository>();
+            Mock<IUsersRepository> usersRepositoryMock = new();
+            Mock<IResourcesRepository> resourcesRepositoryMock = new();
             usersRepositoryMock.Setup(u => u.GetAsync(It.IsAny<Guid>())).Returns(Task.FromResult(user));
             IUsersRepository usersRepository = usersRepositoryMock.Object;
             IResourcesRepository resourcesRepository = resourcesRepositoryMock.Object;
@@ -99,7 +99,7 @@ namespace Identity.Tests.Unit.Core.Application
                     usersRepository: usersRepository,
                     resourcesRepository: resourcesRepository).Object);
             EventManager.Instance.EventDispatcher = new Mock<IEventDispatcher>().Object;
-            var createResourceCommandM = new CreateResourceCommand(
+            CreateResourceCommand createResourceCommandM = new(
                 "MyResource",
                 "My resource description.",
                 userId);

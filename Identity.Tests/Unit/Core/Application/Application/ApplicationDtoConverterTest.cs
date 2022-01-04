@@ -19,14 +19,14 @@ namespace Identity.Tests.Unit.Core.Application
         {
             ApplicationId applicationId = ApplicationId.Generate();
             UserId userId = UserId.Generate();
-            var application = new Application(
+            Application application = new(
                 id: applicationId,
                 userId: userId,
                 name: "MyApp",
                 secretKey: EncryptedSecretKey,
                 homepageUrl: new Url("https://www.example.com"),
                 callbackUrl: new Url("https://www.example.com/1"));
-            var applicationDtoConverter = new ApplicationDtoConverter();
+            ApplicationDtoConverter applicationDtoConverter = new();
 
             ApplicationDto applicationDto = applicationDtoConverter.ToDto(application);
 
@@ -44,7 +44,7 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestToDto_WhenNullApplicationGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var applicationDtoConverter = new ApplicationDtoConverter();
+            ApplicationDtoConverter applicationDtoConverter = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -57,7 +57,7 @@ namespace Identity.Tests.Unit.Core.Application
         public void TestToDtoIdentifier_WhenApplicationIdGiven_ThenDtoIdentifierIsReturned()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            var applicationDtoConverter = new ApplicationDtoConverter();
+            ApplicationDtoConverter applicationDtoConverter = new();
 
             Guid applicationDtoId = applicationDtoConverter.ToDtoIdentifier(applicationId);
 
@@ -67,7 +67,7 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestToDtoIdentifier_WhenNullApplicationIdGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var applicationDtoConverter = new ApplicationDtoConverter();
+            ApplicationDtoConverter applicationDtoConverter = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()

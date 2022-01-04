@@ -33,7 +33,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenCodeGiven_ThenCodeIsSet()
         {
-            var authorizationCodeId = new AuthorizationCodeId(TestCode, ApplicationId.Generate());
+            AuthorizationCodeId authorizationCodeId = new(TestCode, ApplicationId.Generate());
 
             Assert.That(authorizationCodeId.Code, Is.EqualTo(TestCode));
         }

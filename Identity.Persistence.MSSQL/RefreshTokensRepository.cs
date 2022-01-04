@@ -46,7 +46,7 @@ namespace Identity.Persistence.MSSQL
 
         private void Remove(RefreshTokenDto refreshToken)
         {
-            var dataModel = this.Context
+            RefreshToken dataModel = this.Context
                 .Find<RefreshToken>(new object[] { refreshToken.Id });
 
             this.Context.Remove(dataModel);
@@ -60,7 +60,7 @@ namespace Identity.Persistence.MSSQL
 
         private void Update(RefreshTokenDto refreshToken)
         {
-            var dataModel = this.Context
+            RefreshToken dataModel = this.Context
                 .Find<RefreshToken>(new object[] { refreshToken.Id });
             dataModel.SetFields(refreshToken);
 

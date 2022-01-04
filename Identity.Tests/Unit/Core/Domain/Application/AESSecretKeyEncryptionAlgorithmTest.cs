@@ -23,7 +23,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestEncrypt_WhenNullSecretKeyGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var aesSecretKeyEncriptionAlgorithm = new AESSecretKeyEncryptionAlgorithm();
+            AESSecretKeyEncryptionAlgorithm aesSecretKeyEncriptionAlgorithm = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -35,7 +35,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestEncrypt_WhenSecretKeyGiven_ThenEncryptedSecretKeyIsReturned()
         {
-            var aesSecretKeyEncriptionAlgorithm = new AESSecretKeyEncryptionAlgorithm();
+            AESSecretKeyEncryptionAlgorithm aesSecretKeyEncriptionAlgorithm = new();
 
             byte[] encryptedSecretKey = aesSecretKeyEncriptionAlgorithm.Encrypt(SecretKey.Generate());
 
@@ -46,7 +46,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestEncrypt_WhenMultipleTimesSameSecretKeyIsEncrypted_ThenReturnedEncryptedSecretKeysAreDifferent()
         {
             SecretKey secretKey = SecretKey.Generate();
-            var aesSecretKeyEncriptionAlgorithm = new AESSecretKeyEncryptionAlgorithm();
+            AESSecretKeyEncryptionAlgorithm aesSecretKeyEncriptionAlgorithm = new();
 
             byte[] firstEncryptedSecretKey = aesSecretKeyEncriptionAlgorithm.Encrypt(secretKey);
             byte[] secondEncryptedSecretKey = aesSecretKeyEncriptionAlgorithm.Encrypt(secretKey);
@@ -57,7 +57,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestDecrypt_WhenNullEncryptedSecretKeyGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var aesSecretKeyEncriptionAlgorithm = new AESSecretKeyEncryptionAlgorithm();
+            AESSecretKeyEncryptionAlgorithm aesSecretKeyEncriptionAlgorithm = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -69,7 +69,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestDecrypt_WhenEmptyEncryptedSecretKeyGiven_ThenArgumentExceptionIsThrown()
         {
-            var aesSecretKeyEncriptionAlgorithm = new AESSecretKeyEncryptionAlgorithm();
+            AESSecretKeyEncryptionAlgorithm aesSecretKeyEncriptionAlgorithm = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()
@@ -82,7 +82,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestDecrypt_WhenEncryptedSecretKeyGiven_ThenSecretKeyIsReturned()
         {
             SecretKey secretKey = SecretKey.Generate();
-            var aesSecretKeyEncriptionAlgorithm = new AESSecretKeyEncryptionAlgorithm();
+            AESSecretKeyEncryptionAlgorithm aesSecretKeyEncriptionAlgorithm = new();
             byte[] encryptedSecretKey = aesSecretKeyEncriptionAlgorithm.Encrypt(secretKey);
 
             SecretKey decryptedSecretKey = aesSecretKeyEncriptionAlgorithm.Decrypt(encryptedSecretKey);
@@ -93,7 +93,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestValidate_WhenNullEncryptedSecretKeyGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var aesSecretKeyEncriptionAlgorithm = new AESSecretKeyEncryptionAlgorithm();
+            AESSecretKeyEncryptionAlgorithm aesSecretKeyEncriptionAlgorithm = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -105,7 +105,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestValidate_WhenEmptyEncryptedSecretKeyGiven_ThenArgumentExceptionIsThrown()
         {
-            var aesSecretKeyEncriptionAlgorithm = new AESSecretKeyEncryptionAlgorithm();
+            AESSecretKeyEncryptionAlgorithm aesSecretKeyEncriptionAlgorithm = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()
@@ -117,7 +117,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [TestCaseSource(nameof(WrongBlockSizeTestData))]
         public void TestValidate_WhenWrongBlockSizeEncryptedSecretKeyGiven_ThenArgumentExceptionIsThrown(byte[] encryptedSecretKey)
         {
-            var aesSecretKeyEncriptionAlgorithm = new AESSecretKeyEncryptionAlgorithm();
+            AESSecretKeyEncryptionAlgorithm aesSecretKeyEncriptionAlgorithm = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()

@@ -34,7 +34,7 @@ namespace Identity.Core.Domain
 
         public static Resource Create(string name, string description)
         {
-            var resource = new Resource(new ResourceId(name), description);
+            Resource resource = new(new ResourceId(name), description);
 
             EventManager.Instance.Notify(new ResourceCreated(
                 resource.Id,
@@ -45,7 +45,7 @@ namespace Identity.Core.Domain
 
         public Permission CreatePermission(string name, string description)
         {
-            var permission = new Permission(new PermissionId(this.Id, name), description);
+            Permission permission = new(new PermissionId(this.Id, name), description);
 
             EventManager.Instance.Notify(new PermissionCreated(
                 permission.Id,

@@ -16,7 +16,7 @@ namespace Identity.Tests.Unit.Core.Application
             IUnitOfWork unitOfWork = this.GetUnitOfWork(
                 applicationsRepository: new Mock<IApplicationsRepository>().Object);
 
-            var unitOfWorkAdapter = new UnitOfWorkAdapter(unitOfWork);
+            UnitOfWorkAdapter unitOfWorkAdapter = new(unitOfWork);
 
             Assert.That(unitOfWorkAdapter.ApplicationsRepository, Is.Not.Null);
         }
@@ -51,7 +51,7 @@ namespace Identity.Tests.Unit.Core.Application
             IRefreshTokensRepository refreshTokensRepository = null,
             IUsersRepository usersRepository = null)
         {
-            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            Mock<IUnitOfWork> unitOfWorkMock = new();
             unitOfWorkMock.Setup(x => x.ApplicationsRepository)
                 .Returns(applicationsRepository ?? new Mock<IApplicationsRepository>().Object);
             unitOfWorkMock.Setup(x => x.AuthorizationCodesRepository)
@@ -76,7 +76,7 @@ namespace Identity.Tests.Unit.Core.Application
             IUnitOfWork unitOfWork = this.GetUnitOfWork(
                 authorizationCodesRepository: new Mock<IAuthorizationCodesRepository>().Object);
 
-            var unitOfWorkAdapter = new UnitOfWorkAdapter(unitOfWork);
+            UnitOfWorkAdapter unitOfWorkAdapter = new(unitOfWork);
 
             Assert.That(unitOfWorkAdapter.AuthorizationCodesRepository, Is.Not.Null);
         }
@@ -87,7 +87,7 @@ namespace Identity.Tests.Unit.Core.Application
             IUnitOfWork unitOfWork = this.GetUnitOfWork(
                 permissionsRepository: new Mock<IPermissionsRepository>().Object);
 
-            var unitOfWorkAdapter = new UnitOfWorkAdapter(unitOfWork);
+            UnitOfWorkAdapter unitOfWorkAdapter = new(unitOfWork);
 
             Assert.That(unitOfWorkAdapter.PermissionsRepository, Is.Not.Null);
         }
@@ -98,7 +98,7 @@ namespace Identity.Tests.Unit.Core.Application
             IUnitOfWork unitOfWork = this.GetUnitOfWork(
                 resourcesRepository: new Mock<IResourcesRepository>().Object);
 
-            var unitOfWorkAdapter = new UnitOfWorkAdapter(unitOfWork);
+            UnitOfWorkAdapter unitOfWorkAdapter = new(unitOfWork);
 
             Assert.That(unitOfWorkAdapter.ResourcesRepository, Is.Not.Null);
         }
@@ -109,7 +109,7 @@ namespace Identity.Tests.Unit.Core.Application
             IUnitOfWork unitOfWork = this.GetUnitOfWork(
                 rolesRepository: new Mock<IRolesRepository>().Object);
 
-            var unitOfWorkAdapter = new UnitOfWorkAdapter(unitOfWork);
+            UnitOfWorkAdapter unitOfWorkAdapter = new(unitOfWork);
 
             Assert.That(unitOfWorkAdapter.RolesRepository, Is.Not.Null);
         }
@@ -120,7 +120,7 @@ namespace Identity.Tests.Unit.Core.Application
             IUnitOfWork unitOfWork = this.GetUnitOfWork(
                 refreshTokensRepository: new Mock<IRefreshTokensRepository>().Object);
 
-            var unitOfWorkAdapter = new UnitOfWorkAdapter(unitOfWork);
+            UnitOfWorkAdapter unitOfWorkAdapter = new(unitOfWork);
 
             Assert.That(unitOfWorkAdapter.RefreshTokensRepository, Is.Not.Null);
         }
@@ -131,7 +131,7 @@ namespace Identity.Tests.Unit.Core.Application
             IUnitOfWork unitOfWork = this.GetUnitOfWork(
                 usersRepository: new Mock<IUsersRepository>().Object);
 
-            var unitOfWorkAdapter = new UnitOfWorkAdapter(unitOfWork);
+            UnitOfWorkAdapter unitOfWorkAdapter = new(unitOfWork);
 
             Assert.That(unitOfWorkAdapter.UsersRepository, Is.Not.Null);
         }
@@ -139,11 +139,11 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestBeginScope_WhenBeginning_ThenApplicationTransactionScopeIsReturned()
         {
-            var transactionScope = new Mock<ITransactionScope>().Object;
+            ITransactionScope transactionScope = new Mock<ITransactionScope>().Object;
             Mock<IUnitOfWork> unitOfWorkMock = this.GetUnitOfWorkMock();
             unitOfWorkMock.Setup(x => x.BeginScope())
                 .Returns(transactionScope);
-            var unitOfWorkAdapter = new UnitOfWorkAdapter(unitOfWorkMock.Object);
+            UnitOfWorkAdapter unitOfWorkAdapter = new(unitOfWorkMock.Object);
 
             ITransactionScope resultedTransactionScope = unitOfWorkAdapter.BeginScope();
 

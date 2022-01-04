@@ -50,7 +50,7 @@ namespace Identity.Core.Domain
 
         protected override IEnumerable<object> GetEqualityMembers()
         {
-            foreach(var encryptedValue in this.EncryptedValue)
+            foreach(byte encryptedValue in this.EncryptedValue)
             {
                 yield return encryptedValue;
             }

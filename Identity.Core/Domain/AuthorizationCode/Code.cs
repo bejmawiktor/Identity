@@ -39,7 +39,7 @@ namespace Identity.Core.Domain
             byte[] data = new byte[4 * Code.Length];
             StringBuilder result = new StringBuilder(Code.Length);
 
-            using(var crypto = new RNGCryptoServiceProvider())
+            using(RNGCryptoServiceProvider crypto = new())
             {
                 crypto.GetBytes(data);
             }

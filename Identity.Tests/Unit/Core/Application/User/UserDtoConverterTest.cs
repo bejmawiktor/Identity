@@ -12,12 +12,12 @@ namespace Identity.Tests.Unit.Core.Application
         public void TestToDto_WhenUserGiven_ThenUserDtoIsReturned()
         {
             HashedPassword password = HashedPassword.Hash(new Password("MyPassword"));
-            var userId = new UserId(Guid.NewGuid());
-            var user = new User(
+            UserId userId = new(Guid.NewGuid());
+            User user = new(
                 id: userId,
                 email: new EmailAddress("example@example.com"),
                 password: password);
-            var userDtoConverter = new UserDtoConverter();
+            UserDtoConverter userDtoConverter = new();
 
             UserDto userDto = userDtoConverter.ToDto(user);
 
@@ -32,7 +32,7 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestToDto_WhenNullUserGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var userDtoConverter = new UserDtoConverter();
+            UserDtoConverter userDtoConverter = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -44,8 +44,8 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestToDtoIdentifier_WhenUserIdGiven_ThenDtoIdentifierIsReturned()
         {
-            var userId = new UserId(Guid.NewGuid());
-            var userDtoConverter = new UserDtoConverter();
+            UserId userId = new(Guid.NewGuid());
+            UserDtoConverter userDtoConverter = new();
 
             Guid userDtoIdentifier = userDtoConverter.ToDtoIdentifier(userId);
 
@@ -55,7 +55,7 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestToDtoIdentifier_WhenNullUserIdGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var userDtoConverter = new UserDtoConverter();
+            UserDtoConverter userDtoConverter = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()

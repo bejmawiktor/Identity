@@ -21,7 +21,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestToGuid_WhenConvertingToGuid_ThenGuidIsReturned()
         {
             Guid guid = Guid.NewGuid();
-            var roleId = new RoleId(guid);
+            RoleId roleId = new(guid);
 
             Assert.That(roleId.ToGuid(), Is.EqualTo(guid));
         }

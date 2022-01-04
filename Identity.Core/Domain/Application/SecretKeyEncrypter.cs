@@ -14,14 +14,14 @@ namespace Identity.Core.Domain
                 throw new ArgumentNullException(nameof(secretKey));
             }
 
-            var encryptedSecretKey = CurrentAlgorithm.Encrypt(secretKey);
+            byte[] encryptedSecretKey = CurrentAlgorithm.Encrypt(secretKey);
 
             return new EncryptedSecretKey(AssemblyEncryptedSecretKey(encryptedSecretKey));
         }
 
         private static byte[] AssemblyEncryptedSecretKey(byte[] algorithmEncryptedSecretKey)
         {
-            var encryptedSecretKey = new byte[AlgorithmSymbolLength + algorithmEncryptedSecretKey.Length];
+            byte[] encryptedSecretKey = new byte[AlgorithmSymbolLength + algorithmEncryptedSecretKey.Length];
 
             encryptedSecretKey[0] = SecretKeyEncryptionAlgorithmFactory.ConvertToAlgorithmSymbol(CurrentAlgorithm.GetType());
             Buffer.BlockCopy(algorithmEncryptedSecretKey, 0, encryptedSecretKey, AlgorithmSymbolLength, algorithmEncryptedSecretKey.Length);
@@ -49,7 +49,7 @@ namespace Identity.Core.Domain
 
         private static byte[] ExtractAlgorithmSecretKey(byte[] encryptedSecretKeyBytes)
         {
-            var encryptedSecretKey = new byte[encryptedSecretKeyBytes.Length - AlgorithmSymbolLength];
+            byte[] encryptedSecretKey = new byte[encryptedSecretKeyBytes.Length - AlgorithmSymbolLength];
 
             Buffer.BlockCopy(encryptedSecretKeyBytes, AlgorithmSymbolLength, encryptedSecretKey, 0, encryptedSecretKey.Length);
 

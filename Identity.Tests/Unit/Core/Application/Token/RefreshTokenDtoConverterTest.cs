@@ -13,16 +13,16 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestToDto_WhenRefreshTokenGiven_ThenRefreshTokenDtoIsReturned()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
-            var tokenId = TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions);
-            var refreshToken = new RefreshToken(
+            TokenId tokenId = TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions);
+            RefreshToken refreshToken = new(
                 tokenId,
                 true);
-            var refreshTokenDtoConverter = new RefreshTokenDtoConverter();
+            RefreshTokenDtoConverter refreshTokenDtoConverter = new();
 
             RefreshTokenDto refreshTokenDto = refreshTokenDtoConverter.ToDto(refreshToken);
 
@@ -36,7 +36,7 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestToDto_WhenNullRefreshTokenGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var refreshTokenDtoConverter = new RefreshTokenDtoConverter();
+            RefreshTokenDtoConverter refreshTokenDtoConverter = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -48,13 +48,13 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestToDtoIdentifier_WhenTokenIdGiven_ThenDtoIdentifierIsReturned()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
-            var tokenId = TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions);
-            var refreshTokenDtoConverter = new RefreshTokenDtoConverter();
+            TokenId tokenId = TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions);
+            RefreshTokenDtoConverter refreshTokenDtoConverter = new RefreshTokenDtoConverter();
 
             string refreshTokenDtoId = refreshTokenDtoConverter.ToDtoIdentifier(tokenId);
 
@@ -64,7 +64,7 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestToDtoIdentifier_WhenNullTokenIdGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var refreshTokenDtoConverter = new RefreshTokenDtoConverter();
+            RefreshTokenDtoConverter refreshTokenDtoConverter = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()

@@ -37,7 +37,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [TestCase("asdghxcbnm123456890asdggh")]
         public void TestConstructor_WhenCorrectNameGiven_ThenNameIsSet(string name)
         {
-            var resourceId = new ResourceId(name);
+            ResourceId resourceId = new(name);
 
             Assert.That(resourceId.ToString(), Is.EqualTo(name));
         }

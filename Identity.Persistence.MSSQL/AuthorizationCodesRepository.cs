@@ -48,7 +48,7 @@ namespace Identity.Persistence.MSSQL
 
         private void Update(AuthorizationCodeDto authorizationCode)
         {
-            var dataModel = this.Context
+            AuthorizationCode dataModel = this.Context
                 .Find<AuthorizationCode>(new object[] { authorizationCode.Code, authorizationCode.ApplicationId });
             dataModel.SetFields(authorizationCode);
 
@@ -63,7 +63,7 @@ namespace Identity.Persistence.MSSQL
 
         private void Remove(AuthorizationCodeDto authorizationCode)
         {
-            var dataModel = this.Context
+            AuthorizationCode dataModel = this.Context
                 .Find<AuthorizationCode>(new object[] { authorizationCode.Code, authorizationCode.ApplicationId });
 
             this.Context.Remove(dataModel);

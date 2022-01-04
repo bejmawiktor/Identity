@@ -21,7 +21,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestToGuid_WhenConvertingToGuid_ThenGuidIsReturned()
         {
             Guid guid = Guid.NewGuid();
-            var userId = new UserId(guid);
+            UserId userId = new(guid);
 
             Assert.That(userId.ToGuid(), Is.EqualTo(guid));
         }
@@ -38,7 +38,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestToString_WhenConvertingToString_ThenGuidStringIsReturned()
         {
             Guid guid = Guid.NewGuid();
-            var userId = new UserId(guid);
+            UserId userId = new(guid);
 
             string userIdString = userId.ToString();
 

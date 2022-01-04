@@ -23,7 +23,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestHash_WhenNullCodeGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var sha256CodeHashingAlgorithm = new SHA256CodeHashingAlgorithm();
+            SHA256CodeHashingAlgorithm sha256CodeHashingAlgorithm = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -35,7 +35,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestHash_WhenCodeGiven_ThenHashedCodeIsReturned()
         {
-            var sha256CodeHashingAlgorithm = new SHA256CodeHashingAlgorithm();
+            SHA256CodeHashingAlgorithm sha256CodeHashingAlgorithm = new();
 
             byte[] hashedCode = sha256CodeHashingAlgorithm.Hash(Code.Generate());
 
@@ -46,7 +46,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestHash_WhenMultipleTimesSameCodeIsEncrypted_ThenReturnedHashedCodesAreSame()
         {
             Code code = Code.Generate();
-            var sha256CodeHashingAlgorithm = new SHA256CodeHashingAlgorithm();
+            SHA256CodeHashingAlgorithm sha256CodeHashingAlgorithm = new();
 
             byte[] firstHashedCode = sha256CodeHashingAlgorithm.Hash(code);
             byte[] secondHashedCode = sha256CodeHashingAlgorithm.Hash(code);
@@ -59,7 +59,7 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             Code firstCode = Code.Generate();
             Code secondCode = Code.Generate();
-            var sha256CodeHashingAlgorithm = new SHA256CodeHashingAlgorithm();
+            SHA256CodeHashingAlgorithm sha256CodeHashingAlgorithm = new();
 
             byte[] firstHashedCode = sha256CodeHashingAlgorithm.Hash(firstCode);
             byte[] secondHashedCode = sha256CodeHashingAlgorithm.Hash(secondCode);
@@ -70,7 +70,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestValidate_WhenNullHashedCodeGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var sha256CodeHashingAlgorithm = new SHA256CodeHashingAlgorithm();
+            SHA256CodeHashingAlgorithm sha256CodeHashingAlgorithm = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -82,7 +82,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestValidate_WhenEmptyHashedCodeGiven_ThenArgumentExceptionIsThrown()
         {
-            var sha256CodeHashingAlgorithm = new SHA256CodeHashingAlgorithm();
+            SHA256CodeHashingAlgorithm sha256CodeHashingAlgorithm = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()
@@ -94,7 +94,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [TestCaseSource(nameof(WrongSizeTestData))]
         public void TestValidate_WhenWrongSizeHashedCodeGiven_ThenArgumentExceptionIsThrown(byte[] hashedCode)
         {
-            var sha256CodeHashingAlgorithm = new SHA256CodeHashingAlgorithm();
+            SHA256CodeHashingAlgorithm sha256CodeHashingAlgorithm = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()

@@ -73,7 +73,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenRolesGiven_ThenRolesIsSet()
         {
-            var roles = new RoleId[]
+            RoleId[] roles = new RoleId[]
             {
                 RoleId.Generate(),
                 RoleId.Generate()
@@ -87,7 +87,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenRolesNotGiven_ThenRolesAreEmpty()
         {
-            var user = new User(
+            User user = new User(
                 id: UserId.Generate(),
                 email: new EmailAddress("myemail@example.com"),
                 password: UserTest.TestPassword);
@@ -113,7 +113,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestCreate_WhenCreatingUser_ThenUserCreatedIsNotified()
         {
             UserCreated userCreatedEvent = null;
-            var eventDispatcherMock = new Mock<IEventDispatcher>();
+            Mock<IEventDispatcher> eventDispatcherMock = new();
             eventDispatcherMock
                 .Setup(e => e.Dispatch(It.IsAny<UserCreated>()))
                 .Callback((UserCreated p) => userCreatedEvent = p);
@@ -179,8 +179,8 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestObtainPermission_WhenObtainingPermission_ThenUserPermissionObtainedIsNotified()
         {
             UserPermissionObtained userPermissionObtained = null;
-            var permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
-            var eventDispatcherMock = new Mock<IEventDispatcher>();
+            PermissionId permissionId = new(new ResourceId("MyResource"), "MyPermission");
+            Mock<IEventDispatcher> eventDispatcherMock = new();
             eventDispatcherMock
                 .Setup(e => e.Dispatch(It.IsAny<UserPermissionObtained>()))
                 .Callback((UserPermissionObtained p) => userPermissionObtained = p);
@@ -199,7 +199,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestObtainPermission_WhenPermissionGiven_ThenUserHasPermission()
         {
-            PermissionId permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
+            PermissionId permissionId = new(new ResourceId("MyResource"), "MyPermission");
             User user = this.GetUser();
 
             user.ObtainPermission(permissionId);
@@ -211,8 +211,8 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestRevokePermission_WhenRovekingPermission_ThenUserPermissionRevokedIsNotified()
         {
             UserPermissionRevoked userPermissionRevokedEvent = null;
-            PermissionId permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
-            var eventDispatcherMock = new Mock<IEventDispatcher>();
+            PermissionId permissionId = new(new ResourceId("MyResource"), "MyPermission");
+            Mock<IEventDispatcher> eventDispatcherMock = new();
             eventDispatcherMock
                 .Setup(e => e.Dispatch(It.IsAny<UserPermissionRevoked>()))
                 .Callback((UserPermissionRevoked p) => userPermissionRevokedEvent = p);
@@ -232,7 +232,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestRevokePermission_WhenPermissionIdGiven_ThenPermissionIsRevoked()
         {
-            var permissionId = new PermissionId(new ResourceId("MyResource"), "MyPermission");
+            PermissionId permissionId = new(new ResourceId("MyResource"), "MyPermission");
             User user = this.GetUser();
             user.ObtainPermission(permissionId);
 
@@ -257,7 +257,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestHasRole_WhenUserHasRole_ThenTrueIsReturned()
         {
             RoleId roleId = RoleId.Generate();
-            var roles = new RoleId[]
+            RoleId[] roles = new RoleId[]
             {
                 roleId
             };
@@ -296,7 +296,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestAssumeRole_WhenHolderWasRoleWasAlreadyAssumed_ThenInvalidOperationIsThrown()
         {
             RoleId roleId = RoleId.Generate();
-            var roles = new RoleId[]
+            RoleId[] roles = new RoleId[]
             {
                 roleId
             };
@@ -325,7 +325,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestAssumeRole_WhenAssumingRole_ThenUserRoleAssumedIsNotified()
         {
             UserRoleAssumed userRoleAssumed = null;
-            var eventDispatcherMock = new Mock<IEventDispatcher>();
+            Mock<IEventDispatcher> eventDispatcherMock = new();
             eventDispatcherMock
                 .Setup(e => e.Dispatch(It.IsAny<UserRoleAssumed>()))
                 .Callback((UserRoleAssumed p) => userRoleAssumed = p);
@@ -384,7 +384,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestRevokeRole_WhenAssumingRole_ThenUserRoleRevokedIsNotified()
         {
             UserRoleRevoked userRoleRevoked = null;
-            var eventDispatcherMock = new Mock<IEventDispatcher>();
+            Mock<IEventDispatcher> eventDispatcherMock = new();
             eventDispatcherMock
                 .Setup(e => e.Dispatch(It.IsAny<UserRoleRevoked>()))
                 .Callback((UserRoleRevoked p) => userRoleRevoked = p);
@@ -427,7 +427,7 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             UserId userId = UserId.Generate();
             ApplicationCreated applicationCreated = null;
-            var eventDispatcherMock = new Mock<IEventDispatcher>();
+            Mock<IEventDispatcher> eventDispatcherMock = new();
             eventDispatcherMock
                 .Setup(e => e.Dispatch(It.IsAny<ApplicationCreated>()))
                 .Callback((ApplicationCreated p) => applicationCreated = p);

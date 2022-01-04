@@ -110,14 +110,14 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         {
             Guid applicationId = Guid.NewGuid();
             Guid userId = Guid.NewGuid();
-            var applicationDto = new ApplicationDto(
+            ApplicationDto applicationDto = new(
                 id: applicationId,
                 userId: userId,
                 name: "MyApplication1",
                 secretKey: SecretKey,
                 homepageUrl: "http://www.example1.com",
                 callbackUrl: "http://www.example1.com/1");
-            var applicationRepository = new ApplicationsRepository(this.IdentityContext);
+            ApplicationsRepository applicationRepository = new(this.IdentityContext);
 
             await applicationRepository.AddAsync(applicationDto);
 
@@ -138,14 +138,14 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         {
             Guid applicationId = Guid.NewGuid();
             Guid userId = Guid.NewGuid();
-            var applicationDto = new ApplicationDto(
+            ApplicationDto applicationDto = new(
                 id: applicationId,
                 userId: userId,
                 name: "MyApplication1",
                 secretKey: SecretKey,
                 homepageUrl: "http://www.example1.com",
                 callbackUrl: "http://www.example1.com/1");
-            var applicationRepository = new ApplicationsRepository(this.IdentityContext);
+            ApplicationsRepository applicationRepository = new(this.IdentityContext);
             await applicationRepository.AddAsync(applicationDto);
             applicationDto = new ApplicationDto(
                 id: applicationId,
@@ -173,14 +173,14 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         public async Task TestRemoveAsync_WhenApplicationGiven_ThenApplicationIsRemoved()
         {
             Guid applicationId = Guid.NewGuid();
-            var applicationDto = new ApplicationDto(
+            ApplicationDto applicationDto = new(
                 id: applicationId,
                 userId: Guid.NewGuid(),
                 name: "MyApplication1",
                 secretKey: SecretKey,
                 homepageUrl: "http://www.example1.com",
                 callbackUrl: "http://www.example1.com/1");
-            var applicationRepository = new ApplicationsRepository(this.IdentityContext);
+            ApplicationsRepository applicationRepository = new(this.IdentityContext);
             await applicationRepository.AddAsync(applicationDto);
 
             await applicationRepository.RemoveAsync(applicationDto);
@@ -194,14 +194,14 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         public async Task TestGetAsync_WhenApplicationIdGiven_ThenApplicationIsReturned()
         {
             Guid applicationId = Guid.NewGuid();
-            var applicationDto = new ApplicationDto(
+            ApplicationDto applicationDto = new(
                 id: applicationId,
                 userId: Guid.NewGuid(),
                 name: "MyApplication1",
                 secretKey: SecretKey,
                 homepageUrl: "http://www.example1.com",
                 callbackUrl: "http://www.example1.com/1");
-            var applicationRepository = new ApplicationsRepository(this.IdentityContext);
+            ApplicationsRepository applicationRepository = new(this.IdentityContext);
             await applicationRepository.AddAsync(applicationDto);
 
             ApplicationDto result = await applicationRepository.GetAsync(applicationId);
@@ -215,7 +215,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
             Pagination pagination,
             IEnumerable<ApplicationDto> expectedApplications)
         {
-            var applicationRepository = new ApplicationsRepository(this.IdentityContext);
+            ApplicationsRepository applicationRepository = new(this.IdentityContext);
             applications.ToList().ForEach(r => applicationRepository.AddAsync(r).Wait());
 
             IEnumerable<ApplicationDto> result = await applicationRepository.GetAsync(pagination);

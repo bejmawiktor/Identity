@@ -12,7 +12,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenRefreshTokenIdGiven_ThenInvalidOperationExceptionIsThrown()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
@@ -28,13 +28,13 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenUsedGiven_ThenUsedIsSet()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
 
-            var refreshToken = new RefreshToken(
+            RefreshToken refreshToken = new(
                 TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions),
                 true);
 
@@ -44,12 +44,12 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestVerify_WhenUsedTokenGiven_ThenFailedIsReturned()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
-            var refreshToken = new RefreshToken(
+            RefreshToken refreshToken = new RefreshToken(
                 TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions),
                 true);
 
@@ -65,12 +65,12 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestVerify_WhenUnusedTokenGiven_ThenSuccessIsReturned()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
-            var refreshToken = new RefreshToken(
+            RefreshToken refreshToken = new(
                 TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions));
 
             TokenVerificationResult verificationResult = refreshToken.Verify();
@@ -81,12 +81,12 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestUse_WhenPreviouslyUsed_ThenInvalidOperationExceptionIsThrown()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
-            var refreshToken = new RefreshToken(
+            RefreshToken refreshToken = new(
                 TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions),
                 true);
 
@@ -100,12 +100,12 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestUse_WhenExpired_ThenInvalidOperationExceptionIsThrown()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
-            var refreshToken = new RefreshToken(
+            RefreshToken refreshToken = new(
                 TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions, DateTime.Now.AddDays(-1)),
                 false);
 
@@ -119,12 +119,12 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestUse_WhenUsing_ThenUsedIsSetToTrue()
         {
-            var permissions = new PermissionId[]
+            PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
-            var refreshToken = new RefreshToken(
+            RefreshToken refreshToken = new(
                 TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions));
 
             refreshToken.Use();

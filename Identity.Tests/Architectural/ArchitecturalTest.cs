@@ -42,7 +42,7 @@ namespace Identity.Tests.Architectural
             ArchUnitNET.Domain.Architecture architecture = new ArchLoader()
                 .LoadAssemblies(coreAssembly)
                 .Build();
-            var classesWithPublicConstructor = new EnumerablePredicate<ArchUnitNET.Domain.Class>(
+            EnumerablePredicate<ArchUnitNET.Domain.Class> classesWithPublicConstructor = new(
                 p => p.Where(c => c.Constructors.Any(p => p.Visibility == ArchUnitNET.Domain.Visibility.Public)),
                 "have public constructors");
 

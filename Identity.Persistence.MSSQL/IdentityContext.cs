@@ -37,7 +37,7 @@ namespace Identity.Persistence.MSSQL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            var adminRoleId = Guid.NewGuid();
+            Guid adminRoleId = Guid.NewGuid();
 
             modelBuilder.Entity<Resource>(r =>
             {

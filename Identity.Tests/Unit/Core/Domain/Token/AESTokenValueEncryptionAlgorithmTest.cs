@@ -25,7 +25,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestEncrypt_WhenNullTokenValueGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var aesTokenValueEncriptionAlgorithm = new AESTokenValueEncryptionAlgorithm();
+            AESTokenValueEncryptionAlgorithm aesTokenValueEncriptionAlgorithm = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -37,7 +37,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestEncrypt_WhenTokenValueGiven_ThenEncryptedTokenValueIsReturned()
         {
-            var aesTokenValueEncriptionAlgorithm = new AESTokenValueEncryptionAlgorithm();
+            AESTokenValueEncryptionAlgorithm aesTokenValueEncriptionAlgorithm = new();
 
             byte[] encryptedTokenValue = aesTokenValueEncriptionAlgorithm.Encrypt(this.GetTokenValue());
 
@@ -46,7 +46,7 @@ namespace Identity.Tests.Unit.Core.Domain
 
         private TokenValue GetTokenValue()
         {
-            var tokenInformation = new TokenInformation(
+            TokenInformation tokenInformation = new(
                 Guid.NewGuid(),
                 ApplicationId.Generate(),
                 TokenType.Access,
@@ -64,7 +64,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestEncrypt_WhenMultipleTimesSameTokenValueIsEncrypted_ThenReturnedEncryptedTokenValuesAreSame()
         {
             TokenValue tokenValue = this.GetTokenValue();
-            var aesTokenValueEncriptionAlgorithm = new AESTokenValueEncryptionAlgorithm();
+            AESTokenValueEncryptionAlgorithm aesTokenValueEncriptionAlgorithm = new();
 
             byte[] firstEncryptedTokenValue = aesTokenValueEncriptionAlgorithm.Encrypt(tokenValue);
             byte[] secondEncryptedTokenValue = aesTokenValueEncriptionAlgorithm.Encrypt(tokenValue);
@@ -75,7 +75,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestDecrypt_WhenNullEncryptedTokenValueGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var aesTokenValueEncriptionAlgorithm = new AESTokenValueEncryptionAlgorithm();
+            AESTokenValueEncryptionAlgorithm aesTokenValueEncriptionAlgorithm = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -87,7 +87,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestDecrypt_WhenEmptyEncryptedTokenValueGiven_ThenArgumentExceptionIsThrown()
         {
-            var aesTokenValueEncriptionAlgorithm = new AESTokenValueEncryptionAlgorithm();
+            AESTokenValueEncryptionAlgorithm aesTokenValueEncriptionAlgorithm = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()
@@ -100,7 +100,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestDecrypt_WhenEncryptedTokenValueGiven_ThenTokenValueIsReturned()
         {
             TokenValue tokenValue = this.GetTokenValue();
-            var aesTokenValueEncriptionAlgorithm = new AESTokenValueEncryptionAlgorithm();
+            AESTokenValueEncryptionAlgorithm aesTokenValueEncriptionAlgorithm = new();
             byte[] encryptedTokenValue = aesTokenValueEncriptionAlgorithm.Encrypt(tokenValue);
 
             TokenValue decryptedTokenValue = aesTokenValueEncriptionAlgorithm.Decrypt(encryptedTokenValue);
@@ -111,7 +111,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestValidate_WhenNullEncryptedTokenValueGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var aesTokenValueEncriptionAlgorithm = new AESTokenValueEncryptionAlgorithm();
+            AESTokenValueEncryptionAlgorithm aesTokenValueEncriptionAlgorithm = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -123,7 +123,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestValidate_WhenEmptyEncryptedTokenValueGiven_ThenArgumentExceptionIsThrown()
         {
-            var aesTokenValueEncriptionAlgorithm = new AESTokenValueEncryptionAlgorithm();
+            AESTokenValueEncryptionAlgorithm aesTokenValueEncriptionAlgorithm = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()
@@ -135,7 +135,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [TestCaseSource(nameof(WrongBlockSizeTestData))]
         public void TestValidate_WhenWrongBlockSizeEncryptedTokenValueGiven_ThenArgumentExceptionIsThrown(byte[] encryptedTokenValue)
         {
-            var aesTokenValueEncriptionAlgorithm = new AESTokenValueEncryptionAlgorithm();
+            AESTokenValueEncryptionAlgorithm aesTokenValueEncriptionAlgorithm = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()

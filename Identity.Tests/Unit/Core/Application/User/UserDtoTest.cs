@@ -62,7 +62,7 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestConstructor_WhenRolesGiven_ThenRolesAreSet()
         {
-            var roles = new Guid[]
+            Guid[] roles = new Guid[]
             {
                 Guid.NewGuid(),
                 Guid.NewGuid()
@@ -84,7 +84,7 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestConstructor_WhenPermissionsGiven_ThenPermissionsAreSet()
         {
-            var permissions = new (string ResourceId, string Name)[]
+            (string ResourceId, string Name)[] permissions = new (string ResourceId, string Name)[]
             {
                 ("MyResource", "MyPermission"),
                 ("MyResource2", "MyPermission2")
@@ -98,7 +98,7 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestConstructor_WhenNullPermissionsGiven_ThenPermissionsAreSet()
         {
-            var userId = Guid.NewGuid();
+            Guid userId = Guid.NewGuid();
             UserDto userDto = new UserDto(userId, "example@example.com", UserDtoTest.TestPassword.ToString(), null, null);
 
             Assert.That(userDto.Permissions, Is.Empty);
@@ -107,17 +107,17 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestToUser_WhenConvertingToUser_ThenUserIsReturned()
         {
-            var roles = new Guid[]
+            Guid[] roles = new Guid[]
             {
                 Guid.NewGuid(),
                 Guid.NewGuid()
             };
-            var permissions = new (string ResourceId, string Name)[]
+            (string ResourceId, string Name)[] permissions = new (string ResourceId, string Name)[]
             {
                 ("MyResource", "MyPermission"),
                 ("MyResource2", "MyPermission2")
             };
-            var userId = Guid.NewGuid();
+            Guid userId = Guid.NewGuid();
             UserDto userDto = new UserDto(userId, "example@example.com", UserDtoTest.TestPassword.ToString(), roles, permissions);
 
             User user = userDto.ToUser();
@@ -143,7 +143,7 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestEquals_WhenTwoIdentitcalUsersDtosGiven_ThenTrueIsReturned()
         {
-            var roles = new Guid[]
+            Guid[] roles = new Guid[]
             {
                 Guid.NewGuid(),
                 Guid.NewGuid()
@@ -162,21 +162,21 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestEquals_WhenTwoDifferentUsersDtosGiven_ThenFalseIsReturned()
         {
-            var rolesLeft = new Guid[]
+            Guid[] rolesLeft = new Guid[]
             {
                 Guid.NewGuid(),
                 Guid.NewGuid()
             };
-            var rolesRight = new Guid[]
+            Guid[] rolesRight = new Guid[]
             {
                 rolesLeft[0]
             };
-            var permissionsLeft = new (string ResourceId, string Name)[]
+            (string ResourceId, string Name)[] permissionsLeft = new (string ResourceId, string Name)[]
             {
                 ("MyResource", "MyPermission"),
                 ("MyResource2", "MyPermission2")
             };
-            var permissionsRight = new (string ResourceId, string Name)[]
+            (string ResourceId, string Name)[] permissionsRight = new (string ResourceId, string Name)[]
             {
                 ("MyResource2", "MyPermission2")
             };
@@ -203,16 +203,16 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestGetHashCode_WhenTwoIdenticalUsersDtosGiven_ThenSameHashCodesAreReturned()
         {
-            var roles = new Guid[]
+            Guid[] roles = new Guid[]
             {
                 Guid.NewGuid(),
                 Guid.NewGuid()
             };
             Guid userId = Guid.NewGuid();
-            var leftUserDto = this.GetUserDto(
+            UserDto leftUserDto = this.GetUserDto(
                 userId,
                 roles: roles);
-            var rightUserDto = this.GetUserDto(
+            UserDto rightUserDto = this.GetUserDto(
                 userId,
                 roles: roles);
 
@@ -222,21 +222,21 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestGetHashCode_WhenTwoDifferentUsersDtosGiven_ThenDifferentHashCodesAreReturned()
         {
-            var rolesLeft = new Guid[]
+            Guid[] rolesLeft = new Guid[]
             {
                 Guid.NewGuid(),
                 Guid.NewGuid()
             };
-            var rolesRight = new Guid[]
+            Guid[] rolesRight = new Guid[]
             {
                 rolesLeft[0]
             };
-            var permissionsLeft = new (string ResourceId, string Name)[]
+            (string ResourceId, string Name)[] permissionsLeft = new (string ResourceId, string Name)[]
             {
                 ("MyResource", "MyPermission"),
                 ("MyResource2", "MyPermission2")
             };
-            var permissionsRight = new (string ResourceId, string Name)[]
+            (string ResourceId, string Name)[] permissionsRight = new (string ResourceId, string Name)[]
             {
                 ("MyResource2", "MyPermission2")
             };

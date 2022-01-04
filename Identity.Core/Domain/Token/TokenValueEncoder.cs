@@ -13,7 +13,7 @@ namespace Identity.Core.Domain
                 throw new ArgumentNullException(nameof(tokenInformation));
             }
 
-            var encodedTokenValue = CurrentAlgorithm.Encode(tokenInformation);
+            string encodedTokenValue = CurrentAlgorithm.Encode(tokenInformation);
 
             return new TokenValue(AssemblyEncodedTokenValue(encodedTokenValue));
         }

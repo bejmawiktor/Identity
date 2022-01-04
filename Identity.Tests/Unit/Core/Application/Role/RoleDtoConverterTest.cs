@@ -12,8 +12,8 @@ namespace Identity.Tests.Unit.Core.Application
         public void TestToDto_WhenRoleGiven_ThenRoleDtoIsReturned()
         {
             HashedPassword password = HashedPassword.Hash(new Password("MyPassword"));
-            var roleId = new RoleId(Guid.NewGuid());
-            var role = new Role(
+            RoleId roleId = new(Guid.NewGuid());
+            Role role = new(
                 id: roleId,
                 name: "MyRole",
                 description: "My role description",
@@ -22,7 +22,7 @@ namespace Identity.Tests.Unit.Core.Application
                     new PermissionId(new ResourceId("MyResource"), "MyPermission"),
                     new PermissionId(new ResourceId("MyResource2"), "MyPermission2")
                 });
-            var roleDtoConverter = new RoleDtoConverter();
+            RoleDtoConverter roleDtoConverter = new();
 
             RoleDto roleDto = roleDtoConverter.ToDto(role);
 
@@ -42,7 +42,7 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestToDto_WhenNullRoleGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var roleDtoConverter = new RoleDtoConverter();
+            RoleDtoConverter roleDtoConverter = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -54,8 +54,8 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestToDtoIdentifier_WhenRoleIdGiven_ThenDtoIdentifierIsReturned()
         {
-            var roleId = new RoleId(Guid.NewGuid());
-            var roleDtoConverter = new RoleDtoConverter();
+            RoleId roleId = new(Guid.NewGuid());
+            RoleDtoConverter roleDtoConverter = new();
 
             Guid roleDtoIdentifier = roleDtoConverter.ToDtoIdentifier(roleId);
 
@@ -65,7 +65,7 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestToDtoIdentifier_WhenNullRoleIdGiven_ThenArgumentNullExceptionIsThrown()
         {
-            var roleDtoConverter = new RoleDtoConverter();
+            RoleDtoConverter roleDtoConverter = new();
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()

@@ -21,9 +21,9 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestConstructor_WhenRolesRepositoryGiven_ThenRolesRepositoryIsSet()
         {
-            var rolesRepositoryMock = new Mock<IRolesRepository>();
+            Mock<IRolesRepository> rolesRepositoryMock = new();
             IRolesRepository rolesRepository = rolesRepositoryMock.Object;
-            var rolesRepositoryAdapter = new RolesRepositoryAdapter(rolesRepository);
+            RolesRepositoryAdapter rolesRepositoryAdapter = new(rolesRepository);
 
             Assert.That(rolesRepositoryAdapter.RolesRepository, Is.EqualTo(rolesRepository));
         }
