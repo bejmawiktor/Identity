@@ -1,4 +1,5 @@
 ﻿using Identity.Core.Domain;
+using Identity.Tests.Unit.Core.Domain.Builders;
 using Microsoft.IdentityModel.Tokens;
 using NUnit.Framework;
 using System;
@@ -25,30 +26,11 @@ namespace Identity.Tests.Unit.Core.Domain
                 () => algorithm.Encode(null));
         }
 
-        private TokenInformation GetTokenInformation(
-            Guid? id = null,
-            ApplicationId applicationId = null,
-            TokenType tokenType = null,
-            PermissionId[] permissions = null)
-        {
-            PermissionId[] permissionsReplacement = new PermissionId[]
-            {
-                new PermissionId(new ResourceId("MyResource"), "Add"),
-                new PermissionId(new ResourceId("MyResource"), "Remove")
-            };
-
-            return new TokenInformation(
-                id ?? Guid.NewGuid(),
-                applicationId ?? ApplicationId.Generate(),
-                tokenType ?? TokenType.Refresh,
-                permissions ?? permissionsReplacement);
-        }
-
         [Test]
         public void TestEncode_WhenTokenInformationGiven_ThenNotNullTokenIsReturned()
         {
             HS256JWTTokenValueEncodingAlgorithm algorithm = new();
-            TokenInformation tokenInformation = this.GetTokenInformation();
+            TokenInformation tokenInformation = TokenInformationBuilder.DefaultTokenInformation;
 
             string token = algorithm.Encode(tokenInformation);
 
@@ -59,7 +41,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestEncode_WhenTokenInformationGiven_ThenNotEmptyTokenIsReturned()
         {
             HS256JWTTokenValueEncodingAlgorithm algorithm = new();
-            TokenInformation tokenInformation = this.GetTokenInformation();
+            TokenInformation tokenInformation = TokenInformationBuilder.DefaultTokenInformation;
 
             string token = algorithm.Encode(tokenInformation);
 
@@ -70,8 +52,10 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestEncode_WhenGeneratingTokenWithDifferentTokenInformation_ThenTokensAreDifferent()
         {
             HS256JWTTokenValueEncodingAlgorithm algorithm = new();
-            TokenInformation firstTokenInformation = this.GetTokenInformation();
-            TokenInformation secondTokenInformation = this.GetTokenInformation();
+            TokenInformation firstTokenInformation = TokenInformationBuilder.DefaultTokenInformation;
+            TokenInformation secondTokenInformation = new TokenInformationBuilder()
+                .WithId(Guid.NewGuid())
+                .Build();
 
             string firstToken = algorithm.Encode(firstTokenInformation);
             string secondToken = algorithm.Encode(secondTokenInformation);
@@ -375,7 +359,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestEncode_WhenValidTokenGiven_ThenNoExceptionIsThrown()
         {
             HS256JWTTokenValueEncodingAlgorithm algorithm = new();
-            TokenInformation tokenInformation = this.GetTokenInformation();
+            TokenInformation tokenInformation = TokenInformationBuilder.DefaultTokenInformation;
 
             string token = algorithm.Encode(tokenInformation);
 
@@ -409,7 +393,12 @@ namespace Identity.Tests.Unit.Core.Domain
                 new PermissionId(new ResourceId("MyResource"), "Remove"),
                 new PermissionId(new ResourceId("MyResource2"), "Remove")
             };
-            TokenInformation tokenInformation = this.GetTokenInformation(id, applicationId, TokenType.Refresh, permissions);
+            TokenInformation tokenInformation = new TokenInformationBuilder()
+                .WithId(id)
+                .WithApplicationId(applicationId)
+                .WithType(TokenType.Refresh)
+                .WithPermissions(permissions)
+                .Build();
             string token = algorithm.Encode(tokenInformation);
 
             TokenInformation result = algorithm.Decode(token);

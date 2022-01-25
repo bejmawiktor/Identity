@@ -1,5 +1,6 @@
 ﻿using Identity.Core.Application;
 using Identity.Core.Domain;
+using Identity.Tests.Unit.Core.Domain.Builders;
 using NUnit.Framework;
 using System;
 
@@ -11,33 +12,24 @@ namespace Identity.Tests.Unit.Core.Application
     [TestFixture]
     public class ApplicationDtoConverterTest
     {
-        private static readonly EncryptedSecretKey EncryptedSecretKey
-            = EncryptedSecretKey.Encrypt(Identity.Core.Domain.SecretKey.Generate());
-
         [Test]
         public void TestToDto_WhenApplicationGiven_ThenApplicationDtoIsReturned()
         {
             ApplicationId applicationId = ApplicationId.Generate();
             UserId userId = UserId.Generate();
-            Application application = new(
-                id: applicationId,
-                userId: userId,
-                name: "MyApp",
-                secretKey: EncryptedSecretKey,
-                homepageUrl: new Url("https://www.example.com"),
-                callbackUrl: new Url("https://www.example.com/1"));
+            Application application = ApplicationBuilder.DefaultApplication;
             ApplicationDtoConverter applicationDtoConverter = new();
 
             ApplicationDto applicationDto = applicationDtoConverter.ToDto(application);
 
             Assert.Multiple(() =>
             {
-                Assert.That(applicationDto.Id, Is.EqualTo(applicationId.ToGuid()));
-                Assert.That(applicationDto.UserId, Is.EqualTo(userId.ToGuid()));
-                Assert.That(applicationDto.Name, Is.EqualTo("MyApp"));
-                Assert.That(applicationDto.SecretKey, Is.EqualTo(EncryptedSecretKey.ToString()));
-                Assert.That(applicationDto.HomepageUrl, Is.EqualTo("https://www.example.com"));
-                Assert.That(applicationDto.CallbackUrl, Is.EqualTo("https://www.example.com/1"));
+                Assert.That(applicationDto.Id, Is.EqualTo(application.Id.ToGuid()));
+                Assert.That(applicationDto.UserId, Is.EqualTo(application.UserId.ToGuid()));
+                Assert.That(applicationDto.Name, Is.EqualTo(application.Name));
+                Assert.That(applicationDto.SecretKey, Is.EqualTo(application.SecretKey.ToString()));
+                Assert.That(applicationDto.HomepageUrl, Is.EqualTo(application.HomepageUrl.ToString()));
+                Assert.That(applicationDto.CallbackUrl, Is.EqualTo(application.CallbackUrl.ToString()));
             });
         }
 

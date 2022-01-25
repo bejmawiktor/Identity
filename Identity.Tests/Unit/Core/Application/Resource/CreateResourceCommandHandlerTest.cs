@@ -1,5 +1,6 @@
 ﻿using DDD.Domain.Events;
 using Identity.Core.Application;
+using Identity.Tests.Unit.Core.Application.Builders;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -34,8 +35,10 @@ namespace Identity.Tests.Unit.Core.Application
             Mock<IUsersRepository> usersRepositoryMock = new();
             usersRepositoryMock.Setup(u => u.GetAsync(It.IsAny<Guid>())).Returns(Task.FromResult(user));
             IUsersRepository usersRepository = usersRepositoryMock.Object;
-            CreateResourceCommandHandler createResourceCommandHandler = new CreateResourceCommandHandler(
-                this.GetUnitOfWorkMock(usersRepository: usersRepository).Object);
+            IUnitOfWork unitOfWork = new UnitOfWorkBuilder()
+                .WithUsersRepository(usersRepository)
+                .Build();
+            CreateResourceCommandHandler createResourceCommandHandler = new(unitOfWork);
             CreateResourceCommand createResourceCommandM = new(
                 "MyResource",
                 "My resource description.",
@@ -47,34 +50,6 @@ namespace Identity.Tests.Unit.Core.Application
             Assert.That(exception, Is.InstanceOf<UnauthorizedAccessException>()
                 .And.Message
                 .EqualTo("User isn't authorized to create resource."));
-        }
-
-        private Mock<IUnitOfWork> GetUnitOfWorkMock(
-            IApplicationsRepository applicationsRepository = null,
-            IAuthorizationCodesRepository authorizationCodesRepository = null,
-            IPermissionsRepository permissionsRepository = null,
-            IResourcesRepository resourcesRepository = null,
-            IRolesRepository rolesRepository = null,
-            IRefreshTokensRepository refreshTokensRepository = null,
-            IUsersRepository usersRepository = null)
-        {
-            Mock<IUnitOfWork> unitOfWorkMock = new();
-            unitOfWorkMock.Setup(x => x.ApplicationsRepository)
-                .Returns(applicationsRepository ?? new Mock<IApplicationsRepository>().Object);
-            unitOfWorkMock.Setup(x => x.AuthorizationCodesRepository)
-                .Returns(authorizationCodesRepository ?? new Mock<IAuthorizationCodesRepository>().Object);
-            unitOfWorkMock.Setup(x => x.PermissionsRepository)
-                .Returns(permissionsRepository ?? new Mock<IPermissionsRepository>().Object);
-            unitOfWorkMock.Setup(x => x.ResourcesRepository)
-                .Returns(resourcesRepository ?? new Mock<IResourcesRepository>().Object);
-            unitOfWorkMock.Setup(x => x.RolesRepository)
-                .Returns(rolesRepository ?? new Mock<IRolesRepository>().Object);
-            unitOfWorkMock.Setup(x => x.RefreshTokensRepository)
-                .Returns(refreshTokensRepository ?? new Mock<IRefreshTokensRepository>().Object);
-            unitOfWorkMock.Setup(x => x.UsersRepository)
-                .Returns(usersRepository ?? new Mock<IUsersRepository>().Object);
-
-            return unitOfWorkMock;
         }
 
         [Test]
@@ -94,10 +69,11 @@ namespace Identity.Tests.Unit.Core.Application
             usersRepositoryMock.Setup(u => u.GetAsync(It.IsAny<Guid>())).Returns(Task.FromResult(user));
             IUsersRepository usersRepository = usersRepositoryMock.Object;
             IResourcesRepository resourcesRepository = resourcesRepositoryMock.Object;
-            CreateResourceCommandHandler createResourceCommandHandler = new CreateResourceCommandHandler(
-                this.GetUnitOfWorkMock(
-                    usersRepository: usersRepository,
-                    resourcesRepository: resourcesRepository).Object);
+            IUnitOfWork unitOfWork = new UnitOfWorkBuilder()
+                .WithUsersRepository(usersRepository)
+                .WithResourcesRepository(resourcesRepository)
+                .Build();
+            CreateResourceCommandHandler createResourceCommandHandler = new(unitOfWork);
             EventManager.Instance.EventDispatcher = new Mock<IEventDispatcher>().Object;
             CreateResourceCommand createResourceCommandM = new(
                 "MyResource",

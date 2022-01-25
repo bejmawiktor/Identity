@@ -1,5 +1,6 @@
 ﻿using Identity.Core.Application;
 using Identity.Core.Domain;
+using Identity.Tests.Unit.Core.Domain.Builders;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -37,8 +38,7 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public async Task TestGetAsync_WhenUserWithEmailRegistered_ThenUserIsReturned()
         {
-            EmailAddress emailAddress = new("example@example.com");
-            User user = User.Create(new EmailAddress("example@example.com"), this.HashedPassword);
+            User user = UserBuilder.DefaultUser;
             Mock<IUsersRepository> usersRepositoryMock = new();
             usersRepositoryMock
                 .Setup(u => u.GetAsync(It.IsAny<string>()))
@@ -46,7 +46,7 @@ namespace Identity.Tests.Unit.Core.Application
             IUsersRepository usersRepository = usersRepositoryMock.Object;
             UsersRepositoryAdapter usersRepositoryAdapter = new(usersRepository);
 
-            User result = await usersRepositoryAdapter.GetAsync(emailAddress);
+            User result = await usersRepositoryAdapter.GetAsync(user.Email);
 
             Assert.That(result, Is.EqualTo(user));
         }

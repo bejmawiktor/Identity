@@ -1,6 +1,7 @@
 ﻿using DDD.Domain.Events;
 using Identity.Core.Domain;
 using Identity.Core.Events;
+using Identity.Tests.Unit.Core.Domain.Builders;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -14,25 +15,11 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenUnitOfWorkGiven_ThenUnitOfWorkIsSet()
         {
-            IUnitOfWork unitOfWork = this.GetUnitOfWork();
+            IUnitOfWork unitOfWork = UnitOfWorkBuilder.DefaultUnitOfWork;
 
             PermissionService permissionService = new PermissionService(unitOfWork);
 
             Assert.That(permissionService.UnitOfWork, Is.EqualTo(unitOfWork));
-        }
-
-        private IUnitOfWork GetUnitOfWork(
-            IResourcesRepository resourcesRepository = null,
-            IPermissionsRepository permissionsRepository = null)
-        {
-            Mock<IUnitOfWork> unitOfWorkMock = new Mock<IUnitOfWork>();
-            unitOfWorkMock.Setup(x => x.ResourcesRepository)
-                .Returns(resourcesRepository ?? new Mock<IResourcesRepository>().Object);
-            unitOfWorkMock.Setup(x => x.PermissionsRepository)
-                .Returns(permissionsRepository ?? new Mock<IPermissionsRepository>().Object);
-            IUnitOfWork unitOfWork = unitOfWorkMock.Object;
-
-            return unitOfWork;
         }
 
         [Test]
@@ -54,9 +41,10 @@ namespace Identity.Tests.Unit.Core.Domain
                 .Setup(r => r.GetAsync(It.IsAny<ResourceId>()))
                 .Returns(Task.FromResult(new Resource(resourceId, "Resource description.")));
             Mock<IPermissionsRepository> permissionsRepositoryMock = new Mock<IPermissionsRepository>();
-            IUnitOfWork unitOfWork = this.GetUnitOfWork(
-                resourcesRepositoryMock.Object,
-                permissionsRepositoryMock.Object);
+            IUnitOfWork unitOfWork = new UnitOfWorkBuilder()
+                .WithResourcesRepository(resourcesRepositoryMock.Object)
+                .WithPermissionsRepository(permissionsRepositoryMock.Object)
+                .Build();
             PermissionService permissionService = new PermissionService(unitOfWork);
 
             await permissionService.CreatePermission(resourceId, "AddSomething", "Permission description.");
@@ -78,8 +66,9 @@ namespace Identity.Tests.Unit.Core.Domain
             resourcesRepositoryMock
                 .Setup(r => r.GetAsync(It.IsAny<ResourceId>()))
                 .Returns(Task.FromResult(new Resource(resourceId, "Resource description.")));
-            IUnitOfWork unitOfWork = this.GetUnitOfWork(
-                resourcesRepositoryMock.Object);
+            IUnitOfWork unitOfWork = new UnitOfWorkBuilder()
+                .WithResourcesRepository(resourcesRepositoryMock.Object)
+                .Build();
             PermissionService permissionService = new PermissionService(unitOfWork);
 
             await permissionService.CreatePermission(resourceId, "AddSomething", "Permission description.");
@@ -109,9 +98,10 @@ namespace Identity.Tests.Unit.Core.Domain
             permissionsRepositoryMock
                 .Setup(p => p.AddAsync(It.IsAny<Permission>()))
                 .Throws(new Exception());
-            IUnitOfWork unitOfWork = this.GetUnitOfWork(
-                resourcesRepositoryMock.Object,
-                permissionsRepositoryMock.Object);
+            IUnitOfWork unitOfWork = new UnitOfWorkBuilder()
+                .WithResourcesRepository(resourcesRepositoryMock.Object)
+                .WithPermissionsRepository(permissionsRepositoryMock.Object)
+                .Build();
             PermissionService permissionService = new PermissionService(unitOfWork);
 
             try
@@ -139,8 +129,9 @@ namespace Identity.Tests.Unit.Core.Domain
             resourcesRepositoryMock
                 .Setup(p => p.GetAsync(It.IsAny<ResourceId>()))
                 .Throws(new Exception());
-            IUnitOfWork unitOfWork = this.GetUnitOfWork(
-                resourcesRepositoryMock.Object);
+            IUnitOfWork unitOfWork = new UnitOfWorkBuilder()
+                .WithResourcesRepository(resourcesRepositoryMock.Object)
+                .Build();
             PermissionService permissionService = new(unitOfWork);
 
             try
@@ -168,8 +159,9 @@ namespace Identity.Tests.Unit.Core.Domain
             resourcesRepositoryMock
                 .Setup(p => p.GetAsync(It.IsAny<ResourceId>()))
                 .Returns(Task.FromResult((Resource)null));
-            IUnitOfWork unitOfWork = this.GetUnitOfWork(
-                resourcesRepositoryMock.Object);
+            IUnitOfWork unitOfWork = new UnitOfWorkBuilder()
+                .WithResourcesRepository(resourcesRepositoryMock.Object)
+                .Build();
             PermissionService permissionService = new(unitOfWork);
 
             Assert.ThrowsAsync(

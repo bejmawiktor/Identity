@@ -1,5 +1,6 @@
 ﻿using Identity.Core.Domain;
 using Identity.Core.Events;
+using Identity.Tests.Unit.Core.Domain.Builders;
 using NUnit.Framework;
 
 namespace Identity.Tests.Unit.Core.Domain
@@ -12,18 +13,11 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             UserId userId = UserId.Generate();
 
-            UserRoleRevoked userRoleRevoked = this.GetUserRoleRevoked(userId);
+            UserRoleRevoked userRoleRevoked = new UserRoleRevokedBuilder()
+                .WithUserId(userId)
+                .Build();
 
             Assert.That(userRoleRevoked.UserId, Is.EqualTo(userId.ToGuid()));
-        }
-
-        private UserRoleRevoked GetUserRoleRevoked(
-            UserId userId = null,
-            RoleId revokedRoleId = null)
-        {
-            return new UserRoleRevoked(
-                userId: userId ?? UserId.Generate(),
-                revokedRoleId: revokedRoleId ?? RoleId.Generate());
         }
 
         [Test]
@@ -31,7 +25,9 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             RoleId revokedRoleId = RoleId.Generate();
 
-            UserRoleRevoked userRoleRevoked = this.GetUserRoleRevoked(revokedRoleId: revokedRoleId);
+            UserRoleRevoked userRoleRevoked = new UserRoleRevokedBuilder()
+                .WithRevokedRoleId(revokedRoleId)
+                .Build();
 
             Assert.That(userRoleRevoked.RevokedRoleId, Is.EqualTo(revokedRoleId.ToGuid()));
         }

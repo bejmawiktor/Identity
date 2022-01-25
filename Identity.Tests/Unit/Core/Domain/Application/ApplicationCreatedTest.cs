@@ -1,5 +1,6 @@
 ﻿using Identity.Core.Domain;
 using Identity.Core.Events;
+using Identity.Tests.Unit.Core.Domain.Builders;
 using NUnit.Framework;
 
 namespace Identity.Tests.Unit.Core.Domain
@@ -11,30 +12,19 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestConstructor_WhenApplicationIdGiven_ThenApplicationIdIsSet()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            ApplicationCreated applicationCreated = this.GetApplicationCreated(applicationId);
+            ApplicationCreated applicationCreated = new ApplicationCreatedBuilder()
+                .WithApplicationId(applicationId)
+                .Build();
 
             Assert.That(applicationCreated.ApplicationId, Is.EqualTo(applicationId.ToGuid()));
-        }
-
-        private ApplicationCreated GetApplicationCreated(
-            ApplicationId applicationId = null,
-            string applicationName = null,
-            UserId applicationUserId = null,
-            Url applicationHomepageUrl = null,
-            Url applicationCallbackUrl = null)
-        {
-            return new ApplicationCreated(
-                applicationId: applicationId ?? ApplicationId.Generate(),
-                applicationName: applicationName ?? "MyApp",
-                applicationUserId: applicationUserId ?? UserId.Generate(),
-                applicationHomepageUrl: applicationHomepageUrl ?? new Url("http://wwww.example.com"),
-                applicationCallbackUrl: applicationCallbackUrl ?? new Url("http://wwww.example.com/1"));
         }
 
         [Test]
         public void TestConstructor_WhenApplicationNameGiven_ThenApplicationNameIsSet()
         {
-            ApplicationCreated applicationCreated = this.GetApplicationCreated(applicationName: "MyApp");
+            ApplicationCreated applicationCreated = new ApplicationCreatedBuilder()
+                .WithApplicationName("MyApp")
+                .Build();
 
             Assert.That(applicationCreated.ApplicationName, Is.EqualTo("MyApp"));
         }
@@ -43,7 +33,9 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestConstructor_WhenApplicationUserIdGiven_ThenApplicationUserIdIsSet()
         {
             UserId userId = UserId.Generate();
-            ApplicationCreated applicationCreated = this.GetApplicationCreated(applicationUserId: userId);
+            ApplicationCreated applicationCreated = new ApplicationCreatedBuilder()
+                .WithApplicationUserId(applicationUserId: userId)
+                .Build();
 
             Assert.That(applicationCreated.ApplicationUserId, Is.EqualTo(userId.ToGuid()));
         }
@@ -51,19 +43,21 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenApplicationHomepageUrlGiven_ThenApplicationHomepageUrlIsSet()
         {
-            ApplicationCreated applicationCreated = this.GetApplicationCreated(
-                applicationHomepageUrl: new Url("http://wwww.example.com"));
+            ApplicationCreated applicationCreated = new ApplicationCreatedBuilder()
+                .WithApplicationHomepageUrl(applicationHomepageUrl: new Url("http://wwww.example1.com"))
+                .Build();
 
-            Assert.That(applicationCreated.ApplicationHomepageUrl, Is.EqualTo("http://wwww.example.com"));
+            Assert.That(applicationCreated.ApplicationHomepageUrl, Is.EqualTo("http://wwww.example1.com"));
         }
 
         [Test]
         public void TestConstructor_WhenApplicationCallbackUrlGiven_ThenApplicationCallbackUrlIsSet()
         {
-            ApplicationCreated applicationCreated = this.GetApplicationCreated(
-                applicationCallbackUrl: new Url("http://wwww.example.com/1"));
+            ApplicationCreated applicationCreated = new ApplicationCreatedBuilder()
+                .WithApplicationCallbackUrl(applicationCallbackUrl: new Url("http://wwww.example.com/2"))
+                .Build();
 
-            Assert.That(applicationCreated.ApplicationCallbackUrl, Is.EqualTo("http://wwww.example.com/1"));
+            Assert.That(applicationCreated.ApplicationCallbackUrl, Is.EqualTo("http://wwww.example.com/2"));
         }
     }
 }

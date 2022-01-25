@@ -1,4 +1,5 @@
 ﻿using Identity.Core.Domain;
+using Identity.Tests.Unit.Core.Domain.Builders;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,10 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestToString_WhenTokenIdGiven_ThenValueIsSet()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(this.GetTokenValue(applicationId: applicationId));
+            TokenValue tokenValue = new TokenValueBuilder()
+                .WithApplicationId(applicationId)
+                .Build();
+            EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(tokenValue);
             TokenId tokenId = new(encryptedTokenValue);
 
             TokenStub token = new(tokenId);
@@ -22,32 +26,14 @@ namespace Identity.Tests.Unit.Core.Domain
             Assert.That(token.ToString(), Is.EqualTo(tokenId.ToString()));
         }
 
-        private TokenValue GetTokenValue(
-            Guid? id = null,
-            ApplicationId applicationId = null,
-            TokenType tokenType = null,
-            IEnumerable<PermissionId> permissions = null,
-            DateTime? expirationDate = null)
-        {
-            TokenInformation tokenInformation = new(
-                id ?? Guid.NewGuid(),
-                applicationId ?? ApplicationId.Generate(),
-                tokenType ?? TokenType.Access,
-                permissions ?? new PermissionId[]
-                {
-                    new PermissionId(new ResourceId("MyResource"), "Add"),
-                    new PermissionId(new ResourceId("MyResource"), "Remove")
-                },
-                expirationDate);
-
-            return TokenValueEncoder.Encode(tokenInformation);
-        }
-
         [Test]
         public void TestConstructor_WhenTokenValueGiven_ThenApplicationIdIsSet()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(this.GetTokenValue(applicationId: applicationId));
+            TokenValue tokenValue = new TokenValueBuilder()
+                .WithApplicationId(applicationId)
+                .Build();
+            EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(tokenValue);
             TokenId tokenId = new(encryptedTokenValue);
 
             TokenStub token = new(tokenId);
@@ -58,8 +44,10 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenTokenValueGiven_ThenTypeIsSet()
         {
-            EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(
-                this.GetTokenValue(tokenType: TokenType.Refresh));
+            TokenValue tokenValue = new TokenValueBuilder()
+                .WithType(TokenType.Refresh)
+                .Build();
+            EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(tokenValue);
             TokenId tokenId = new(encryptedTokenValue);
 
             TokenStub token = new(tokenId);
@@ -71,8 +59,10 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestConstructor_WhenTokenValueGiven_ThenExpiresAtIsSet()
         {
             DateTime expirationDate = DateTime.Now;
-            EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(
-                this.GetTokenValue(expirationDate: expirationDate));
+            TokenValue tokenValue = new TokenValueBuilder()
+                .WithExpirationDate(expirationDate)
+                .Build();
+            EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(tokenValue);
             TokenId tokenId = new(encryptedTokenValue);
 
             TokenStub token = new(tokenId);
@@ -88,8 +78,10 @@ namespace Identity.Tests.Unit.Core.Domain
                 new PermissionId(new ResourceId("MyResource"), "Add"),
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
-            EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(
-                this.GetTokenValue(permissions: permissions));
+            TokenValue tokenValue = new TokenValueBuilder()
+                .WithPermissions(permissions)
+                .Build();
+            EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(tokenValue);
             TokenId tokenId = new(encryptedTokenValue);
 
             TokenStub token = new(tokenId);
@@ -100,8 +92,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestVerify_WhenExtraVerificationReturnedFailedAndTokenExpired_ThenTokenVerificationFailedIsReturnedWithExtraVerificationMessage()
         {
-            EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(
-                this.GetTokenValue());
+            EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(TokenValueBuilder.DefaultTokenValue);
             TokenId tokenId = new(encryptedTokenValue);
             TokenStub token = new(tokenId, true);
 
@@ -117,8 +108,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestVerify_WhenExtraVerificationReturnedFailedAndTokenNotExpired_ThenTokenVerificationFailedIsReturned()
         {
-            EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(
-                this.GetTokenValue());
+            EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(TokenValueBuilder.DefaultTokenValue);
             TokenId tokenId = new(encryptedTokenValue);
             TokenStub token = new(tokenId, true);
 
@@ -135,8 +125,10 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestVerify_WhenTokenExpiredAndExtraVerificationReturnedSuccess_ThenTokenVerificationFailedIsReturned()
         {
             DateTime expirationDate = DateTime.Now.AddMinutes(-1);
-            EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(
-                this.GetTokenValue(expirationDate: expirationDate));
+            TokenValue tokenValue = new TokenValueBuilder()
+                .WithExpirationDate(expirationDate)
+                .Build();
+            EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(tokenValue);
             TokenId tokenId = new(encryptedTokenValue);
             TokenStub token = new(tokenId);
 
@@ -153,8 +145,10 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestVerify_WhenTokenNotExpiredAndExtraVerificationReturnedSuccess_ThenSuccessIsReturned()
         {
             DateTime expirationDate = DateTime.Now.AddMinutes(1);
-            EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(
-                this.GetTokenValue(expirationDate: expirationDate));
+            TokenValue tokenValue = new TokenValueBuilder()
+                .WithExpirationDate(expirationDate)
+                .Build();
+            EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(tokenValue);
             TokenId tokenId = new(encryptedTokenValue);
             TokenStub token = new(tokenId);
 

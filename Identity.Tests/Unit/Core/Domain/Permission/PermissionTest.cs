@@ -1,4 +1,5 @@
 ﻿using Identity.Core.Domain;
+using Identity.Tests.Unit.Core.Domain.Builders;
 using NUnit.Framework;
 using System;
 
@@ -10,22 +11,11 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenDescriptionGiven_ThenDescriptionIsSet()
         {
-            Permission permission = this.GetPermission(
-                description: "It allows user to grant permission to other users.");
+            Permission permission = new PermissionBuilder()
+                .WithDescription("It allows user to grant permission to other users.")
+                .Build();
 
             Assert.That(permission.Description, Is.EqualTo("It allows user to grant permission to other users."));
-        }
-
-        private Permission GetPermission(
-            ResourceId resourceId = null,
-            string name = null,
-            string description = null)
-        {
-            return new Permission(
-                id: new PermissionId(
-                    resourceId: resourceId ?? new ResourceId("MyResource"),
-                    name: name ?? "GrantPermission"),
-                description: description ?? "It allows user to grant permission to other users.");
         }
 
         [Test]

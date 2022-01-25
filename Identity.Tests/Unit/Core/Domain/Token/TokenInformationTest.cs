@@ -1,4 +1,5 @@
 ﻿using Identity.Core.Domain;
+using Identity.Tests.Unit.Core.Domain.Builders;
 using NUnit.Framework;
 using System;
 
@@ -14,7 +15,9 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             Guid id = Guid.NewGuid();
 
-            TokenInformation tokenInformation = this.GetTokenInformation(id);
+            TokenInformation tokenInformation = new TokenInformationBuilder()
+                .WithId(id)
+                .Build();
 
             Assert.That(tokenInformation.Id, Is.EqualTo(id));
         }
@@ -24,36 +27,19 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             ApplicationId applicationId = ApplicationId.Generate();
 
-            TokenInformation tokenInformation = this.GetTokenInformation(applicationId: applicationId);
+            TokenInformation tokenInformation = new TokenInformationBuilder()
+                .WithApplicationId(applicationId)
+                .Build();
 
             Assert.That(tokenInformation.ApplicationId, Is.EqualTo(applicationId));
-        }
-
-        private TokenInformation GetTokenInformation(
-            Guid? id = null,
-            ApplicationId applicationId = null,
-            TokenType tokenType = null,
-            PermissionId[] permissions = null,
-            DateTime? expirationDate = null)
-        {
-            PermissionId[] permissionsReplacement = new PermissionId[]
-            {
-                new PermissionId(new ResourceId("MyResource"), "Add"),
-                new PermissionId(new ResourceId("MyResource"), "Remove")
-            };
-
-            return new TokenInformation(
-                id ?? Guid.NewGuid(),
-                applicationId ?? ApplicationId.Generate(),
-                tokenType ?? TokenType.Refresh,
-                permissions ?? permissionsReplacement,
-                expirationDate);
         }
 
         [Test]
         public void TestConstructor_WhenTokenTypeGiven_ThenTokenTypeIsSet()
         {
-            TokenInformation tokenInformation = this.GetTokenInformation(tokenType: TokenType.Access);
+            TokenInformation tokenInformation = new TokenInformationBuilder()
+                .WithType(TokenType.Access)
+                .Build();
 
             Assert.That(tokenInformation.TokenType, Is.EqualTo(TokenType.Access));
         }
@@ -67,7 +53,9 @@ namespace Identity.Tests.Unit.Core.Domain
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
 
-            TokenInformation tokenInformation = this.GetTokenInformation(permissions: permissions);
+            TokenInformation tokenInformation = new TokenInformationBuilder()
+                .WithPermissions(permissions)
+                .Build();
 
             Assert.That(tokenInformation.Permissions, Is.EquivalentTo(permissions));
         }
@@ -77,7 +65,9 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             DateTime expirationDate = DateTime.Now;
 
-            TokenInformation tokenInformation = this.GetTokenInformation(expirationDate: expirationDate);
+            TokenInformation tokenInformation = new TokenInformationBuilder()
+                .WithExpirationDate(expirationDate)
+                .Build();
 
             Assert.That(tokenInformation.ExpirationDate, Is.EqualTo(expirationDate));
         }
@@ -86,9 +76,10 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestConstructor_WhenExpirationDateNotGiven_ThenExpirationDateIsGeneratedFromTokenType()
         {
             DateTime expirationDate = DateTime.Now;
-            TokenInformation tokenInformation = this.GetTokenInformation(
-                tokenType: TokenType.Refresh,
-                expirationDate: null);
+            TokenInformation tokenInformation = new TokenInformationBuilder()
+                .WithExpirationDate(null)
+                .WithType(TokenType.Refresh)
+                .Build();
 
             Assert.That(
                 tokenInformation.ExpirationDate,

@@ -1,6 +1,7 @@
 ﻿using DDD.Domain.Events;
 using Identity.Core.Domain;
 using Identity.Core.Events;
+using Identity.Tests.Unit.Core.Domain.Builders;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -18,22 +19,11 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenEmailGiven_ThenEmailIsSet()
         {
-            User user = this.GetUser(email: new EmailAddress("myemail@example.com"));
+            User user = new UserBuilder()
+                .WithEmail(email: new EmailAddress("myemail@example.com"))
+                .Build();
 
             Assert.That(user.Email, Is.EqualTo(new EmailAddress("myemail@example.com")));
-        }
-
-        private User GetUser(
-            UserId id = null,
-            EmailAddress email = null,
-            HashedPassword password = null,
-            IEnumerable<RoleId> roles = null)
-        {
-            return new User(
-                id: id ?? UserId.Generate(),
-                email: email ?? new EmailAddress("myemail@example.com"),
-                password: password ?? UserTest.TestPassword,
-                roles: roles ?? null);
         }
 
         [Test]
@@ -52,9 +42,10 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenPasswordGiven_ThenPasswordIsSet()
         {
-            User user = this.GetUser(password: UserTest.TestPassword);
+            UserBuilder userBuilder = new UserBuilder();
+            User user = userBuilder.Build();
 
-            Assert.That(user.Password, Is.EqualTo(UserTest.TestPassword));
+            Assert.That(user.Password, Is.EqualTo(userBuilder.Password));
         }
 
         [Test]
@@ -78,8 +69,9 @@ namespace Identity.Tests.Unit.Core.Domain
                 RoleId.Generate(),
                 RoleId.Generate()
             };
-            User user = this.GetUser(
-                roles: roles);
+            User user = new UserBuilder()
+                .WithRoles(roles: roles)
+                .Build();
 
             Assert.That(user.Roles, Is.EqualTo(roles));
         }
@@ -87,10 +79,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenRolesNotGiven_ThenRolesAreEmpty()
         {
-            User user = new User(
-                id: UserId.Generate(),
-                email: new EmailAddress("myemail@example.com"),
-                password: UserTest.TestPassword);
+            User user = UserBuilder.DefaultUser;
 
             Assert.That(user.Roles, Is.Empty);
         }
@@ -133,7 +122,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestEmailSet_WhenNullEmailGiven_ThenArgumentNullExceptionIsThrown()
         {
-            User user = this.GetUser();
+            User user = UserBuilder.DefaultUser;
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -145,7 +134,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestEmailSet_WhenEmailGiven_ThenEmailIsSet()
         {
-            User user = this.GetUser();
+            User user = UserBuilder.DefaultUser;
 
             user.Email = new EmailAddress("newemail@example.com");
 
@@ -155,7 +144,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestPasswordSet_WhenNullPasswordGiven_ThenArgumentNullExceptionIsThrown()
         {
-            User user = this.GetUser();
+            User user = UserBuilder.DefaultUser;
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -168,7 +157,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestPasswordSet_WhenPasswordGiven_ThenPasswordIsSet()
         {
             HashedPassword newPassword = HashedPassword.Hash(new Password("MyPassword2"));
-            User user = this.GetUser();
+            User user = UserBuilder.DefaultUser;
 
             user.Password = newPassword;
 
@@ -185,7 +174,7 @@ namespace Identity.Tests.Unit.Core.Domain
                 .Setup(e => e.Dispatch(It.IsAny<UserPermissionObtained>()))
                 .Callback((UserPermissionObtained p) => userPermissionObtained = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
-            User user = this.GetUser();
+            User user = UserBuilder.DefaultUser;
 
             user.ObtainPermission(permissionId);
 
@@ -200,7 +189,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestObtainPermission_WhenPermissionGiven_ThenUserHasPermission()
         {
             PermissionId permissionId = new(new ResourceId("MyResource"), "MyPermission");
-            User user = this.GetUser();
+            User user = UserBuilder.DefaultUser;
 
             user.ObtainPermission(permissionId);
 
@@ -217,7 +206,7 @@ namespace Identity.Tests.Unit.Core.Domain
                 .Setup(e => e.Dispatch(It.IsAny<UserPermissionRevoked>()))
                 .Callback((UserPermissionRevoked p) => userPermissionRevokedEvent = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
-            User user = this.GetUser();
+            User user = UserBuilder.DefaultUser;
             user.ObtainPermission(permissionId);
 
             user.RevokePermission(permissionId);
@@ -233,7 +222,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestRevokePermission_WhenPermissionIdGiven_ThenPermissionIsRevoked()
         {
             PermissionId permissionId = new(new ResourceId("MyResource"), "MyPermission");
-            User user = this.GetUser();
+            User user = UserBuilder.DefaultUser;
             user.ObtainPermission(permissionId);
 
             user.RevokePermission(permissionId);
@@ -244,7 +233,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestHasRole_WhenNullRoleIdGiven_ThenArgumentNullExceptionIsThrown()
         {
-            User user = this.GetUser();
+            User user = UserBuilder.DefaultUser;
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -261,8 +250,9 @@ namespace Identity.Tests.Unit.Core.Domain
             {
                 roleId
             };
-            User user = this.GetUser(
-                roles: roles);
+            User user = new UserBuilder()
+                .WithRoles(roles)
+                .Build();
 
             bool result = user.HasRole(roleId);
 
@@ -273,7 +263,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestHasRole_WhenUserHasntRole_ThenFalseIsReturned()
         {
             RoleId roleId = RoleId.Generate();
-            User user = this.GetUser();
+            User user = UserBuilder.DefaultUser;
 
             bool result = user.HasRole(roleId);
 
@@ -283,7 +273,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestAssumeRole_WhenNullRoleIdGiven_ThenArgumentNullExceptionIsThrown()
         {
-            User user = this.GetUser();
+            User user = UserBuilder.DefaultUser;
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -301,7 +291,9 @@ namespace Identity.Tests.Unit.Core.Domain
                 roleId
             };
 
-            User user = this.GetUser(roles: roles);
+            User user = new UserBuilder()
+                .WithRoles(roles: roles)
+                .Build();
 
             Assert.Throws(
                 Is.InstanceOf<InvalidOperationException>()
@@ -314,7 +306,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestAssumeRole_WhenRoleGiven_ThenUserHasRole()
         {
             RoleId roleId = RoleId.Generate();
-            User user = this.GetUser();
+            User user = UserBuilder.DefaultUser;
 
             user.AssumeRole(roleId);
 
@@ -331,7 +323,7 @@ namespace Identity.Tests.Unit.Core.Domain
                 .Callback((UserRoleAssumed p) => userRoleAssumed = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             RoleId roleId = RoleId.Generate();
-            User user = this.GetUser();
+            User user = UserBuilder.DefaultUser;
 
             user.AssumeRole(roleId);
 
@@ -345,7 +337,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestRevokeRole_WhenNullRoleIdGiven_ThenArgumentNullExceptionIsThrown()
         {
-            User user = this.GetUser();
+            User user = UserBuilder.DefaultUser;
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -359,7 +351,7 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             RoleId roleId = RoleId.Generate();
 
-            User user = this.GetUser();
+            User user = UserBuilder.DefaultUser;
 
             Assert.Throws(
                 Is.InstanceOf<InvalidOperationException>()
@@ -372,7 +364,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestRevokeRole_WhenRoleIdGiven_ThenUserRoleIsRevoked()
         {
             RoleId roleId = RoleId.Generate();
-            User user = this.GetUser();
+            User user = UserBuilder.DefaultUser;
             user.AssumeRole(roleId);
 
             user.RevokeRole(roleId);
@@ -390,7 +382,7 @@ namespace Identity.Tests.Unit.Core.Domain
                 .Callback((UserRoleRevoked p) => userRoleRevoked = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             RoleId roleId = RoleId.Generate();
-            User user = this.GetUser();
+            User user = UserBuilder.DefaultUser;
             user.AssumeRole(roleId);
 
             user.RevokeRole(roleId);
@@ -406,7 +398,9 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestCreateApplication_WhenCreatingApplication_ThenNewApplicationIsReturned()
         {
             UserId userId = UserId.Generate();
-            User user = this.GetUser(userId);
+            User user = new UserBuilder()
+                .WithId(userId)
+                .Build();
 
             Application application = user.CreateApplication(
                 name: "MyApp",
@@ -432,7 +426,9 @@ namespace Identity.Tests.Unit.Core.Domain
                 .Setup(e => e.Dispatch(It.IsAny<ApplicationCreated>()))
                 .Callback((ApplicationCreated p) => applicationCreated = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
-            User user = this.GetUser(userId);
+            User user = new UserBuilder()
+                .WithId(userId)
+                .Build();
 
             Application application = user.CreateApplication(
                 name: "MyApp",

@@ -1,4 +1,5 @@
 ﻿using Identity.Core.Domain;
+using Identity.Tests.Unit.Core.Domain.Builders;
 using NUnit.Framework;
 using System;
 
@@ -17,27 +18,11 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             UserId userId = UserId.Generate();
 
-            Application application = this.GetApplication(
-                userId: userId);
+            Application application = new ApplicationBuilder()
+                .WithUserId(userId)
+                .Build();
 
             Assert.That(application.UserId, Is.EqualTo(userId));
-        }
-
-        private Application GetApplication(
-            ApplicationId applicationId = null,
-            UserId userId = null,
-            string name = null,
-            EncryptedSecretKey secretKey = null,
-            Url homepageUrl = null,
-            Url callbackUrl = null)
-        {
-            return new Application(
-                id: applicationId ?? ApplicationId.Generate(),
-                userId: userId ?? UserId.Generate(),
-                name: name ?? "MyApp",
-                secretKey: secretKey ?? TestSecretKey,
-                homepageUrl: homepageUrl ?? new Url("https://www.example.com"),
-                callbackUrl: callbackUrl ?? new Url("https://www.example.com/1"));
         }
 
         [Test]
@@ -50,18 +35,20 @@ namespace Identity.Tests.Unit.Core.Domain
                     .And.Property(nameof(ArgumentNullException.ParamName))
                     .EqualTo("userId"),
                 () => new Application(
-                    id: applicationId,
-                    userId: null,
-                    name: "MyApp",
-                    secretKey: TestSecretKey,
-                    homepageUrl: new Url("https://www.example.com"),
-                    callbackUrl: new Url("https://www.example.com/1")));
+                    applicationId,
+                    null,
+                    "MyApp",
+                    TestSecretKey,
+                    new Url("https://www.example.com"),
+                    new Url("https://www.example.com/1")));
         }
 
         [Test]
         public void TestConstructor_WhenNameGiven_ThenNameIsSet()
         {
-            Application application = this.GetApplication(name: "MyApp");
+            Application application = new ApplicationBuilder()
+                .WithName("MyApp")
+                .Build();
 
             Assert.That(application.Name, Is.EqualTo("MyApp"));
         }
@@ -77,12 +64,12 @@ namespace Identity.Tests.Unit.Core.Domain
                     .And.Property(nameof(ArgumentNullException.ParamName))
                     .EqualTo("name"),
                 () => new Application(
-                    id: applicationId,
-                    userId: userId,
-                    name: null,
-                    secretKey: TestSecretKey,
-                    homepageUrl: new Url("https://www.example.com"),
-                    callbackUrl: new Url("https://www.example.com/1")));
+                    applicationId,
+                    userId,
+                    null,
+                    TestSecretKey,
+                    new Url("https://www.example.com"),
+                    new Url("https://www.example.com/1")));
         }
 
         [Test]
@@ -96,20 +83,22 @@ namespace Identity.Tests.Unit.Core.Domain
                     .And.Message
                     .EqualTo("Name can't be empty."),
                 () => new Application(
-                    id: applicationId,
-                    userId: userId,
-                    name: string.Empty,
-                    secretKey: TestSecretKey,
-                    homepageUrl: new Url("https://www.example.com"),
-                    callbackUrl: new Url("https://www.example.com/1")));
+                    applicationId,
+                    userId,
+                    string.Empty,
+                    TestSecretKey,
+                    new Url("https://www.example.com"),
+                    new Url("https://www.example.com/1")));
         }
 
         [Test]
         public void TestConstructor_WhenHomepageUrlGiven_ThenHomepageUrlIsSet()
         {
-            Application application = GetApplication(homepageUrl: new Url("https://www.example.com"));
+            Application application = new ApplicationBuilder()
+                .WithHompageUrl(new Url("https://www.example1.com"))
+                .Build();
 
-            Assert.That(application.HomepageUrl, Is.EqualTo(new Url("https://www.example.com")));
+            Assert.That(application.HomepageUrl, Is.EqualTo(new Url("https://www.example1.com")));
         }
 
         [Test]
@@ -123,18 +112,20 @@ namespace Identity.Tests.Unit.Core.Domain
                     .And.Property(nameof(ArgumentNullException.ParamName))
                     .EqualTo("homepageUrl"),
                 () => new Application(
-                    id: applicationId,
-                    userId: userId,
-                    name: "MyApp",
-                    secretKey: TestSecretKey,
-                    homepageUrl: null,
-                    callbackUrl: new Url("https://www.example.com/1")));
+                    applicationId,
+                    userId,
+                    "MyApp",
+                    TestSecretKey,
+                    null,
+                    new Url("https://www.example.com/1")));
         }
 
         [Test]
         public void TestConstructor_WhenSecretKeyGiven_ThenSecretKeyIsSet()
         {
-            Application application = this.GetApplication(secretKey: TestSecretKey);
+            Application application = new ApplicationBuilder()
+                .WithSecretKey(TestSecretKey)
+                .Build();
 
             Assert.That(application.SecretKey, Is.EqualTo(TestSecretKey));
         }
@@ -150,20 +141,22 @@ namespace Identity.Tests.Unit.Core.Domain
                     .And.Property(nameof(ArgumentNullException.ParamName))
                     .EqualTo("secretKey"),
                 () => new Application(
-                    id: applicationId,
-                    userId: userId,
-                    name: "MyApp",
-                    secretKey: null,
-                    homepageUrl: new Url("https://www.example.com/"),
-                    callbackUrl: new Url("https://www.example.com/1")));
+                    applicationId,
+                    userId,
+                    "MyApp",
+                    null,
+                    new Url("https://www.example.com/"),
+                    new Url("https://www.example.com/1")));
         }
 
         [Test]
         public void TestConstructor_WhenCallbackUrlGiven_ThenCallbackUrlIsSet()
         {
-            Application application = this.GetApplication(callbackUrl: new Url("https://www.example.com/1"));
+            Application application = new ApplicationBuilder()
+                .WithCallbackUrl(new Url("https://www.example1.com/1"))
+                .Build();
 
-            Assert.That(application.CallbackUrl, Is.EqualTo(new Url("https://www.example.com/1")));
+            Assert.That(application.CallbackUrl, Is.EqualTo(new Url("https://www.example1.com/1")));
         }
 
         [Test]
@@ -177,12 +170,12 @@ namespace Identity.Tests.Unit.Core.Domain
                     .And.Property(nameof(ArgumentNullException.ParamName))
                     .EqualTo("callbackUrl"),
                 () => new Application(
-                    id: applicationId,
-                    userId: userId,
-                    name: "MyApp",
-                    secretKey: TestSecretKey,
-                    homepageUrl: new Url("https://www.example.com"),
-                    callbackUrl: null));
+                    applicationId,
+                    userId,
+                    "MyApp",
+                    TestSecretKey,
+                    new Url("https://www.example.com"),
+                    null));
         }
 
         [Test]
@@ -190,7 +183,9 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             SecretKey secretKey = SecretKey.Generate();
             EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
-            Application application = this.GetApplication(secretKey: encryptedSecretKey);
+            Application application = new ApplicationBuilder()
+                .WithSecretKey(encryptedSecretKey)
+                .Build();
 
             SecretKey decryptedSecretKey = application.DecryptSecretKey();
 
@@ -202,8 +197,9 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             SecretKey secretKey = SecretKey.Generate();
             EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
-            Application application = this.GetApplication(
-                secretKey: encryptedSecretKey);
+            Application application = new ApplicationBuilder()
+                .WithSecretKey(encryptedSecretKey)
+                .Build();
 
             application.RegenerateSecretKey();
 
@@ -215,8 +211,9 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             SecretKey secretKey = SecretKey.Generate();
             EncryptedSecretKey encryptedSecretKey = EncryptedSecretKey.Encrypt(secretKey);
-            Application application = this.GetApplication(
-                secretKey: encryptedSecretKey);
+            Application application = new ApplicationBuilder()
+                .WithSecretKey(encryptedSecretKey)
+                .Build();
 
             application.RegenerateSecretKey();
 
@@ -226,18 +223,17 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestCreateAuthorizationCode_WhenCreating_ThenAuthorizationCodeIsReturned()
         {
-            ApplicationId applicationId = ApplicationId.Generate();
             PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource1"), "Add")
             };
-            Application application = this.GetApplication(applicationId);
+            Application application = ApplicationBuilder.DefaultApplication;
 
             AuthorizationCode authorizationCode = application.CreateAuthorizationCode(permissions, out Code code);
 
             Assert.Multiple(() =>
             {
-                Assert.That(authorizationCode.Id.ApplicationId, Is.EqualTo(applicationId));
+                Assert.That(authorizationCode.Id.ApplicationId, Is.EqualTo(application.Id));
                 Assert.That(authorizationCode.Permissions, Is.EqualTo(permissions));
                 Assert.That(authorizationCode.Used, Is.False);
                 Assert.That(code, Is.Not.Null);
@@ -247,18 +243,17 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestCreateAccessToken_WhenCreating_ThenAccessTokenIsReturned()
         {
-            ApplicationId applicationId = ApplicationId.Generate();
             PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource1"), "Add")
             };
-            Application application = this.GetApplication(applicationId);
+            Application application = ApplicationBuilder.DefaultApplication;
 
             AccessToken accessToken = application.CreateAccessToken(permissions);
 
             Assert.Multiple(() =>
             {
-                Assert.That(accessToken.ApplicationId, Is.EqualTo(applicationId));
+                Assert.That(accessToken.ApplicationId, Is.EqualTo(application.Id));
                 Assert.That(accessToken.Permissions, Is.EquivalentTo(permissions));
             });
         }
@@ -271,13 +266,13 @@ namespace Identity.Tests.Unit.Core.Domain
             {
                 new PermissionId(new ResourceId("MyResource1"), "Add")
             };
-            Application application = this.GetApplication(applicationId);
+            Application application = ApplicationBuilder.DefaultApplication;
 
             RefreshToken refreshToken = application.CreateRefreshToken(permissions);
 
             Assert.Multiple(() =>
             {
-                Assert.That(refreshToken.ApplicationId, Is.EqualTo(applicationId));
+                Assert.That(refreshToken.ApplicationId, Is.EqualTo(application.Id));
                 Assert.That(refreshToken.Permissions, Is.EquivalentTo(permissions));
             });
         }
@@ -285,14 +280,12 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestRefreshAccessToken_WhenWrongApplicationRefreshTokenGiven_ThenInvalidOperationExceptionIsThrown()
         {
-            ApplicationId firstApplicationId = ApplicationId.Generate();
-            ApplicationId secondApplicationId = ApplicationId.Generate();
             PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource1"), "Add")
             };
-            Application firstApplication = this.GetApplication(firstApplicationId);
-            Application secondApplication = this.GetApplication(secondApplicationId);
+            Application firstApplication = ApplicationBuilder.DefaultApplication;
+            Application secondApplication = new ApplicationBuilder().WithId(ApplicationId.Generate()).Build();
             RefreshToken refreshToken = firstApplication.CreateRefreshToken(permissions);
 
             Assert.Throws(
@@ -305,12 +298,11 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestRefreshAccessToken_WhenUsedRefreshTokenGiven_ThenInvalidOperationExceptionIsThrown()
         {
-            ApplicationId applicationId = ApplicationId.Generate();
             PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource1"), "Add")
             };
-            Application application = this.GetApplication(applicationId);
+            Application application = ApplicationBuilder.DefaultApplication;
             RefreshToken refreshToken = application.CreateRefreshToken(permissions);
             refreshToken.Use();
 
@@ -330,7 +322,9 @@ namespace Identity.Tests.Unit.Core.Domain
                 new PermissionId(new ResourceId("MyResource1"), "Add")
             };
             TokenId tokenId = TokenId.GenerateRefreshTokenId(applicationId, permissions, DateTime.Now.AddDays(-1));
-            Application application = this.GetApplication(applicationId);
+            Application application = new ApplicationBuilder()
+                .WithId(applicationId)
+                .Build();
             RefreshToken refreshToken = new RefreshToken(tokenId);
 
             Assert.Throws(
@@ -343,19 +337,18 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestRefreshAccessToken_WhenRefreshTokenGiven_ThenAccessTokenIsReturned()
         {
-            ApplicationId applicationId = ApplicationId.Generate();
             PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource1"), "Add")
             };
-            Application application = this.GetApplication(applicationId);
+            Application application = ApplicationBuilder.DefaultApplication;
             RefreshToken refreshToken = application.CreateRefreshToken(permissions);
 
             AccessToken accessToken = application.RefreshAccessToken(refreshToken);
 
             Assert.Multiple(() =>
             {
-                Assert.That(accessToken.ApplicationId, Is.EqualTo(applicationId));
+                Assert.That(accessToken.ApplicationId, Is.EqualTo(application.Id));
                 Assert.That(accessToken.Permissions, Is.EquivalentTo(permissions));
             });
         }
@@ -363,14 +356,14 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestRefreshRefreshToken_WhenWrongApplicationRefreshTokenGiven_ThenInvalidOperationExceptionIsThrown()
         {
-            ApplicationId firstApplicationId = ApplicationId.Generate();
-            ApplicationId secondApplicationId = ApplicationId.Generate();
             PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource1"), "Add")
             };
-            Application firstApplication = this.GetApplication(firstApplicationId);
-            Application secondApplication = this.GetApplication(secondApplicationId);
+            Application firstApplication = ApplicationBuilder.DefaultApplication;
+            Application secondApplication = new ApplicationBuilder()
+                .WithId(ApplicationId.Generate())
+                .Build();
             RefreshToken refreshToken = firstApplication.CreateRefreshToken(permissions);
 
             Assert.Throws(
@@ -383,12 +376,11 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestRefreshRefreshToken_WhenUsedRefreshTokenGiven_ThenInvalidOperationExceptionIsThrown()
         {
-            ApplicationId applicationId = ApplicationId.Generate();
             PermissionId[] permissions = new PermissionId[]
             {
                 new PermissionId(new ResourceId("MyResource1"), "Add")
             };
-            Application application = this.GetApplication(applicationId);
+            Application application = ApplicationBuilder.DefaultApplication;
             RefreshToken refreshToken = application.CreateRefreshToken(permissions);
             refreshToken.Use();
 
@@ -408,7 +400,9 @@ namespace Identity.Tests.Unit.Core.Domain
                 new PermissionId(new ResourceId("MyResource1"), "Add")
             };
             TokenId tokenId = TokenId.GenerateRefreshTokenId(applicationId, permissions, DateTime.Now.AddDays(-1));
-            Application application = this.GetApplication(applicationId);
+            Application application = new ApplicationBuilder()
+                .WithId(applicationId)
+                .Build();
             RefreshToken refreshToken = new RefreshToken(tokenId);
 
             Assert.Throws(
@@ -426,14 +420,14 @@ namespace Identity.Tests.Unit.Core.Domain
             {
                 new PermissionId(new ResourceId("MyResource1"), "Add")
             };
-            Application application = this.GetApplication(applicationId);
+            Application application = ApplicationBuilder.DefaultApplication;
             RefreshToken refreshToken = application.CreateRefreshToken(permissions);
 
             RefreshToken refreshedRefreshToken = application.RefreshRefreshToken(refreshToken);
 
             Assert.Multiple(() =>
             {
-                Assert.That(refreshedRefreshToken.ApplicationId, Is.EqualTo(applicationId));
+                Assert.That(refreshedRefreshToken.ApplicationId, Is.EqualTo(application.Id));
                 Assert.That(refreshedRefreshToken.Permissions, Is.EquivalentTo(permissions));
                 Assert.That(refreshedRefreshToken.ExpiresAt, Is.EqualTo(refreshToken.ExpiresAt));
             });

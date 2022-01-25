@@ -1,15 +1,15 @@
 ﻿using Identity.Core.Domain;
+using Identity.Tests.Unit.Core.Domain.Builders;
 using NUnit.Framework;
 using System;
 
 namespace Identity.Tests.Unit.Core.Domain
 {
-    using ApplicationId = Identity.Core.Domain.ApplicationId;
-
     [TestFixture]
     public class EncryptedTokenValueTest
     {
-        private static readonly EncryptedTokenValue TestTokenValue = TokenValueEncrypter.Encrypt(EncryptedTokenValueTest.GetTokenValue());
+        private static readonly EncryptedTokenValue TestTokenValue = TokenValueEncrypter.Encrypt(
+            TokenValueBuilder.DefaultTokenValue);
 
         [Test]
         public void TestConstructor_WhenNullEncryptedTokenValueGiven_ThenArgumentNullExceptionIsThrown()
@@ -62,25 +62,9 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestEncrypt_WhenTokenValueGiven_ThenEncryptedTokenValueIsReturned()
         {
-            EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(EncryptedTokenValueTest.GetTokenValue());
+            EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(TokenValueBuilder.DefaultTokenValue);
 
             Assert.That(encryptedTokenValue, Is.TypeOf<EncryptedTokenValue>());
-        }
-
-        private static TokenValue GetTokenValue()
-        {
-            TokenInformation tokenInformation = new(
-                Guid.NewGuid(),
-                ApplicationId.Generate(),
-                TokenType.Access,
-                new PermissionId[]
-                {
-                    new PermissionId(new ResourceId("MyResource"), "Add"),
-                    new PermissionId(new ResourceId("MyResource"), "Remove")
-                },
-                DateTime.Now);
-
-            return TokenValueEncoder.Encode(tokenInformation);
         }
 
         [Test]
@@ -96,7 +80,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestDecrypt_WhenDecrypting_ThenTokenValueIsReturned()
         {
-            TokenValue tokenValue = EncryptedTokenValueTest.GetTokenValue();
+            TokenValue tokenValue = TokenValueBuilder.DefaultTokenValue;
             EncryptedTokenValue encryptedTokenValue = EncryptedTokenValue.Encrypt(tokenValue);
 
             TokenValue decryptedTokenValue = encryptedTokenValue.Decrypt();
@@ -107,7 +91,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestEquals_WhenSameEncryptedTokenValueGiven_ThenTrueIsReturned()
         {
-            TokenValue tokenValue = EncryptedTokenValueTest.GetTokenValue();
+            TokenValue tokenValue = TokenValueBuilder.DefaultTokenValue;
             EncryptedTokenValue firstEncryptedTokenValue = EncryptedTokenValue.Encrypt(tokenValue);
             EncryptedTokenValue secondEncryptedTokenValue = new(firstEncryptedTokenValue.ToByteArray());
 
@@ -117,8 +101,8 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestEquals_WhenDiffrentEncryptedTokenValueGiven_ThenFalseIsReturned()
         {
-            TokenValue firstTokenValue = EncryptedTokenValueTest.GetTokenValue();
-            TokenValue secondTokenValue = EncryptedTokenValueTest.GetTokenValue();
+            TokenValue firstTokenValue = TokenValueBuilder.DefaultTokenValue;
+            TokenValue secondTokenValue = new TokenValueBuilder().WithId(Guid.NewGuid()).Build();
             EncryptedTokenValue firstEncryptedTokenValue = EncryptedTokenValue.Encrypt(firstTokenValue);
             EncryptedTokenValue secondEncryptedTokenValue = EncryptedTokenValue.Encrypt(secondTokenValue);
 

@@ -1,5 +1,6 @@
 ﻿using Identity.Core.Application;
 using Identity.Core.Domain;
+using Identity.Tests.Unit.Core.Application.Builders;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -14,32 +15,19 @@ namespace Identity.Tests.Unit.Core.Application
         public void TestConstructor_WhenIdGiven_ThenIdIsSet()
         {
             Guid id = Guid.NewGuid();
-            RoleDto roleDto = this.GetRoleDto(id: id);
+            RoleDto roleDto = new RoleDtoBuilder()
+                .WithId(id)
+                .Build();
 
             Assert.That(roleDto.Id, Is.EqualTo(id));
-        }
-
-        private RoleDto GetRoleDto(
-            Guid? id = null,
-            string name = null,
-            string description = null,
-            IEnumerable<(string ResourceId, string Name)> permissions = null)
-        {
-            return new RoleDto(
-                id: id ?? Guid.NewGuid(),
-                name: name ?? "MyRole",
-                description: description ?? "My role description",
-                permissions: permissions ?? new (string ResourceId, string Name)[]
-                {
-                    ("MyResource", "MyPermission"),
-                    ("MyResource2", "MyPermission2")
-                });
         }
 
         [Test]
         public void TestConstructor_WhenNameGiven_ThenNameIsSet()
         {
-            RoleDto roleDto = this.GetRoleDto(name: "MyRole");
+            RoleDto roleDto = new RoleDtoBuilder()
+                .WithName("MyRole")
+                .Build();
 
             Assert.That(roleDto.Name, Is.EqualTo("MyRole"));
         }
@@ -47,7 +35,9 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestConstructor_WhenDescriptionGiven_ThenDescriptionIsSet()
         {
-            RoleDto roleDto = this.GetRoleDto(description: "My role description");
+            RoleDto roleDto = new RoleDtoBuilder()
+                .WithDescription("My role description")
+                .Build();
 
             Assert.That(roleDto.Description, Is.EqualTo("My role description"));
         }
@@ -59,7 +49,9 @@ namespace Identity.Tests.Unit.Core.Application
             {
                 ("MyResource", "MyPermission")
             };
-            RoleDto roleDto = this.GetRoleDto(permissions: permissions);
+            RoleDto roleDto = new RoleDtoBuilder()
+                .WithPermissions(permissions)
+                .Build();
 
             Assert.That(roleDto.Permissions, Is.EquivalentTo(permissions));
         }
@@ -67,12 +59,9 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestConstructor_WhenNullPermissionsGiven_ThenEmptyPermissionsIsSet()
         {
-            Guid id = Guid.NewGuid();
-            RoleDto roleDto = new(
-                id: id,
-                name: "MyRole",
-                description: "My role description",
-                permissions: null);
+            RoleDto roleDto = new RoleDtoBuilder()
+                .WithPermissions(null)
+                .Build();
 
             Assert.That(roleDto.Permissions, Is.EquivalentTo(Enumerable.Empty<(string ResourceId, string Name)>()));
         }
@@ -81,28 +70,16 @@ namespace Identity.Tests.Unit.Core.Application
         public void TestToRole_WhenConvertingToRole_ThenRoleIsReturned()
         {
             Guid id = Guid.NewGuid();
-            RoleDto roleDto = new(
-                id: id,
-                name: "MyRole",
-                description: "My role description",
-                permissions: new (string ResourceId, string Name)[]
-                {
-                    ("MyResource", "MyPermission"),
-                    ("MyResource2", "MyPermission2")
-                });
+            RoleDto roleDto = RoleDtoBuilder.DefaultRoleDto;
 
             Role role = roleDto.ToRole();
 
             Assert.Multiple(() =>
             {
-                Assert.That(role.Id, Is.EqualTo(new RoleId(id)));
-                Assert.That(role.Name, Is.EqualTo("MyRole"));
-                Assert.That(role.Description, Is.EqualTo("My role description"));
-                Assert.That(role.Permissions, Is.EquivalentTo(new PermissionId[]
-                {
-                    new PermissionId(new ResourceId("MyResource"), "MyPermission"),
-                    new PermissionId(new ResourceId("MyResource2"), "MyPermission2")
-                }));
+                Assert.That(role.Id, Is.EqualTo(new RoleId(roleDto.Id)));
+                Assert.That(role.Name, Is.EqualTo(roleDto.Name));
+                Assert.That(role.Description, Is.EqualTo(roleDto.Description));
+                Assert.That(role.Permissions, Is.EquivalentTo(RoleDtoBuilder.DefaultPermissions));
             });
         }
 
@@ -110,8 +87,12 @@ namespace Identity.Tests.Unit.Core.Application
         public void TestEquals_WhenTwoIdentitcalRolesDtosGiven_ThenTrueIsReturned()
         {
             Guid id = Guid.NewGuid();
-            RoleDto leftRoleDto = this.GetRoleDto(id: id);
-            RoleDto rightRoleDto = this.GetRoleDto(id: id);
+            RoleDto leftRoleDto = new RoleDtoBuilder()
+                .WithId(id)
+                .Build();
+            RoleDto rightRoleDto = new RoleDtoBuilder()
+                .WithId(id)
+                .Build();
 
             Assert.That(leftRoleDto.Equals(rightRoleDto), Is.True);
         }
@@ -120,19 +101,21 @@ namespace Identity.Tests.Unit.Core.Application
         public void TestEquals_WhenTwoDifferentRolesDtosGiven_ThenFalseIsReturned()
         {
             Guid id = Guid.NewGuid();
-            RoleDto leftRoleDto = this.GetRoleDto(
-                id: id,
-                permissions: new (string ResourceId, string Name)[]
+            RoleDto leftRoleDto = new RoleDtoBuilder()
+                .WithId(id)
+                .WithPermissions(new (string ResourceId, string Name)[]
                 {
                     ("MyResource", "MyPermission"),
                     ("MyResource2", "MyPermission2")
-                });
-            RoleDto rightRoleDto = this.GetRoleDto(
-                id: id,
-                permissions: new (string ResourceId, string Name)[]
+                })
+                .Build();
+            RoleDto rightRoleDto = new RoleDtoBuilder()
+                .WithId(id)
+                .WithPermissions(new (string ResourceId, string Name)[]
                 {
                     ("MyResource", "MyPermission"),
-                });
+                })
+                .Build();
 
             Assert.That(leftRoleDto.Equals(rightRoleDto), Is.False);
         }
@@ -141,8 +124,12 @@ namespace Identity.Tests.Unit.Core.Application
         public void TestGetHashCode_WhenTwoIdenticalRolesDtosGiven_ThenSameHashCodesAreReturned()
         {
             Guid id = Guid.NewGuid();
-            RoleDto leftRoleDto = this.GetRoleDto(id: id);
-            RoleDto rightRoleDto = this.GetRoleDto(id: id);
+            RoleDto leftRoleDto = new RoleDtoBuilder()
+                .WithId(id)
+                .Build();
+            RoleDto rightRoleDto = new RoleDtoBuilder()
+                .WithId(id)
+                .Build();
 
             Assert.That(leftRoleDto.GetHashCode(), Is.EqualTo(rightRoleDto.GetHashCode()));
         }
@@ -151,19 +138,21 @@ namespace Identity.Tests.Unit.Core.Application
         public void TestGetHashCode_WhenTwoDifferentRolesDtosGiven_ThenDifferentHashCodesAreReturned()
         {
             Guid id = Guid.NewGuid();
-            RoleDto leftRoleDto = this.GetRoleDto(
-                id: id,
-                permissions: new (string ResourceId, string Name)[]
+            RoleDto leftRoleDto = new RoleDtoBuilder()
+                .WithId(id)
+                .WithPermissions(new (string ResourceId, string Name)[]
                 {
                     ("MyResource", "MyPermission"),
                     ("MyResource2", "MyPermission2")
-                });
-            RoleDto rightRoleDto = this.GetRoleDto(
-                id: id,
-                permissions: new (string ResourceId, string Name)[]
+                })
+                .Build();
+            RoleDto rightRoleDto = new RoleDtoBuilder()
+                .WithId(id)
+                .WithPermissions(new (string ResourceId, string Name)[]
                 {
                     ("MyResource", "MyPermission"),
-                });
+                })
+                .Build();
 
             Assert.That(leftRoleDto.GetHashCode(), Is.Not.EqualTo(rightRoleDto.GetHashCode()));
         }

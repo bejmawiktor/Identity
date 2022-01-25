@@ -1,5 +1,6 @@
 ﻿using Identity.Core.Domain;
 using Identity.Core.Events;
+using Identity.Tests.Unit.Core.Domain.Builders;
 using NUnit.Framework;
 
 namespace Identity.Tests.Unit.Core.Domain
@@ -12,36 +13,31 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             RoleId roleId = RoleId.Generate();
 
-            RoleCreated roleCreated = this.GetRoleCreated(roleId);
+            RoleCreated roleCreated = new RoleCreatedBuilder()
+                .WithRoleId(roleId)
+                .Build();
 
             Assert.That(roleCreated.RoleId, Is.EqualTo(roleId.ToGuid()));
-        }
-
-        private RoleCreated GetRoleCreated(
-            RoleId roleId = null,
-            string roleName = null,
-            string roleDescription = null)
-        {
-            return new RoleCreated(
-                roleId: roleId ?? RoleId.Generate(),
-                roleName: roleName ?? "RoleName",
-                roleDescription: roleDescription ?? "Test role description");
         }
 
         [Test]
         public void TestConstructor_WhenRoleNameGiven_ThenRoleNameIsSet()
         {
-            RoleCreated roleCreated = this.GetRoleCreated(roleName: "RoleName");
+            RoleCreated roleCreated = new RoleCreatedBuilder()
+                .WithRoleName("RoleName 2")
+                .Build();
 
-            Assert.That(roleCreated.RoleName, Is.EqualTo("RoleName"));
+            Assert.That(roleCreated.RoleName, Is.EqualTo("RoleName 2"));
         }
 
         [Test]
         public void TestConstructor_WhenRoleDescriptionGiven_ThenRoleDescriptionIsSet()
         {
-            RoleCreated roleCreated = this.GetRoleCreated(roleDescription: "Test role description");
+            RoleCreated roleCreated = new RoleCreatedBuilder()
+                .WithRoleDescription("Test role description 2")
+                .Build();
 
-            Assert.That(roleCreated.RoleDescription, Is.EqualTo("Test role description"));
+            Assert.That(roleCreated.RoleDescription, Is.EqualTo("Test role description 2"));
         }
     }
 }

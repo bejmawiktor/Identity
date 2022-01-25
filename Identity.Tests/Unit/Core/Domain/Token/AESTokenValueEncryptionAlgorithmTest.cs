@@ -1,12 +1,11 @@
 ﻿using Identity.Core.Domain;
+using Identity.Tests.Unit.Core.Domain.Builders;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 
 namespace Identity.Tests.Unit.Core.Domain
 {
-    using ApplicationId = Identity.Core.Domain.ApplicationId;
-
     [TestFixture]
     public class AESTokenValueEncryptionAlgorithmTest
     {
@@ -39,31 +38,15 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             AESTokenValueEncryptionAlgorithm aesTokenValueEncriptionAlgorithm = new();
 
-            byte[] encryptedTokenValue = aesTokenValueEncriptionAlgorithm.Encrypt(this.GetTokenValue());
+            byte[] encryptedTokenValue = aesTokenValueEncriptionAlgorithm.Encrypt(TokenValueBuilder.DefaultTokenValue);
 
             Assert.That(encryptedTokenValue, Is.Not.Empty);
-        }
-
-        private TokenValue GetTokenValue()
-        {
-            TokenInformation tokenInformation = new(
-                Guid.NewGuid(),
-                ApplicationId.Generate(),
-                TokenType.Access,
-                new PermissionId[]
-                {
-                    new PermissionId(new ResourceId("MyResource"), "Add"),
-                    new PermissionId(new ResourceId("MyResource"), "Remove")
-                },
-                DateTime.Now);
-
-            return TokenValueEncoder.Encode(tokenInformation);
         }
 
         [Test]
         public void TestEncrypt_WhenMultipleTimesSameTokenValueIsEncrypted_ThenReturnedEncryptedTokenValuesAreSame()
         {
-            TokenValue tokenValue = this.GetTokenValue();
+            TokenValue tokenValue = TokenValueBuilder.DefaultTokenValue;
             AESTokenValueEncryptionAlgorithm aesTokenValueEncriptionAlgorithm = new();
 
             byte[] firstEncryptedTokenValue = aesTokenValueEncriptionAlgorithm.Encrypt(tokenValue);
@@ -99,7 +82,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestDecrypt_WhenEncryptedTokenValueGiven_ThenTokenValueIsReturned()
         {
-            TokenValue tokenValue = this.GetTokenValue();
+            TokenValue tokenValue = TokenValueBuilder.DefaultTokenValue;
             AESTokenValueEncryptionAlgorithm aesTokenValueEncriptionAlgorithm = new();
             byte[] encryptedTokenValue = aesTokenValueEncriptionAlgorithm.Encrypt(tokenValue);
 

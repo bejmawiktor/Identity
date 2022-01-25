@@ -1,5 +1,6 @@
 ﻿using Identity.Core.Application;
 using Identity.Core.Domain;
+using Identity.Tests.Unit.Core.Application.Builders;
 using NUnit.Framework;
 
 namespace Identity.Tests.Unit.Core.Application
@@ -16,31 +17,19 @@ namespace Identity.Tests.Unit.Core.Application
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
             TokenId tokenId = TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions);
-            RefreshTokenDto tokenDto = this.GetRefreshTokenDto(id: tokenId.ToString());
+            RefreshTokenDto tokenDto = new RefreshTokenDtoBuilder()
+                .WithId(tokenId.ToString())
+                .Build();
 
             Assert.That(tokenDto.Id, Is.EqualTo(tokenId.ToString()));
-        }
-
-        private RefreshTokenDto GetRefreshTokenDto(
-            string id = null,
-            bool? used = false)
-        {
-            PermissionId[] permissions = new PermissionId[]
-            {
-                new PermissionId(new ResourceId("MyResource"), "Add"),
-                new PermissionId(new ResourceId("MyResource"), "Remove")
-            };
-            TokenId tokenId = TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions);
-
-            return new RefreshTokenDto(
-                id ?? tokenId.ToString(),
-                used ?? false);
         }
 
         [Test]
         public void TestConstructor_WhenUsedGiven_ThenUsedIsSet()
         {
-            RefreshTokenDto tokenDto = this.GetRefreshTokenDto(used: true);
+            RefreshTokenDto tokenDto = new RefreshTokenDtoBuilder()
+                .WithUsed(true)
+                .Build();
 
             Assert.That(tokenDto.Used, Is.True);
         }
@@ -54,8 +43,14 @@ namespace Identity.Tests.Unit.Core.Application
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
             TokenId tokenId = TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions);
-            RefreshTokenDto leftTokenDto = new RefreshTokenDto(tokenId.ToString(), true);
-            RefreshTokenDto rightTokenDto = new RefreshTokenDto(tokenId.ToString(), true);
+            RefreshTokenDto leftTokenDto = new RefreshTokenDtoBuilder()
+                .WithId(tokenId.ToString())
+                .WithUsed(true)
+                .Build();
+            RefreshTokenDto rightTokenDto = new RefreshTokenDtoBuilder()
+                .WithId(tokenId.ToString())
+                .WithUsed(true)
+                .Build();
 
             Assert.That(leftTokenDto.Equals(rightTokenDto), Is.True);
         }
@@ -69,8 +64,14 @@ namespace Identity.Tests.Unit.Core.Application
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
             TokenId tokenId = TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions);
-            RefreshTokenDto leftTokenDto = new RefreshTokenDto(tokenId.ToString(), true);
-            RefreshTokenDto rightTokenDto = new RefreshTokenDto(tokenId.ToString(), false);
+            RefreshTokenDto leftTokenDto = new RefreshTokenDtoBuilder()
+                .WithId(tokenId.ToString())
+                .WithUsed(true)
+                .Build();
+            RefreshTokenDto rightTokenDto = new RefreshTokenDtoBuilder()
+                .WithId(tokenId.ToString())
+                .WithUsed(false)
+                .Build();
 
             Assert.That(leftTokenDto.Equals(rightTokenDto), Is.False);
         }
@@ -84,8 +85,14 @@ namespace Identity.Tests.Unit.Core.Application
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
             TokenId tokenId = TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions);
-            RefreshTokenDto leftTokenDto = new RefreshTokenDto(tokenId.ToString(), true);
-            RefreshTokenDto rightTokenDto = new RefreshTokenDto(tokenId.ToString(), true);
+            RefreshTokenDto leftTokenDto = new RefreshTokenDtoBuilder()
+                .WithId(tokenId.ToString())
+                .WithUsed(true)
+                .Build();
+            RefreshTokenDto rightTokenDto = new RefreshTokenDtoBuilder()
+                .WithId(tokenId.ToString())
+                .WithUsed(true)
+                .Build();
 
             Assert.That(leftTokenDto.GetHashCode(), Is.EqualTo(rightTokenDto.GetHashCode()));
         }
@@ -99,8 +106,14 @@ namespace Identity.Tests.Unit.Core.Application
                 new PermissionId(new ResourceId("MyResource"), "Remove")
             };
             TokenId tokenId = TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions);
-            RefreshTokenDto leftTokenDto = new RefreshTokenDto(tokenId.ToString(), true);
-            RefreshTokenDto rightTokenDto = new RefreshTokenDto(tokenId.ToString(), false);
+            RefreshTokenDto leftTokenDto = new RefreshTokenDtoBuilder()
+                .WithId(tokenId.ToString())
+                .WithUsed(true)
+                .Build();
+            RefreshTokenDto rightTokenDto = new RefreshTokenDtoBuilder()
+                .WithId(tokenId.ToString())
+                .WithUsed(false)
+                .Build();
 
             Assert.That(leftTokenDto.GetHashCode(), Is.Not.EqualTo(rightTokenDto.GetHashCode()));
         }
@@ -108,22 +121,14 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestToRefreshToken_WhenConvertingToToken_ThenTokenIsReturned()
         {
-            PermissionId[] permissions = new PermissionId[]
-            {
-                new PermissionId(new ResourceId("MyResource"), "Add"),
-                new PermissionId(new ResourceId("MyResource"), "Remove")
-            };
-            TokenId tokenId = TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), permissions);
-            RefreshTokenDto tokenDto = new RefreshTokenDto(
-                tokenId.ToString(),
-                true);
+            RefreshTokenDto tokenDto = RefreshTokenDtoBuilder.DefaultRefreshTokenDto;
 
             RefreshToken refreshToken = tokenDto.ToRefreshToken();
 
             Assert.Multiple(() =>
             {
-                Assert.That(refreshToken.Id, Is.EqualTo(tokenId));
-                Assert.That(refreshToken.Used, Is.True);
+                Assert.That(refreshToken.Id, Is.EqualTo(new TokenId(new EncryptedTokenValue(tokenDto.Id))));
+                Assert.That(refreshToken.Used, Is.False);
             });
         }
     }

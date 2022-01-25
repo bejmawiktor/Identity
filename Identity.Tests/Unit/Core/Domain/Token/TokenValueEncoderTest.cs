@@ -1,4 +1,5 @@
 ﻿using Identity.Core.Domain;
+using Identity.Tests.Unit.Core.Domain.Builders;
 using NUnit.Framework;
 using System;
 
@@ -22,35 +23,16 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestEncode_WhenTokenValueGiven_ThenTokenValueIsReturned()
         {
-            TokenInformation tokenInformation = this.GetTokenInformation();
+            TokenInformation tokenInformation = TokenInformationBuilder.DefaultTokenInformation;
             TokenValue tokenValue = TokenValueEncoder.Encode(tokenInformation);
 
             Assert.That(tokenValue, Is.Not.Null);
         }
 
-        private TokenInformation GetTokenInformation(
-            Guid? id = null,
-            ApplicationId applicationId = null,
-            TokenType tokenType = null,
-            PermissionId[] permissions = null)
-        {
-            PermissionId[] permissionsReplacement = new PermissionId[]
-            {
-                new PermissionId(new ResourceId("MyResource"), "Add"),
-                new PermissionId(new ResourceId("MyResource"), "Remove")
-            };
-
-            return new TokenInformation(
-                id ?? Guid.NewGuid(),
-                applicationId ?? ApplicationId.Generate(),
-                tokenType ?? TokenType.Refresh,
-                permissions ?? permissionsReplacement);
-        }
-
         [Test]
         public void TestEncode_WhenMultipleTimesSameTokenInformationIsEncoded_ThenReturnedTokenValuesAreSame()
         {
-            TokenInformation tokenInformation = this.GetTokenInformation();
+            TokenInformation tokenInformation = TokenInformationBuilder.DefaultTokenInformation;
 
             TokenValue firstEncodedTokenValue = TokenValueEncoder.Encode(tokenInformation);
             TokenValue secondEncodedTokenValue = TokenValueEncoder.Encode(tokenInformation);
@@ -61,8 +43,10 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestEncode_WhenDifferentTokenInformationIsEncoded_ThenReturnedTokenValuesAreDifferent()
         {
-            TokenInformation firstTokenInformation = this.GetTokenInformation();
-            TokenInformation secondTokenInformation = this.GetTokenInformation();
+            TokenInformation firstTokenInformation = TokenInformationBuilder.DefaultTokenInformation;
+            TokenInformation secondTokenInformation = new TokenInformationBuilder()
+                .WithId(Guid.NewGuid())
+                .Build();
 
             TokenValue firstEncodedTokenValue = TokenValueEncoder.Encode(firstTokenInformation);
             TokenValue secondEncodedTokenValue = TokenValueEncoder.Encode(secondTokenInformation);
@@ -83,7 +67,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestDecode_WhenTokenValueGiven_ThenTokenInformationSameAsSourceTokenInformationIsReturned()
         {
-            TokenInformation tokenInformation = this.GetTokenInformation();
+            TokenInformation tokenInformation = TokenInformationBuilder.DefaultTokenInformation;
             TokenValue encodedTokenValue = TokenValueEncoder.Encode(tokenInformation);
 
             TokenInformation decodedTokenInformation = TokenValueEncoder.Decode(encodedTokenValue);
@@ -94,7 +78,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestDecode_WhenTokenValuesWhereCreatedFromOneTokenInformation_ThenSameTokenValuesAreReturned()
         {
-            TokenInformation tokenInformation = this.GetTokenInformation();
+            TokenInformation tokenInformation = TokenInformationBuilder.DefaultTokenInformation;
             TokenValue firstEncodedTokenValue = TokenValueEncoder.Encode(tokenInformation);
             TokenValue secondEncodedTokenValue = TokenValueEncoder.Encode(tokenInformation);
 
@@ -127,7 +111,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestValidate_WhenCorrectTokenValueGiven_ThenNoExceptionIsThrown()
         {
-            TokenValue tokenValue = TokenValueEncoder.Encode(this.GetTokenInformation());
+            TokenValue tokenValue = TokenValueEncoder.Encode(TokenInformationBuilder.DefaultTokenInformation);
 
             Assert.DoesNotThrow(
                 () => TokenValueEncoder.Validate(tokenValue.ToString()));

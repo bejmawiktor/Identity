@@ -1,5 +1,6 @@
 ﻿using Identity.Core.Domain;
 using Identity.Core.Events;
+using Identity.Tests.Unit.Core.Domain.Builders;
 using NUnit.Framework;
 
 namespace Identity.Tests.Unit.Core.Domain
@@ -12,18 +13,11 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             RoleId roleId = RoleId.Generate();
 
-            RolePermissionRevoked rolePermissionRevoked = this.GetRolePermissionRevoked(roleId);
+            RolePermissionRevoked rolePermissionRevoked = new RolePermissionRevokedBuilder()
+                .WithRoleId(roleId)
+                .Build();
 
             Assert.That(rolePermissionRevoked.RoleId, Is.EqualTo(roleId.ToGuid()));
-        }
-
-        private RolePermissionRevoked GetRolePermissionRevoked(
-            RoleId roleId = null,
-            PermissionId permissionId = null)
-        {
-            return new RolePermissionRevoked(
-                roleId: roleId ?? RoleId.Generate(),
-                revokedPermissionId: permissionId ?? new PermissionId(new ResourceId("MyResource"), "Permission"));
         }
 
         [Test]
@@ -31,7 +25,9 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             PermissionId revokedPermissionId = new(new ResourceId("MyResource"), "Permission");
 
-            RolePermissionRevoked rolePermissionRevoked = this.GetRolePermissionRevoked(permissionId: revokedPermissionId);
+            RolePermissionRevoked rolePermissionRevoked = new RolePermissionRevokedBuilder()
+                .WithRevokedPermissionId(revokedPermissionId)
+                .Build();
 
             Assert.That(rolePermissionRevoked.RevokedPermissionId, Is.EqualTo(revokedPermissionId.ToString()));
         }

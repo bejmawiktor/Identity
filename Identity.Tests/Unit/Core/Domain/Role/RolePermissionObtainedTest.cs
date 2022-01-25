@@ -1,5 +1,6 @@
 ﻿using Identity.Core.Domain;
 using Identity.Core.Events;
+using Identity.Tests.Unit.Core.Domain.Builders;
 using NUnit.Framework;
 
 namespace Identity.Tests.Unit.Core.Domain
@@ -12,18 +13,11 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             RoleId roleId = RoleId.Generate();
 
-            RolePermissionObtained rolePermissionObtained = this.GetRolePermissionObtained(roleId);
+            RolePermissionObtained rolePermissionObtained = new RolePermissionObtainedBuilder()
+                .WithRoleId(roleId)
+                .Build();
 
             Assert.That(rolePermissionObtained.RoleId, Is.EqualTo(roleId.ToGuid()));
-        }
-
-        private RolePermissionObtained GetRolePermissionObtained(
-            RoleId roleId = null,
-            PermissionId obtainedPermissionId = null)
-        {
-            return new RolePermissionObtained(
-                roleId: roleId ?? RoleId.Generate(),
-                obtainedPermissionId: obtainedPermissionId ?? new PermissionId(new ResourceId("MyResource"), "Permission"));
         }
 
         [Test]
@@ -31,8 +25,9 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             PermissionId obtainedPermissionId = new(new ResourceId("MyResource"), "Permission");
 
-            RolePermissionObtained rolePermissionObtained = this.GetRolePermissionObtained(
-                obtainedPermissionId: obtainedPermissionId);
+            RolePermissionObtained rolePermissionObtained = new RolePermissionObtainedBuilder()
+                .WithObtainedPermissionId(obtainedPermissionId)
+                .Build();
 
             Assert.That(rolePermissionObtained.ObtainedPermissionId, Is.EqualTo(obtainedPermissionId.ToString()));
         }

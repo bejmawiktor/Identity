@@ -1,6 +1,7 @@
 ﻿using DDD.Domain.Events;
 using Identity.Core.Domain;
 using Identity.Core.Events;
+using Identity.Tests.Unit.Core.Domain.Builders;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -13,19 +14,11 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenDescriptionGiven_ThenDescriptionIsSet()
         {
-            Resource resource = this.GetResource(
-                description: "Test resource description");
+            Resource resource = new ResourceBuilder()
+                .WithDescription("Test resource description 2.")
+                .Build();
 
-            Assert.That(resource.Description, Is.EqualTo("Test resource description"));
-        }
-
-        private Resource GetResource(
-            ResourceId id = null,
-            string description = null)
-        {
-            return new Resource(
-                id: id ?? new ResourceId("TestResource"),
-                description: description ?? "Test resource description");
+            Assert.That(resource.Description, Is.EqualTo("Test resource description 2."));
         }
 
         [Test]
@@ -55,8 +48,10 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestCreatePermission_WhenCreating_ThenNewPermissionIsReturned()
         {
-            ResourceId resourceId = new ResourceId("TestResource");
-            Resource resource = this.GetResource(resourceId);
+            ResourceId resourceId = new ResourceId("TestResource2");
+            Resource resource = new ResourceBuilder()
+                .WithId(resourceId)
+                .Build();
 
             Permission permission = resource.CreatePermission(
                 name: "AddPermission",
@@ -80,8 +75,10 @@ namespace Identity.Tests.Unit.Core.Domain
                 .Setup(e => e.Dispatch(It.IsAny<PermissionCreated>()))
                 .Callback((PermissionCreated p) => permissionCreated = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
-            ResourceId resourceId = new("TestResource");
-            Resource resource = this.GetResource(resourceId);
+            ResourceId resourceId = new("TestResource2");
+            Resource resource = new ResourceBuilder()
+                .WithId(resourceId)
+                .Build();
 
             Permission permission = resource.CreatePermission(
                 name: "AddPermission",

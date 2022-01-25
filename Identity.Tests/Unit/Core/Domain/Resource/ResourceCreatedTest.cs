@@ -1,5 +1,6 @@
 ﻿using Identity.Core.Domain;
 using Identity.Core.Events;
+using Identity.Tests.Unit.Core.Domain.Builders;
 using NUnit.Framework;
 
 namespace Identity.Tests.Unit.Core.Domain
@@ -10,30 +11,23 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenResourceIdGiven_ThenResourceIdIsSet()
         {
-            ResourceId resourceId = new("TestResource");
+            ResourceId resourceId = new("TestResource2");
 
-            ResourceCreated resourceCreated = this.GetResourceCreated(
-                resourceId: new ResourceId("TestResource"));
+            ResourceCreated resourceCreated = new ResourceCreatedBuilder()
+                .WithResourceId(resourceId)
+                .Build();
 
             Assert.That(resourceCreated.ResourceId, Is.EqualTo(resourceId.ToString()));
-        }
-
-        private ResourceCreated GetResourceCreated(
-            ResourceId resourceId = null,
-            string resourceDescription = null)
-        {
-            return new ResourceCreated(
-                resourceId: resourceId ?? new ResourceId("TestResource"),
-                resourceDescription: resourceDescription ?? "Test resource description");
         }
 
         [Test]
         public void TestConstructor_WhenResourceDescriptionGiven_ThenResourceDescriptionIsSet()
         {
-            ResourceCreated resourceCreated = this.GetResourceCreated(
-                resourceDescription: "Test resource description");
-
-            Assert.That(resourceCreated.ResourceDescription, Is.EqualTo("Test resource description"));
+            ResourceCreated resourceCreated = new ResourceCreatedBuilder()
+                .WithResourceDescription("Test resource description 2.")
+                .Build();
+        
+            Assert.That(resourceCreated.ResourceDescription, Is.EqualTo("Test resource description 2."));
         }
     }
 }

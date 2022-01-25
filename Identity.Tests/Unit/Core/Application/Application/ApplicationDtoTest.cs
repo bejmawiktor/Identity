@@ -1,5 +1,6 @@
 ﻿using Identity.Core.Application;
 using Identity.Core.Domain;
+using Identity.Tests.Unit.Core.Application.Builders;
 using NUnit.Framework;
 using System;
 
@@ -20,33 +21,21 @@ namespace Identity.Tests.Unit.Core.Application
         {
             Guid applicationId = Guid.NewGuid();
 
-            ApplicationDto applicationDto = this.GetApplicationDto(applicationId);
+            ApplicationDto applicationDto = new ApplicationDtoBuilder()
+                .WithId(applicationId)
+                .Build();
 
             Assert.That(applicationDto.Id, Is.EqualTo(applicationId));
-        }
-
-        private ApplicationDto GetApplicationDto(
-            Guid? id = null,
-            Guid? userId = null,
-            string name = null,
-            string secretKey = null,
-            string homepageUrl = null,
-            string callbackUrl = null)
-        {
-            return new ApplicationDto(
-                id: id ?? Guid.NewGuid(),
-                userId: userId ?? Guid.NewGuid(),
-                name: name ?? "MyApp",
-                secretKey: secretKey ?? SecretKey,
-                homepageUrl: homepageUrl ?? "http://www.example.com",
-                callbackUrl: callbackUrl ?? "http://www.example.com/1");
         }
 
         [Test]
         public void TestConstructor_WhenUserIdGiven_ThenUserIdIsSet()
         {
             Guid userId = Guid.NewGuid();
-            ApplicationDto applicationDto = this.GetApplicationDto(userId: userId);
+
+            ApplicationDto applicationDto = new ApplicationDtoBuilder()
+                .WithUserId(userId)
+                .Build();
 
             Assert.That(applicationDto.UserId, Is.EqualTo(userId));
         }
@@ -54,7 +43,9 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestConstructor_WhenNameGiven_ThenNameIsSet()
         {
-            ApplicationDto applicationDto = this.GetApplicationDto(name: "MyApp");
+            ApplicationDto applicationDto = new ApplicationDtoBuilder()
+                .WithName("MyApp")
+                .Build();
 
             Assert.That(applicationDto.Name, Is.EqualTo("MyApp"));
         }
@@ -62,7 +53,9 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestConstructor_WhenSecretKeyGiven_ThenSecretKeyIsSet()
         {
-            ApplicationDto applicationDto = this.GetApplicationDto(secretKey: SecretKey);
+            ApplicationDto applicationDto = new ApplicationDtoBuilder()
+                .WithSecretKey(SecretKey)
+                .Build();
 
             Assert.That(applicationDto.SecretKey, Is.EqualTo(SecretKey));
         }
@@ -70,7 +63,9 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestConstructor_WhenHomepageUrlGiven_ThenHomepageUrlIsSet()
         {
-            ApplicationDto applicationDto = this.GetApplicationDto(homepageUrl: "http://www.example.com");
+            ApplicationDto applicationDto = new ApplicationDtoBuilder()
+                .WithHompageUrl("http://www.example.com")
+                .Build();
 
             Assert.That(applicationDto.HomepageUrl, Is.EqualTo("http://www.example.com"));
         }
@@ -78,7 +73,9 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestConstructor_WhenCallbackUrlGiven_ThenCallbackUrlIsSet()
         {
-            ApplicationDto applicationDto = this.GetApplicationDto(callbackUrl: "http://www.example.com/1");
+            ApplicationDto applicationDto = new ApplicationDtoBuilder()
+                .WithCallbackUrl("http://www.example.com/1")
+                .Build();
 
             Assert.That(applicationDto.CallbackUrl, Is.EqualTo("http://www.example.com/1"));
         }
@@ -86,26 +83,18 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestToApplication_WhenConvertingToApplication_ThenApplicationIsReturned()
         {
-            Guid applicationId = Guid.NewGuid();
-            Guid userId = Guid.NewGuid();
-            ApplicationDto applicationDto = new ApplicationDto(
-                id: applicationId,
-                userId: userId,
-                name: "MyApp",
-                secretKey: SecretKey,
-                homepageUrl: "http://www.example.com",
-                callbackUrl: "http://www.example.com/1");
+            ApplicationDto applicationDto = ApplicationDtoBuilder.DefaultApplicationDto;
 
             Application application = applicationDto.ToApplication();
 
             Assert.Multiple(() =>
             {
-                Assert.That(application.Id, Is.EqualTo(new ApplicationId(applicationId)));
-                Assert.That(application.UserId, Is.EqualTo(new UserId(userId)));
-                Assert.That(application.Name, Is.EqualTo("MyApp"));
-                Assert.That(application.SecretKey, Is.EqualTo(new EncryptedSecretKey(SecretKey)));
-                Assert.That(application.HomepageUrl, Is.EqualTo(new Url("http://www.example.com")));
-                Assert.That(application.CallbackUrl, Is.EqualTo(new Url("http://www.example.com/1")));
+                Assert.That(application.Id, Is.EqualTo(new ApplicationId(applicationDto.Id)));
+                Assert.That(application.UserId, Is.EqualTo(new UserId(applicationDto.UserId)));
+                Assert.That(application.Name, Is.EqualTo(applicationDto.Name));
+                Assert.That(application.SecretKey, Is.EqualTo(new EncryptedSecretKey(applicationDto.SecretKey)));
+                Assert.That(application.HomepageUrl, Is.EqualTo(new Url(applicationDto.HomepageUrl)));
+                Assert.That(application.CallbackUrl, Is.EqualTo(new Url(applicationDto.CallbackUrl)));
             });
         }
 
@@ -114,8 +103,11 @@ namespace Identity.Tests.Unit.Core.Application
         {
             Guid applicationId = Guid.NewGuid();
             Guid userId = Guid.NewGuid();
-            ApplicationDto leftApplicationDto = this.GetApplicationDto(applicationId, userId);
-            ApplicationDto rightApplicationDto = this.GetApplicationDto(applicationId, userId);
+            ApplicationDtoBuilder applicationDtoBuilder = new ApplicationDtoBuilder()
+                .WithId(applicationId)
+                .WithUserId(userId);
+            ApplicationDto leftApplicationDto = applicationDtoBuilder.Build();
+            ApplicationDto rightApplicationDto = applicationDtoBuilder.Build();
 
             Assert.That(leftApplicationDto.Equals(rightApplicationDto), Is.True);
         }
@@ -127,8 +119,14 @@ namespace Identity.Tests.Unit.Core.Application
             Guid firstUserId = Guid.NewGuid();
             Guid secondApplicationId = Guid.NewGuid();
             Guid secondUserId = Guid.NewGuid();
-            ApplicationDto leftApplicationDto = this.GetApplicationDto(firstApplicationId, firstUserId);
-            ApplicationDto rightApplicationDto = this.GetApplicationDto(secondApplicationId, secondUserId);
+            ApplicationDto leftApplicationDto = new ApplicationDtoBuilder()
+                .WithId(firstApplicationId)
+                .WithUserId(firstUserId)
+                .Build();
+            ApplicationDto rightApplicationDto = new ApplicationDtoBuilder()
+                .WithId(secondApplicationId)
+                .WithUserId(secondUserId)
+                .Build();
 
             Assert.That(leftApplicationDto.Equals(rightApplicationDto), Is.False);
         }
@@ -138,8 +136,11 @@ namespace Identity.Tests.Unit.Core.Application
         {
             Guid applicationId = Guid.NewGuid();
             Guid userId = Guid.NewGuid();
-            ApplicationDto leftApplicationDto = this.GetApplicationDto(applicationId, userId);
-            ApplicationDto rightApplicationDto = this.GetApplicationDto(applicationId, userId);
+            ApplicationDtoBuilder applicationDtoBuilder = new ApplicationDtoBuilder()
+                .WithId(applicationId)
+                .WithUserId(userId);
+            ApplicationDto leftApplicationDto = applicationDtoBuilder.Build();
+            ApplicationDto rightApplicationDto = applicationDtoBuilder.Build();
 
             Assert.That(leftApplicationDto.GetHashCode(), Is.EqualTo(rightApplicationDto.GetHashCode()));
         }
@@ -151,8 +152,14 @@ namespace Identity.Tests.Unit.Core.Application
             Guid firstUserId = Guid.NewGuid();
             Guid secondApplicationId = Guid.NewGuid();
             Guid secondUserId = Guid.NewGuid();
-            ApplicationDto leftApplicationDto = this.GetApplicationDto(firstApplicationId, firstUserId);
-            ApplicationDto rightApplicationDto = this.GetApplicationDto(secondApplicationId, secondUserId);
+            ApplicationDto leftApplicationDto = new ApplicationDtoBuilder()
+                .WithId(firstApplicationId)
+                .WithUserId(firstUserId)
+                .Build();
+            ApplicationDto rightApplicationDto = new ApplicationDtoBuilder()
+                .WithId(secondApplicationId)
+                .WithUserId(secondUserId)
+                .Build();
 
             Assert.That(leftApplicationDto.GetHashCode(), Is.Not.EqualTo(rightApplicationDto.GetHashCode()));
         }

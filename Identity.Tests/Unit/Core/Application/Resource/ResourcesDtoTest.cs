@@ -1,5 +1,6 @@
 ﻿using Identity.Core.Application;
 using Identity.Core.Domain;
+using Identity.Tests.Unit.Core.Application.Builders;
 using NUnit.Framework;
 
 namespace Identity.Tests.Unit.Core.Application
@@ -10,47 +11,42 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestConstructor_WhenIdGiven_ThenIdIsSet()
         {
-            ResourceDto resourceDto = this.GetResourceDto("MyResource");
+            ResourceDto resourceDto = new ResourceDtoBuilder()
+                .WithId("MyResource2")
+                .Build();
 
-            Assert.That(resourceDto.Id, Is.EqualTo("MyResource"));
-        }
-
-        private ResourceDto GetResourceDto(
-            string id = null,
-            string description = null)
-        {
-            return new ResourceDto(
-                id ?? "MyResource",
-                description ?? "My resource description.");
+            Assert.That(resourceDto.Id, Is.EqualTo("MyResource2"));
         }
 
         [Test]
         public void TestConstructor_WhenDescriptionGiven_ThenDescriptionIsSet()
         {
-            ResourceDto resourceDto = this.GetResourceDto(description: "My resource description.");
+            ResourceDto resourceDto = new ResourceDtoBuilder()
+                .WithDescription("My resource description 2.")
+                .Build();
 
-            Assert.That(resourceDto.Description, Is.EqualTo("My resource description."));
+            Assert.That(resourceDto.Description, Is.EqualTo("My resource description 2."));
         }
 
         [Test]
         public void TestToResource_WhenConvertingToResource_ThenResourceIsReturned()
         {
-            ResourceDto resourceDto = this.GetResourceDto("MyResource", "My resource description.");
+            ResourceDto resourceDto = ResourceDtoBuilder.DefaultResourceDto;
 
             Resource resource = resourceDto.ToResource();
 
             Assert.Multiple(() =>
             {
-                Assert.That(resource.Id, Is.EqualTo(new ResourceId("MyResource")));
-                Assert.That(resource.Description, Is.EqualTo("My resource description."));
+                Assert.That(resource.Id, Is.EqualTo(new ResourceId(resourceDto.Id)));
+                Assert.That(resource.Description, Is.EqualTo(resourceDto.Description));
             });
         }
 
         [Test]
         public void TestEquals_WhenTwoIdentitcalResourcesDtosGiven_ThenTrueIsReturned()
         {
-            ResourceDto leftResourceDto = this.GetResourceDto();
-            ResourceDto rightResourceDto = this.GetResourceDto();
+            ResourceDto leftResourceDto = ResourceDtoBuilder.DefaultResourceDto;
+            ResourceDto rightResourceDto = ResourceDtoBuilder.DefaultResourceDto;
 
             Assert.That(leftResourceDto.Equals(rightResourceDto), Is.True);
         }
@@ -58,8 +54,11 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestEquals_WhenTwoDifferentResourcesDtosGiven_ThenFalseIsReturned()
         {
-            ResourceDto leftResourceDto = this.GetResourceDto("MyResource", "My resource description.");
-            ResourceDto rightResourceDto = this.GetResourceDto("MyResource2", "My resource description 2.");
+            ResourceDto leftResourceDto = ResourceDtoBuilder.DefaultResourceDto;
+            ResourceDto rightResourceDto = new ResourceDtoBuilder()
+                .WithId("MyResource2")
+                .WithDescription("My resource description 2.")
+                .Build();
 
             Assert.That(leftResourceDto.Equals(rightResourceDto), Is.False);
         }
@@ -67,8 +66,8 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestGetHashCode_WhenTwoIdenticalResourcesDtosGiven_ThenSameHashCodesAreReturned()
         {
-            ResourceDto leftResourceDto = this.GetResourceDto();
-            ResourceDto rightResourceDto = this.GetResourceDto();
+            ResourceDto leftResourceDto = ResourceDtoBuilder.DefaultResourceDto;
+            ResourceDto rightResourceDto = ResourceDtoBuilder.DefaultResourceDto;
 
             Assert.That(leftResourceDto.GetHashCode(), Is.EqualTo(rightResourceDto.GetHashCode()));
         }
@@ -76,8 +75,11 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestGetHashCode_WhenTwoDifferentResourcesDtosGiven_ThenDifferentHashCodesAreReturned()
         {
-            ResourceDto leftResourceDto = this.GetResourceDto("MyResource", "My resource description.");
-            ResourceDto rightResourceDto = this.GetResourceDto("MyResource2", "My resource description 2.");
+            ResourceDto leftResourceDto = ResourceDtoBuilder.DefaultResourceDto;
+            ResourceDto rightResourceDto = new ResourceDtoBuilder()
+                .WithId("MyResource2")
+                .WithDescription("My resource description 2.")
+                .Build();
 
             Assert.That(leftResourceDto.GetHashCode(), Is.Not.EqualTo(rightResourceDto.GetHashCode()));
         }

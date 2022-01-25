@@ -1,4 +1,5 @@
 ﻿using Identity.Core.Domain;
+using Identity.Tests.Unit.Core.Domain.Builders;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -22,37 +23,29 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenUnitOfWorkGiven_ThenUnitOfWorkIsSet()
         {
-            IUnitOfWork unitOfWork = this.GetUnitOfWork();
+            IUnitOfWork unitOfWork = UnitOfWorkBuilder.DefaultUnitOfWork;
             AuthenticationService authenticationService = new(unitOfWork);
 
             Assert.That(authenticationService.UnitOfWork, Is.EqualTo(unitOfWork));
-        }
-
-        private IUnitOfWork GetUnitOfWork(IUsersRepository usersRepository = null)
-        {
-            Mock<IUnitOfWork> unitOfWorkMock = new();
-            unitOfWorkMock.Setup(x => x.UsersRepository)
-                .Returns(usersRepository ?? new Mock<IUsersRepository>().Object);
-            IUnitOfWork unitOfWork = unitOfWorkMock.Object;
-
-            return unitOfWork;
         }
 
         [Test]
         public async Task TestAuthenticate_WhenUserCredentialsAreGood_ThenUserIsReturned()
         {
             Password password = new("examplepassword");
-            HashedPassword hashedPassword = HashedPassword.Hash(password);
-            EmailAddress emailAddress = new("example@example.com");
-            User user = User.Create(
-                email: emailAddress,
-                password: hashedPassword);
+            User user = new UserBuilder()
+                .WithPassword(PasswordHasher.Hash(password))
+                .Build();
             Mock<IUsersRepository> usersRepositoryMock = new();
-            usersRepositoryMock.Setup(u => u.GetAsync(emailAddress)).Returns(Task.FromResult(user));
-            IUnitOfWork unitOfWork = this.GetUnitOfWork(usersRepositoryMock.Object);
+            usersRepositoryMock
+                .Setup(u => u.GetAsync(user.Email))
+                .Returns(Task.FromResult(user));
+            IUnitOfWork unitOfWork = new UnitOfWorkBuilder()
+                .WithUsersRepository(usersRepositoryMock.Object)
+                .Build();
             AuthenticationService authenticationService = new(unitOfWork);
 
-            User authenticatedUser = await authenticationService.Authenticate(emailAddress, password);
+            User authenticatedUser = await authenticationService.Authenticate(user.Email, password);
 
             Assert.That(authenticatedUser, Is.EqualTo(user));
         }
@@ -61,17 +54,21 @@ namespace Identity.Tests.Unit.Core.Domain
         public async Task TestAuthenticate_WhenWrongUserEmailGiven_ThenNullIsReturned()
         {
             Password password = new("examplepassword");
-            HashedPassword hashedPassword = HashedPassword.Hash(password);
-            EmailAddress emailAddress = new("example@example.com");
-            User user = User.Create(
-                email: emailAddress,
-                password: hashedPassword);
+            User user = new UserBuilder()
+                .WithPassword(PasswordHasher.Hash(password))
+                .Build();
             Mock<IUsersRepository> usersRepositoryMock = new();
-            usersRepositoryMock.Setup(u => u.GetAsync(emailAddress)).Returns(Task.FromResult(user));
-            IUnitOfWork unitOfWork = this.GetUnitOfWork(usersRepositoryMock.Object);
+            usersRepositoryMock
+                .Setup(u => u.GetAsync(user.Email))
+                .Returns(Task.FromResult(user));
+            IUnitOfWork unitOfWork = new UnitOfWorkBuilder()
+                .WithUsersRepository(usersRepositoryMock.Object)
+                .Build();
             AuthenticationService authenticationService = new(unitOfWork);
 
-            User authenticatedUser = await authenticationService.Authenticate(new EmailAddress("example2@example.com"), password);
+            User authenticatedUser = await authenticationService.Authenticate(
+                new EmailAddress("example2@example.com"), 
+                password);
 
             Assert.That(authenticatedUser, Is.Null);
         }
@@ -80,17 +77,19 @@ namespace Identity.Tests.Unit.Core.Domain
         public async Task TestAuthenticate_WhenWrongPasswordGiven_ThenNullIsReturned()
         {
             Password password = new("examplepassword");
-            HashedPassword hashedPassword = HashedPassword.Hash(password);
-            EmailAddress emailAddress = new("example@example.com");
-            User user = User.Create(
-                email: emailAddress,
-                password: hashedPassword);
+            User user = new UserBuilder()
+                .WithPassword(PasswordHasher.Hash(password))
+                .Build();
             Mock<IUsersRepository> usersRepositoryMock = new();
-            usersRepositoryMock.Setup(u => u.GetAsync(emailAddress)).Returns(Task.FromResult(user));
-            IUnitOfWork unitOfWork = this.GetUnitOfWork(usersRepositoryMock.Object);
+            usersRepositoryMock
+                .Setup(u => u.GetAsync(user.Email))
+                .Returns(Task.FromResult(user));
+            IUnitOfWork unitOfWork = new UnitOfWorkBuilder()
+                .WithUsersRepository(usersRepositoryMock.Object)
+                .Build();
             AuthenticationService authenticationService = new(unitOfWork);
 
-            User authenticatedUser = await authenticationService.Authenticate(emailAddress, new Password("wrongpassword"));
+            User authenticatedUser = await authenticationService.Authenticate(user.Email, new Password("wrongpassword"));
 
             Assert.That(authenticatedUser, Is.Null);
         }

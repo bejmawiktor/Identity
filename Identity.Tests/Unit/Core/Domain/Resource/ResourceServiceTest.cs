@@ -1,6 +1,7 @@
 ﻿using DDD.Domain.Events;
 using Identity.Core.Domain;
 using Identity.Core.Events;
+using Identity.Tests.Unit.Core.Domain.Builders;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -14,21 +15,11 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenUnitOfWorkGiven_ThenUnitOfWorkIsSet()
         {
-            IUnitOfWork unitOfWork = this.GetUnitOfWork();
+            IUnitOfWork unitOfWork = UnitOfWorkBuilder.DefaultUnitOfWork;
 
             ResourceService resourceService = new(unitOfWork);
 
             Assert.That(resourceService.UnitOfWork, Is.EqualTo(unitOfWork));
-        }
-
-        private IUnitOfWork GetUnitOfWork(IResourcesRepository resourcesRepository = null)
-        {
-            Mock<IUnitOfWork> unitOfWorkMock = new();
-            unitOfWorkMock.Setup(x => x.ResourcesRepository)
-                .Returns(resourcesRepository ?? new Mock<IResourcesRepository>().Object);
-            IUnitOfWork unitOfWork = unitOfWorkMock.Object;
-
-            return unitOfWork;
         }
 
         [Test]
@@ -45,7 +36,9 @@ namespace Identity.Tests.Unit.Core.Domain
         public async Task TestCreateResourceAsync_WhenNoExceptionsThrown_ThenResourceIsPersisted()
         {
             Mock<IResourcesRepository> resourcesRepositoryMock = new Mock<IResourcesRepository>();
-            IUnitOfWork unitOfWork = this.GetUnitOfWork(resourcesRepositoryMock.Object);
+            IUnitOfWork unitOfWork = new UnitOfWorkBuilder()
+                .WithResourcesRepository(resourcesRepositoryMock.Object)
+                .Build();
             ResourceService resourceService = new(unitOfWork);
 
             await resourceService.CreateResourceAsync("MyResource", "My resource description.");
@@ -62,8 +55,7 @@ namespace Identity.Tests.Unit.Core.Domain
                 .Setup(e => e.Dispatch(It.IsAny<IEvent>()))
                 .Callback((IEvent p) => resourceCreated = p as ResourceCreated);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
-            IUnitOfWork unitOfWork = this.GetUnitOfWork();
-            ResourceService resourceService = new(unitOfWork);
+            ResourceService resourceService = new(UnitOfWorkBuilder.DefaultUnitOfWork);
 
             await resourceService.CreateResourceAsync("MyResource", "My resource description.");
 
@@ -85,7 +77,9 @@ namespace Identity.Tests.Unit.Core.Domain
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
             Mock<IResourcesRepository> resourcesRepositoryMock = new();
             resourcesRepositoryMock.Setup(r => r.AddAsync(It.IsAny<Resource>())).Throws(new Exception());
-            IUnitOfWork unitOfWork = this.GetUnitOfWork(resourcesRepositoryMock.Object);
+            IUnitOfWork unitOfWork = new UnitOfWorkBuilder()
+                .WithResourcesRepository(resourcesRepositoryMock.Object)
+                .Build();
             ResourceService resourceService = new(unitOfWork);
 
             try

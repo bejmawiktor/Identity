@@ -1,5 +1,6 @@
 ﻿using Identity.Core.Domain;
 using Identity.Core.Events;
+using Identity.Tests.Unit.Core.Domain.Builders;
 using NUnit.Framework;
 
 namespace Identity.Tests.Unit.Core.Domain
@@ -12,27 +13,21 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             UserId userId = UserId.Generate();
 
-            UserPermissionObtained userPermissionObtained = this.GetUserPermissionObtained(userId);
+            UserPermissionObtained userPermissionObtained = new UserPermissionObtainedBuilder()
+                .WithUserId(userId)
+                .Build();
 
             Assert.That(userPermissionObtained.UserId, Is.EqualTo(userId.ToGuid()));
-        }
-
-        private UserPermissionObtained GetUserPermissionObtained(
-            UserId userId = null,
-            PermissionId obtainedPermissionId = null)
-        {
-            return new UserPermissionObtained(
-                userId ?? UserId.Generate(),
-                obtainedPermissionId ?? new PermissionId(new ResourceId("MyResource"), "Permission"));
         }
 
         [Test]
         public void TestConstructor_WhenObtainedPermissionIdGiven_ThenObtainedPermissionIdIsSet()
         {
-            PermissionId obtainedPermissionId = new(new ResourceId("MyResource"), "Permission");
+            PermissionId obtainedPermissionId = new(new ResourceId("MyResource2"), "Permission2");
 
-            UserPermissionObtained userPermissionObtained = this.GetUserPermissionObtained(
-                obtainedPermissionId: obtainedPermissionId);
+            UserPermissionObtained userPermissionObtained = new UserPermissionObtainedBuilder()
+                .WithObtainedPermissionId(obtainedPermissionId)
+                .Build();
 
             Assert.That(userPermissionObtained.ObtainedPermissionId, Is.EqualTo(obtainedPermissionId.ToString()));
         }

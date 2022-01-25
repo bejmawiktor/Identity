@@ -1,5 +1,6 @@
 ﻿using Identity.Core.Domain;
 using Identity.Core.Events;
+using Identity.Tests.Unit.Core.Domain.Builders;
 using NUnit.Framework;
 
 namespace Identity.Tests.Unit.Core.Domain
@@ -12,18 +13,11 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             UserId userId = UserId.Generate();
 
-            UserRoleAssumed userRoleAssumed = this.GetUserRoleAssumed(userId);
+            UserRoleAssumed userRoleAssumed = new UserRoleAssumedBuilder()
+                .WithUserId(userId)
+                .Build();
 
             Assert.That(userRoleAssumed.UserId, Is.EqualTo(userId.ToGuid()));
-        }
-
-        private UserRoleAssumed GetUserRoleAssumed(
-            UserId userId = null,
-            RoleId assumedRoleId = null)
-        {
-            return new UserRoleAssumed(
-                userId: userId ?? UserId.Generate(),
-                assumedRoleId: assumedRoleId ?? RoleId.Generate());
         }
 
         [Test]
@@ -31,7 +25,9 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             RoleId assumedRoleId = RoleId.Generate();
 
-            UserRoleAssumed userRoleAssumed = this.GetUserRoleAssumed(assumedRoleId: assumedRoleId);
+            UserRoleAssumed userRoleAssumed = new UserRoleAssumedBuilder()
+                .WithAssumedRoleId(assumedRoleId)
+                .Build();
 
             Assert.That(userRoleAssumed.AssumedRoleId, Is.EqualTo(assumedRoleId.ToGuid()));
         }

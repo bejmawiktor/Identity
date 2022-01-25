@@ -1,5 +1,6 @@
 ﻿using Identity.Core.Application;
 using Identity.Core.Domain;
+using Identity.Tests.Unit.Core.Domain.Builders;
 using NUnit.Framework;
 using System;
 
@@ -11,21 +12,16 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestToDto_WhenUserGiven_ThenUserDtoIsReturned()
         {
-            HashedPassword password = HashedPassword.Hash(new Password("MyPassword"));
-            UserId userId = new(Guid.NewGuid());
-            User user = new(
-                id: userId,
-                email: new EmailAddress("example@example.com"),
-                password: password);
+            User user = UserBuilder.DefaultUser;
             UserDtoConverter userDtoConverter = new();
 
             UserDto userDto = userDtoConverter.ToDto(user);
 
             Assert.Multiple(() =>
             {
-                Assert.That(userDto.Id, Is.EqualTo(userId.ToGuid()));
+                Assert.That(userDto.Id, Is.EqualTo(user.Id.ToGuid()));
                 Assert.That(userDto.Email, Is.EqualTo(user.Email.ToString()));
-                Assert.That(userDto.HashedPassword, Is.EqualTo(password.ToString()));
+                Assert.That(userDto.HashedPassword, Is.EqualTo(user.Password.ToString()));
             });
         }
 

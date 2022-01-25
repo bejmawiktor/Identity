@@ -1,6 +1,6 @@
 ﻿using DDD.Domain.Persistence;
 using Identity.Persistence.MSSQL;
-using Microsoft.EntityFrameworkCore;
+using Identity.Tests.Unit.Persistence.MSSQL.Builders;
 using NUnit.Framework;
 using System;
 
@@ -12,25 +12,15 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public void TestConstructor_WhenIdentityContextGiven_ThenApplicationsRepositoryIsSet()
         {
-            UnitOfWork unitOfWork = this.GetUnitOfWork();
+            UnitOfWork unitOfWork = UnitOfWorkBuilder.DefaultUnitOfWork;
 
             Assert.That(unitOfWork.ApplicationsRepository, Is.Not.Null);
-        }
-
-        private UnitOfWork GetUnitOfWork()
-        {
-            var options = new DbContextOptionsBuilder<IdentityContext>()
-                .UseInMemoryDatabase(databaseName: "Test")
-                .Options;
-            IdentityContext identityContext = new(options);
-            UnitOfWork unitOfWork = new(identityContext);
-            return unitOfWork;
         }
 
         [Test]
         public void TestConstructor_WhenIdentityContextGiven_ThenAuthorizationCodesRepositoryIsSet()
         {
-            UnitOfWork unitOfWork = this.GetUnitOfWork();
+            UnitOfWork unitOfWork = UnitOfWorkBuilder.DefaultUnitOfWork;
 
             Assert.That(unitOfWork.AuthorizationCodesRepository, Is.Not.Null);
         }
@@ -38,7 +28,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public void TestConstructor_WhenIdentityContextGiven_ThenPermissionsRepositoryIsSet()
         {
-            UnitOfWork unitOfWork = this.GetUnitOfWork();
+            UnitOfWork unitOfWork = UnitOfWorkBuilder.DefaultUnitOfWork;
 
             Assert.That(unitOfWork.PermissionsRepository, Is.Not.Null);
         }
@@ -46,7 +36,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public void TestConstructor_WhenIdentityContextGiven_ThenRefreshTokensRepositoryIsSet()
         {
-            UnitOfWork unitOfWork = this.GetUnitOfWork();
+            UnitOfWork unitOfWork = UnitOfWorkBuilder.DefaultUnitOfWork;
 
             Assert.That(unitOfWork.RefreshTokensRepository, Is.Not.Null);
         }
@@ -54,7 +44,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public void TestConstructor_WhenIdentityContextGiven_ThenResourcesRepositoryIsSet()
         {
-            UnitOfWork unitOfWork = this.GetUnitOfWork();
+            UnitOfWork unitOfWork = UnitOfWorkBuilder.DefaultUnitOfWork;
 
             Assert.That(unitOfWork.ResourcesRepository, Is.Not.Null);
         }
@@ -62,7 +52,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public void TestConstructor_WhenIdentityContextGiven_ThenRolesRepositoryIsSet()
         {
-            UnitOfWork unitOfWork = this.GetUnitOfWork();
+            UnitOfWork unitOfWork = UnitOfWorkBuilder.DefaultUnitOfWork;
 
             Assert.That(unitOfWork.RolesRepository, Is.Not.Null);
         }
@@ -70,7 +60,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public void TestConstructor_WhenIdentityContextGiven_ThenUsersRepositoryIsSet()
         {
-            UnitOfWork unitOfWork = this.GetUnitOfWork();
+            UnitOfWork unitOfWork = UnitOfWorkBuilder.DefaultUnitOfWork;
 
             Assert.That(unitOfWork.UsersRepository, Is.Not.Null);
         }
@@ -88,7 +78,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL
         [Test]
         public void TestBeginScope_WhenBegins_ThenTransactionScopeIsReturned()
         {
-            UnitOfWork unitOfWork = this.GetUnitOfWork();
+            UnitOfWork unitOfWork = UnitOfWorkBuilder.DefaultUnitOfWork;
 
             ITransactionScope transactionScope = unitOfWork.BeginScope();
 

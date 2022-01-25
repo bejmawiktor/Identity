@@ -1,6 +1,7 @@
 ﻿using DDD.Domain.Events;
 using Identity.Core.Domain;
 using Identity.Core.Events;
+using Identity.Tests.Unit.Core.Domain.Builders;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -39,20 +40,11 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenNameGiven_ThenNameIsSet()
         {
-            Role role = this.GetRole(name: "Role name");
+            Role role = new RoleBuilder()
+                .WithName("Role name 2")
+                .Build();
 
-            Assert.That(role.Name, Is.EqualTo("Role name"));
-        }
-
-        private Role GetRole(
-            RoleId id = null,
-            string name = null,
-            string description = null)
-        {
-            return new Role(
-                id: id ?? RoleId.Generate(),
-                name: name ?? "Role name",
-                description: description ?? "My role description.");
+            Assert.That(role.Name, Is.EqualTo("Role name 2"));
         }
 
         [Test]
@@ -84,15 +76,17 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenDescriptionGiven_ThenDescriptionIsSet()
         {
-            Role role = this.GetRole(description: "My role description.");
+            Role role = new RoleBuilder()
+                .WithDescription("My role description 2.")
+                .Build();
 
-            Assert.That(role.Description, Is.EqualTo("My role description."));
+            Assert.That(role.Description, Is.EqualTo("My role description 2."));
         }
 
         [Test]
         public void TestNameSet_WhenNullNameGiven_ThenArgumentNullExceptionIsThrown()
         {
-            Role role = this.GetRole();
+            Role role = RoleBuilder.DefaultRole;
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -104,7 +98,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestDescriptionSet_WhenEmptyNameGiven_ThenArgumentExceptionIsThrown()
         {
-            Role role = this.GetRole();
+            Role role = RoleBuilder.DefaultRole;
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()
@@ -116,7 +110,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestDescriptionSet_WhenNameGiven_ThenNameIsSet()
         {
-            Role role = this.GetRole();
+            Role role = RoleBuilder.DefaultRole;
 
             role.Name = "My role";
 
@@ -126,7 +120,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestDescriptionSet_WhenNullDescriptionGiven_ThenArgumentNullExceptionIsThrown()
         {
-            Role role = this.GetRole();
+            Role role = RoleBuilder.DefaultRole;
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentNullException>()
@@ -138,7 +132,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestDescriptionSet_WhenEmptyDescriptionGiven_ThenArgumentExceptionIsThrown()
         {
-            Role role = this.GetRole();
+            Role role = RoleBuilder.DefaultRole;
 
             Assert.Throws(
                 Is.InstanceOf<ArgumentException>()
@@ -150,7 +144,7 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestDescriptionSet_WhenDescriptionGiven_ThenDescriptionIsSet()
         {
-            Role role = this.GetRole();
+            Role role = RoleBuilder.DefaultRole;
 
             role.Description = "My changed description.";
 
@@ -205,7 +199,7 @@ namespace Identity.Tests.Unit.Core.Domain
                 .Setup(e => e.Dispatch(It.IsAny<RolePermissionObtained>()))
                 .Callback((RolePermissionObtained p) => rolePermissionObtained = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
-            Role role = this.GetRole();
+            Role role = RoleBuilder.DefaultRole;
 
             role.ObtainPermission(permissionId);
 
@@ -220,7 +214,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestObtainPermission_WhenPermissionGiven_ThenRoleHasPermission()
         {
             PermissionId permissionId = new(new ResourceId("MyResource"), "MyPermission");
-            Role role = this.GetRole();
+            Role role = RoleBuilder.DefaultRole;
 
             role.ObtainPermission(permissionId);
 
@@ -237,7 +231,7 @@ namespace Identity.Tests.Unit.Core.Domain
                 .Setup(e => e.Dispatch(It.IsAny<RolePermissionRevoked>()))
                 .Callback((RolePermissionRevoked p) => rolePermissionRevoked = p);
             EventManager.Instance.EventDispatcher = eventDispatcherMock.Object;
-            Role role = this.GetRole();
+            Role role = RoleBuilder.DefaultRole;
             role.ObtainPermission(permissionId);
 
             role.RevokePermission(permissionId);
@@ -253,7 +247,7 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestRevokePermission_WhenPermissionIdGiven_ThenPermissionIsRevoked()
         {
             PermissionId permissionId = new(new ResourceId("MyResource"), "MyPermission");
-            Role role = this.GetRole();
+            Role role = RoleBuilder.DefaultRole;
             role.ObtainPermission(permissionId);
 
             role.RevokePermission(permissionId);

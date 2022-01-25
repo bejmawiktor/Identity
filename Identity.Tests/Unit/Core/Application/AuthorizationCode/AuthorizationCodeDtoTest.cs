@@ -1,5 +1,6 @@
 ﻿using Identity.Core.Application;
 using Identity.Core.Domain;
+using Identity.Tests.Unit.Core.Application.Builders;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -22,29 +23,12 @@ namespace Identity.Tests.Unit.Core.Application
         {
             ApplicationId applicationId = ApplicationId.Generate();
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId, out _);
-            AuthorizationCodeDto authorizationCodeDto = this.GetAuthorizationCodeDto(
-                authorizationCodeId.Code.ToString(),
-                applicationId.ToGuid());
+            AuthorizationCodeDto authorizationCodeDto = new AuthorizationCodeDtoBuilder()
+                .WithCode(authorizationCodeId.Code.ToString())
+                .WithApplicationId(applicationId.ToGuid())
+                .Build();
 
             Assert.That(authorizationCodeDto.Code, Is.EqualTo(authorizationCodeId.Code.ToString()));
-        }
-
-        private AuthorizationCodeDto GetAuthorizationCodeDto(
-            string code = null,
-            Guid? applicationId = null,
-            DateTime? expiresAt = null,
-            bool? used = null,
-            IEnumerable<(string ResourceId, string Name)> permissions = null)
-        {
-            ApplicationId applicationIdReplacement = ApplicationId.Generate();
-            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationIdReplacement, out _);
-
-            return new AuthorizationCodeDto(
-                code: code ?? authorizationCodeId.Code.ToString(),
-                applicationId: applicationId ?? applicationIdReplacement.ToGuid(),
-                expiresAt: expiresAt ?? DateTime.Now,
-                used: used ?? true,
-                permissions: permissions ?? TestPermissions);
         }
 
         [Test]
@@ -52,9 +36,10 @@ namespace Identity.Tests.Unit.Core.Application
         {
             ApplicationId applicationId = ApplicationId.Generate();
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId, out _);
-            AuthorizationCodeDto authorizationCodeDto = this.GetAuthorizationCodeDto(
-                authorizationCodeId.Code.ToString(),
-                applicationId.ToGuid());
+            AuthorizationCodeDto authorizationCodeDto = new AuthorizationCodeDtoBuilder()
+                .WithCode(authorizationCodeId.Code.ToString())
+                .WithApplicationId(applicationId.ToGuid())
+                .Build();
 
             Assert.That(authorizationCodeDto.ApplicationId, Is.EqualTo(applicationId.ToGuid()));
         }
@@ -63,7 +48,9 @@ namespace Identity.Tests.Unit.Core.Application
         public void TestConstructor_WhenExpiresAtGiven_ThenExpiresAtIsSet()
         {
             DateTime expiresAt = DateTime.Now;
-            AuthorizationCodeDto authorizationCodeDto = this.GetAuthorizationCodeDto(expiresAt: expiresAt);
+            AuthorizationCodeDto authorizationCodeDto = new AuthorizationCodeDtoBuilder()
+                .WithExpiresAt(expiresAt)
+                .Build();
 
             Assert.That(authorizationCodeDto.ExpiresAt, Is.EqualTo(expiresAt));
         }
@@ -71,7 +58,9 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestConstructor_WhenUsedGiven_ThenUsedIsSet()
         {
-            AuthorizationCodeDto authorizationCodeDto = this.GetAuthorizationCodeDto(used: true);
+            AuthorizationCodeDto authorizationCodeDto = new AuthorizationCodeDtoBuilder()
+                .WithUsed(true)
+                .Build();
 
             Assert.That(authorizationCodeDto.Used, Is.True);
         }
@@ -79,7 +68,9 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestConstructor_WhenPermissionsGiven_ThenPermissionsAreSet()
         {
-            AuthorizationCodeDto authorizationCodeDto = this.GetAuthorizationCodeDto(permissions: TestPermissions);
+            AuthorizationCodeDto authorizationCodeDto = new AuthorizationCodeDtoBuilder()
+                .WithPermissions(TestPermissions)
+                .Build();
 
             Assert.That(authorizationCodeDto.Permissions, Is.EqualTo(TestPermissions));
         }
@@ -90,14 +81,16 @@ namespace Identity.Tests.Unit.Core.Application
             DateTime expiresAt = DateTime.Now;
             ApplicationId applicationId = ApplicationId.Generate();
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId, out _);
-            AuthorizationCodeDto firstAuthorizationCodeDto = this.GetAuthorizationCodeDto(
-                authorizationCodeId.Code.ToString(),
-                applicationId.ToGuid(),
-                expiresAt: expiresAt);
-            AuthorizationCodeDto secondAuthorizationCodeDto = this.GetAuthorizationCodeDto(
-                authorizationCodeId.Code.ToString(),
-                applicationId.ToGuid(),
-                expiresAt: expiresAt);
+            AuthorizationCodeDto firstAuthorizationCodeDto = new AuthorizationCodeDtoBuilder()
+               .WithCode(authorizationCodeId.Code.ToString())
+               .WithApplicationId(applicationId.ToGuid())
+               .WithExpiresAt(expiresAt)
+               .Build();
+            AuthorizationCodeDto secondAuthorizationCodeDto = new AuthorizationCodeDtoBuilder()
+                .WithCode(authorizationCodeId.Code.ToString())
+                .WithApplicationId(applicationId.ToGuid())
+                .WithExpiresAt(expiresAt)
+                .Build();
 
             Assert.That(firstAuthorizationCodeDto.Equals(secondAuthorizationCodeDto), Is.True);
         }
@@ -107,17 +100,19 @@ namespace Identity.Tests.Unit.Core.Application
         {
             ApplicationId applicationId = ApplicationId.Generate();
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId, out _);
-            AuthorizationCodeDto firstAuthorizationCodeDto = this.GetAuthorizationCodeDto(
-                authorizationCodeId.Code.ToString(),
-                applicationId.ToGuid(),
-                permissions: TestPermissions);
-            AuthorizationCodeDto secondAuthorizationCodeDto = this.GetAuthorizationCodeDto(
-                code: authorizationCodeId.Code.ToString(),
-                applicationId: applicationId.ToGuid(),
-                permissions: new (string ResourceId, string Name)[]
+            AuthorizationCodeDto firstAuthorizationCodeDto = new AuthorizationCodeDtoBuilder()
+                .WithCode(authorizationCodeId.Code.ToString())
+                .WithApplicationId(applicationId.ToGuid())
+                .WithPermissions(TestPermissions)
+                .Build();
+            AuthorizationCodeDto secondAuthorizationCodeDto = new AuthorizationCodeDtoBuilder()
+                .WithCode(authorizationCodeId.Code.ToString())
+                .WithApplicationId(applicationId.ToGuid())
+                .WithPermissions(new (string ResourceId, string Name)[]
                 {
                     ("MyResource1", "Add")
-                });
+                })
+                .Build();
 
             Assert.That(firstAuthorizationCodeDto.Equals(secondAuthorizationCodeDto), Is.False);
         }
@@ -125,17 +120,19 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestGetHashCode_WhenTwoIdenticalAuthorizationCodesDtosGiven_ThenHashCodesAreEqual()
         {
-            DateTime expiresAt = DateTime.Now;
             ApplicationId applicationId = ApplicationId.Generate();
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId, out _);
-            AuthorizationCodeDto firstAuthorizationCodeDto = this.GetAuthorizationCodeDto(
-                authorizationCodeId.Code.ToString(),
-                applicationId.ToGuid(),
-                expiresAt: expiresAt);
-            AuthorizationCodeDto secondAuthorizationCodeDto = this.GetAuthorizationCodeDto(
-                authorizationCodeId.Code.ToString(),
-                applicationId.ToGuid(),
-                expiresAt: expiresAt);
+            DateTime expiresAt = DateTime.Now;
+            AuthorizationCodeDto firstAuthorizationCodeDto = new AuthorizationCodeDtoBuilder()
+               .WithCode(authorizationCodeId.Code.ToString())
+               .WithApplicationId(applicationId.ToGuid())
+               .WithExpiresAt(expiresAt)
+               .Build();
+            AuthorizationCodeDto secondAuthorizationCodeDto = new AuthorizationCodeDtoBuilder()
+                .WithCode(authorizationCodeId.Code.ToString())
+                .WithApplicationId(applicationId.ToGuid())
+                .WithExpiresAt(expiresAt)
+                .Build();
 
             Assert.That(firstAuthorizationCodeDto.GetHashCode(), Is.EqualTo(secondAuthorizationCodeDto.GetHashCode()));
         }
@@ -145,14 +142,16 @@ namespace Identity.Tests.Unit.Core.Application
         {
             ApplicationId applicationId = ApplicationId.Generate();
             AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId, out _);
-            AuthorizationCodeDto firstAuthorizationCodeDto = this.GetAuthorizationCodeDto(
-                authorizationCodeId.Code.ToString(),
-                applicationId.ToGuid(),
-                used: true);
-            AuthorizationCodeDto secondAuthorizationCodeDto = this.GetAuthorizationCodeDto(
-                authorizationCodeId.Code.ToString(),
-                applicationId.ToGuid(),
-                used: false);
+            AuthorizationCodeDto firstAuthorizationCodeDto = new AuthorizationCodeDtoBuilder()
+                .WithCode(authorizationCodeId.Code.ToString())
+                .WithApplicationId(applicationId.ToGuid())
+                .WithUsed(true)
+                .Build();
+            AuthorizationCodeDto secondAuthorizationCodeDto = new AuthorizationCodeDtoBuilder()
+                .WithCode(authorizationCodeId.Code.ToString())
+                .WithApplicationId(applicationId.ToGuid())
+                .WithUsed(false)
+                .Build();
 
             Assert.That(firstAuthorizationCodeDto.GetHashCode(), Is.Not.EqualTo(secondAuthorizationCodeDto.GetHashCode()));
         }
@@ -160,29 +159,17 @@ namespace Identity.Tests.Unit.Core.Application
         [Test]
         public void TestToAuthorizationCode_WhenConvertingToAuthorizationCode_ThenAuthorizationCodeIsReturned()
         {
-            DateTime expiresAt = DateTime.Now;
-            ApplicationId applicationId = ApplicationId.Generate();
-            AuthorizationCodeId authorizationCodeId = AuthorizationCodeId.Generate(applicationId, out _);
-            AuthorizationCodeDto authorizationCodeDto = new AuthorizationCodeDto(
-                code: authorizationCodeId.Code.ToString(),
-                applicationId: authorizationCodeId.ApplicationId.ToGuid(),
-                expiresAt: expiresAt,
-                used: true,
-                permissions: TestPermissions);
+            AuthorizationCodeDto authorizationCodeDto = AuthorizationCodeDtoBuilder.DefaultAuthorizationCodeDto;
 
             AuthorizationCode authorizationCode = authorizationCodeDto.ToAuthorizationCode();
 
             Assert.Multiple(() =>
             {
-                Assert.That(authorizationCode.Id.Code, Is.EqualTo(authorizationCodeId.Code));
-                Assert.That(authorizationCode.Id.ApplicationId, Is.EqualTo(applicationId));
-                Assert.That(authorizationCode.ExpiresAt, Is.EqualTo(expiresAt));
-                Assert.That(authorizationCode.Used, Is.True);
-                Assert.That(authorizationCode.Permissions, Is.EquivalentTo(new PermissionId[]
-                {
-                    new PermissionId(new ResourceId("MyResource1"), "Add"),
-                    new PermissionId(new ResourceId("MyResource2"), "Add")
-                }));
+                Assert.That(authorizationCode.Id.Code, Is.EqualTo(new HashedCode(authorizationCodeDto.Code)));
+                Assert.That(authorizationCode.Id.ApplicationId, Is.EqualTo(new ApplicationId(authorizationCodeDto.ApplicationId)));
+                Assert.That(authorizationCode.ExpiresAt, Is.EqualTo(authorizationCodeDto.ExpiresAt));
+                Assert.That(authorizationCode.Used, Is.False);
+                Assert.That(authorizationCode.Permissions, Is.EquivalentTo(AuthorizationCodeDtoBuilder.DefaultPermissions));
             });
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Identity.Core.Domain;
+using Identity.Tests.Unit.Core.Domain.Builders;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -13,40 +14,22 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenTokenValueGiven_ThenValueIsSet()
         {
-            ApplicationId applicationId = ApplicationId.Generate();
-            string tokenValue = this.GetTokenValue(applicationId: applicationId);
+            TokenInformation tokenInformation = TokenInformationBuilder.DefaultTokenInformation;
+            string tokenValue = TokenValueEncoder.Encode(tokenInformation).ToString();
 
             TokenValue token = new(tokenValue);
 
             Assert.That(token.ToString(), Is.EqualTo(tokenValue));
         }
 
-        private string GetTokenValue(
-            Guid? id = null,
-            ApplicationId applicationId = null,
-            TokenType tokenType = null,
-            IEnumerable<PermissionId> permissions = null,
-            DateTime? expirationDate = null)
-        {
-            TokenInformation tokenInformation = new(
-                id ?? Guid.NewGuid(),
-                applicationId ?? ApplicationId.Generate(),
-                tokenType ?? TokenType.Access,
-                permissions ?? new PermissionId[]
-                {
-                    new PermissionId(new ResourceId("MyResource"), "Add"),
-                    new PermissionId(new ResourceId("MyResource"), "Remove")
-                },
-                expirationDate);
-
-            return TokenValueEncoder.Encode(tokenInformation).ToString();
-        }
-
         [Test]
         public void TestConstructor_WhenTokenValueGiven_ThenApplicationIdIsSet()
         {
             ApplicationId applicationId = ApplicationId.Generate();
-            string tokenValue = this.GetTokenValue(applicationId: applicationId);
+            TokenInformation tokenInformation = new TokenInformationBuilder()
+                .WithApplicationId(applicationId)
+                .Build();
+            string tokenValue = TokenValueEncoder.Encode(tokenInformation).ToString();
 
             TokenValue token = new(tokenValue);
 
@@ -56,7 +39,11 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestConstructor_WhenTokenValueGiven_ThenTypeIsSet()
         {
-            string tokenValue = this.GetTokenValue(tokenType: TokenType.Refresh);
+            TokenInformation tokenInformation = new TokenInformationBuilder()
+                .WithType(TokenType.Refresh)
+                .Build();
+            string tokenValue = TokenValueEncoder.Encode(tokenInformation).ToString();
+
 
             TokenValue token = new(tokenValue);
 
@@ -67,7 +54,10 @@ namespace Identity.Tests.Unit.Core.Domain
         public void TestConstructor_WhenTokenValueGiven_ThenExpiresAtIsSet()
         {
             DateTime expirationDate = DateTime.Now;
-            string tokenValue = this.GetTokenValue(expirationDate: expirationDate);
+            TokenInformation tokenInformation = new TokenInformationBuilder()
+                .WithExpirationDate(expirationDate)
+                .Build();
+            string tokenValue = TokenValueEncoder.Encode(tokenInformation).ToString();
 
             TokenValue token = new(tokenValue);
 
@@ -79,10 +69,13 @@ namespace Identity.Tests.Unit.Core.Domain
         {
             PermissionId[] permissions = new PermissionId[]
             {
-                new PermissionId(new ResourceId("MyResource"), "Add"),
-                new PermissionId(new ResourceId("MyResource"), "Remove")
+                new PermissionId(new ResourceId("MyResource2"), "Add"),
+                new PermissionId(new ResourceId("MyResource2"), "Remove")
             };
-            string tokenValue = this.GetTokenValue(permissions: permissions);
+            TokenInformation tokenInformation = new TokenInformationBuilder()
+                .WithPermissions(permissions)
+                .Build();
+            string tokenValue = TokenValueEncoder.Encode(tokenInformation).ToString();
 
             TokenValue token = new(tokenValue);
 
@@ -231,9 +224,11 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestExpired_WhenExpiredTokenGiven_ThenTrueIsReturned()
         {
-            string tokenValue = this.GetTokenValue(
-                tokenType: TokenType.Refresh,
-                expirationDate: DateTime.Now.AddDays(-1));
+            TokenInformation tokenInformation = new TokenInformationBuilder()
+                .WithType(TokenType.Refresh)
+                .WithExpirationDate(DateTime.Now.AddDays(-1))
+                .Build();
+            string tokenValue = TokenValueEncoder.Encode(tokenInformation).ToString();
             TokenValue token = new(tokenValue);
 
             bool expired = token.Expired;
@@ -244,9 +239,11 @@ namespace Identity.Tests.Unit.Core.Domain
         [Test]
         public void TestExpired_WhenValidTokenGiven_ThenFalseIsReturned()
         {
-            string tokenValue = this.GetTokenValue(
-                tokenType: TokenType.Refresh,
-                expirationDate: DateTime.Now.AddDays(1));
+            TokenInformation tokenInformation = new TokenInformationBuilder()
+                .WithType(TokenType.Refresh)
+                .WithExpirationDate(DateTime.Now.AddDays(1))
+                .Build();
+            string tokenValue = TokenValueEncoder.Encode(tokenInformation).ToString();
             TokenValue token = new(tokenValue);
 
             bool expired = token.Expired;
