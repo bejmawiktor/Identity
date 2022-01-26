@@ -13,6 +13,7 @@ namespace Identity.Tests.Unit.Core.Domain.Builders
             => new PermissionHolderStubBuilder().Build();
 
         public Guid Id { get; private set; } = PermissionHolderStubBuilder.DefaultId;
+
         public IEnumerable<PermissionId> Permissions { get; private set; } = new PermissionId[]
         {
             new PermissionId(new ResourceId("MyResource"), "AddSomething")

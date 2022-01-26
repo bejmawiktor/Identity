@@ -2,7 +2,6 @@
 using Identity.Tests.Unit.Core.Domain.Builders;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 
 namespace Identity.Tests.Unit.Core.Domain
 {
@@ -43,7 +42,6 @@ namespace Identity.Tests.Unit.Core.Domain
                 .WithType(TokenType.Refresh)
                 .Build();
             string tokenValue = TokenValueEncoder.Encode(tokenInformation).ToString();
-
 
             TokenValue token = new(tokenValue);
 

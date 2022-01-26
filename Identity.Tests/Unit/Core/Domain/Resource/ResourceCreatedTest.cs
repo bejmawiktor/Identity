@@ -26,7 +26,7 @@ namespace Identity.Tests.Unit.Core.Domain
             ResourceCreated resourceCreated = new ResourceCreatedBuilder()
                 .WithResourceDescription("Test resource description 2.")
                 .Build();
-        
+
             Assert.That(resourceCreated.ResourceDescription, Is.EqualTo("Test resource description 2."));
         }
     }

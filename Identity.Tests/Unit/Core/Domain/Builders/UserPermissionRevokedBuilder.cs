@@ -8,6 +8,7 @@ namespace Identity.Tests.Unit.Core.Domain.Builders
         private static readonly UserId DefaultUserId = UserId.Generate();
 
         public UserId UserId { get; private set; } = UserPermissionRevokedBuilder.DefaultUserId;
+
         public PermissionId RevokedPermissionId { get; private set; }
             = new PermissionId(new ResourceId("MyResource"), "Permission");
 

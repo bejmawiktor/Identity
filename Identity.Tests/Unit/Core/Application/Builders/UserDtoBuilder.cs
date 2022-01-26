@@ -9,6 +9,7 @@ namespace Identity.Tests.Unit.Core.Application.Builders
     {
         public static readonly Guid DefaultId = Guid.NewGuid();
         public static readonly string DefaultPassword = HashedPassword.Hash(new Password("MyPassword")).ToString();
+
         public static readonly IEnumerable<Guid> DefaultRoles = new Guid[]
         {
             Guid.NewGuid(),
@@ -21,6 +22,7 @@ namespace Identity.Tests.Unit.Core.Application.Builders
         public string Email { get; private set; } = "example@example.com";
         public string Password { get; private set; } = UserDtoBuilder.DefaultPassword;
         public IEnumerable<Guid> Roles { get; private set; } = UserDtoBuilder.DefaultRoles;
+
         public IEnumerable<(string ResourceId, string Name)> Permissions { get; private set; } = new (string ResourceId, string Name)[]
         {
             ("MyResource", "MyPermission"),
@@ -64,10 +66,10 @@ namespace Identity.Tests.Unit.Core.Application.Builders
 
         public UserDto Build()
             => new UserDto(
-                this.Id, 
-                this.Email, 
-                this.Password, 
-                this.Roles, 
+                this.Id,
+                this.Email,
+                this.Password,
+                this.Roles,
                 this.Permissions);
     }
 }

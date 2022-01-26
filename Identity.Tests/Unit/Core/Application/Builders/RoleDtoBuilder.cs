@@ -8,6 +8,7 @@ namespace Identity.Tests.Unit.Core.Application.Builders
     internal class RoleDtoBuilder
     {
         public static readonly Guid DefaultId = Guid.NewGuid();
+
         public static readonly IEnumerable<PermissionId> DefaultPermissions = new PermissionId[]
         {
             new PermissionId(new ResourceId("MyResource"), "MyPermission"),

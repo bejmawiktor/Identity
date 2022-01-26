@@ -9,10 +9,11 @@ namespace Identity.Tests.Unit.Core.Application.Builders
         private static readonly string DefaultSecretKey = EncryptedSecretKey
             .Encrypt(Identity.Core.Domain.SecretKey.Generate())
             .ToString();
+
         private static readonly Guid DefaultId = Guid.NewGuid();
         private static readonly Guid DefaultUserId = Guid.NewGuid();
 
-        public static ApplicationDto DefaultApplicationDto 
+        public static ApplicationDto DefaultApplicationDto
             => new ApplicationDtoBuilder().Build();
 
         public Guid Id { get; private set; } = ApplicationDtoBuilder.DefaultId;

@@ -9,11 +9,14 @@ namespace Identity.Tests.Unit.Core.Application.Builders
 
     internal class AuthorizationCodeDtoBuilder
     {
-        public static AuthorizationCodeDto DefaultAuthorizationCodeDto 
+        public static AuthorizationCodeDto DefaultAuthorizationCodeDto
             => new AuthorizationCodeDtoBuilder().Build();
+
         public static ApplicationId DefaultApplicationId { get; } = Identity.Core.Domain.ApplicationId.Generate();
-        public static AuthorizationCodeId DefaultAuthorizationCodeId 
+
+        public static AuthorizationCodeId DefaultAuthorizationCodeId
             => AuthorizationCodeId.Generate(DefaultApplicationId, out _);
+
         public static IEnumerable<PermissionId> DefaultPermissions { get; } = new PermissionId[]
         {
             new PermissionId(new ResourceId("MyResource1"), "Add"),
@@ -22,10 +25,13 @@ namespace Identity.Tests.Unit.Core.Application.Builders
 
         public string Code { get; private set; }
             = AuthorizationCodeDtoBuilder.DefaultAuthorizationCodeId.Code.ToString();
-        public Guid ApplicationId { get; private set; } 
+
+        public Guid ApplicationId { get; private set; }
             = AuthorizationCodeDtoBuilder.DefaultAuthorizationCodeId.ApplicationId.ToGuid();
+
         public DateTime ExpiresAt { get; private set; } = DateTime.Now;
         public bool Used { get; private set; } = false;
+
         public IEnumerable<(string ResourceId, string Name)> Permissions { get; private set; } = new (string ResourceId, string Name)[]
         {
             ("MyResource1", "Add"),

@@ -8,7 +8,7 @@ namespace Identity.Tests.Unit.Persistence.MSSQL.Builders
         public static UnitOfWork DefaultUnitOfWork => new UnitOfWorkBuilder().Build();
 
         public IdentityContext IdentityContext { get; private set; }
-            = new (new DbContextOptionsBuilder<IdentityContext>()
+            = new(new DbContextOptionsBuilder<IdentityContext>()
                 .UseInMemoryDatabase(databaseName: "Test")
                 .Options);
 

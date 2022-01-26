@@ -18,13 +18,13 @@ namespace Identity.Tests.Unit.Core.Domain.Builders
         public PermissionCreatedBuilder WithPermissionDescription(string permissionDescription)
         {
             this.PermissionDescription = permissionDescription;
-            
+
             return this;
         }
 
         public PermissionCreated Build()
             => new PermissionCreated(
-                this.PermissionId, 
+                this.PermissionId,
                 this.PermissionDescription);
     }
 }

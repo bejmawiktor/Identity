@@ -5,8 +5,6 @@ using System;
 
 namespace Identity.Tests.Unit.Core.Domain
 {
-    using ApplicationId = Identity.Core.Domain.ApplicationId;
-
     public class TokenValueEncrypterTest
     {
         [Test]

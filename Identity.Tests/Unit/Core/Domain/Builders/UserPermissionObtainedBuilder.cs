@@ -8,7 +8,8 @@ namespace Identity.Tests.Unit.Core.Domain.Builders
         private static readonly UserId DefaultUserId = UserId.Generate();
 
         public UserId UserId { get; private set; } = UserPermissionObtainedBuilder.DefaultUserId;
-        public PermissionId ObtainedPermissionId { get; private set; } 
+
+        public PermissionId ObtainedPermissionId { get; private set; }
             = new PermissionId(new ResourceId("MyResource"), "Permission");
 
         public UserPermissionObtainedBuilder WithUserId(UserId userId)

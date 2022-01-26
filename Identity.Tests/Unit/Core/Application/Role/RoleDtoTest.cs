@@ -3,7 +3,6 @@ using Identity.Core.Domain;
 using Identity.Tests.Unit.Core.Application.Builders;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Identity.Tests.Unit.Core.Application

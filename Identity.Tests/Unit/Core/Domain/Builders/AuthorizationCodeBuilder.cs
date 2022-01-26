@@ -11,6 +11,7 @@ namespace Identity.Tests.Unit.Core.Domain.Builders
         private static readonly AuthorizationCodeId DefaultId = AuthorizationCodeId.Generate(
             ApplicationId.Generate(),
             out _);
+
         private static readonly DateTime DefaultExpiresAt = DateTime.Now;
 
         public static AuthorizationCode DefaultAuthorizationCode => new AuthorizationCodeBuilder().Build();
@@ -18,6 +19,7 @@ namespace Identity.Tests.Unit.Core.Domain.Builders
         public AuthorizationCodeId Id { get; private set; } = AuthorizationCodeBuilder.DefaultId;
         public DateTime ExpiresAt { get; private set; } = AuthorizationCodeBuilder.DefaultExpiresAt;
         public bool Used { get; private set; } = false;
+
         public IEnumerable<PermissionId> Permissions { get; private set; } = new PermissionId[]
         {
             new PermissionId(new ResourceId("MyResource"), "Add")

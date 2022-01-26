@@ -5,8 +5,6 @@ using System;
 
 namespace Identity.Tests.Unit.Core.Domain
 {
-    using ApplicationId = Identity.Core.Domain.ApplicationId;
-
     [TestFixture]
     public class TokenValueEncoderTest
     {

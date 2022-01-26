@@ -799,7 +799,7 @@ namespace Identity.Tests.Unit.Core.Domain
                     Code.Generate()));
 
             Assert.That(
-                exception, 
+                exception,
                 Is.InstanceOf<ArgumentNullException>()
                     .And.Property(nameof(ArgumentNullException.ParamName))
                     .EqualTo("callbackUrl"));

@@ -5,7 +5,6 @@ using Identity.Tests.Unit.Core.Domain.Builders;
 using Moq;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 
 namespace Identity.Tests.Unit.Core.Domain
 {

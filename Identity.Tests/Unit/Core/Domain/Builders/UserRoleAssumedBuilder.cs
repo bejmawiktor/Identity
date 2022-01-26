@@ -10,6 +10,7 @@ namespace Identity.Tests.Unit.Core.Domain.Builders
 
         public UserId UserId { get; private set; }
             = UserRoleAssumedBuilder.DefaultUserId;
+
         public RoleId AssumedRoleId { get; private set; }
             = UserRoleAssumedBuilder.DefaultRoleId;
 

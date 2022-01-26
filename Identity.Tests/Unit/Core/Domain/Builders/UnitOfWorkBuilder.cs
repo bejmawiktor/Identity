@@ -9,18 +9,25 @@ namespace Identity.Tests.Unit.Core.Domain.Builders
 
         public Mock<IUnitOfWork> UnitOfWorkMock { get; private set; }
             = new Mock<IUnitOfWork>();
+
         public IApplicationsRepository ApplicationsRepository { get; private set; }
             = new Mock<IApplicationsRepository>().Object;
+
         public IAuthorizationCodesRepository AuthorizationCodesRepository { get; private set; }
             = new Mock<IAuthorizationCodesRepository>().Object;
+
         public IUsersRepository UsersRepository { get; private set; }
             = new Mock<IUsersRepository>().Object;
+
         public IRefreshTokensRepository RefreshTokensRepository { get; private set; }
             = new Mock<IRefreshTokensRepository>().Object;
+
         public IPermissionsRepository PermissionsRepository { get; private set; }
             = new Mock<IPermissionsRepository>().Object;
+
         public IResourcesRepository ResourcesRepository { get; private set; }
             = new Mock<IResourcesRepository>().Object;
+
         public IRolesRepository RolesRepository { get; private set; }
             = new Mock<IRolesRepository>().Object;
 

@@ -26,7 +26,7 @@ namespace Identity.Tests.Unit.Core.Domain.Builders
 
         public UserCreated Build()
             => new UserCreated(
-                this.UserId, 
+                this.UserId,
                 this.UserEmailAddress);
     }
 }

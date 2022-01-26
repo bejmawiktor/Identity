@@ -9,6 +9,7 @@ namespace Identity.Core.Domain
     {
         private static readonly int AesBlockByteSize = 128 / 8;
         private static readonly string Key = "gDZ2Z4VUbtunNuhtCSdxMfiGcjbbcaWGhKS6UwP9DV6fTcBSw58HqGMUaY8APHq6";
+
         private static readonly byte[] Iv
             = new byte[] { 10, 58, 188, 94, 18, 176, 128, 190, 13, 128, 126, 166, 42, 11, 100, 175 };
 

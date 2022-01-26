@@ -9,8 +9,8 @@ namespace Identity.Tests.Unit.Core.Domain.Builders
     internal class TokenInformationBuilder
     {
         public static TokenInformation DefaultTokenInformation => new TokenInformationBuilder().Build();
-        public readonly static Guid DefaultId = Guid.NewGuid();
-        public readonly static ApplicationId DefaultApplicationId = ApplicationId.Generate();
+        public static readonly Guid DefaultId = Guid.NewGuid();
+        public static readonly ApplicationId DefaultApplicationId = ApplicationId.Generate();
 
         public Guid Id { get; private set; } = TokenInformationBuilder.DefaultId;
         public ApplicationId ApplicationId { get; private set; } = TokenInformationBuilder.DefaultApplicationId;

@@ -67,7 +67,7 @@ namespace Identity.Tests.Unit.Core.Domain
             AuthenticationService authenticationService = new(unitOfWork);
 
             User authenticatedUser = await authenticationService.Authenticate(
-                new EmailAddress("example2@example.com"), 
+                new EmailAddress("example2@example.com"),
                 password);
 
             Assert.That(authenticatedUser, Is.Null);

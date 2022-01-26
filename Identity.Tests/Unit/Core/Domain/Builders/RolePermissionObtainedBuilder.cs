@@ -5,11 +5,12 @@ namespace Identity.Tests.Unit.Core.Domain.Builders
 {
     internal class RolePermissionObtainedBuilder
     {
-        private static readonly RoleId DefaultId = RoleId.Generate(); 
+        private static readonly RoleId DefaultId = RoleId.Generate();
 
-        public RoleId RoleId { get; private set; } 
+        public RoleId RoleId { get; private set; }
             = RolePermissionObtainedBuilder.DefaultId;
-        public PermissionId ObtainedPermissionId { get; private set; } 
+
+        public PermissionId ObtainedPermissionId { get; private set; }
             = new PermissionId(new ResourceId("MyResource"), "Permission");
 
         public RolePermissionObtainedBuilder WithRoleId(RoleId roleId)

@@ -13,6 +13,7 @@ namespace Identity.Tests.Unit.Core.Application.Builders
             new PermissionId(new ResourceId("MyResource"), "Add"),
             new PermissionId(new ResourceId("MyResource"), "Remove")
         };
+
         private static readonly string DefaultId = TokenId.GenerateRefreshTokenId(ApplicationId.Generate(), DefaultPermissions)
             .ToString();
 
@@ -37,7 +38,7 @@ namespace Identity.Tests.Unit.Core.Application.Builders
 
         public RefreshTokenDto Build()
             => new RefreshTokenDto(
-                this.Id, 
+                this.Id,
                 this.Used);
     }
 }

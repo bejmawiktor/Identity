@@ -16,11 +16,13 @@ namespace Identity.Tests.Unit.Core.Domain.Builders
         public Guid Id { get; private set; } = TokenValueBuilder.DefaultId;
         public ApplicationId ApplicationId { get; private set; } = TokenValueBuilder.DefaultApplicationId;
         public TokenType Type { get; private set; } = TokenType.Access;
+
         public IEnumerable<PermissionId> Permissions { get; private set; } = new PermissionId[]
         {
             new PermissionId(new ResourceId("MyResource"), "Add"),
             new PermissionId(new ResourceId("MyResource"), "Remove")
         };
+
         public DateTime? ExpirationDate { get; private set; }
 
         public TokenValueBuilder WithId(Guid guid)

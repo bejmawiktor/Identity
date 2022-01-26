@@ -2,7 +2,6 @@
 using Identity.Tests.Unit.Core.Domain.Builders;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 
 namespace Identity.Tests.Unit.Core.Domain
 {
